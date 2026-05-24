@@ -1,0 +1,6 @@
+<Solution>
+    <Project Path="Mint.Blog.Application/Mint.Blog.Application.csproj"/>
+    <Project Path="Mint.Blog.Domain/Mint.Blog.Domain.csproj"/>
+    <Project Path="Mint.Blog.Infrastructure/Mint.Blog.Infrastructure.csproj"/>
+    <Project Path="Mint.Blog.WebApi/Mint.Blog.WebApi.csproj"/>
+</Solution>

@@ -1,0 +1,476 @@
+# Mint 前端 Layouts 规范
+
+## 目的
+
+本文档用于统一 `Mint.Blog.Vue/src/layouts` 的职责、结构和使用方式，适用于当前已有的 `Blog`、`System`，以及未来扩展的 `MES` 等业务域前端模块。
+
+本规范只做一件事：
+
+- 让整个前端按照同一套布局语言长期演进，而不是每个业务模块、每个页面各自定义一套壳层和容器结构。
+
+适用范围：
+
+- `Mint.Blog.Vue/src/layouts`
+- `Mint.Blog.Vue/src/router`
+- `Mint.Blog.Vue/src/views`
+- `Mint.Blog.Vue/src/store/modules/theme`
+- `Mint.Blog.Vue/src/store/modules/app`
+
+参考来源：
+
+- [router/index.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/router/index.ts)
+- [frontdesk/index.vue](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/layouts/frontdesk/index.vue)
+- [backstage/index.vue](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/layouts/backstage/index.vue)
+- [theme/index.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/store/modules/theme/index.ts)
+
+关联文档：
+
+- [system-frontend-responsive-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/system-frontend-responsive-reference.md)
+- [system-frontend-theme-color-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/system-frontend-theme-color-reference.md)
+- [system-frontend-service-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/system-frontend-service-reference.md)
+- [ddd-code-structure-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/ddd-code-structure-reference.md)
+
+推荐阅读顺序：
+
+1. 先看 [ddd-code-structure-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/ddd-code-structure-reference.md)，确定业务边界
+2. 再看 [system-frontend-responsive-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/system-frontend-responsive-reference.md)，确定移动端和 PC 端布局原则
+3. 再看 [system-frontend-theme-color-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/system-frontend-theme-color-reference.md)，确定主题结构
+4. 最后看本文，确定 `layouts` 怎么组织、页面怎么挂载和布局里该放什么
+
+---
+
+## 一、Layouts 总决策
+
+后续 `layouts` 统一按照以下结论执行：
+
+1. `layouts` 负责页面壳层，不负责具体业务页面内容。
+2. 全项目统一按“前台布局”和“后台布局”组织主布局，不按页面单独发明壳层。
+3. 页面必须挂在合适的布局下运行，不能在页面内部自行复制 header、menu、footer、sider 逻辑。
+4. 布局负责导航结构、滚动容器、固定区域、主题联动和响应式壳层切换，不负责业务资源请求。
+5. 前台布局用于内容消费场景，后台布局用于管理操作场景。
+6. 新增业务域如 `MES` 时，优先复用现有后台布局模式，而不是重新发明第三套主布局。
+7. 布局组件和业务组件必须分离，布局目录里不放业务领域代码。
+
+这是本文档的最高原则。后续所有新页面、新路由、新布局调整，都必须服从这七条。
+
+---
+
+## 二、当前布局结构
+
+当前 `src/layouts` 目录结构：
+
+```text
+src/layouts/
+  backstage/
+    breadcrumb.vue
+    footer.vue
+    header.vue
+    index.vue
+    menu.vue
+    sider.vue
+    tab-bar.vue
+    theme-drawer.vue
+  frontdesk/
+    breadcrumb.vue
+    footer.vue
+    header.vue
+    index.vue
+    menu.vue
+    sider.vue
+    tab-bar.vue
+    theme-drawer.vue
+```
+
+统一理解：
+
+- `index.vue` 是主布局入口
+- 其余文件是该布局的壳层子部件
+- 页面内容通过 `RouterView` 注入，而不是写在布局文件里
+
+---
+
+## 三、两套主布局的职责
+
+### 1. `frontdesk`
+
+适用范围：
+
+- `blog-surfer`
+- 内容浏览型页面
+- 阅读、展示、归档、分类、标签、详情等场景
+
+主要职责：
+
+- 提供前台头部导航
+- 提供前台侧边信息区
+- 提供前台页脚
+- 提供前台主题抽屉
+- 提供内容容器和滚动区域
+- 在移动端下收起侧边栏并重排结构
+
+它不负责：
+
+- 文章详情业务逻辑
+- 评论提交业务逻辑
+- 页面级接口请求
+- 页面级数据转换
+
+### 2. `backstage`
+
+适用范围：
+
+- `blog-admin`
+- `system`
+- 未来 `mes-admin`
+
+主要职责：
+
+- 提供后台头部、侧边菜单、标签栏、页脚
+- 提供动态路由承载容器
+- 提供后台主题抽屉
+- 提供固定 header / tab / sider 的壳层能力
+- 在移动端下把菜单切换为抽屉化侧边栏
+
+它不负责：
+
+- 用户列表查询
+- 文章列表查询
+- 表单提交
+- 按钮级业务权限判断
+
+---
+
+## 四、布局与路由的关系
+
+### 1. 布局由路由决定
+
+当前路由已明确：
+
+- `/blog-admin` 挂到 [backstage/index.vue](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/layouts/backstage/index.vue)
+- `/blog-surfer` 挂到 [frontdesk/index.vue](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/layouts/frontdesk/index.vue)
+
+统一要求：
+
+- 页面属于哪个布局，必须由路由层决定
+- 不在页面内部再套一层“伪布局”
+
+### 2. 页面选择布局的判断规则
+
+如果页面属于以下类型，优先挂 `frontdesk`：
+
+- 内容阅读
+- 内容浏览
+- 内容检索
+- 展示型前台页面
+
+如果页面属于以下类型，优先挂 `backstage`：
+
+- 管理后台
+- 配置后台
+- 列表管理
+- 编辑表单
+- 系统运维页
+
+### 3. 空白页与特殊页
+
+当前两套布局都支持：
+
+- `blank`
+
+统一要求：
+
+- 登录页
+- 特殊全屏页
+- 不需要完整壳层的页面
+
+可使用空白布局模式，但仍应挂在统一布局体系下，而不是临时复制一份空白页面壳。
+
+---
+
+## 五、布局组件的职责边界
+
+### 1. `index.vue`
+
+主布局入口负责：
+
+- 组织 header、sider、tab、footer、theme-drawer
+- 提供 `RouterView`
+- 控制滚动容器
+- 读取 `appStore`、`themeStore`、`routeStore`
+- 处理移动端侧边栏折叠
+
+### 2. `header.vue`
+
+头部负责：
+
+- Logo
+- 顶部导航入口
+- 主题切换入口
+- 用户相关快捷入口
+- 面包屑或布局级导航信息
+
+不负责：
+
+- 页面业务按钮
+- 某个页面独有查询条件
+
+### 3. `menu.vue` / `sider.vue`
+
+菜单和侧边栏负责：
+
+- 展示菜单结构
+- 响应布局模式切换
+- 响应折叠状态
+
+不负责：
+
+- 业务数据请求
+- 页面内容渲染
+
+### 4. `tab-bar.vue`
+
+标签栏负责：
+
+- 多页签切换
+- 页面缓存关联
+
+不负责：
+
+- 页面业务状态
+
+### 5. `theme-drawer.vue`
+
+主题抽屉负责：
+
+- 布局级主题设置入口
+- 主题模式切换入口
+
+不负责：
+
+- 业务域页面自己的颜色逻辑
+
+---
+
+## 六、布局里允许放什么
+
+允许放入 `layouts` 的内容：
+
+- 全局导航
+- 全局壳层结构
+- 固定头部、固定页脚、固定标签栏
+- 布局级滚动容器
+- 布局级主题控制
+- 布局级响应式切换
+- 路由承载容器
+
+不允许放入 `layouts` 的内容：
+
+- 文章列表请求
+- 评论详情请求
+- 用户表单提交
+- 页面专属筛选逻辑
+- 模块级业务组件
+- 领域业务判断
+
+---
+
+## 七、页面怎么使用布局
+
+### 1. 页面不直接 import 布局作为业务容器
+
+不推荐页面这样做：
+
+```vue
+<template>
+  <BackstageLayout>
+    <ArticleList />
+  </BackstageLayout>
+</template>
+```
+
+统一要求：
+
+- 布局由路由统一挂载
+- 页面只实现自己的业务内容部分
+
+### 2. 页面只关心自己的内容区
+
+例如后台文章列表页应只关心：
+
+- 搜索区
+- 表格区
+- 操作区
+- 删除弹窗
+
+不关心：
+
+- header 高度
+- sider 宽度
+- menu 折叠逻辑
+- footer 是否固定
+
+### 3. 页面通过 props 使用布局能力
+
+当前布局已支持：
+
+- `showPadding`
+- `blank`
+
+后续统一要求：
+
+- 页面如果需要特殊布局能力，优先通过布局 props 或 route meta 扩展
+- 不在页面内部复制布局结构
+
+---
+
+## 八、布局与主题的关系
+
+### 1. 布局负责承接主题，不重新定义主题
+
+布局应做：
+
+- 使用 `themeStore`
+- 应用 header / sider / footer 的尺寸与 CSS 变量
+- 根据当前主题切换明暗模式和布局样式
+
+布局不应做：
+
+- 自己定义另一套主色规范
+- 为业务域重写整套背景和文字规则
+
+### 2. 布局使用基础主题优先
+
+统一要求：
+
+- header、sider、footer、tab 等壳层优先使用基础主题层
+- 业务域强调色只用于少量识别性区域
+
+### 3. 布局与主题 drawer 的边界
+
+- `theme-drawer` 负责主题设置入口
+- `themeStore` 负责主题状态
+- `layout/index.vue` 负责把主题状态应用到壳层
+
+---
+
+## 九、布局与响应式的关系
+
+### 1. 布局是响应式壳层切换的主入口
+
+当前布局已经承担：
+
+- 移动端侧边栏自动收起
+- PC 端保持常驻侧边栏
+- 根据 `appStore.isMobile` 切换壳层行为
+
+后续统一要求：
+
+- 布局级响应式优先在 `layouts` 收口
+- 页面只处理内容区自己的排版差异
+
+### 2. 布局负责“外层切换”，页面负责“内层重排”
+
+例如：
+
+- 布局负责侧边栏是否出现
+- 页面负责表格是否卡片化
+
+不要把这两类职责反过来。
+
+---
+
+## 十、未来新增 `MES` 怎么使用布局
+
+### 1. `mes-admin`
+
+推荐直接复用后台布局模式：
+
+- 路由挂到 `backstage/index.vue`
+- 复用 header / sider / tab / footer / theme-drawer
+
+只在以下方面做业务域差异：
+
+- 菜单数据
+- 页面内容
+- 业务域强调色
+
+### 2. `mes-terminal`
+
+如果未来存在车间终端或设备终端页面：
+
+- 先判断是否属于“管理型布局”
+- 如果不是，可在现有布局体系内扩展终端型布局
+- 但必须先证明前台/后台两套主布局都无法承载
+
+统一要求：
+
+- 新布局是最后手段，不是默认做法
+
+---
+
+## 十一、命名与组织规则
+
+### 1. 布局目录命名
+
+统一使用小写语义目录：
+
+- `frontdesk`
+- `backstage`
+
+### 2. 布局子组件命名
+
+统一使用小写 `kebab-case.vue` 文件名：
+
+- `tab-bar.vue`
+- `theme-drawer.vue`
+- `breadcrumb.vue`
+
+### 3. 布局入口命名
+
+布局根组件统一用：
+
+- `index.vue`
+
+但组件内部名称要清晰，例如：
+
+- `ModernIndex`
+- `AdminIndex`
+
+后续新增布局也应保持同样规则。
+
+---
+
+## 十二、禁止项
+
+以下做法不应继续出现在新代码中：
+
+- 页面内部复制 header / menu / footer
+- 为单个页面单独造一套长期布局壳
+- 在布局组件里写业务接口请求
+- 在布局组件里写页面专属表单逻辑
+- 页面直接依赖 sider 宽度、header 高度做大量硬编码
+- 遇到新业务域就默认新建第三套主布局
+
+---
+
+## 十三、落地检查清单
+
+每次新增页面、路由或布局调整前，先检查：
+
+1. 这个页面应该挂前台布局还是后台布局
+2. 这个需求是布局问题，还是页面内容问题
+3. 是否错误地准备在页面中复制 header / sider / footer
+4. 是否把业务逻辑写进了布局组件
+5. 是否可以通过现有布局 props、route meta、themeStore、appStore 解决
+6. 是否真的需要新增一套主布局
+
+---
+
+## 十四、最终结论
+
+- `layouts` 负责页面壳层，不负责具体业务页面内容
+- 全项目统一按“前台布局”和“后台布局”组织主布局，不按页面单独发明壳层
+- 页面必须通过路由挂在合适布局下运行，不在页面内部复制布局结构
+- 布局负责导航结构、滚动容器、主题联动和响应式壳层切换，不负责业务资源请求
+- `frontdesk` 用于内容消费场景，`backstage` 用于管理操作场景
+- 新增 `MES` 时优先复用现有后台布局模式，而不是直接新建第三套主布局

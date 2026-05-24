@@ -1,0 +1,693 @@
+# Mint 前端 Menu 规范
+
+## 目的
+
+本文档用于统一 `Mint.Blog.Vue/src/menu` 的职责、目录结构、菜单记录定义方式、与路由和 `store` 的协作关系，以及布局组件如何消费菜单数据，适用于当前已有的 `Blog`、`System`，以及未来扩展的 `MES` 等业务域前端模块。
+
+本规范只做一件事：
+
+- 让整个前端按照同一套菜单边界长期演进，而不是每个布局、每个业务模块各自发明一套菜单结构和定义方式。
+
+适用范围：
+
+- `Mint.Blog.Vue/src/menu`
+- `Mint.Blog.Vue/src/router`
+- `Mint.Blog.Vue/src/layouts`
+- `Mint.Blog.Vue/src/store/modules/admin/system/route`
+- `Mint.Blog.Vue/src/locales`
+
+参考来源：
+
+- [menu/index.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/menu/index.ts)
+- [menu/types.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/menu/types.ts)
+- [menu/validate.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/menu/validate.ts)
+- [menu/backstage/blog-admin.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/menu/backstage/blog-admin.ts)
+- [menu/backstage/system.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/menu/backstage/system.ts)
+- [menu/frontdesk/blog-surfer.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/menu/frontdesk/blog-surfer.ts)
+- [route/shared.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/store/modules/admin/system/route/shared.ts)
+- [route/index.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/store/modules/admin/system/route/index.ts)
+- [backstage/menu.vue](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/layouts/backstage/menu.vue)
+- [frontdesk/menu.vue](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/layouts/frontdesk/menu.vue)
+
+关联文档：
+
+- [system-frontend-router-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/system-frontend-router-reference.md)
+- [system-frontend-store-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/system-frontend-store-reference.md)
+- [system-frontend-layout-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/system-frontend-layout-reference.md)
+- [system-naming-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/system-naming-reference.md)
+
+推荐阅读顺序：
+
+1. 先看 [system-frontend-router-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/system-frontend-router-reference.md)，确定路由边界和路由名称
+2. 再看 [system-frontend-store-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/system-frontend-store-reference.md)，确定菜单与 `route store` 的关系
+3. 再看 [system-frontend-layout-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/system-frontend-layout-reference.md)，确定布局如何消费菜单
+4. 最后看本文，确定菜单记录如何定义、如何组织、如何与路由对齐
+
+---
+
+## 一、Menu 总决策
+
+后续 `Mint.Blog.Vue/src/menu` 统一按照以下结论执行：
+
+1. 菜单是“导航元数据层”，不是“接口数据层”，也不是“页面运行时状态”。
+2. 菜单记录按“布局视角 + 业务域”组织，不按零散页面单独定义，不把菜单和路由混在同一份文件。
+3. 菜单的职责是描述导航结构，包括层级、顺序、图标、权限、国际化键。
+4. 菜单不负责跳转逻辑，不负责页面数据，不负责主题样式计算。
+5. `route store` 读取菜单记录，结合路由信息生成要渲染的最终菜单数据。
+6. 布局组件只消费 `route store` 产出的菜单数据，不自行推断导航结构。
+7. 新增路由和新增菜单必须同步对齐，通过开发期校验保证一致性。
+8. 后续新增 `MES` 时，继续沿用同一套菜单分层方式，而不是重新发明新的菜单组织方法。
+
+这是本文档的最高原则。后续所有新建菜单记录、菜单文件、菜单与路由的对应关系，都必须服从这八条。
+
+---
+
+## 二、当前 Menu 结构
+
+当前 `src/menu` 目录结构：
+
+```text
+src/menu/
+  index.ts
+  types.ts
+  validate.ts
+  backstage/
+    blog-admin.ts
+    system.ts
+  frontdesk/
+    blog-surfer.ts
+```
+
+统一理解：
+
+- `index.ts` 负责聚合所有菜单记录并导出
+- `types.ts` 负责菜单类型定义
+- `validate.ts` 负责开发期校验菜单与路由的一致性
+- `backstage/` 负责后台布局下的所有菜单记录
+- `frontdesk/` 负责前台布局下的所有菜单记录
+
+这种组织方式是按“布局目录 + 业务模块文件”拆分，清晰且可扩展。
+
+---
+
+## 三、Menu 的职责边界
+
+### 1. `menu` 负责什么
+
+`menu` 负责：
+
+- 菜单记录的静态定义
+- 菜单层级结构
+- 菜单显示顺序
+- 菜单类型
+- 菜单图标
+- 菜单权限标识
+- 菜单国际化键
+- 菜单与路由名称的关联
+- 开发期菜单一致性校验
+
+### 2. `menu` 不负责什么
+
+`menu` 不负责：
+
+- 菜单树构建
+- 路由匹配
+- 菜单渲染
+- 菜单交互事件
+- 菜单高亮计算
+- 菜单折叠展开状态
+
+### 3. 菜单数据流
+
+完整数据流：
+
+```
+menu/*.ts (静态菜单记录)
+    → menu/index.ts (聚合)
+    → route store (构建菜单树 + 结合路由生成最终菜单)
+    → layout/menu.vue (消费并渲染)
+```
+
+统一要求：
+
+- 不跳过 `route store` 直接从 `src/menu` 拿菜单去渲染
+- 不在布局组件里做菜单树构建逻辑
+
+---
+
+## 四、菜单记录定义规则
+
+### 1. 菜单记录类型
+
+[types.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/menu/types.ts) 定义了核心类型：
+
+```ts
+type AppMenuType = 'folder' | 'route' | 'iframe' | 'external';
+
+type MenuPermission =
+  | 'Search' | 'Add' | 'Delete' | 'Update'
+  | 'Import' | 'Export' | 'Upload' | 'Audit';
+
+interface AppMenuRecord {
+  id: string;
+  parentId: string | null;
+  menuType: AppMenuType;
+  routerName?: RouteKey;
+  path: string;
+  tableName: string;
+  enabled: boolean;
+  menuI18nKey: App.I18n.I18nKey;
+  icon?: string;
+  order?: number;
+  permission?: MenuPermission[];
+}
+```
+
+统一要求：
+
+- 所有菜单记录必须遵循 `AppMenuRecord` 类型
+- 不使用自定义字段绕过类型约束
+- 当前已定义的 `AppMenuRecord` 字段组已经足以描述菜单，不要擅自扩展不必要字段
+
+### 2. 必填字段规则
+
+菜单记录中必须填写：
+
+- `id`：全局唯一，使用稳定语义名
+- `parentId`：父级菜单 `id`，顶级节点写 `null`
+- `menuType`：明确的菜单类型
+- `path`：有效的菜单路径
+- `tableName`：对应的数据库表名或业务标识，无对应表时写 `'.'`
+- `enabled`：是否启用
+- `menuI18nKey`：国际化键
+
+### 3. 可选字段规则
+
+- `routerName`：`route` 和 `iframe` 类型必须填写，指向对应路由的 `name`
+- `icon`：建议填写，无图标时可不填
+- `order`：建议填写，控制同级菜单的显示顺序
+- `permission`：需要按钮级权限控制的菜单建议填写
+
+### 4. `id` 命名规则
+
+统一要求：
+
+- 菜单 `id` 使用稳定的语义名，与 `routerName` 的命名保持一致
+- 后台菜单 `id` 示例：`blog_admin`、`blog_admin_home`、`blog_admin_article_list`
+- 系统菜单 `id` 示例：`admin_system`、`admin_system_user`、`admin_system_role`
+- 前台菜单 `id` 示例：`blog-surfer_home`、`blog-surfer_content`、`blog-surfer_dashboard`
+
+禁止：
+
+- 无意义的数字或乱码
+- `menu1`、`menu2` 这类序号化 `id`
+- 与其他菜单 `id` 重复
+
+### 5. `parentId` 与层级
+
+统一要求：
+
+- 顶级节点 `parentId` 写 `null`
+- 子节点 `parentId` 必须能找到已存在的父菜单 `id`
+- 菜单树层级建议不超过 3 层
+- 不要出现“自引用”或“循环引用”
+
+### 6. `order` 规则
+
+统一要求：
+
+- 同级菜单通过 `order` 字段控制显示顺序
+- 父级菜单组的 `order` 控制整个组在导航中的位置
+- 子节点 `order` 控制组内各项的排列
+
+示例：
+
+```ts
+{ id: 'blog_admin', parentId: null, order: 1 },  // 第一组
+{ id: 'blog_admin_home', parentId: 'blog_admin', order: 1 },  // 组内第一项
+{ id: 'blog_admin_article_list', parentId: 'blog_admin', order: 8 },  // 组内第八项
+```
+
+---
+
+## 五、菜单类型规则
+
+### 1. `folder`
+
+适用场景：
+
+- 菜单分组容器
+- 子菜单集合
+
+特点：
+
+- 不直接对应路由
+- 可以没有 `routerName`
+- 用于组织导航层级
+
+示例：
+
+```ts
+{
+  id: 'blog_admin',
+  parentId: null,
+  menuType: 'folder',
+  path: '/blog-admin/blog',
+  tableName: '.',
+  enabled: true,
+  menuI18nKey: 'route.admin_blog',
+  icon: 'mdi:book-open-page-variant-outline',
+  order: 1
+}
+```
+
+### 2. `route`
+
+适用场景：
+
+- 直接对应路由的菜单项
+- 点击后跳转到指定页面
+
+特点：
+
+- 必须有 `routerName`
+- `path` 与对应路由的路径一致
+
+示例：
+
+```ts
+{
+  id: 'blog_admin_article_list',
+  parentId: 'blog_admin',
+  menuType: 'route',
+  routerName: 'blog-admin_article-list',
+  path: '/blog-admin/article/list',
+  tableName: 'blog-admin_article-list',
+  enabled: true,
+  menuI18nKey: 'route.blog-admin_article-list',
+  icon: 'mdi:file-document-edit-outline',
+  order: 8,
+  permission: queryPermission
+}
+```
+
+### 3. `iframe`
+
+适用场景：
+
+- 内嵌外部页面的菜单项
+- 文档、帮助页等
+
+特点：
+
+- 必须有 `routerName`
+- 内嵌页 URL 由路由层的 props 管理
+
+示例：
+
+```ts
+{
+  id: 'blog_admin_document_project',
+  parentId: 'blog_admin_document',
+  menuType: 'iframe',
+  routerName: 'document_project',
+  path: '/blog-admin/document/project',
+  tableName: 'admin_document_project',
+  enabled: true,
+  menuI18nKey: 'route.document_project',
+  icon: 'mdi:file-link-outline',
+  order: 1,
+  permission: queryPermission
+}
+```
+
+### 4. `external`
+
+适用场景：
+
+- 外链菜单项，点击后在新窗口打开外部链接
+
+特点：
+
+- `path` 是完整的 URL
+- 点击后由 `window.open` 处理
+
+示例：
+
+```ts
+{
+  id: 'blog_admin_document_project_link',
+  parentId: 'blog_admin_document',
+  menuType: 'external',
+  routerName: 'document_project-link',
+  path: 'https://www.yangmufa.cn',
+  tableName: 'admin_document_project_link',
+  enabled: true,
+  menuI18nKey: 'route.document_project-link',
+  icon: 'mdi:open-in-new',
+  order: 2,
+  permission: queryPermission
+}
+```
+
+---
+
+## 六、菜单组织规则
+
+### 1. 按布局目录组织
+
+统一要求：
+
+- 后台布局中的菜单记录放 `backstage/` 目录
+- 前台布局中的菜单记录放 `frontdesk/` 目录
+
+原因：
+
+- 前台和后台的导航结构通常完全不同
+- 分开管理避免同一份菜单文件同时承载两套导航逻辑
+
+### 2. 按业务域拆分文件
+
+统一要求：
+
+- 后台 `blog` 菜单放 `backstage/blog-admin.ts`
+- 后台 `system` 菜单放 `backstage/system.ts`
+- 前台 `blog` 菜单放 `frontdesk/blog-surfer.ts`
+
+原因：
+
+- 不同业务域的菜单通常由不同模块维护
+- 拆分后每个文件职责单一
+
+### 3. 菜单聚合
+
+[menu/index.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/menu/index.ts) 负责聚合并导出最终菜单选项：
+
+```ts
+export const adminMenuOptions = [...adminSystemMenus, ...adminBlogMenus]
+  .sort((a, b) => (a.order || 0) - (b.order || 0));
+export const surferMenuOptions = [...surferMenus];
+export const menuOptions = [...adminMenuOptions, ...surferMenuOptions];
+```
+
+统一要求：
+
+- 聚合逻辑集中在 `index.ts`
+- 不跳过分层，直接从 `index.ts` 导出所有外部需要的菜单集合
+- 聚合时对顶级菜单做排序保证组间顺序
+
+### 4. 新增 `MES` 的菜单组织
+
+后续新增 `MES` 菜单时，按以下规则组织：
+
+```text
+src/menu/
+  backstage/
+    blog-admin.ts
+    system.ts
+    mes-admin.ts          // 新增
+  frontdesk/
+    blog-surfer.ts
+    mes-terminal.ts       // 新增
+```
+
+`MES` 菜单的 `parentId` 使用 `mes_admin` 或 `mes_terminal` 作为根分组 `id`，不混入 `blog_admin` 或 `admin_system` 的层级。
+
+---
+
+## 七、菜单权限规则
+
+### 1. 权限类型
+
+当前菜单支持的标准操作权限：
+
+```ts
+type MenuPermission =
+  | 'Search'   // 查询
+  | 'Add'      // 新增
+  | 'Delete'   // 删除
+  | 'Update'   // 修改
+  | 'Import'   // 导入
+  | 'Export'   // 导出
+  | 'Upload'   // 上传
+  | 'Audit';   // 审核
+```
+
+### 2. 权限使用规则
+
+统一要求：
+
+- 需要权限控制的菜单设置 `permission` 字段
+- 不需要权限控制的不设置，保持 `undefined`
+- 不建议给 `folder` 类型节点设置权限
+
+典型用法：
+
+```ts
+const queryPermission: MenuPermission[] = ['Search'];
+
+// 仅查询
+{ ..., permission: queryPermission }
+
+// 增删改查
+{ ..., permission: ['Search', 'Add', 'Delete', 'Update'] }
+```
+
+### 3. 权限判断职责
+
+统一要求：
+
+- 权限判断逻辑由 `route store` 的 `filterAuthRoutesByRoles` 统一处理
+- 菜单组件不自行做权限过滤
+- 页面上按钮级权限控制在页面组件中处理，不在菜单层
+
+---
+
+## 八、菜单与路由的关系
+
+### 1. 菜单与路由是一一对应的
+
+统一要求：
+
+- 一个展示在导航中的菜单，必须有一个对应的路由
+- 一个路由不强制对应一个菜单（如详情页、编辑页可设为 `hideInMenu: true`）
+- 菜单中的 `routerName` 必须与路由中的 `name` 严格一致
+- 菜单中的 `path` 必须与路由中的 `path` 保持一致
+
+### 2. 菜单不替代路由
+
+统一要求：
+
+- 路由负责页面映射和导航守卫
+- 菜单负责导航结构描述
+- 不要把路由定义逻辑写到菜单文件里
+- 不要把菜单记录写到路由文件里
+
+### 3. 一致性校验
+
+[validate.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/menu/validate.ts) 在开发环境下自动校验：
+
+- 菜单的 `menuI18nKey` 是否在 locale 文件中都有对应翻译
+- 路由中所有未设置 `hideInMenu` 的页面是否都有对应菜单记录
+- 设置了 `activeMenu` 的路由，其回指菜单键是否在菜单中存在
+
+统一要求：
+
+- 新增路由和新增菜单后必须通过开发期校验
+- 不人为关闭校验
+- 校验报错视为需要处理的开发问题
+
+### 4. `activeMenu` 规则
+
+适用场景：
+
+- 详情页高亮列表菜单
+- 编辑页高亮所属资源菜单
+
+统一要求：
+
+- 详情页、编辑页等间接页面，通过路由 `meta.activeMenu` 指向其归属菜单项的 `routerName`
+- `activeMenu` 指向的菜单键必须能在菜单记录中找到
+
+示例：
+
+```ts
+// 路由定义
+{
+  path: 'articles/:id',
+  name: 'blog-surfer_article_detail',
+  meta: {
+    hideInMenu: true,
+    activeMenu: 'blog-surfer_dashboard'  // 高亮 dashboard 菜单
+  }
+}
+```
+
+---
+
+## 九、菜单与 Store 的关系
+
+### 1. `route store` 负责菜单构建
+
+[route/shared.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/store/modules/admin/system/route/shared.ts) 提供了关键函数：
+
+- `buildMenuTreeByRecords`：将平铺的菜单记录构建为树结构
+- `buildMenusByMenuTree`：结合路由信息和国际化生成最终菜单数据
+
+`route store` 统一调用这些函数产出 `routeStore.menus`。
+
+### 2. 菜单组件只消费
+
+布局中的菜单组件直接使用 `routeStore.menus`，不自行处理：
+
+- 树构建
+- 权限过滤
+- 图标解析
+- 标题国际化
+
+### 3. 菜单切换
+
+`route store` 的 `initStaticMenuRecords` 负责根据当前路径判断加载后台菜单还是前台菜单：
+
+```ts
+function initStaticMenuRecords(path = router.currentRoute.value.path) {
+  const module = getMenuModuleByPath(path);
+  currentMenuModule.value = module;
+  menuRecords.value = module === 'admin' ? adminMenuOptions : surferMenuOptions;
+  return true;
+}
+```
+
+统一要求：
+
+- 菜单切换逻辑集中在 `route store`
+- 不把后台菜单挂到前台布局，反之亦然
+- 后台管理和前台展示的菜单天然隔离
+
+---
+
+## 十、菜单与布局的关系
+
+### 1. 布局组件消费菜单
+
+[backstage/menu.vue](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/layouts/backstage/menu.vue) 和 [frontdesk/menu.vue](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/layouts/frontdesk/menu.vue) 统一：
+
+- 从 `useRouteStore()` 获取 `routeStore.menus`
+- 根据主题配置切换水平/垂直/混合布局模式
+- 处理菜单展开、折叠、选中状态
+
+统一要求：
+
+- 菜单组件不做菜单数据构建
+- 菜单组件不做菜单权限过滤
+- 菜单组件只负责布局模式切换和渲染
+
+### 2. 不同布局有自己的菜单入口
+
+后台布局使用 `adminMenuOptions`：
+
+- 从 `backstage/blog-admin.ts` 和 `backstage/system.ts` 聚合
+
+前台布局使用 `surferMenuOptions`：
+
+- 从 `frontdesk/blog-surfer.ts` 聚合
+
+统一要求：
+
+- 业务域新增菜单时，首先判断属于后台还是前台，放入对应布局目录
+- 不把后台菜单放在前台目录，反之亦然
+
+---
+
+## 十一、菜单国际化规则
+
+### 1. 所有菜单必须有 `menuI18nKey`
+
+统一要求：
+
+- 每一个菜单记录都必须设置 `menuI18nKey`
+- `menuI18nKey` 的值必须在 Locale 文件中存在对应翻译
+
+### 2. `menuI18nKey` 命名
+
+统一要求：
+
+- 与路由的 `i18nKey` 保持一致，使用相同的前缀体系
+- 示例：`route.blog-admin_home`、`route.system_user`、`route.blog-surfer_dashboard`
+
+### 3. 开发期校验
+
+[validate.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/menu/validate.ts) 在开发环境自动检查所有 `menuI18nKey` 是否在 locale 文件中存在对应翻译。
+
+---
+
+## 十二、菜单校验规则
+
+### 1. 校验时机
+
+[validate.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/menu/validate.ts) 只在开发环境执行校验。
+
+### 2. 校验内容
+
+当前校验覆盖：
+
+- `menuI18nKey` 是否在所有 locale 文件中都存在翻译
+- 所有未设置 `hideInMenu` 的路由是否都有对应菜单记录
+- 设置了 `activeMenu` 的路由，其回指键是否在菜单中可找到
+
+### 3. 校验要求
+
+统一要求：
+
+- 新增路由或新增菜单后，必须保证开发期校验通过
+- 校验未通过的不应直接提交
+- 不人为关闭校验逻辑
+
+---
+
+## 十三、禁止项
+
+1. 禁止直接在路由文件中定义菜单结构
+2. 禁止直接在菜单文件中定义路由
+3. 禁止在布局组件中手写菜单列表
+4. 禁止不在 `menu/index.ts` 中聚合而直接从子文件导出菜单到外部
+5. 禁止 `routerName` 指向不存在的路由名
+6. 禁止 `menuI18nKey` 没有对应翻译
+7. 禁止菜单 `id` 重复
+8. 禁止 `parentId` 找不到对应父菜单
+9. 禁止菜单层级超过 3 层
+10. 禁止把后台菜单放入前台菜单集合，反之亦然
+11. 禁止在页面中自己拼菜单渲染结构
+12. 禁止不经 `route store` 而直接从 `src/menu` 拿数据渲染
+
+---
+
+## 十四、落地检查清单
+
+每次新增/修改菜单或路由时，请按以下清单逐项检查：
+
+- [ ] 新建页面有没有对应路由
+- [ ] 需要出现在导航中的页面有没有对应菜单记录
+- [ ] 不需要出现在导航中的页面有没有设置 `hideInMenu`
+- [ ] 菜单 `routerName` 与路由 `name` 是否完全一致
+- [ ] 菜单 `menuI18nKey` 在所有 locale 文件中是否都有翻译
+- [ ] 菜单 `id` 是否全局唯一
+- [ ] 菜单 `parentId` 是否为 `null` 或者指向已存在的菜单 `id`
+- [ ] 菜单层级是否未超过 3 层
+- [ ] 菜单文件是否放在了正确的布局目录下
+- [ ] 新菜单是否已在对应的 `index.ts` 导出并在 `menu/index.ts` 中聚合
+- [ ] 如果新菜单属于间接页面，是否已设置 `activeMenu`
+- [ ] 开发期校验是否通过
+
+---
+
+## 十五、最终结论
+
+1. `src/menu` 是导航元数据层，按布局和业务域组织菜单记录。
+2. 菜单只描述导航结构，不负责跳转、数据、主题、渲染。
+3. 菜单通过 `route store` 结合路由信息生成最终菜单数据。
+4. 布局组件只消费 `route store` 产出的菜单，不做数据构建。
+5. 每个菜单必须有 `menuI18nKey`，并在 locale 中有翻译。
+6. 新增路由和新增菜单必须同步对齐，通过开发期校验保证一致性。
+7. 后台菜单和前台菜单天然隔离，不混用。
+8. 后续新增 `MES` 菜单，直接在对应布局目录下新增菜单文件，沿用同一套规则。

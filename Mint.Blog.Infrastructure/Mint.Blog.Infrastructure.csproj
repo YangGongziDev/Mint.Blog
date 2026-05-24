@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <ProjectReference Include="..\Mint.Blog.Application\Mint.Blog.Application.csproj"/>
+        <ProjectReference Include="..\Mint.Blog.Domain\Mint.Blog.Domain.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+        <PackageReference Include="Minio" Version="6.0.5"/>
+        <PackageReference Include="Npgsql" Version="9.0.4"/>
+        <PackageReference Include="SqlSugarCore" Version="5.1.4.184"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Resources\word\sensi_words.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+</Project>

@@ -1,0 +1,6 @@
+@Mint.Blog.WebApi_HostAddress = http://localhost:5149
+
+GET {{Mint.Blog.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

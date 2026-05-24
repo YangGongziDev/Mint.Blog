@@ -1,0 +1,96 @@
+{
+  "name": "Mint.Blog",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "A concise and elegant blog template, based on Vue3,Vite8,TypeScript6,AntDesign4 and TailwindCSS4.",
+  "author": {
+    "name": "程序员·杨工子",
+    "email": "yangmufa@163.com",
+    "url": "https://github.com/YangMufa"
+  },
+  "license": "MIT",
+  "homepage": "https://www.yangmufa.cn",
+  "repository": {
+    "url": "https://github.com/YangMufa/Mint.Blog.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YangMufa/Mint.Blog/issues"
+  },
+  "keywords": [
+    "Mint.Blog",
+    "Vite8",
+    "TypeScript6",
+    "ant-design-vue v4",
+    "Tailwind CSS4"
+  ],
+  "engines": {
+    "node": ">=24.14.0",
+    "pnpm": ">=10.30.3"
+  },
+  "scripts": {
+    "build": "vite build",
+    "build:prod": "vite build --mode production",
+    "dev": "vite",
+    "lint": "eslint . --fix",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit --skipLibCheck --ignoreDeprecations 6.0"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "@better-scroll/core": "2.5.1",
+    "@iconify/vue": "5.0.0",
+    "@simonwep/pickr": "1.9.1",
+    "@vueuse/core": "14.2.1",
+    "ant-design-vue": "4.2.6",
+    "axios": "1.14.0",
+    "clipboard": "2.0.11",
+    "colord": "2.9.3",
+    "crypto-js": "4.2.0",
+    "dayjs": "1.11.20",
+    "defu": "6.1.6",
+    "echarts": "6.0.0",
+    "highlight.js": "^11.11.1",
+    "json5": "2.2.3",
+    "klona": "^2.0.6",
+    "localforage": "1.10.0",
+    "md-editor-v3": "^6.5.0",
+    "nanoid": "5.1.7",
+    "nprogress": "0.2.0",
+    "pinia": "3.0.4",
+    "simplebar-vue": "2.4.2",
+    "tailwind-merge": "3.5.0",
+    "vue": "3.5.32",
+    "vue-draggable-plus": "0.6.1",
+    "vue-i18n": "11.3.0",
+    "vue-router": "5.0.4"
+  },
+  "devDependencies": {
+    "@iconify/json": "2.2.458",
+    "@soybeanjs/eslint-config": "1.7.5",
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/crypto-js": "4.2.2",
+    "@types/node": "25.5.0",
+    "@types/nprogress": "0.2.3",
+    "@vitejs/plugin-vue": "6.0.5",
+    "@vitejs/plugin-vue-jsx": "5.1.5",
+    "eslint": "10.1.0",
+    "eslint-plugin-vue": "10.8.0",
+    "fast-glob": "^3.3.3",
+    "lint-staged": "16.4.0",
+    "sass": "1.99.0",
+    "tailwindcss": "^4.2.2",
+    "tsx": "4.21.0",
+    "typescript": "6.0.2",
+    "unplugin-icons": "23.0.1",
+    "unplugin-vue-components": "32.0.0",
+    "vite": "8.0.9",
+    "vite-plugin-progress": "0.0.7",
+    "vite-plugin-svg-icons": "2.0.1",
+    "vite-plugin-vue-devtools": "8.1.1",
+    "vue-eslint-parser": "10.4.0",
+    "vue-tsc": "3.2.6"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  }
+}

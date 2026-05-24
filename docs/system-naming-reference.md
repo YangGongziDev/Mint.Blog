@@ -1,0 +1,751 @@
+# Mint 前后端统一命名规范
+
+## 目的
+
+本文档用于统一 `Mint` 项目前端与后端的命名规则，覆盖文件夹、文件、类、方法、变量、DTO、Command、Query、Vue 组件等常见命名场景。
+
+本规范只做一件事：
+
+- 让整个项目按照同一套命名语言长期演进，而不是每个模块、每个开发阶段各自起名。
+
+适用范围：
+
+- `Mint.Blog.Domain`
+- `Mint.Blog.Application`
+- `Mint.Blog.Infrastructure`
+- `Mint.Blog.WebApi`
+- `Mint.Blog.Vue/src`
+- `docs`
+
+参考来源：
+
+- [ddd-code-structure-reference.md](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/docs/ddd-code-structure-reference.md)
+- [Article.cs](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Domain/Blog/Article/Entities/Article.cs)
+- [ArticleController.cs](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.WebApi/Controllers/Blog/Admin/ArticleController.cs)
+- [home.vue](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/views/blog-surfer/home.vue)
+- [useTheme.ts](file:///Users/yangmufa/UserDevelopment/CSharp/Mint.Blog/Mint.Blog.Vue/src/composables/useTheme.ts)
+
+---
+
+## 一、命名总决策
+
+后续前后端命名统一按照以下结论执行：
+
+1. 命名优先表达业务语义和职责，不优先追求缩写、简写和“写起来快”。
+2. 目录名、文件名、类型名、方法名必须和所在层职责一致，不能用模糊词掩盖职责不清。
+3. 后端统一采用 `C# / .NET` 主流命名风格，前端统一采用 `Vue + TypeScript` 当前项目风格。
+4. 核心业务概念在前后端尽量保持同一语义，例如 `Article`、`Comment`、`User` 不要到前端变成另一套名称。
+5. `Admin`、`Surfer`、未来 `Terminal` 等入口词只用于入口层，不污染核心业务命名。
+6. 一个文件只承载一个主要概念，文件名优先和主要导出类型或主要职责一致。
+7. 不允许使用 `Helper`、`Manager`、`CommonService`、`Temp`、`New` 这类模糊命名作为长期代码命名。
+
+这是本文档的最高原则。后续所有新建目录、文件和代码符号，都必须服从这七条。
+
+---
+
+## 二、统一语义规则
+
+### 1. 先用完整业务词，不随意缩写
+
+推荐：
+
+- `Article`
+- `Category`
+- `Statistics`
+- `PasswordHash`
+- `GetArticleDetailQuery`
+
+不推荐：
+
+- `Art`
+- `Cate`
+- `Stats`
+- `PwdHash`
+- `GetArtDtlQuery`
+
+### 2. 一个概念只保留一个主命名
+
+例如：
+
+- 后端用 `Article`，前端也优先用 `article`
+- 后端用 `UserName`，不要前端又写成 `accountName`
+- 后端用 `Comment`，不要别处再写成 `messageComment` 或 `commentInfo`
+
+### 3. 优先名词化类型，动词化方法
+
+推荐：
+
+- 类型：`ArticleController`、`CommentDto`、`EmailAddress`
+- 方法：`CreateArticle()`、`IncreaseReadCount()`、`toggleDark()`
+
+不推荐：
+
+- 类型：`CreateArticle`、`HandleUser`
+- 方法：`article()`、`commentData()`
+
+---
+
+## 三、文件夹命名规则
+
+### 1. 后端文件夹
+
+后端目录统一使用 `PascalCase`：
+
+- `Blog`
+- `System`
+- `MES`
+- `Article`
+- `Comment`
+- `ValueObjects`
+- `Repositories`
+- `Controllers`
+- `Commands`
+- `Queries`
+- `Dtos`
+
+规则：
+
+- 业务域目录使用 `PascalCase`
+- 业务模块目录使用 `PascalCase`
+- 分层子目录使用 `PascalCase`
+- 不使用复数角色目录，如 `Admins`、`Surfers`
+
+### 2. 前端文件夹
+
+前端目录统一使用小写语义目录，优先 `kebab-case` 或单词小写：
+
+- `blog`
+- `system`
+- `mes`
+- `blog-surfer`
+- `blog-admin`
+- `sidebar-right`
+- `store`
+- `router`
+- `service`
+- `composables`
+
+规则：
+
+- 单词目录使用小写：`blog`、`system`
+- 多词目录使用 `kebab-case`：`blog-surfer`、`sidebar-right`
+- 不使用 `PascalCase` 目录：`BlogSurfer`、`ArticleDetail`
+- 不使用中文目录作为正式业务代码目录
+
+### 3. docs 文件夹
+
+文档目录统一使用小写 `kebab-case` 文件名：
+
+- `ddd-code-structure-reference.md`
+- `system-frontend-theme-color-reference.md`
+- `system-frontend-responsive-reference.md`
+- `system-naming-reference.md`
+
+---
+
+## 四、文件命名规则
+
+### 1. 后端文件
+
+后端文件统一使用 `PascalCase`，并与主要类型名一致。
+
+推荐：
+
+- `Article.cs`
+- `ArticleController.cs`
+- `CreateArticleCommand.cs`
+- `CreateArticleCommandHandler.cs`
+- `GetArticleDetailQuery.cs`
+- `ArticleDetailDto.cs`
+- `IArticleRepository.cs`
+- `ArticleCreatedDomainEvent.cs`
+
+规则：
+
+- 一个文件优先只放一个主要类型
+- 文件名和主要类型名必须一致
+- `interface` 文件以 `I` 开头
+- `enum`、`record`、`class`、`struct` 文件都遵循同样规则
+
+### 2. 前端文件
+
+前端文件按类别分规则。
+
+#### Vue 组件文件
+
+统一使用 `kebab-case.vue`：
+
+- `home.vue`
+- `article-detail.vue`
+- `sidebar-right.vue`
+- `theme-schema-switch.vue`
+
+#### 普通业务文件
+
+统一使用小写语义文件名，优先 `kebab-case` 或单词小写：
+
+- `article.ts`
+- `comment.ts`
+- `business.ts`
+- `blog-admin.ts`
+- `zh-cn.ts`
+
+#### Composable 文件
+
+统一使用 `useXxx.ts`：
+
+- `useTheme.ts`
+- `useArticleFilter.ts`
+- `useCommentEditor.ts`
+
+#### 类型或共享文件
+
+统一使用语义名：
+
+- `types.ts`
+- `shared.ts`
+- `index.ts`
+
+规则：
+
+- 不使用 `ArticleDetail.vue` 这类 `PascalCase` 组件文件名
+- 不使用 `temp.ts`、`new.ts`、`test1.ts` 这类无语义文件名
+- `index.ts` 只用于模块出口或目录聚合，不滥用为所有文件默认名字
+
+---
+
+## 五、后端类型命名规则
+
+### 1. 领域层类型
+
+统一使用 `PascalCase` 名词命名：
+
+- 实体：`Article`、`Comment`、`User`
+- 值对象：`ArticleTitle`、`EmailAddress`、`PasswordHash`
+- 聚合根：`Article`、`Wiki`
+- 领域事件：`ArticleCreatedDomainEvent`
+- 仓储接口：`IArticleRepository`
+
+规则：
+
+- 值对象命名要体现业务含义，不使用 `StringValue`、`CommonValue`
+- 领域事件统一以 `DomainEvent` 结尾
+- 仓储接口统一以 `Repository` 结尾
+
+### 2. 应用层类型
+
+统一使用用例导向命名：
+
+- `CreateArticleCommand`
+- `UpdateArticleCommand`
+- `GetArticleDetailQuery`
+- `GetAdminCommentPageListQuery`
+- `CreateArticleCommandHandler`
+- `ArticleDetailDto`
+
+规则：
+
+- 写入类用 `Command`
+- 查询类用 `Query`
+- 处理类用 `Handler`
+- 数据传输模型用 `Dto`
+- 结果页模型可用 `PagedResult<T>` 这类通用命名
+
+### 3. WebApi 类型
+
+统一使用 HTTP 适配命名：
+
+- `ArticleController`
+- `AuthController`
+- `UploadImageRequest`
+- `UploadResult`
+
+规则：
+
+- 控制器统一以 `Controller` 结尾
+- 请求模型统一以 `Request` 结尾
+- 返回模型统一以 `Response` 或明确语义名结尾
+
+### 4. Infrastructure 类型
+
+统一使用技术职责命名：
+
+- `ArticleRepository`
+- `SqlSugarDbContext`
+- `ServiceCollectionExtensions`
+- `ApplicationBuilderExtensions`
+
+规则：
+
+- 仓储实现与仓储接口同业务词根
+- 基础设施类型名必须能看出依赖的技术或职责
+
+---
+
+## 六、前端类型与组件命名规则
+
+### 1. Vue 组件名
+
+组件文件用 `kebab-case`，组件内部名称用 `PascalCase`。
+
+例如：
+
+- 文件：`sidebar-right.vue`
+- `defineOptions({ name: 'BlogSurferSidebarRight' })`
+
+推荐：
+
+- `BlogSurferHome`
+- `BlogAdminArticleEditor`
+- `SystemThemeSchemaSwitch`
+
+不推荐：
+
+- `Home`
+- `Index`
+- `ComponentA`
+
+### 2. Composable 命名
+
+统一以 `use` 开头，后接 `PascalCase`：
+
+- `useTheme`
+- `useArticleFilter`
+- `useUserProfile`
+
+文件名与导出函数名保持一致：
+
+- 文件：`useTheme.ts`
+- 导出：`useTheme()`
+
+### 3. Store 命名
+
+目录按业务域和模块划分，目录名使用小写语义名：
+
+- `store/modules/admin/system/auth`
+- `store/modules/surfer/blog/content`
+
+导出函数或 store 标识采用 `camelCase` 或 `PascalCase` 约定风格，但保持模块内一致。
+
+推荐：
+
+- `useAppStore()`
+- `useThemeStore()`
+- `useTabStore()`
+
+### 4. Service 命名
+
+前端接口文件按资源命名：
+
+- `article.ts`
+- `comment.ts`
+- `user.ts`
+- `auth.ts`
+
+方法名按动作命名：
+
+- `getArticlePageList`
+- `getArticleDetail`
+- `createArticle`
+- `updateArticle`
+- `deleteArticle`
+
+不推荐：
+
+- `articleListApi`
+- `doCreate`
+- `fetchData`
+
+---
+
+## 七、方法命名规则
+
+### 1. 后端方法
+
+后端方法统一使用 `PascalCase`，方法名用动词或动宾结构。
+
+推荐：
+
+- `Create()`
+- `Update()`
+- `Delete()`
+- `SetTop()`
+- `IncreaseReadCount()`
+- `HandleAsync()`
+
+规则：
+
+- 异步方法建议以 `Async` 结尾，除非项目已有明确统一例外
+- 聚合方法优先表达业务动作，而不是技术动作
+- 不使用 `Do()`, `Handle()`, `Process()` 这类缺少上下文的方法名作为通用命名
+
+### 2. 前端方法
+
+前端方法统一使用 `camelCase`，用动词或动宾结构。
+
+推荐：
+
+- `pickSwiperImage`
+- `toggleDark`
+- `loadArticleList`
+- `handleSubmit`
+- `resetForm`
+
+规则：
+
+- 事件处理函数可用 `handleXxx`
+- 计算和读取函数可用 `getXxx`
+- 布尔判断函数可用 `isXxx`、`hasXxx`、`canXxx`
+
+---
+
+## 八、类、接口、枚举、常量规则
+
+### 1. 类
+
+类统一使用 `PascalCase`：
+
+- `Article`
+- `MenuTreeDto`
+- `BusinessException`
+
+### 2. 接口
+
+后端接口统一使用 `I` 前缀加 `PascalCase`：
+
+- `IArticleRepository`
+- `IUnitOfWork`
+- `IPasswordHasher`
+
+前端一般不强制使用 `I` 前缀，类型优先语义名：
+
+- `ArticleDetail`
+- `ThemeTokens`
+- `RouteMetaConfig`
+
+### 3. 枚举
+
+枚举类型与枚举成员统一使用 `PascalCase`：
+
+- `ThemeMode`
+- `DeleteType`
+- `SoftDelete`
+- `PermanentDelete`
+
+### 4. 常量
+
+后端常量：
+
+- 类型名使用 `PascalCase`
+- 常量字段使用 `PascalCase`
+
+例如：
+
+- `ErrorCodes.ArticleNotFound`
+
+前端常量：
+
+- 普通常量使用 `camelCase`
+- 真正常量可使用 `UPPER_SNAKE_CASE`
+
+例如：
+
+- `defaultPageSize`
+- `MAX_UPLOAD_SIZE`
+
+规则：
+
+- 是否使用全大写，按“是否为跨文件固定常量”判断
+- 不要把所有常量都写成全大写
+
+---
+
+## 九、变量与字段命名规则
+
+### 1. 后端变量
+
+局部变量和参数统一使用 `camelCase`：
+
+- `article`
+- `categoryId`
+- `cancellationToken`
+
+私有字段统一使用 `_camelCase`：
+
+- `_tagIds`
+- `_emailSender`
+
+布尔变量统一使用可判断语义：
+
+- `isTop`
+- `isDeleted`
+- `hasPermission`
+
+### 2. 前端变量
+
+变量统一使用 `camelCase`：
+
+- `articles`
+- `current`
+- `pageSize`
+- `isDark`
+- `darkSwitch`
+
+布尔变量统一使用：
+
+- `isXxx`
+- `hasXxx`
+- `canXxx`
+- `shouldXxx`
+
+数组变量优先用复数名词：
+
+- `articles`
+- `tags`
+- `children`
+
+---
+
+## 十、禁止命名
+
+以下命名不应作为正式业务代码长期保留：
+
+- `Helper`
+- `Manager`
+- `Util` 或 `Utils` 作为业务核心类型名
+- `CommonService`
+- `BaseManager`
+- `Temp`
+- `NewArticle`
+- `Article2`
+- `test`
+- `demo`
+
+这些命名通常意味着：
+
+- 职责不清
+- 边界不清
+- 暂存代码未收口
+- 重构过程中没有完成语义命名
+
+---
+
+## 十一、前后端对齐规则
+
+后续前后端命名尽量保持同一语义：
+
+- 后端 `ArticleController` 对应前端 `article.ts`
+- 后端 `Comment` 对应前端 `comment`
+- 后端 `User` 对应前端 `user`
+- 后端 `GetArticleDetailQuery` 对应前端 `getArticleDetail`
+
+统一要求：
+
+- 同一资源优先保持同一英文词根
+- 不同端只是语法风格不同，不改变核心业务词
+- 入口差异体现在目录层级，不体现在核心业务词被替换
+
+---
+
+## 十二、落地检查清单
+
+每次新建目录、文件或类型前，先检查：
+
+1. 这个命名是否准确表达了业务语义和职责
+2. 这个命名是否符合当前层的命名风格
+3. 文件名是否和主要类型或主要职责一致
+4. 是否错误地用了缩写、简写或模糊词
+5. 是否错误地把 `Admin`、`Surfer` 放进了核心业务类型名
+6. 是否使用了 `Helper`、`Manager`、`Temp` 等模糊命名
+7. 前后端是否对同一业务概念使用了不同词根
+
+---
+
+## 十三、最终结论
+
+- 命名优先表达业务语义和职责，不优先追求缩写和省事
+- 后端目录、文件、类型统一走 `PascalCase`
+- 前端目录和普通文件统一走小写语义名，优先 `kebab-case`，Composable 使用 `useXxx.ts`
+- 后端方法统一用 `PascalCase`，前端方法统一用 `camelCase`
+- `Admin`、`Surfer` 等入口词只用于入口层，不污染核心业务命名
+- 文件名优先和主要类型或主要职责一致，一个文件只承载一个主要概念
+- 前后端对同一业务概念尽量保持同一英文词根，减少语义漂移
+
+---
+
+## 十四、命名 20 条铁律
+
+本节作为日常开发时的快速执行清单，内容与本文保持一致，但表达更短、更适合直接对照检查。
+
+### 一、总原则
+
+#### 1. 先表达业务语义，再考虑写起来快
+
+- 用完整业务词，不为了省几个字母随意缩写。
+- 推荐：`Article`、`Category`、`PasswordHash`
+- 不推荐：`Art`、`Cate`、`PwdHash`
+
+#### 2. 一个概念只保留一个主命名
+
+- 后端叫 `Article`，前端也优先叫 `article`
+- 后端叫 `Comment`，前端也优先叫 `comment`
+- 不要同一个概念出现多套词根
+
+#### 3. 类型用名词，方法用动词
+
+- 类型：`ArticleController`、`CommentDto`、`EmailAddress`
+- 方法：`CreateArticle()`、`IncreaseReadCount()`、`toggleDark()`
+
+#### 4. 名字必须匹配所在层职责
+
+- `Controller` 就做 HTTP 适配
+- `Command` / `Query` 就表达应用层用例
+- `Repository` 就表达仓储职责
+- 不要用命名掩盖职责混乱
+
+### 二、目录与文件
+
+#### 5. 后端目录统一使用 `PascalCase`
+
+- 推荐：`Blog`、`System`、`Article`、`Comment`、`ValueObjects`
+- 不推荐：`blog`、`article-detail`、`surfers`
+
+#### 6. 前端目录统一使用小写语义名
+
+- 单词目录用小写：`blog`、`system`、`service`
+- 多词目录用 `kebab-case`：`blog-surfer`、`sidebar-right`
+
+#### 7. 文档文件统一使用小写 `kebab-case`
+
+- 推荐：`system-frontend-theme-color-reference.md`
+- 推荐：`system-naming-reference.md`
+
+#### 8. 后端文件名必须和主要类型名一致
+
+- 推荐：`Article.cs`
+- 推荐：`CreateArticleCommand.cs`
+- 推荐：`ArticleController.cs`
+
+#### 9. Vue 组件文件统一使用 `kebab-case.vue`
+
+- 推荐：`article-detail.vue`
+- 推荐：`sidebar-right.vue`
+- 不推荐：`ArticleDetail.vue`
+
+#### 10. Composable 文件统一使用 `useXxx.ts`
+
+- 推荐：`useTheme.ts`
+- 推荐：`useArticleFilter.ts`
+- 不推荐：`theme.ts`
+
+### 三、后端命名
+
+#### 11. 实体、值对象、DTO、事件统一使用 `PascalCase`
+
+- 实体：`Article`
+- 值对象：`ArticleTitle`
+- DTO：`ArticleDetailDto`
+- 事件：`ArticleCreatedDomainEvent`
+
+#### 12. 接口统一使用 `I` 前缀
+
+- 推荐：`IArticleRepository`
+- 推荐：`IUnitOfWork`
+- 不推荐：`ArticleRepositoryContract`
+
+#### 13. Command、Query、Handler 必须带后缀
+
+- `CreateArticleCommand`
+- `GetArticleDetailQuery`
+- `CreateArticleCommandHandler`
+
+#### 14. Controller 必须以 `Controller` 结尾
+
+- `ArticleController`
+- `AuthController`
+- `UserController`
+
+#### 15. 仓储接口和实现必须同词根
+
+- 接口：`IArticleRepository`
+- 实现：`ArticleRepository`
+- 不要接口和实现出现两套业务词
+
+#### 16. 后端方法统一使用 `PascalCase`
+
+- 推荐：`Create()`
+- 推荐：`Update()`
+- 推荐：`SetTop()`
+- 推荐：`IncreaseReadCount()`
+
+### 四、前端命名
+
+#### 17. 前端方法、变量统一使用 `camelCase`
+
+- 方法：`getArticleDetail`、`toggleDark`
+- 变量：`articleList`、`pageSize`、`isDark`
+
+#### 18. 布尔值必须带判断语义
+
+- 推荐：`isDark`
+- 推荐：`hasPermission`
+- 推荐：`canSubmit`
+- 不推荐：`darkFlag`
+
+#### 19. 数组优先使用复数名词
+
+- 推荐：`articles`
+- 推荐：`tags`
+- 推荐：`children`
+- 不推荐：`articleListDataArr`
+
+#### 20. Service 文件按资源命名，方法按动作命名
+
+- 文件：`article.ts`、`comment.ts`、`user.ts`
+- 方法：`getArticlePageList`、`createArticle`、`deleteArticle`
+- 不推荐：`doCreate`、`fetchData`、`articleApi`
+
+### 五、禁止项
+
+以下名字不应作为正式业务代码长期保留：
+
+- `Helper`
+- `Manager`
+- `CommonService`
+- `Temp`
+- `NewArticle`
+- `Article2`
+- `test`
+- `demo`
+
+这些名字通常意味着职责不清、语义不清或重构未完成。
+
+### 六、入口词边界
+
+`Admin`、`Surfer`、未来 `Terminal` 这类词：
+
+- 只用于入口层目录
+- 只用于控制器目录、前端 `service` 目录、应用层用例名
+- 不进入 `Domain` 实体名、值对象名、仓储名
+
+正确示例：
+
+- `GetAdminCommentPageListQuery`
+- `Controllers/Blog/Admin/CommentController.cs`
+- `src/service/blog/admin/comment.ts`
+
+不推荐示例：
+
+- `AdminComment`
+- `Domain/Blog/Admin/Comment`
+
+### 七、最后判断
+
+如果你起名时拿不准，按这 4 个问题快速判断：
+
+1. 这个名字有没有准确表达业务语义？
+2. 这个名字有没有符合当前层的职责？
+3. 这个名字有没有和现有同类文件保持一致？
+4. 这个名字有没有出现缩写、模糊词或临时词？
+
+只要其中有 2 个答案是否定的，就先别落代码，先改名字。

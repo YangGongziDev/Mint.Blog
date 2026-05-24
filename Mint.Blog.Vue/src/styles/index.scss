@@ -1,0 +1,42 @@
+@use './scrollbar';
+@use './reset';
+@use './nprogress';
+@use './transition';
+
+* {
+  @include scrollbar.scrollbar();
+}
+
+#__SCROLL_EL_ID__ {
+  @include scrollbar.scrollbar();
+}
+
+.ant-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ant-btn > span:not(.ant-btn-icon) {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ant-btn .ant-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.ant-btn .ant-btn-icon > .anticon,
+.ant-btn > .anticon,
+.ant-btn > span > .anticon {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.ant-btn .anticon > svg {
+  display: block;
+}

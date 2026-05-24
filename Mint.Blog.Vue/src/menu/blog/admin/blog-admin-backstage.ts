@@ -1,0 +1,134 @@
+import type { AppMenuRecord, MenuPermission } from '@/menu/types';
+
+const queryPermission: MenuPermission[] = ['Search'];
+
+export const blogAdminMenus: AppMenuRecord[] = [
+  {
+    id: 'blog_admin',
+    parentId: null,
+    menuType: 'folder',
+    path: '/blog/admin/blog',
+    tableName: '.',
+    enabled: true,
+    menuI18nKey: 'route.admin_blog',
+    icon: 'mdi:book-open-page-variant-outline',
+    order: 2
+  },
+  {
+    id: 'blog_admin_home',
+    parentId: 'blog_admin',
+    menuType: 'route',
+    routerName: 'blog-admin_home',
+    path: '/blog/admin/home',
+    tableName: 'blog-admin_home',
+    enabled: true,
+    menuI18nKey: 'route.blog-admin_home',
+    icon: 'mdi:monitor-dashboard',
+    order: 1,
+    permission: queryPermission
+  },
+  {
+    id: 'blog_admin_article',
+    parentId: 'blog_admin',
+    menuType: 'route',
+    routerName: 'blog-admin_article',
+    path: '/blog/admin/article',
+    tableName: 'blog-admin_article',
+    enabled: true,
+    menuI18nKey: 'route.blog-admin_article',
+    icon: 'mdi:file-document-edit-outline',
+    order: 2,
+    permission: queryPermission
+  },
+  {
+    id: 'blog_admin_category',
+    parentId: 'blog_admin',
+    menuType: 'route',
+    routerName: 'blog-admin_category',
+    path: '/blog/admin/category',
+    tableName: 'blog-admin_category',
+    enabled: true,
+    menuI18nKey: 'route.blog-admin_category',
+    icon: 'mdi:shape-outline',
+    order: 3,
+    permission: queryPermission
+  },
+  {
+    id: 'blog_admin_tag',
+    parentId: 'blog_admin',
+    menuType: 'route',
+    routerName: 'blog-admin_tag',
+    path: '/blog/admin/tag',
+    tableName: 'blog-admin_tag',
+    enabled: true,
+    menuI18nKey: 'route.blog-admin_tag',
+    icon: 'mdi:tag-multiple-outline',
+    order: 4,
+    permission: queryPermission
+  },
+  {
+    id: 'blog_admin_column',
+    parentId: 'blog_admin',
+    menuType: 'route',
+    routerName: 'blog-admin_column',
+    path: '/blog/admin/column',
+    tableName: 'blog-admin_column',
+    enabled: true,
+    menuI18nKey: 'route.blog-admin_column',
+    icon: 'mdi:bookshelf',
+    order: 5,
+    permission: queryPermission
+  },
+  {
+    id: 'blog_admin_comment',
+    parentId: 'blog_admin',
+    menuType: 'route',
+    routerName: 'blog-admin_comment',
+    path: '/blog/admin/comment',
+    tableName: 'blog-admin_comment',
+    enabled: true,
+    menuI18nKey: 'route.blog-admin_comment',
+    icon: 'mdi:comment-text-multiple-outline',
+    order: 6,
+    permission: queryPermission
+  },
+  {
+    id: 'blog_admin_friend',
+    parentId: 'blog_admin',
+    menuType: 'route',
+    routerName: 'blog-admin_friend',
+    path: '/blog/admin/friend',
+    tableName: 'blog-admin_friend',
+    enabled: true,
+    menuI18nKey: 'route.blog-admin_friend',
+    icon: 'mdi:link-variant',
+    order: 7,
+    permission: queryPermission
+  },
+  {
+    id: 'blog_admin_image',
+    parentId: 'blog_admin',
+    menuType: 'route',
+    routerName: 'blog-admin_image',
+    path: '/blog/admin/image',
+    tableName: 'blog-admin_image',
+    enabled: true,
+    menuI18nKey: 'route.blog-admin_image',
+    icon: 'mdi:image-multiple-outline',
+    order: 8,
+    permission: queryPermission
+  },
+  {
+    id: 'blog_admin_blog_settings',
+    parentId: 'blog_admin',
+    menuType: 'route',
+    routerName: 'blog-admin_blog-settings',
+    path: '/blog/admin/blog/settings',
+    tableName: 'blog-admin_blog-settings',
+    enabled: true,
+    menuI18nKey: 'route.blog-admin_blog-settings',
+    icon: 'mdi:cog-outline',
+    order: 9,
+    permission: queryPermission
+  },
+];

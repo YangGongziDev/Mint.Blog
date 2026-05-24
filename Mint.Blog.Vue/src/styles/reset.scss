@@ -1,0 +1,84 @@
+/*
+  Keep only project-level additions that are not worth duplicating
+  from Tailwind Preflight.
+*/
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+.card-wrapper {
+  border-radius: 8px;
+  box-shadow:
+    0 1px 2px -2px rgb(0 0 0 / 16%),
+    0 3px 6px 0 rgb(0 0 0 / 12%),
+    0 5px 12px 4px rgb(0 0 0 / 9%);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af;
+}
+
+button,
+[role='button'] {
+  cursor: pointer;
+}
+
+:disabled {
+  cursor: default;
+}
+
+// // 统一暗色模式下卡片和表格容器背景，避免默认 #141414 纯黑。
+// html.dark .ant-card {
+//   background: rgb(var(--container-bg-color)) !important;
+// }
+// // 暗色模式下表单标签文字颜色
+// html.dark .ant-form-item-label > label {
+//   color: rgb(var(--base-text-color)) !important;
+// }
+
+// 统一暗色模式下 Ant Design Vue 分页的前台主题色系，避免默认深色背景过重。
+html.dark .ant-pagination .ant-pagination-item {
+  border-color: rgb(83 157 253 / 18%) !important;
+  background-color: rgb(83 157 253 / 8%) !important;
+}
+
+html.dark .ant-pagination .ant-pagination-item a {
+  color: #cbd5e1 !important;
+}
+
+html.dark .ant-pagination .ant-pagination-prev .ant-pagination-item-link,
+html.dark .ant-pagination .ant-pagination-next .ant-pagination-item-link {
+  border-color: rgb(83 157 253 / 18%) !important;
+  background-color: rgb(83 157 253 / 8%) !important;
+  color: #cbd5e1 !important;
+}
+
+html.dark .ant-pagination .ant-pagination-item:hover,
+html.dark .ant-pagination .ant-pagination-item-active,
+html.dark .ant-pagination .ant-pagination-prev:hover .ant-pagination-item-link,
+html.dark .ant-pagination .ant-pagination-next:hover .ant-pagination-item-link {
+  border-color: rgb(83 157 253 / 42%) !important;
+  background-color: rgb(83 157 253 / 16%) !important;
+}
+
+html.dark .ant-pagination .ant-pagination-item:hover a,
+html.dark .ant-pagination .ant-pagination-item-active a,
+html.dark .ant-pagination .ant-pagination-prev:hover .ant-pagination-item-link,
+html.dark .ant-pagination .ant-pagination-next:hover .ant-pagination-item-link {
+  color: #539dfd !important;
+}
+
+html.dark .ant-pagination .ant-pagination-disabled .ant-pagination-item-link,
+html.dark .ant-pagination .ant-pagination-disabled:hover .ant-pagination-item-link {
+  border-color: rgb(83 157 253 / 10%) !important;
+  background-color: rgb(83 157 253 / 5%) !important;
+  color: rgb(203 213 225 / 45%) !important;
+}

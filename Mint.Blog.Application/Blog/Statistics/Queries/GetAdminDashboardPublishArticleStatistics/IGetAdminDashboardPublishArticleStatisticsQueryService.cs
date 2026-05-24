@@ -1,0 +1,5 @@
+namespace Mint.Blog.Application.Blog.Statistics.Queries.GetAdminDashboardPublishArticleStatistics;
+
+public interface IGetAdminDashboardPublishArticleStatisticsQueryService {
+	Task<AdminDashboardPublishArticleStatisticsDto> GetAsync(CancellationToken cancellationToken = default);
+}

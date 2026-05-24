@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
+        <Content Remove="appsettings-temp.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.6"/>
+        <PackageReference Include="Scalar.AspNetCore" Version="2.13.22"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Mint.Blog.Application\Mint.Blog.Application.csproj"/>
+        <ProjectReference Include="..\Mint.Blog.Infrastructure\Mint.Blog.Infrastructure.csproj"/>
+    </ItemGroup>
+
+</Project>

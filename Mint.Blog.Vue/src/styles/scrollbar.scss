@@ -1,0 +1,30 @@
+@mixin scrollbar {
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 100%;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 2em;
+    background-color: rgba(73, 177, 245, 0.2);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 2em;
+    background-color: #49b1f5;
+    background-image: -webkit-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.4) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.4) 75%,
+      transparent 75%,
+      transparent
+    );
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+}
