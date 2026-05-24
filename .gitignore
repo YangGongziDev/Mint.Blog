@@ -2,6 +2,8 @@ HELP.md
 # system
 .DS_Store
 **/.DS_Store
+appsettings.Development.json
+appsettings.json
 
 ### STS ###
 .apt_generated

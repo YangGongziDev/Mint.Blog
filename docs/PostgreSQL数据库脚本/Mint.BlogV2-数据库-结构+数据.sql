@@ -1,18 +1,18 @@
 /*
  Navicat Premium Dump SQL
 
- Source Server         : AliCloud_Docker-YangMufa666
+ Source Server         : Local_Docker-YangMufa666
  Source Server Type    : PostgreSQL
- Source Server Version : 170002 (170002)
- Source Host           : 47.116.10.106:5432
+ Source Server Version : 180003 (180003)
+ Source Host           : localhost:5432
  Source Catalog        : Mint.Blog
  Source Schema         : public
 
  Target Server Type    : PostgreSQL
- Target Server Version : 170002 (170002)
+ Target Server Version : 180003 (180003)
  File Encoding         : 65001
 
- Date: 24/05/2026 18:14:32
+ Date: 24/05/2026 22:38:30
 */
 
 
@@ -220,21 +220,22 @@ COMMENT ON TABLE "public"."blog_article" IS '文章表';
 BEGIN;
 INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (11, '呜呜呜呜', 'http://127.0.0.1:9000/roc-blog/defa867aae8a459c97abf6bcad52ffb0.png', '', '2025-08-31 17:35:33', '2025-09-14 21:02:31.531838', 0, 4, 0, 1);
 INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (17, '三十岁', 'http://127.0.0.1:9000/roc-blog/2cbe14f46e694ed98b7c269270b922f3.png', '', '2025-09-14 23:37:13.908353', '2025-09-14 23:37:13.908353', 0, 2, 0, 1);
+INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (24, '测试1', 'http://127.0.0.1:9000/roc-blog/6c2f5a28d5a94d89b82756a70abf1b2e.png', '', '2025-09-12 05:59:27.552137', '2025-09-12 06:02:12.298849', 0, 52, 0, 2);
 INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (16, '对对对', 'http://127.0.0.1:9000/roc-blog/220f1c4e1ced470485e79d506d49625a.jpg', '', '2025-09-14 15:36:49.75829', '2025-09-14 15:36:49.75829', 0, 3, 0, 1);
 INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (27, '555', 'http://127.0.0.1:9000/roc-blog/9eb7fb4ccb0840ba82c657710490ae16.png', '', '2025-10-10 15:07:59.795302', '2025-10-13 09:30:35.075991', 0, 6, 0, 1);
 INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (20, '654323', 'http://127.0.0.1:9000/roc-blog/a68d632550044364a04de5298fcdb75b.png', '', '2025-09-18 23:31:22.584622', '2025-09-18 23:31:22.584622', 1, 20, 0, 2);
+INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (12, '我问问666', 'http://127.0.0.1:9000/roc-blog/db82f25715494699acbbb8de82047dc0.png', '我问问', '2025-08-19 11:27:05', '2025-10-25 13:17:47.315291', 0, 53, 2, 2);
 INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (14, '额鹅鹅鹅', 'http://127.0.0.1:9000/roc-blog/9de62585956545ce8fcc309696815706.ico', '', '2025-09-13 12:56:42.967417', '2025-09-13 12:56:42.967417', 0, 8, 0, 1);
 INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (9, '5555', 'http://127.0.0.1:9000/roc-blog/8ae62f57a7e7472c9c9d761aa4534db8.png', '', '2025-08-25 17:33:39', '2025-09-13 13:03:37.283973', 0, 11, 0, 1);
-INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (32, '热额', '', '', '2025-12-04 08:29:45.413586', '2025-12-04 08:29:45.413586', 0, 29, 0, 1);
+INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (10, '打发打发发方法', 'http://127.0.0.1:9000/roc-blog/64b91ff4544a4e60b393417e178a4bd1.png', '热热热', '2025-08-04 17:12:25', '2025-10-11 13:17:26.905319', 0, 105, 3, 1);
+INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (32, '热额', '', '', '2025-11-29 16:29:45.413586', '2025-11-29 16:29:45.413586', 0, 43, 0, 1);
 INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (31, '呃呃呃', 'https://tse1-mm.cn.bing.net/th/id/OIP-C.4Kn7tCYsT05EL_jfHw7u-AHaEC?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3', '呃呃呃', '2025-12-09 08:28:59.993208', '2026-05-17 08:30:14.428607', 0, 4, 0, 1);
-INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (2056031402947907584, '谁放松放松', 'http://127.0.0.1:9000/blog/5158cb66f1e34b249017ed3deab83baa.webp', '大傻吊', '2026-05-11 23:17:40.327355', '2026-05-17 00:22:12.756101', 0, 14, 0, 1);
-INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (8, '吞吞吐吐88', 'http://127.0.0.1:9000/blog/89056c263d5b45a1a37eb353e308a0c2.jpg', '88', '2025-03-27 09:28:13', '2026-05-09 09:31:12.700037', 0, 489, 1, 1);
+INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (2056031402947907584, '谁放松放松', 'http://127.0.0.1:9000/blog-article/5158cb66f1e34b249017ed3deab83baa.webp', '大傻吊', '2026-05-11 23:17:40.327355', '2026-05-17 00:22:12.756101', 0, 14, 0, 1);
+INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (8, '吞吞吐吐88', 'http://127.0.0.1:9000/blog-article/89056c263d5b45a1a37eb353e308a0c2.jpg', '88', '2025-03-27 09:28:13', '2026-05-09 09:31:12.700037', 0, 489, 1, 1);
+INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (19, '的点点滴滴', 'http://127.0.0.1:9000/blog-article/19646419add74bdf992bc4df2856a965.jpg', '我问问', '2025-09-13 21:28:18.012713', '2025-09-13 21:28:18.012713', 0, 15, 0, 1);
+INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (1, 'HelloWorld1', 'http://127.0.0.1:9000/blog-article/b7cbddadb4284110be72a6e102d170ca.jpg', '是公司给', '2023-02-19 07:16:44', '2026-01-14 12:56:48.227701', 0, 1529, 1, 1);
 INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (28, '对对对收到滴答滴答滴答滴答哒哒哒哒哒哒哒哒哒的的点点滴滴的点点滴滴哒哒哒哒哒哒1', 'http://127.0.0.1:9000/roc-blog/96b16205de6a43a4b6b0e8390d6d4738.jpg', '事实上事实上少时诵诗书是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒事实上事实上少时诵诗书是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒是撒事实上事实上少时诵诗书1', '2025-10-07 17:29:53.183741', '2025-10-07 17:36:22.840566', 0, 33, 0, 1);
-INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (19, '的点点滴滴', 'http://127.0.0.1:9000/blog/19646419add74bdf992bc4df2856a965.jpg', '我问问', '2025-09-13 21:28:18.012713', '2025-09-13 21:28:18.012713', 0, 15, 0, 1);
-INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (24, '测试1', 'http://127.0.0.1:9000/roc-blog/6c2f5a28d5a94d89b82756a70abf1b2e.png', '', '2025-09-11 21:59:27.552137', '2025-09-11 22:02:12.298849', 0, 53, 0, 2);
-INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (12, '我问问666', 'http://127.0.0.1:9000/roc-blog/db82f25715494699acbbb8de82047dc0.png', '我问问', '2025-08-19 03:27:05', '2025-10-25 05:17:47.315291', 0, 54, 2, 2);
-INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (1, 'HelloWorld', 'https://img.yangmufa.cn/blog-article/logo.svg', '是公司给', '2023-01-28 07:16:44', '2026-05-20 09:20:14.923133', 0, 1593, 1, 1);
-INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (18, '呃呃呃顶顶顶顶', 'http://127.0.0.1:9000/roc-blog/6420c86e629b478fa5badc771c22dde3.jpg', '', '2025-09-13 00:06:35.656392', '2025-09-13 00:06:35.656392', 0, 9, 0, 1);
+INSERT INTO "public"."blog_article" ("id", "title", "cover", "summary", "create_time", "update_time", "is_deleted", "read_num", "weight", "type") VALUES (18, '呃呃呃顶顶顶顶', 'http://127.0.0.1:9000/roc-blog/6420c86e629b478fa5badc771c22dde3.jpg', '', '2025-09-14 08:06:35.656392', '2025-09-14 08:06:35.656392', 0, 5, 0, 1);
 COMMIT;
 
 -- ----------------------------
@@ -268,11 +269,12 @@ INSERT INTO "public"."blog_article_category_rel" ("id", "article_id", "category_
 INSERT INTO "public"."blog_article_category_rel" ("id", "article_id", "category_id") VALUES (97, 24, 5);
 INSERT INTO "public"."blog_article_category_rel" ("id", "article_id", "category_id") VALUES (128, 27, 22);
 INSERT INTO "public"."blog_article_category_rel" ("id", "article_id", "category_id") VALUES (131, 28, 17);
+INSERT INTO "public"."blog_article_category_rel" ("id", "article_id", "category_id") VALUES (137, 10, 5);
 INSERT INTO "public"."blog_article_category_rel" ("id", "article_id", "category_id") VALUES (138, 12, 5);
+INSERT INTO "public"."blog_article_category_rel" ("id", "article_id", "category_id") VALUES (157, 1, 5);
 INSERT INTO "public"."blog_article_category_rel" ("id", "article_id", "category_id") VALUES (163, 32, 23);
 INSERT INTO "public"."blog_article_category_rel" ("id", "article_id", "category_id") VALUES (2056047645067186176, 2056031402947907584, 20);
 INSERT INTO "public"."blog_article_category_rel" ("id", "article_id", "category_id") VALUES (2056049665354371072, 31, 11);
-INSERT INTO "public"."blog_article_category_rel" ("id", "article_id", "category_id") VALUES (2058478169442357248, 1, 5);
 COMMIT;
 
 -- ----------------------------
@@ -311,9 +313,722 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 ![](http://127.0.0.1:9000/roc-blog/af0282e44bfe4658a5b0e2d0a30c8df1.png)
 
 ');
+INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (10, 10, '请输入内容天天电饭锅第三个发的
+图片1![](http://127.0.0.1:9000/roc-blog/12f87fef76564ba9acde1c0fec4cf7d5.png)
+图片2![](http://127.0.0.1:9000/roc-blog/8566fcf578434e07a7e55521456047f.jpg)
+');
 INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (12, 12, '请输入内容我问问');
 INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (32, 32, '![](http://127.0.0.1:9000/roc-blog/aebb844982d14ec5a4b98fae7160017f.jpg)
 ');
+INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (1, 1, '## 👋 自我介绍
+
+
+
+![](http://127.0.0.1:9000/roc-blog/599ba5b9189f49d99bdf0b5c115a3a7b.jpg)
+
+
+
+
+
+> 大家好，我是鲲鲲。前某厂中台架构，公众号 程序员菜鲲 作者。95后，码龄 2 年，先后供职于支付、共享等互联网领域，主导负责过数据传输、日志平台、任务调度、文件平台等产品，以支撑各部门业务线。喜欢分享知识，热爱技术，也不止于技术，不只是写 Java，业余也爱玩前端、.Net 等，是个活跃的技术折腾者。
+
+```java
+
+  @Test
+  void testLog() {
+      log.info("这是一行 Info 级别日志");
+      log.warn("这是一行 Warn 级别日志");
+      log.error("这是一行 Error 级别日志");
+
+      // 占位符
+      String author = "鲲鲲";
+      log.info("这是一行带有占位符日志，作者：{}", author);
+  }
+  
+```
+---
+
+> 本项目 1.0 版本已部署到云服务器上，可点击下面链接进行访问，查看实际效果：
+>
+> 演示地址：[https://www.yangmufa.cn](https://www.yangmufa.cn)
+>
+> 后台登录演示账号:
+> 
+> - 账号：test
+> - 密码：test
+
+## 🏃 关于实战项目
+
+知识星球是个私密学习圈子，我会在星球内部，出**一系列从 0 到 1 的实战项目，贴合真实的企业级项目开发规范，使用主流的企业技术栈，全程手写后端 + 前端完整代码，通过专栏的形式，把每个功能点的开发的步骤，手摸手，通过丰富的图片 + 文字，保姆级教学（PS: 同时按小节进度提供代码，不至于一上来代码量太多，不知道从哪入手）**。
+
+
+![](https://img.yangmufa.cn/ibp/169361945065538)
+
+目前，我已经给自己的网站：[练习生基地](https://www.yangmufa.cn/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
+
+![](https://img.yangmufa.cn/ibp/169733756405612)
+
+![](https://img.yangmufa.cn/ibp/169733761293187)
+
+![](https://img.yangmufa.cn/ibp/169733762195775)
+
+另外，在跟随小节内容上手的过程中，若遇到问题，可在星球内发起 *1v1 提问，鲲鲲亲自解答*。
+
+!["星球内提问"](https://img.yangmufa.cn/ibp/169396126861858 "星球内提问")
+
+星球说不清楚的，项目进度因为某一块搞不定的，微信发我源码，帮忙看问题出在哪：
+
+![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yangmufa.cn/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
+
+
+陪伴式写项目，到最终部署到云服务器上，能够通过域名来访问，完成项目上线。
+
+> 💡 TIP : 后期也会尝试分享一些适合程序员的技术副业，比如开发一些小工具网站，进行推广运营，有了一定用户量，能够挣点零花钱啥的。当然，这都是后话了，前提还需要你能够自行完整的开发一个独立应用，前期还是以项目实战为主。
+
+既然鲲鲲是准备出一系列的实战项目，我希望这些项目的难度是循序渐进的，能够让你真实的感受到自己的功力在慢慢增强。但是又不想写那种纯纯的 CRUD 型管理后台项目，太枯燥。那么，第一个项目鲲鲲就定位在难度不大，易上手，有趣，并且非常有代表性，实际工作中也能够被频繁用到的。
+
+脑瓜子一转，想到之前好多读者问我博客的事情，今年 4 月份的时候，又有读者微信问我: *你的博客有没有开源，感觉还挺好看，也想学习、部署一个。*
+
+![](https://img.yangmufa.cn/ibp/169355366112215)
+
+于是乎，花了点时间整了第一个实战项目 —— **前后端分离的博客 ibp**。
+
+
+## 💁 项目介绍
+
+每个技术人都应该有属于自己的博客！相比较直接使用第三方博客平台，自行搭建博客更有成就感；另外就是没有平台限制，比如你想发个二维码引流啥的，平台基本都是不允许的，还有，你可以自由 `div` 定制自己想要的博客 `css` 样式，哪天 UI 看不爽了，咱就自己换；最后，*面试的时候，如果简历贴上的是自己开发博客地址，也会很加分*！
+
+### 🔗 演示地址
+
+目前 1.0 版本已经部署到了阿里云服务器上，可点击下面链接进行访问，查看实际效果：
+
+[https://www.yangmufa.cn](https://www.yangmufa.cn "https://www.yangmufa.cn")
+
+管理后台登录账号/密码:
+
+- 账号：test
+- 密码：test
+
+> ⚠️ 注意：该账号的角色为*游客*角色，*仅支持查询操作*，新增、修改、删除操作会提示不允许。
+
+### ⚒️ 功能模块
+
+> 💡 TIP : 以下*只是 1.0 版本的功能，后续鲲鲲将添加更多功能进去, 比如图库管理、知识库、在线人数统计、SSR（服务端渲染） 等等*，能够想到的高逼格功能，咱都整上，附带超详细的实战图文笔记 ...
+
+![ibp 功能模块一览](https://img.yangmufa.cn/ibp/169560157482464 "ibp 功能模块一览")
+
+### ✏️ 技术栈
+
+![ibp 技术栈一览](https://img.yangmufa.cn/ibp/169560181378937 "ibp 技术栈一览")
+
+## 🎉 专栏目标
+
+学完本项目，你将具备如下能力：
+
+- 掌握独立开发全栈项目的能力（*后端 + 前端*）；
+- 掌握 Spring Boot 相关技术栈，以及构建后端项目能力，写出符合企业级的代码规范；
+- 掌握 Vue 3.2 + Element Plus + Vite 4 技术构建前端工程的能力，并能够手动搭建 Admin 后台管理系统；
+- 掌握前端页面响应式设计（同时适配不同屏幕），排版布局，能够根据自己需求，`div` 自己想要的前端效果；
+- ...
+
+## 💡 专栏亮点
+
+- 在技术选型上，鲲鲲选择了目前主流热门的技术栈，对标企业级项目开发；
+- 严格把控代码质量，数据库设计，写出令同事称道的代码；
+- 熟悉后端工程的搭建，如一些通用的基础设施：参数校验、全局异常捕获、`API` 统一出入参日志打印等等；
+- 能够独立完成整个网站的部署流程，从功能开发到服务器、域名选购，再到网站备案，最终公网可访问；
+- 对象存储 `Minio` 的使用, 能够独立搭建个人图床；
+- 从 0 到 1 ，通过 `Element Plus` 纯手搭 `Admin` 管理后台前端骨架；
+- 使用 Vue 3 `setup` 等语法糖新特性；
+- 博客前台页面在设计上美观大气；
+- ...
+
+## 📖 专栏大纲
+
+整个实战专栏，鲲鲲按功能点开发进度来做的目录，目前已经更新到了第第五章，目录大致如下：
+
+> 💡 TIP : 如下目录不代表最终内容，只会更多，目前只是把已完成的部分详细的罗列了出来，其中大部分功能正在开发中，所属具体小节的标题也会陆续更新进来。
+
+- 一、[项目介绍](https://www.yangmufa.cn/column/10000.html)
+- 二、开发环境搭建
+  - [2.1 【后端】环境安装&工具准备](https://www.yangmufa.cn/column/10003.html)
+  - [2.2 【前端】开发环境&工具安装](https://www.yangmufa.cn/column/10004.html)
+
+- 三、Spring Boot 后端工程搭建
+  - [3.1 搭建 Spring Boot 多模块工程](https://www.yangmufa.cn/column/10005.html)
+  - [3.2 Spring Boot 多环境配置](https://www.yangmufa.cn/column/10006.html)
+  - [3.3 配置 Lombok](https://www.yangmufa.cn/column/10007.html)
+  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yangmufa.cn/column/10008.html)
+  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yangmufa.cn/column/10009.html)
+  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yangmufa.cn/column/10010.html)
+  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yangmufa.cn/column/10011.html)
+  - [3.8 Spring Boot 自定义响应工具类](https://www.yangmufa.cn/column/10012.html)
+  - [3.9 Spring Boot 实现全局异常管理](https://www.yangmufa.cn/column/10013.html)
+  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yangmufa.cn/column/10014.html)
+  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yangmufa.cn/column/10015.html)
+  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yangmufa.cn/column/10016.html)
+  - [3.13 小结](https://www.yangmufa.cn/column/10017.html)
+
+- 四、使用 Vue 3 + Vite 4 搭建前端工程
+  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yangmufa.cn/column/10018.html)
+  - [4.2 安装 VSCode 开发工具](https://www.yangmufa.cn/column/10019.html)
+  - [4.3 添加 vue-router 路由管理器](https://www.yangmufa.cn/column/10020.html)
+  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yangmufa.cn/column/10021.html)
+  - [4.5 整合 Tailwind CSS](https://www.yangmufa.cn/column/10022.html)
+  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yangmufa.cn/column/10023.html)
+  - [4.7 整合饿了么 Element Plus 组件库](https://www.yangmufa.cn/column/10024.html)
+
+- 五、登录模块开发
+  - [5.1 登录页设计：支持响应式布局](https://www.yangmufa.cn/column/10025.html)
+  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yangmufa.cn/column/10026.html)
+  - [5.3 整合 Mybatis Plus](https://www.yangmufa.cn/column/10027.html)
+  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yangmufa.cn/column/10028.html)
+  - [5.5 整合 Spring Security](https://www.yangmufa.cn/column/10029.html)
+  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yangmufa.cn/column/10030.html)
+  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yangmufa.cn/column/10031.html)
+  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yangmufa.cn/column/10032.html)
+  - [5.9 登录页表单验证](https://www.yangmufa.cn/column/10033.html)
+  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yangmufa.cn/column/10034.html)
+  - [5.11 存储 Token 到 Cookie 中](https://www.yangmufa.cn/column/10035.html)
+  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yangmufa.cn/column/10036.html)
+  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yangmufa.cn/column/10037.html)
+  - [5.14 实现页面顶部加载 Loading 效果](https://www.yangmufa.cn/column/10038.html)
+  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yangmufa.cn/column/10040.html)
+  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yangmufa.cn/column/10089.html)
+  
+  
+  
+
+- 六、Element Plus 手搭 Admin 管理后台骨架
+  - [6.1 搭建管理后台基本布局](https://www.yangmufa.cn/column/10039.html)
+  - [6.2 后台公共 Header 头：样式布局](https://www.yangmufa.cn/column/10041.html)
+  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yangmufa.cn/column/10042.html)
+  - [6.4 整合全局状态管理库 Pinia](https://www.yangmufa.cn/column/10043.html)
+  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yangmufa.cn/column/10044.html)
+  - [6.6 支持全屏展示、页面点击刷新](https://www.yangmufa.cn/column/10045.html)
+  - [6.7 标签导航栏组件实现：样式布局](https://www.yangmufa.cn/column/10046.html)
+  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yangmufa.cn/column/10047.html)
+  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yangmufa.cn/column/10048.html)
+  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yangmufa.cn/column/10049.html)
+  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yangmufa.cn/column/10050.html)
+  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yangmufa.cn/column/10051.html)
+  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yangmufa.cn/column/10052.html)
+  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yangmufa.cn/column/10053.html)
+  - [6.15 修改用户密码接口开发](https://www.yangmufa.cn/column/10054.html)
+  - [6.16 获取当前登录用户信息接口开发](https://www.yangmufa.cn/column/10055.html)
+  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yangmufa.cn/column/10056.html)
+  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yangmufa.cn/column/10057.html)
+  - [6.19 用户修改密码、退出登录功能开发](https://www.yangmufa.cn/column/10058.html)
+  - [6.20 小结](https://www.yangmufa.cn/column/10059.html)
+
+  
+
+  
+- 七、管理后台：文章分类模块开发
+  - [7.1 分类模块接口分析](https://www.yangmufa.cn/column/10060.html)
+  - [7.2 文章分类：新增接口开发](https://www.yangmufa.cn/column/10061.html)
+  - [7.3 文章分类：分页接口开发](https://www.yangmufa.cn/column/10062.html)
+  - [7.4 文章分类：删除接口开发](https://www.yangmufa.cn/column/10063.html)
+  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yangmufa.cn/column/10064.html)
+  - [7.6 后台分类管理页面：样式布局](https://www.yangmufa.cn/column/10065.html)
+  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yangmufa.cn/column/10066.html)
+  - [7.8 文章分类：分页列表数据动态渲染](https://www.yangmufa.cn/column/10067.html)
+  - [7.9 文章分类：新增功能开发](https://www.yangmufa.cn/column/10068.html)
+  - [7.10 文章分类：删除功能开发](https://www.yangmufa.cn/column/10069.html)
+  - [7.11 通用表单对话框组件封装](https://www.yangmufa.cn/column/10070.html)
+  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yangmufa.cn/column/10071.html)
+  
+
+
+- 八、管理后台：标签模块开发
+  - [8.1 标签模块接口分析【视频讲解】](https://www.yangmufa.cn/column/10072.html)
+  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10073.html)
+  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yangmufa.cn/column/10074.html)
+  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10075.html)
+  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yangmufa.cn/column/10076.html)
+  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yangmufa.cn/column/10077.html)
+  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yangmufa.cn/column/10078.html)
+  
+  
+  
+- 九、管理后台：博客设置模块开发
+  - [9.1 博客设置模块功能分析、表设计](https://www.yangmufa.cn/column/10079.html)
+  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yangmufa.cn/column/10080.html)
+  - [9.3 文件上传接口开发](https://www.yangmufa.cn/column/10081.html)
+  - [9.4 博客设置: 更新接口开发](https://www.yangmufa.cn/column/10082.html)
+  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yangmufa.cn/column/10083.html)
+  - [9.6 博客设置：获取详情接口开发](https://www.yangmufa.cn/column/10084.html)
+  - [9.7 博客设置页面：样式布局](https://www.yangmufa.cn/column/10085.html)
+  - [9.8 管理后台：滚动样式优化](https://www.yangmufa.cn/column/10086.html)
+  - [9.9 博客设置页：数据渲染、图片上传](https://www.yangmufa.cn/column/10087.html)
+  - [9.10 博客设置页：更新设置](https://www.yangmufa.cn/column/10088.html)
+  
+
+
+
+- 十、管理后台：文章模块开发
+  - [10.1 文章管理模块功能分析、表设计](https://www.yangmufa.cn/column/10090.html)
+  - [10.2 文章管理：文章发布接口开发（1）](https://www.yangmufa.cn/column/10091.html)
+  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yangmufa.cn/column/10092.html)
+  - [10.4 文章管理：文章删除接口开发](https://www.yangmufa.cn/column/10093.html)
+  - [10.5 文章管理：分页接口开发](https://www.yangmufa.cn/column/10094.html)
+  - [10.6 文章管理：获取文章详情接口开发](https://www.yangmufa.cn/column/10095.html)
+  - [10.7 文章管理：文章更新接口开发](https://www.yangmufa.cn/column/10096.html)
+  - [10.8 文章管理：分页列表开发](https://www.yangmufa.cn/column/10097.html)
+  - [10.9 文章管理页：删除文章开发](https://www.yangmufa.cn/column/10098.html)
+  - [10.10 文章管理页：写文章对话框样式布局](https://www.yangmufa.cn/column/10099.html)
+  - [10.11 文章管理页：文章发布功能开发](https://www.yangmufa.cn/column/10100.html)
+  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yangmufa.cn/column/10101.html)
+  - [10.13 文章管理页：文章编辑功能开发](https://www.yangmufa.cn/column/10102.html)
+  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yangmufa.cn/column/10103.html)
+  
+  
+  
+  
+  
+
+- 十一、博客前台：首页开发
+   - [11.1 前台首页、归档页接口分析](https://www.yangmufa.cn/column/10104.html)
+   - [11.2 前台首页：文章分页接口开发](https://www.yangmufa.cn/column/10105.html)
+   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yangmufa.cn/column/10106.html)
+   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yangmufa.cn/column/10107.html)
+   - [11.5 前台 Header 头组件封装](https://www.yangmufa.cn/column/10108.html)   
+   - [11.6 首页样式布局设计（1）](https://www.yangmufa.cn/column/10109.html)
+   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yangmufa.cn/column/10110.html)
+   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yangmufa.cn/column/10111.html)
+   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yangmufa.cn/column/10112.html)
+   - [11.10 首页文章分页数据渲染](https://www.yangmufa.cn/column/10113.html)
+   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yangmufa.cn/column/10114.html)
+   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yangmufa.cn/column/10115.html)
+   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yangmufa.cn/column/10116.html)
+   
+   
+
+- 十二、博客前台：归档列表页、分类列表页、标签列表页开发
+   - [12.1 归档页、分类列表页接口分析](https://www.yangmufa.cn/column/10117.html)
+   - [12.2 文章归档分页接口开发](https://www.yangmufa.cn/column/10118.html)
+   - [12.3 前台归档页：样式布局设计](https://www.yangmufa.cn/column/10119.html)
+   - [12.4 前台归档页：分页列表功能开发](https://www.yangmufa.cn/column/10120.html)
+   - [12.5 前台分类页开发](https://www.yangmufa.cn/column/10121.html)
+   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10122.html)
+   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yangmufa.cn/column/10123.html)
+   - [12.8 分类-文章列表页开发](https://www.yangmufa.cn/column/10124.html)
+   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yangmufa.cn/column/10125.html)
+   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10130.html)
+   - [12.11 标签-文章列表页开发](https://www.yangmufa.cn/column/10131.html)
+
+
+- 十三、博客前台：文章详情页开发
+   - [13.1 文章详情页接口分析](https://www.yangmufa.cn/column/10126.html)
+   - [13.2 后端封装 Markdown 装换工具类](https://www.yangmufa.cn/column/10127.html)
+   - [13.3 获取文章详情接口开发](https://www.yangmufa.cn/column/10128.html)
+   - [13.4 文章详情页：样式布局设计](https://www.yangmufa.cn/column/10129.html)
+
+   - *努力爆肝中，每天更新两小节, 按目前的更新速度，1.0 版本差不多还剩1个半月更新完毕...*
+- 十四、管理后台：仪表盘模块开发
+- 十五、项目部署上线
+  - 云服务器选购
+  - 相关环境安装（JDK、Docker、Nginx、Mysql）
+  - Nginx 配合 Spring Boot 部署
+  - 部署前端项目以及通过 IP 访问
+  - 域名选购
+  - 网站备案
+  - 域名映射，项目正式上线
+
+
+
+## 👨🏻‍💻 适用人群
+
+- **在校学生**，有一定基础，想做毕业设计，或者为找工作准备，需要实战项目加分；
+
+  > 💡 TIP: 小白也没关系，鲲鲲将会告诉你学习路线是啥，哪里有免费的高质量学习视频可以白嫖，学完这些技术栈后再来做实战项目，或者学一点基础边实战边学习都可以。
+
+- **已经参与工作，对前后端分离感兴趣**，想学习 Vue 3 前端，对独立上线自己网站感兴趣的童鞋；
+- **想独立接私活**，需要同时会后端、前端技术栈的童鞋；
+
+## ✊ 如何加入？
+
+鲲鲲已经将本站的专栏模块接入了知识星球，想要查看专栏内容，需要订阅我星球后，*微信扫码授权登录后即可解锁所有内容*。因为目前也是刚开始运营，所以价格不会太高，星球官方定价最低必须是 50 元。鲲鲲最终定价为 <font class="text-xl" style=''color: red''><b>限时 35 元（附 15 元的优惠券，记得扫码领取下方优惠券加入哟）</b></font>，后续随着内容慢慢的更新迭代，会慢慢涨上去，所以早加入更具性价比哟~ 
+
+<font class="text-xl" style=''color: red''><b>星球支持 3 天无理由退费</b></font>，感兴趣的小伙伴*可先加入，看看内容质量如何，不合适直接退款就行，觉得确实内容很干货，就留下来学习，无套路!*
+
+<div class="flex items-center justify-center text-lg text-red-500 font-bold mb-2">扫描下方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👇👇</div>
+
+!["领取优惠券加入，更划算"](https://img.yangmufa.cn/ibp/169355760680941 "领取优惠券加入，更划算")
+
+<div class="flex items-center justify-center text-lg text-red-500 font-bold">扫描上方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👆👆</div>
+
+
+
+
+## ❓ 关于答疑
+
+小伙伴们如果在跟着专栏学习，手敲项目的过程中遇到问题，碰到无法解决的问题，**可在鲲鲲的知识星球内部提问**，我会统一来解答, 如果星球说不清楚的，就加私人微信，打包发项目，亲自给你看哪一步有问题，保证跟上项目进度，不落下任何一个小伙伴，大家一起冲冲冲~
+
+## 😃 加微信咨询
+
+对专栏感兴趣的小伙伴，也可以加鲲鲲私人微信来咨询，扫描下方二维码即可，记得备注【*咨询*】哟：
+
+![扫描二维码，添加鲲鲲私人微信](https://img.yangmufa.cn/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")
+
+
+
+
+
+
+
+
+
+## 👋 自我介绍
+
+
+
+![](http://127.0.0.1:9000/roc-blog/599ba5b9189f49d99bdf0b5c115a3a7b.jpg)
+
+
+
+
+
+> 大家好，我是鲲鲲。前某厂中台架构，公众号 程序员菜鲲 作者。95后，码龄 2 年，先后供职于支付、共享等互联网领域，主导负责过数据传输、日志平台、任务调度、文件平台等产品，以支撑各部门业务线。喜欢分享知识，热爱技术，也不止于技术，不只是写 Java，业余也爱玩前端、.Net 等，是个活跃的技术折腾者。
+
+```java
+
+  @Test
+  void testLog() {
+      log.info("这是一行 Info 级别日志");
+      log.warn("这是一行 Warn 级别日志");
+      log.error("这是一行 Error 级别日志");
+
+      // 占位符
+      String author = "鲲鲲";
+      log.info("这是一行带有占位符日志，作者：{}", author);
+  }
+  
+```
+---
+
+> 本项目 1.0 版本已部署到云服务器上，可点击下面链接进行访问，查看实际效果：
+>
+> 演示地址：[https://www.yangmufa.cn](https://www.yangmufa.cn)
+>
+> 后台登录演示账号:
+> 
+> - 账号：test
+> - 密码：test
+
+## 🏃 关于实战项目
+
+知识星球是个私密学习圈子，我会在星球内部，出**一系列从 0 到 1 的实战项目，贴合真实的企业级项目开发规范，使用主流的企业技术栈，全程手写后端 + 前端完整代码，通过专栏的形式，把每个功能点的开发的步骤，手摸手，通过丰富的图片 + 文字，保姆级教学（PS: 同时按小节进度提供代码，不至于一上来代码量太多，不知道从哪入手）**。
+
+
+![](https://img.yangmufa.cn/ibp/169361945065538)
+
+目前，我已经给自己的网站：[练习生基地](https://www.yangmufa.cn/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
+
+![](https://img.yangmufa.cn/ibp/169733756405612)
+
+![](https://img.yangmufa.cn/ibp/169733761293187)
+
+![](https://img.yangmufa.cn/ibp/169733762195775)
+
+另外，在跟随小节内容上手的过程中，若遇到问题，可在星球内发起 *1v1 提问，鲲鲲亲自解答*。
+
+!["星球内提问"](https://img.yangmufa.cn/ibp/169396126861858 "星球内提问")
+
+星球说不清楚的，项目进度因为某一块搞不定的，微信发我源码，帮忙看问题出在哪：
+
+![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yangmufa.cn/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
+
+
+陪伴式写项目，到最终部署到云服务器上，能够通过域名来访问，完成项目上线。
+
+> 💡 TIP : 后期也会尝试分享一些适合程序员的技术副业，比如开发一些小工具网站，进行推广运营，有了一定用户量，能够挣点零花钱啥的。当然，这都是后话了，前提还需要你能够自行完整的开发一个独立应用，前期还是以项目实战为主。
+
+既然鲲鲲是准备出一系列的实战项目，我希望这些项目的难度是循序渐进的，能够让你真实的感受到自己的功力在慢慢增强。但是又不想写那种纯纯的 CRUD 型管理后台项目，太枯燥。那么，第一个项目鲲鲲就定位在难度不大，易上手，有趣，并且非常有代表性，实际工作中也能够被频繁用到的。
+
+脑瓜子一转，想到之前好多读者问我博客的事情，今年 4 月份的时候，又有读者微信问我: *你的博客有没有开源，感觉还挺好看，也想学习、部署一个。*
+
+![](https://img.yangmufa.cn/ibp/169355366112215)
+
+于是乎，花了点时间整了第一个实战项目 —— **前后端分离的博客 ibp**。
+
+
+## 💁 项目介绍
+
+每个技术人都应该有属于自己的博客！相比较直接使用第三方博客平台，自行搭建博客更有成就感；另外就是没有平台限制，比如你想发个二维码引流啥的，平台基本都是不允许的，还有，你可以自由 `div` 定制自己想要的博客 `css` 样式，哪天 UI 看不爽了，咱就自己换；最后，*面试的时候，如果简历贴上的是自己开发博客地址，也会很加分*！
+
+### 🔗 演示地址
+
+目前 1.0 版本已经部署到了阿里云服务器上，可点击下面链接进行访问，查看实际效果：
+
+[https://www.yangmufa.cn](https://www.yangmufa.cn "https://www.yangmufa.cn")
+
+管理后台登录账号/密码:
+
+- 账号：test
+- 密码：test
+
+> ⚠️ 注意：该账号的角色为*游客*角色，*仅支持查询操作*，新增、修改、删除操作会提示不允许。
+
+### ⚒️ 功能模块
+
+> 💡 TIP : 以下*只是 1.0 版本的功能，后续鲲鲲将添加更多功能进去, 比如图库管理、知识库、在线人数统计、SSR（服务端渲染） 等等*，能够想到的高逼格功能，咱都整上，附带超详细的实战图文笔记 ...
+
+![ibp 功能模块一览](https://img.yangmufa.cn/ibp/169560157482464 "ibp 功能模块一览")
+
+### ✏️ 技术栈
+
+![ibp 技术栈一览](https://img.yangmufa.cn/ibp/169560181378937 "ibp 技术栈一览")
+
+## 🎉 专栏目标
+
+学完本项目，你将具备如下能力：
+
+- 掌握独立开发全栈项目的能力（*后端 + 前端*）；
+- 掌握 Spring Boot 相关技术栈，以及构建后端项目能力，写出符合企业级的代码规范；
+- 掌握 Vue 3.2 + Element Plus + Vite 4 技术构建前端工程的能力，并能够手动搭建 Admin 后台管理系统；
+- 掌握前端页面响应式设计（同时适配不同屏幕），排版布局，能够根据自己需求，`div` 自己想要的前端效果；
+- ...
+
+## 💡 专栏亮点
+
+- 在技术选型上，鲲鲲选择了目前主流热门的技术栈，对标企业级项目开发；
+- 严格把控代码质量，数据库设计，写出令同事称道的代码；
+- 熟悉后端工程的搭建，如一些通用的基础设施：参数校验、全局异常捕获、`API` 统一出入参日志打印等等；
+- 能够独立完成整个网站的部署流程，从功能开发到服务器、域名选购，再到网站备案，最终公网可访问；
+- 对象存储 `Minio` 的使用, 能够独立搭建个人图床；
+- 从 0 到 1 ，通过 `Element Plus` 纯手搭 `Admin` 管理后台前端骨架；
+- 使用 Vue 3 `setup` 等语法糖新特性；
+- 博客前台页面在设计上美观大气；
+- ...
+
+## 📖 专栏大纲
+
+整个实战专栏，鲲鲲按功能点开发进度来做的目录，目前已经更新到了第第五章，目录大致如下：
+
+> 💡 TIP : 如下目录不代表最终内容，只会更多，目前只是把已完成的部分详细的罗列了出来，其中大部分功能正在开发中，所属具体小节的标题也会陆续更新进来。
+
+- 一、[项目介绍](https://www.yangmufa.cn/column/10000.html)
+- 二、开发环境搭建
+  - [2.1 【后端】环境安装&工具准备](https://www.yangmufa.cn/column/10003.html)
+  - [2.2 【前端】开发环境&工具安装](https://www.yangmufa.cn/column/10004.html)
+
+- 三、Spring Boot 后端工程搭建
+  - [3.1 搭建 Spring Boot 多模块工程](https://www.yangmufa.cn/column/10005.html)
+  - [3.2 Spring Boot 多环境配置](https://www.yangmufa.cn/column/10006.html)
+  - [3.3 配置 Lombok](https://www.yangmufa.cn/column/10007.html)
+  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yangmufa.cn/column/10008.html)
+  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yangmufa.cn/column/10009.html)
+  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yangmufa.cn/column/10010.html)
+  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yangmufa.cn/column/10011.html)
+  - [3.8 Spring Boot 自定义响应工具类](https://www.yangmufa.cn/column/10012.html)
+  - [3.9 Spring Boot 实现全局异常管理](https://www.yangmufa.cn/column/10013.html)
+  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yangmufa.cn/column/10014.html)
+  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yangmufa.cn/column/10015.html)
+  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yangmufa.cn/column/10016.html)
+  - [3.13 小结](https://www.yangmufa.cn/column/10017.html)
+
+- 四、使用 Vue 3 + Vite 4 搭建前端工程
+  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yangmufa.cn/column/10018.html)
+  - [4.2 安装 VSCode 开发工具](https://www.yangmufa.cn/column/10019.html)
+  - [4.3 添加 vue-router 路由管理器](https://www.yangmufa.cn/column/10020.html)
+  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yangmufa.cn/column/10021.html)
+  - [4.5 整合 Tailwind CSS](https://www.yangmufa.cn/column/10022.html)
+  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yangmufa.cn/column/10023.html)
+  - [4.7 整合饿了么 Element Plus 组件库](https://www.yangmufa.cn/column/10024.html)
+
+- 五、登录模块开发
+  - [5.1 登录页设计：支持响应式布局](https://www.yangmufa.cn/column/10025.html)
+  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yangmufa.cn/column/10026.html)
+  - [5.3 整合 Mybatis Plus](https://www.yangmufa.cn/column/10027.html)
+  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yangmufa.cn/column/10028.html)
+  - [5.5 整合 Spring Security](https://www.yangmufa.cn/column/10029.html)
+  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yangmufa.cn/column/10030.html)
+  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yangmufa.cn/column/10031.html)
+  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yangmufa.cn/column/10032.html)
+  - [5.9 登录页表单验证](https://www.yangmufa.cn/column/10033.html)
+  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yangmufa.cn/column/10034.html)
+  - [5.11 存储 Token 到 Cookie 中](https://www.yangmufa.cn/column/10035.html)
+  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yangmufa.cn/column/10036.html)
+  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yangmufa.cn/column/10037.html)
+  - [5.14 实现页面顶部加载 Loading 效果](https://www.yangmufa.cn/column/10038.html)
+  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yangmufa.cn/column/10040.html)
+  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yangmufa.cn/column/10089.html)
+  
+  
+  
+
+- 六、Element Plus 手搭 Admin 管理后台骨架
+  - [6.1 搭建管理后台基本布局](https://www.yangmufa.cn/column/10039.html)
+  - [6.2 后台公共 Header 头：样式布局](https://www.yangmufa.cn/column/10041.html)
+  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yangmufa.cn/column/10042.html)
+  - [6.4 整合全局状态管理库 Pinia](https://www.yangmufa.cn/column/10043.html)
+  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yangmufa.cn/column/10044.html)
+  - [6.6 支持全屏展示、页面点击刷新](https://www.yangmufa.cn/column/10045.html)
+  - [6.7 标签导航栏组件实现：样式布局](https://www.yangmufa.cn/column/10046.html)
+  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yangmufa.cn/column/10047.html)
+  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yangmufa.cn/column/10048.html)
+  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yangmufa.cn/column/10049.html)
+  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yangmufa.cn/column/10050.html)
+  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yangmufa.cn/column/10051.html)
+  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yangmufa.cn/column/10052.html)
+  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yangmufa.cn/column/10053.html)
+  - [6.15 修改用户密码接口开发](https://www.yangmufa.cn/column/10054.html)
+  - [6.16 获取当前登录用户信息接口开发](https://www.yangmufa.cn/column/10055.html)
+  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yangmufa.cn/column/10056.html)
+  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yangmufa.cn/column/10057.html)
+  - [6.19 用户修改密码、退出登录功能开发](https://www.yangmufa.cn/column/10058.html)
+  - [6.20 小结](https://www.yangmufa.cn/column/10059.html)
+
+  
+
+  
+- 七、管理后台：文章分类模块开发
+  - [7.1 分类模块接口分析](https://www.yangmufa.cn/column/10060.html)
+  - [7.2 文章分类：新增接口开发](https://www.yangmufa.cn/column/10061.html)
+  - [7.3 文章分类：分页接口开发](https://www.yangmufa.cn/column/10062.html)
+  - [7.4 文章分类：删除接口开发](https://www.yangmufa.cn/column/10063.html)
+  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yangmufa.cn/column/10064.html)
+  - [7.6 后台分类管理页面：样式布局](https://www.yangmufa.cn/column/10065.html)
+  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yangmufa.cn/column/10066.html)
+  - [7.8 文章分类：分页列表数据动态渲染](https://www.yangmufa.cn/column/10067.html)
+  - [7.9 文章分类：新增功能开发](https://www.yangmufa.cn/column/10068.html)
+  - [7.10 文章分类：删除功能开发](https://www.yangmufa.cn/column/10069.html)
+  - [7.11 通用表单对话框组件封装](https://www.yangmufa.cn/column/10070.html)
+  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yangmufa.cn/column/10071.html)
+  
+
+
+- 八、管理后台：标签模块开发
+  - [8.1 标签模块接口分析【视频讲解】](https://www.yangmufa.cn/column/10072.html)
+  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10073.html)
+  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yangmufa.cn/column/10074.html)
+  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10075.html)
+  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yangmufa.cn/column/10076.html)
+  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yangmufa.cn/column/10077.html)
+  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yangmufa.cn/column/10078.html)
+  
+  
+  
+- 九、管理后台：博客设置模块开发
+  - [9.1 博客设置模块功能分析、表设计](https://www.yangmufa.cn/column/10079.html)
+  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yangmufa.cn/column/10080.html)
+  - [9.3 文件上传接口开发](https://www.yangmufa.cn/column/10081.html)
+  - [9.4 博客设置: 更新接口开发](https://www.yangmufa.cn/column/10082.html)
+  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yangmufa.cn/column/10083.html)
+  - [9.6 博客设置：获取详情接口开发](https://www.yangmufa.cn/column/10084.html)
+  - [9.7 博客设置页面：样式布局](https://www.yangmufa.cn/column/10085.html)
+  - [9.8 管理后台：滚动样式优化](https://www.yangmufa.cn/column/10086.html)
+  - [9.9 博客设置页：数据渲染、图片上传](https://www.yangmufa.cn/column/10087.html)
+  - [9.10 博客设置页：更新设置](https://www.yangmufa.cn/column/10088.html)
+  
+
+
+
+- 十、管理后台：文章模块开发
+  - [10.1 文章管理模块功能分析、表设计](https://www.yangmufa.cn/column/10090.html)
+  - [10.2 文章管理：文章发布接口开发（1）](https://www.yangmufa.cn/column/10091.html)
+  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yangmufa.cn/column/10092.html)
+  - [10.4 文章管理：文章删除接口开发](https://www.yangmufa.cn/column/10093.html)
+  - [10.5 文章管理：分页接口开发](https://www.yangmufa.cn/column/10094.html)
+  - [10.6 文章管理：获取文章详情接口开发](https://www.yangmufa.cn/column/10095.html)
+  - [10.7 文章管理：文章更新接口开发](https://www.yangmufa.cn/column/10096.html)
+  - [10.8 文章管理：分页列表开发](https://www.yangmufa.cn/column/10097.html)
+  - [10.9 文章管理页：删除文章开发](https://www.yangmufa.cn/column/10098.html)
+  - [10.10 文章管理页：写文章对话框样式布局](https://www.yangmufa.cn/column/10099.html)
+  - [10.11 文章管理页：文章发布功能开发](https://www.yangmufa.cn/column/10100.html)
+  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yangmufa.cn/column/10101.html)
+  - [10.13 文章管理页：文章编辑功能开发](https://www.yangmufa.cn/column/10102.html)
+  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yangmufa.cn/column/10103.html)
+  
+  
+  
+  
+  
+
+- 十一、博客前台：首页开发
+   - [11.1 前台首页、归档页接口分析](https://www.yangmufa.cn/column/10104.html)
+   - [11.2 前台首页：文章分页接口开发](https://www.yangmufa.cn/column/10105.html)
+   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yangmufa.cn/column/10106.html)
+   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yangmufa.cn/column/10107.html)
+   - [11.5 前台 Header 头组件封装](https://www.yangmufa.cn/column/10108.html)   
+   - [11.6 首页样式布局设计（1）](https://www.yangmufa.cn/column/10109.html)
+   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yangmufa.cn/column/10110.html)
+   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yangmufa.cn/column/10111.html)
+   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yangmufa.cn/column/10112.html)
+   - [11.10 首页文章分页数据渲染](https://www.yangmufa.cn/column/10113.html)
+   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yangmufa.cn/column/10114.html)
+   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yangmufa.cn/column/10115.html)
+   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yangmufa.cn/column/10116.html)
+   
+   
+
+- 十二、博客前台：归档列表页、分类列表页、标签列表页开发
+   - [12.1 归档页、分类列表页接口分析](https://www.yangmufa.cn/column/10117.html)
+   - [12.2 文章归档分页接口开发](https://www.yangmufa.cn/column/10118.html)
+   - [12.3 前台归档页：样式布局设计](https://www.yangmufa.cn/column/10119.html)
+   - [12.4 前台归档页：分页列表功能开发](https://www.yangmufa.cn/column/10120.html)
+   - [12.5 前台分类页开发](https://www.yangmufa.cn/column/10121.html)
+   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10122.html)
+   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yangmufa.cn/column/10123.html)
+   - [12.8 分类-文章列表页开发](https://www.yangmufa.cn/column/10124.html)
+   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yangmufa.cn/column/10125.html)
+   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10130.html)
+   - [12.11 标签-文章列表页开发](https://www.yangmufa.cn/column/10131.html)
+
+
+- 十三、博客前台：文章详情页开发
+   - [13.1 文章详情页接口分析](https://www.yangmufa.cn/column/10126.html)
+   - [13.2 后端封装 Markdown 装换工具类](https://www.yangmufa.cn/column/10127.html)
+   - [13.3 获取文章详情接口开发](https://www.yangmufa.cn/column/10128.html)
+   - [13.4 文章详情页：样式布局设计](https://www.yangmufa.cn/column/10129.html)
+
+   - *努力爆肝中，每天更新两小节, 按目前的更新速度，1.0 版本差不多还剩1个半月更新完毕...*
+- 十四、管理后台：仪表盘模块开发
+- 十五、项目部署上线
+  - 云服务器选购
+  - 相关环境安装（JDK、Docker、Nginx、Mysql）
+  - Nginx 配合 Spring Boot 部署
+  - 部署前端项目以及通过 IP 访问
+  - 域名选购
+  - 网站备案
+  - 域名映射，项目正式上线
+
+
+
+## 👨🏻‍💻 适用人群
+
+- **在校学生**，有一定基础，想做毕业设计，或者为找工作准备，需要实战项目加分；
+
+  > 💡 TIP: 小白也没关系，鲲鲲将会告诉你学习路线是啥，哪里有免费的高质量学习视频可以白嫖，学完这些技术栈后再来做实战项目，或者学一点基础边实战边学习都可以。
+
+- **已经参与工作，对前后端分离感兴趣**，想学习 Vue 3 前端，对独立上线自己网站感兴趣的童鞋；
+- **想独立接私活**，需要同时会后端、前端技术栈的童鞋；
+
+## ✊ 如何加入？
+
+鲲鲲已经将本站的专栏模块接入了知识星球，想要查看专栏内容，需要订阅我星球后，*微信扫码授权登录后即可解锁所有内容*。因为目前也是刚开始运营，所以价格不会太高，星球官方定价最低必须是 50 元。鲲鲲最终定价为 <font class="text-xl" style=''color: red''><b>限时 35 元（附 15 元的优惠券，记得扫码领取下方优惠券加入哟）</b></font>，后续随着内容慢慢的更新迭代，会慢慢涨上去，所以早加入更具性价比哟~ 
+
+<font class="text-xl" style=''color: red''><b>星球支持 3 天无理由退费</b></font>，感兴趣的小伙伴*可先加入，看看内容质量如何，不合适直接退款就行，觉得确实内容很干货，就留下来学习，无套路!*
+
+<div class="flex items-center justify-center text-lg text-red-500 font-bold mb-2">扫描下方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👇👇</div>
+
+!["领取优惠券加入，更划算"](https://img.yangmufa.cn/ibp/169355760680941 "领取优惠券加入，更划算")
+
+<div class="flex items-center justify-center text-lg text-red-500 font-bold">扫描上方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👆👆</div>
+
+
+
+
+## ❓ 关于答疑
+
+小伙伴们如果在跟着专栏学习，手敲项目的过程中遇到问题，碰到无法解决的问题，**可在鲲鲲的知识星球内部提问**，我会统一来解答, 如果星球说不清楚的，就加私人微信，打包发项目，亲自给你看哪一步有问题，保证跟上项目进度，不落下任何一个小伙伴，大家一起冲冲冲~
+
+## 😃 加微信咨询
+
+对专栏感兴趣的小伙伴，也可以加鲲鲲私人微信来咨询，扫描下方二维码即可，记得备注【*咨询*】哟：
+
+![扫描二维码，添加鲲鲲私人微信](https://img.yangmufa.cn/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")');
 INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (24, 24, '## 👋 自我介绍
 
 
@@ -1023,9 +1738,19 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 对专栏感兴趣的小伙伴，也可以加鲲鲲私人微信来咨询，扫描下方二维码即可，记得备注【*咨询*】哟：
 
 ![扫描二维码，添加鲲鲲私人微信](https://img.yangmufa.cn/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")');
-INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (8, 8, '![](http://127.0.0.1:9000/roc-blog/d1ca5dfe1229438e8183a![](http://127.0.0.1:9000/blog/4d22df609b114052ba6a89491a579a7f.jpg)
+INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (2056031402964684800, 2056031402947907584, '发发发
+![](http://127.0.0.1:9000/blog/5158cb66f1e34b249017ed3deab83b.webp)
+圣斗士
+![](https://ts2.tc.mm.bing.net/th/id/OIP-C.wTEDnsVhWfBNsbxWhav7sAHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3)
 
-![](http://127.0.0.1:9000/blog/f97f3c48df0c46d7aaef12155cfab80e.jpg)
+
+都算是
+![](http://127.0.0.1:9000/blog/7dbb44a4e7d2431580ad78ecda9101b.png)
+多少多少');
+INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (31, 31, '![](https://tse1-mm.cn.bing.net/th/id/OIP-C.4Kn7tCYsT05EL_jfHw7u-AHaEC?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3)');
+INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (8, 8, '![](http://127.0.0.1:9000/roc-blog/d1ca5dfe1229438e8183a![](http://127.0.0.1:9000/blog-article/4d22df609b114052ba6a89491a579a7f.jpg)
+
+![](http://127.0.0.1:9000/blog-article/f97f3c48df0c46d7aaef12155cfab80e.jpg)
 
 ## 👋 自我介绍88
 
@@ -1375,725 +2100,6 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 对专栏感兴趣的小伙伴，也可以加鲲鲲私人微信来咨询，扫描下方二维码即可，记得备注【*咨询*】哟：
 
 ![扫描二维码，添加鲲鲲私人微信](https://img.yangmufa.cn/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")');
-INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (2056031402964684800, 2056031402947907584, '发发发
-![](http://127.0.0.1:9000/blog/5158cb66f1e34b249017ed3deab83b.webp)
-圣斗士
-![](https://ts2.tc.mm.bing.net/th/id/OIP-C.wTEDnsVhWfBNsbxWhav7sAHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3)
-
-
-都算是
-![](http://127.0.0.1:9000/blog/7dbb44a4e7d2431580ad78ecda9101b.png)
-多少多少');
-INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (31, 31, '![](https://tse1-mm.cn.bing.net/th/id/OIP-C.4Kn7tCYsT05EL_jfHw7u-AHaEC?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3)');
-INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (1, 1, '## 👋 自我介绍
-
-
-
-![](http://127.0.0.1:9000/roc-blog/599ba5b9189f49d99bdf0b5c115a3a7b.jpg)
-
-
-
-
-
-> 大家好，我是 程序员-杨工子。前某厂.Net全栈工程师，Mint.Blog作者。00后，码龄 3 年，目前供职于制造业互联网领域，主导负责过MES、数据传输、日志平台、任务调度、文件平台等产品，以支撑各部门业务线。喜欢分享知识，热爱技术，也不止于技术，不只是写 .Net，业余也爱玩前端、AI 等，是个活跃的技术折腾者。
-
-```java
-
-  @Test
-  void testLog() {
-      log.info("这是一行 Info 级别日志");
-      log.warn("这是一行 Warn 级别日志");
-      log.error("这是一行 Error 级别日志");
-
-      // 占位符
-      String author = "鲲鲲";
-      log.info("这是一行带有占位符日志，作者：{}", author);
-  }
-  
-```
----
-
-> 本项目 1.0 版本已部署到云服务器上，可点击下面链接进行访问，查看实际效果：
->
-> 演示地址：[https://www.yangmufa.cn](https://www.yangmufa.cn)
->
-> 后台登录演示账号:
-> 
-> - 账号：test
-> - 密码：test
-
-## 🏃 关于实战项目
-
-知识星球是个私密学习圈子，我会在星球内部，出**一系列从 0 到 1 的实战项目，贴合真实的企业级项目开发规范，使用主流的企业技术栈，全程手写后端 + 前端完整代码，通过专栏的形式，把每个功能点的开发的步骤，手摸手，通过丰富的图片 + 文字，保姆级教学（PS: 同时按小节进度提供代码，不至于一上来代码量太多，不知道从哪入手）**。
-
-
-![](https://img.yangmufa.cn/ibp/169361945065538)
-
-目前，我已经给自己的网站：[练习生基地](https://www.yangmufa.cn/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
-
-![](https://img.yangmufa.cn/ibp/169733756405612)
-
-![](https://img.yangmufa.cn/ibp/169733761293187)
-
-![](https://img.yangmufa.cn/ibp/169733762195775)
-
-另外，在跟随小节内容上手的过程中，若遇到问题，可在星球内发起 *1v1 提问，鲲鲲亲自解答*。
-
-!["星球内提问"](https://img.yangmufa.cn/ibp/169396126861858 "星球内提问")
-
-星球说不清楚的，项目进度因为某一块搞不定的，微信发我源码，帮忙看问题出在哪：
-
-![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yangmufa.cn/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
-
-
-陪伴式写项目，到最终部署到云服务器上，能够通过域名来访问，完成项目上线。
-
-> 💡 TIP : 后期也会尝试分享一些适合程序员的技术副业，比如开发一些小工具网站，进行推广运营，有了一定用户量，能够挣点零花钱啥的。当然，这都是后话了，前提还需要你能够自行完整的开发一个独立应用，前期还是以项目实战为主。
-
-既然鲲鲲是准备出一系列的实战项目，我希望这些项目的难度是循序渐进的，能够让你真实的感受到自己的功力在慢慢增强。但是又不想写那种纯纯的 CRUD 型管理后台项目，太枯燥。那么，第一个项目鲲鲲就定位在难度不大，易上手，有趣，并且非常有代表性，实际工作中也能够被频繁用到的。
-
-脑瓜子一转，想到之前好多读者问我博客的事情，今年 4 月份的时候，又有读者微信问我: *你的博客有没有开源，感觉还挺好看，也想学习、部署一个。*
-
-![](https://img.yangmufa.cn/ibp/169355366112215)
-
-于是乎，花了点时间整了第一个实战项目 —— **前后端分离的博客 ibp**。
-
-
-## 💁 项目介绍
-
-每个技术人都应该有属于自己的博客！相比较直接使用第三方博客平台，自行搭建博客更有成就感；另外就是没有平台限制，比如你想发个二维码引流啥的，平台基本都是不允许的，还有，你可以自由 `div` 定制自己想要的博客 `css` 样式，哪天 UI 看不爽了，咱就自己换；最后，*面试的时候，如果简历贴上的是自己开发博客地址，也会很加分*！
-
-### 🔗 演示地址
-
-目前 1.0 版本已经部署到了阿里云服务器上，可点击下面链接进行访问，查看实际效果：
-
-[https://www.yangmufa.cn](https://www.yangmufa.cn "https://www.yangmufa.cn")
-
-管理后台登录账号/密码:
-
-- 账号：test
-- 密码：test
-
-> ⚠️ 注意：该账号的角色为*游客*角色，*仅支持查询操作*，新增、修改、删除操作会提示不允许。
-
-### ⚒️ 功能模块
-
-> 💡 TIP : 以下*只是 1.0 版本的功能，后续鲲鲲将添加更多功能进去, 比如图库管理、知识库、在线人数统计、SSR（服务端渲染） 等等*，能够想到的高逼格功能，咱都整上，附带超详细的实战图文笔记 ...
-
-![ibp 功能模块一览](https://img.yangmufa.cn/ibp/169560157482464 "ibp 功能模块一览")
-
-### ✏️ 技术栈
-
-![ibp 技术栈一览](https://img.yangmufa.cn/ibp/169560181378937 "ibp 技术栈一览")
-
-## 🎉 专栏目标
-
-学完本项目，你将具备如下能力：
-
-- 掌握独立开发全栈项目的能力（*后端 + 前端*）；
-- 掌握 Spring Boot 相关技术栈，以及构建后端项目能力，写出符合企业级的代码规范；
-- 掌握 Vue 3.2 + Element Plus + Vite 4 技术构建前端工程的能力，并能够手动搭建 Admin 后台管理系统；
-- 掌握前端页面响应式设计（同时适配不同屏幕），排版布局，能够根据自己需求，`div` 自己想要的前端效果；
-- ...
-
-## 💡 专栏亮点
-
-- 在技术选型上，鲲鲲选择了目前主流热门的技术栈，对标企业级项目开发；
-- 严格把控代码质量，数据库设计，写出令同事称道的代码；
-- 熟悉后端工程的搭建，如一些通用的基础设施：参数校验、全局异常捕获、`API` 统一出入参日志打印等等；
-- 能够独立完成整个网站的部署流程，从功能开发到服务器、域名选购，再到网站备案，最终公网可访问；
-- 对象存储 `Minio` 的使用, 能够独立搭建个人图床；
-- 从 0 到 1 ，通过 `Element Plus` 纯手搭 `Admin` 管理后台前端骨架；
-- 使用 Vue 3 `setup` 等语法糖新特性；
-- 博客前台页面在设计上美观大气；
-- ...
-
-## 📖 专栏大纲
-
-整个实战专栏，鲲鲲按功能点开发进度来做的目录，目前已经更新到了第第五章，目录大致如下：
-
-> 💡 TIP : 如下目录不代表最终内容，只会更多，目前只是把已完成的部分详细的罗列了出来，其中大部分功能正在开发中，所属具体小节的标题也会陆续更新进来。
-
-- 一、[项目介绍](https://www.yangmufa.cn/column/10000.html)
-- 二、开发环境搭建
-  - [2.1 【后端】环境安装&工具准备](https://www.yangmufa.cn/column/10003.html)
-  - [2.2 【前端】开发环境&工具安装](https://www.yangmufa.cn/column/10004.html)
-
-- 三、Spring Boot 后端工程搭建
-  - [3.1 搭建 Spring Boot 多模块工程](https://www.yangmufa.cn/column/10005.html)
-  - [3.2 Spring Boot 多环境配置](https://www.yangmufa.cn/column/10006.html)
-  - [3.3 配置 Lombok](https://www.yangmufa.cn/column/10007.html)
-  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yangmufa.cn/column/10008.html)
-  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yangmufa.cn/column/10009.html)
-  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yangmufa.cn/column/10010.html)
-  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yangmufa.cn/column/10011.html)
-  - [3.8 Spring Boot 自定义响应工具类](https://www.yangmufa.cn/column/10012.html)
-  - [3.9 Spring Boot 实现全局异常管理](https://www.yangmufa.cn/column/10013.html)
-  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yangmufa.cn/column/10014.html)
-  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yangmufa.cn/column/10015.html)
-  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yangmufa.cn/column/10016.html)
-  - [3.13 小结](https://www.yangmufa.cn/column/10017.html)
-
-- 四、使用 Vue 3 + Vite 4 搭建前端工程
-  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yangmufa.cn/column/10018.html)
-  - [4.2 安装 VSCode 开发工具](https://www.yangmufa.cn/column/10019.html)
-  - [4.3 添加 vue-router 路由管理器](https://www.yangmufa.cn/column/10020.html)
-  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yangmufa.cn/column/10021.html)
-  - [4.5 整合 Tailwind CSS](https://www.yangmufa.cn/column/10022.html)
-  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yangmufa.cn/column/10023.html)
-  - [4.7 整合饿了么 Element Plus 组件库](https://www.yangmufa.cn/column/10024.html)
-
-- 五、登录模块开发
-  - [5.1 登录页设计：支持响应式布局](https://www.yangmufa.cn/column/10025.html)
-  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yangmufa.cn/column/10026.html)
-  - [5.3 整合 Mybatis Plus](https://www.yangmufa.cn/column/10027.html)
-  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yangmufa.cn/column/10028.html)
-  - [5.5 整合 Spring Security](https://www.yangmufa.cn/column/10029.html)
-  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yangmufa.cn/column/10030.html)
-  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yangmufa.cn/column/10031.html)
-  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yangmufa.cn/column/10032.html)
-  - [5.9 登录页表单验证](https://www.yangmufa.cn/column/10033.html)
-  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yangmufa.cn/column/10034.html)
-  - [5.11 存储 Token 到 Cookie 中](https://www.yangmufa.cn/column/10035.html)
-  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yangmufa.cn/column/10036.html)
-  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yangmufa.cn/column/10037.html)
-  - [5.14 实现页面顶部加载 Loading 效果](https://www.yangmufa.cn/column/10038.html)
-  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yangmufa.cn/column/10040.html)
-  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yangmufa.cn/column/10089.html)
-  
-  
-  
-
-- 六、Element Plus 手搭 Admin 管理后台骨架
-  - [6.1 搭建管理后台基本布局](https://www.yangmufa.cn/column/10039.html)
-  - [6.2 后台公共 Header 头：样式布局](https://www.yangmufa.cn/column/10041.html)
-  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yangmufa.cn/column/10042.html)
-  - [6.4 整合全局状态管理库 Pinia](https://www.yangmufa.cn/column/10043.html)
-  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yangmufa.cn/column/10044.html)
-  - [6.6 支持全屏展示、页面点击刷新](https://www.yangmufa.cn/column/10045.html)
-  - [6.7 标签导航栏组件实现：样式布局](https://www.yangmufa.cn/column/10046.html)
-  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yangmufa.cn/column/10047.html)
-  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yangmufa.cn/column/10048.html)
-  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yangmufa.cn/column/10049.html)
-  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yangmufa.cn/column/10050.html)
-  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yangmufa.cn/column/10051.html)
-  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yangmufa.cn/column/10052.html)
-  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yangmufa.cn/column/10053.html)
-  - [6.15 修改用户密码接口开发](https://www.yangmufa.cn/column/10054.html)
-  - [6.16 获取当前登录用户信息接口开发](https://www.yangmufa.cn/column/10055.html)
-  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yangmufa.cn/column/10056.html)
-  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yangmufa.cn/column/10057.html)
-  - [6.19 用户修改密码、退出登录功能开发](https://www.yangmufa.cn/column/10058.html)
-  - [6.20 小结](https://www.yangmufa.cn/column/10059.html)
-
-  
-
-  
-- 七、管理后台：文章分类模块开发
-  - [7.1 分类模块接口分析](https://www.yangmufa.cn/column/10060.html)
-  - [7.2 文章分类：新增接口开发](https://www.yangmufa.cn/column/10061.html)
-  - [7.3 文章分类：分页接口开发](https://www.yangmufa.cn/column/10062.html)
-  - [7.4 文章分类：删除接口开发](https://www.yangmufa.cn/column/10063.html)
-  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yangmufa.cn/column/10064.html)
-  - [7.6 后台分类管理页面：样式布局](https://www.yangmufa.cn/column/10065.html)
-  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yangmufa.cn/column/10066.html)
-  - [7.8 文章分类：分页列表数据动态渲染](https://www.yangmufa.cn/column/10067.html)
-  - [7.9 文章分类：新增功能开发](https://www.yangmufa.cn/column/10068.html)
-  - [7.10 文章分类：删除功能开发](https://www.yangmufa.cn/column/10069.html)
-  - [7.11 通用表单对话框组件封装](https://www.yangmufa.cn/column/10070.html)
-  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yangmufa.cn/column/10071.html)
-  
-
-
-- 八、管理后台：标签模块开发
-  - [8.1 标签模块接口分析【视频讲解】](https://www.yangmufa.cn/column/10072.html)
-  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10073.html)
-  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yangmufa.cn/column/10074.html)
-  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10075.html)
-  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yangmufa.cn/column/10076.html)
-  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yangmufa.cn/column/10077.html)
-  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yangmufa.cn/column/10078.html)
-  
-  
-  
-- 九、管理后台：博客设置模块开发
-  - [9.1 博客设置模块功能分析、表设计](https://www.yangmufa.cn/column/10079.html)
-  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yangmufa.cn/column/10080.html)
-  - [9.3 文件上传接口开发](https://www.yangmufa.cn/column/10081.html)
-  - [9.4 博客设置: 更新接口开发](https://www.yangmufa.cn/column/10082.html)
-  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yangmufa.cn/column/10083.html)
-  - [9.6 博客设置：获取详情接口开发](https://www.yangmufa.cn/column/10084.html)
-  - [9.7 博客设置页面：样式布局](https://www.yangmufa.cn/column/10085.html)
-  - [9.8 管理后台：滚动样式优化](https://www.yangmufa.cn/column/10086.html)
-  - [9.9 博客设置页：数据渲染、图片上传](https://www.yangmufa.cn/column/10087.html)
-  - [9.10 博客设置页：更新设置](https://www.yangmufa.cn/column/10088.html)
-  
-
-
-
-- 十、管理后台：文章模块开发
-  - [10.1 文章管理模块功能分析、表设计](https://www.yangmufa.cn/column/10090.html)
-  - [10.2 文章管理：文章发布接口开发（1）](https://www.yangmufa.cn/column/10091.html)
-  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yangmufa.cn/column/10092.html)
-  - [10.4 文章管理：文章删除接口开发](https://www.yangmufa.cn/column/10093.html)
-  - [10.5 文章管理：分页接口开发](https://www.yangmufa.cn/column/10094.html)
-  - [10.6 文章管理：获取文章详情接口开发](https://www.yangmufa.cn/column/10095.html)
-  - [10.7 文章管理：文章更新接口开发](https://www.yangmufa.cn/column/10096.html)
-  - [10.8 文章管理：分页列表开发](https://www.yangmufa.cn/column/10097.html)
-  - [10.9 文章管理页：删除文章开发](https://www.yangmufa.cn/column/10098.html)
-  - [10.10 文章管理页：写文章对话框样式布局](https://www.yangmufa.cn/column/10099.html)
-  - [10.11 文章管理页：文章发布功能开发](https://www.yangmufa.cn/column/10100.html)
-  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yangmufa.cn/column/10101.html)
-  - [10.13 文章管理页：文章编辑功能开发](https://www.yangmufa.cn/column/10102.html)
-  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yangmufa.cn/column/10103.html)
-  
-  
-  
-  
-  
-
-- 十一、博客前台：首页开发
-   - [11.1 前台首页、归档页接口分析](https://www.yangmufa.cn/column/10104.html)
-   - [11.2 前台首页：文章分页接口开发](https://www.yangmufa.cn/column/10105.html)
-   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yangmufa.cn/column/10106.html)
-   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yangmufa.cn/column/10107.html)
-   - [11.5 前台 Header 头组件封装](https://www.yangmufa.cn/column/10108.html)   
-   - [11.6 首页样式布局设计（1）](https://www.yangmufa.cn/column/10109.html)
-   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yangmufa.cn/column/10110.html)
-   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yangmufa.cn/column/10111.html)
-   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yangmufa.cn/column/10112.html)
-   - [11.10 首页文章分页数据渲染](https://www.yangmufa.cn/column/10113.html)
-   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yangmufa.cn/column/10114.html)
-   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yangmufa.cn/column/10115.html)
-   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yangmufa.cn/column/10116.html)
-   
-   
-
-- 十二、博客前台：归档列表页、分类列表页、标签列表页开发
-   - [12.1 归档页、分类列表页接口分析](https://www.yangmufa.cn/column/10117.html)
-   - [12.2 文章归档分页接口开发](https://www.yangmufa.cn/column/10118.html)
-   - [12.3 前台归档页：样式布局设计](https://www.yangmufa.cn/column/10119.html)
-   - [12.4 前台归档页：分页列表功能开发](https://www.yangmufa.cn/column/10120.html)
-   - [12.5 前台分类页开发](https://www.yangmufa.cn/column/10121.html)
-   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10122.html)
-   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yangmufa.cn/column/10123.html)
-   - [12.8 分类-文章列表页开发](https://www.yangmufa.cn/column/10124.html)
-   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yangmufa.cn/column/10125.html)
-   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10130.html)
-   - [12.11 标签-文章列表页开发](https://www.yangmufa.cn/column/10131.html)
-
-
-- 十三、博客前台：文章详情页开发
-   - [13.1 文章详情页接口分析](https://www.yangmufa.cn/column/10126.html)
-   - [13.2 后端封装 Markdown 装换工具类](https://www.yangmufa.cn/column/10127.html)
-   - [13.3 获取文章详情接口开发](https://www.yangmufa.cn/column/10128.html)
-   - [13.4 文章详情页：样式布局设计](https://www.yangmufa.cn/column/10129.html)
-
-   - *努力爆肝中，每天更新两小节, 按目前的更新速度，1.0 版本差不多还剩1个半月更新完毕...*
-- 十四、管理后台：仪表盘模块开发
-- 十五、项目部署上线
-  - 云服务器选购
-  - 相关环境安装（JDK、Docker、Nginx、Mysql）
-  - Nginx 配合 Spring Boot 部署
-  - 部署前端项目以及通过 IP 访问
-  - 域名选购
-  - 网站备案
-  - 域名映射，项目正式上线
-
-
-
-## 👨🏻‍💻 适用人群
-
-- **在校学生**，有一定基础，想做毕业设计，或者为找工作准备，需要实战项目加分；
-
-  > 💡 TIP: 小白也没关系，鲲鲲将会告诉你学习路线是啥，哪里有免费的高质量学习视频可以白嫖，学完这些技术栈后再来做实战项目，或者学一点基础边实战边学习都可以。
-
-- **已经参与工作，对前后端分离感兴趣**，想学习 Vue 3 前端，对独立上线自己网站感兴趣的童鞋；
-- **想独立接私活**，需要同时会后端、前端技术栈的童鞋；
-
-## ✊ 如何加入？
-
-鲲鲲已经将本站的专栏模块接入了知识星球，想要查看专栏内容，需要订阅我星球后，*微信扫码授权登录后即可解锁所有内容*。因为目前也是刚开始运营，所以价格不会太高，星球官方定价最低必须是 50 元。鲲鲲最终定价为 <font class="text-xl" style=''color: red''><b>限时 35 元（附 15 元的优惠券，记得扫码领取下方优惠券加入哟）</b></font>，后续随着内容慢慢的更新迭代，会慢慢涨上去，所以早加入更具性价比哟~ 
-
-<font class="text-xl" style=''color: red''><b>星球支持 3 天无理由退费</b></font>，感兴趣的小伙伴*可先加入，看看内容质量如何，不合适直接退款就行，觉得确实内容很干货，就留下来学习，无套路!*
-
-<div class="flex items-center justify-center text-lg text-red-500 font-bold mb-2">扫描下方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👇👇</div>
-
-!["领取优惠券加入，更划算"](https://img.yangmufa.cn/ibp/169355760680941 "领取优惠券加入，更划算")
-
-<div class="flex items-center justify-center text-lg text-red-500 font-bold">扫描上方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👆👆</div>
-
-
-
-
-## ❓ 关于答疑
-
-小伙伴们如果在跟着专栏学习，手敲项目的过程中遇到问题，碰到无法解决的问题，**可在鲲鲲的知识星球内部提问**，我会统一来解答, 如果星球说不清楚的，就加私人微信，打包发项目，亲自给你看哪一步有问题，保证跟上项目进度，不落下任何一个小伙伴，大家一起冲冲冲~
-
-## 😃 加微信咨询
-
-对专栏感兴趣的小伙伴，也可以加鲲鲲私人微信来咨询，扫描下方二维码即可，记得备注【*咨询*】哟：
-
-![扫描二维码，添加鲲鲲私人微信](https://img.yangmufa.cn/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")
-
-
-
-
-
-
-
-
-
-## 👋 自我介绍
-
-
-
-![](http://127.0.0.1:9000/roc-blog/599ba5b9189f49d99bdf0b5c115a3a7b.jpg)
-
-
-
-
-
-> 大家好，我是鲲鲲。前某厂中台架构，公众号 程序员菜鲲 作者。95后，码龄 2 年，先后供职于支付、共享等互联网领域，主导负责过数据传输、日志平台、任务调度、文件平台等产品，以支撑各部门业务线。喜欢分享知识，热爱技术，也不止于技术，不只是写 Java，业余也爱玩前端、.Net 等，是个活跃的技术折腾者。
-
-```java
-
-  @Test
-  void testLog() {
-      log.info("这是一行 Info 级别日志");
-      log.warn("这是一行 Warn 级别日志");
-      log.error("这是一行 Error 级别日志");
-
-      // 占位符
-      String author = "鲲鲲";
-      log.info("这是一行带有占位符日志，作者：{}", author);
-  }
-  
-```
----
-
-> 本项目 1.0 版本已部署到云服务器上，可点击下面链接进行访问，查看实际效果：
->
-> 演示地址：[https://www.yangmufa.cn](https://www.yangmufa.cn)
->
-> 后台登录演示账号:
-> 
-> - 账号：test
-> - 密码：test
-
-## 🏃 关于实战项目
-
-知识星球是个私密学习圈子，我会在星球内部，出**一系列从 0 到 1 的实战项目，贴合真实的企业级项目开发规范，使用主流的企业技术栈，全程手写后端 + 前端完整代码，通过专栏的形式，把每个功能点的开发的步骤，手摸手，通过丰富的图片 + 文字，保姆级教学（PS: 同时按小节进度提供代码，不至于一上来代码量太多，不知道从哪入手）**。
-
-
-![](https://img.yangmufa.cn/ibp/169361945065538)
-
-目前，我已经给自己的网站：[练习生基地](https://www.yangmufa.cn/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
-
-![](https://img.yangmufa.cn/ibp/169733756405612)
-
-![](https://img.yangmufa.cn/ibp/169733761293187)
-
-![](https://img.yangmufa.cn/ibp/169733762195775)
-
-另外，在跟随小节内容上手的过程中，若遇到问题，可在星球内发起 *1v1 提问，鲲鲲亲自解答*。
-
-!["星球内提问"](https://img.yangmufa.cn/ibp/169396126861858 "星球内提问")
-
-星球说不清楚的，项目进度因为某一块搞不定的，微信发我源码，帮忙看问题出在哪：
-
-![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yangmufa.cn/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
-
-
-陪伴式写项目，到最终部署到云服务器上，能够通过域名来访问，完成项目上线。
-
-> 💡 TIP : 后期也会尝试分享一些适合程序员的技术副业，比如开发一些小工具网站，进行推广运营，有了一定用户量，能够挣点零花钱啥的。当然，这都是后话了，前提还需要你能够自行完整的开发一个独立应用，前期还是以项目实战为主。
-
-既然鲲鲲是准备出一系列的实战项目，我希望这些项目的难度是循序渐进的，能够让你真实的感受到自己的功力在慢慢增强。但是又不想写那种纯纯的 CRUD 型管理后台项目，太枯燥。那么，第一个项目鲲鲲就定位在难度不大，易上手，有趣，并且非常有代表性，实际工作中也能够被频繁用到的。
-
-脑瓜子一转，想到之前好多读者问我博客的事情，今年 4 月份的时候，又有读者微信问我: *你的博客有没有开源，感觉还挺好看，也想学习、部署一个。*
-
-![](https://img.yangmufa.cn/ibp/169355366112215)
-
-于是乎，花了点时间整了第一个实战项目 —— **前后端分离的博客 ibp**。
-
-
-## 💁 项目介绍
-
-每个技术人都应该有属于自己的博客！相比较直接使用第三方博客平台，自行搭建博客更有成就感；另外就是没有平台限制，比如你想发个二维码引流啥的，平台基本都是不允许的，还有，你可以自由 `div` 定制自己想要的博客 `css` 样式，哪天 UI 看不爽了，咱就自己换；最后，*面试的时候，如果简历贴上的是自己开发博客地址，也会很加分*！
-
-### 🔗 演示地址
-
-目前 1.0 版本已经部署到了阿里云服务器上，可点击下面链接进行访问，查看实际效果：
-
-[https://www.yangmufa.cn](https://www.yangmufa.cn "https://www.yangmufa.cn")
-
-管理后台登录账号/密码:
-
-- 账号：test
-- 密码：test
-
-> ⚠️ 注意：该账号的角色为*游客*角色，*仅支持查询操作*，新增、修改、删除操作会提示不允许。
-
-### ⚒️ 功能模块
-
-> 💡 TIP : 以下*只是 1.0 版本的功能，后续鲲鲲将添加更多功能进去, 比如图库管理、知识库、在线人数统计、SSR（服务端渲染） 等等*，能够想到的高逼格功能，咱都整上，附带超详细的实战图文笔记 ...
-
-![ibp 功能模块一览](https://img.yangmufa.cn/ibp/169560157482464 "ibp 功能模块一览")
-
-### ✏️ 技术栈
-
-![ibp 技术栈一览](https://img.yangmufa.cn/ibp/169560181378937 "ibp 技术栈一览")
-
-## 🎉 专栏目标
-
-学完本项目，你将具备如下能力：
-
-- 掌握独立开发全栈项目的能力（*后端 + 前端*）；
-- 掌握 Spring Boot 相关技术栈，以及构建后端项目能力，写出符合企业级的代码规范；
-- 掌握 Vue 3.2 + Element Plus + Vite 4 技术构建前端工程的能力，并能够手动搭建 Admin 后台管理系统；
-- 掌握前端页面响应式设计（同时适配不同屏幕），排版布局，能够根据自己需求，`div` 自己想要的前端效果；
-- ...
-
-## 💡 专栏亮点
-
-- 在技术选型上，鲲鲲选择了目前主流热门的技术栈，对标企业级项目开发；
-- 严格把控代码质量，数据库设计，写出令同事称道的代码；
-- 熟悉后端工程的搭建，如一些通用的基础设施：参数校验、全局异常捕获、`API` 统一出入参日志打印等等；
-- 能够独立完成整个网站的部署流程，从功能开发到服务器、域名选购，再到网站备案，最终公网可访问；
-- 对象存储 `Minio` 的使用, 能够独立搭建个人图床；
-- 从 0 到 1 ，通过 `Element Plus` 纯手搭 `Admin` 管理后台前端骨架；
-- 使用 Vue 3 `setup` 等语法糖新特性；
-- 博客前台页面在设计上美观大气；
-- ...
-
-## 📖 专栏大纲
-
-整个实战专栏，鲲鲲按功能点开发进度来做的目录，目前已经更新到了第第五章，目录大致如下：
-
-> 💡 TIP : 如下目录不代表最终内容，只会更多，目前只是把已完成的部分详细的罗列了出来，其中大部分功能正在开发中，所属具体小节的标题也会陆续更新进来。
-
-- 一、[项目介绍](https://www.yangmufa.cn/column/10000.html)
-- 二、开发环境搭建
-  - [2.1 【后端】环境安装&工具准备](https://www.yangmufa.cn/column/10003.html)
-  - [2.2 【前端】开发环境&工具安装](https://www.yangmufa.cn/column/10004.html)
-
-- 三、Spring Boot 后端工程搭建
-  - [3.1 搭建 Spring Boot 多模块工程](https://www.yangmufa.cn/column/10005.html)
-  - [3.2 Spring Boot 多环境配置](https://www.yangmufa.cn/column/10006.html)
-  - [3.3 配置 Lombok](https://www.yangmufa.cn/column/10007.html)
-  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yangmufa.cn/column/10008.html)
-  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yangmufa.cn/column/10009.html)
-  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yangmufa.cn/column/10010.html)
-  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yangmufa.cn/column/10011.html)
-  - [3.8 Spring Boot 自定义响应工具类](https://www.yangmufa.cn/column/10012.html)
-  - [3.9 Spring Boot 实现全局异常管理](https://www.yangmufa.cn/column/10013.html)
-  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yangmufa.cn/column/10014.html)
-  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yangmufa.cn/column/10015.html)
-  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yangmufa.cn/column/10016.html)
-  - [3.13 小结](https://www.yangmufa.cn/column/10017.html)
-
-- 四、使用 Vue 3 + Vite 4 搭建前端工程
-  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yangmufa.cn/column/10018.html)
-  - [4.2 安装 VSCode 开发工具](https://www.yangmufa.cn/column/10019.html)
-  - [4.3 添加 vue-router 路由管理器](https://www.yangmufa.cn/column/10020.html)
-  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yangmufa.cn/column/10021.html)
-  - [4.5 整合 Tailwind CSS](https://www.yangmufa.cn/column/10022.html)
-  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yangmufa.cn/column/10023.html)
-  - [4.7 整合饿了么 Element Plus 组件库](https://www.yangmufa.cn/column/10024.html)
-
-- 五、登录模块开发
-  - [5.1 登录页设计：支持响应式布局](https://www.yangmufa.cn/column/10025.html)
-  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yangmufa.cn/column/10026.html)
-  - [5.3 整合 Mybatis Plus](https://www.yangmufa.cn/column/10027.html)
-  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yangmufa.cn/column/10028.html)
-  - [5.5 整合 Spring Security](https://www.yangmufa.cn/column/10029.html)
-  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yangmufa.cn/column/10030.html)
-  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yangmufa.cn/column/10031.html)
-  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yangmufa.cn/column/10032.html)
-  - [5.9 登录页表单验证](https://www.yangmufa.cn/column/10033.html)
-  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yangmufa.cn/column/10034.html)
-  - [5.11 存储 Token 到 Cookie 中](https://www.yangmufa.cn/column/10035.html)
-  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yangmufa.cn/column/10036.html)
-  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yangmufa.cn/column/10037.html)
-  - [5.14 实现页面顶部加载 Loading 效果](https://www.yangmufa.cn/column/10038.html)
-  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yangmufa.cn/column/10040.html)
-  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yangmufa.cn/column/10089.html)
-  
-  
-  
-
-- 六、Element Plus 手搭 Admin 管理后台骨架
-  - [6.1 搭建管理后台基本布局](https://www.yangmufa.cn/column/10039.html)
-  - [6.2 后台公共 Header 头：样式布局](https://www.yangmufa.cn/column/10041.html)
-  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yangmufa.cn/column/10042.html)
-  - [6.4 整合全局状态管理库 Pinia](https://www.yangmufa.cn/column/10043.html)
-  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yangmufa.cn/column/10044.html)
-  - [6.6 支持全屏展示、页面点击刷新](https://www.yangmufa.cn/column/10045.html)
-  - [6.7 标签导航栏组件实现：样式布局](https://www.yangmufa.cn/column/10046.html)
-  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yangmufa.cn/column/10047.html)
-  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yangmufa.cn/column/10048.html)
-  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yangmufa.cn/column/10049.html)
-  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yangmufa.cn/column/10050.html)
-  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yangmufa.cn/column/10051.html)
-  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yangmufa.cn/column/10052.html)
-  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yangmufa.cn/column/10053.html)
-  - [6.15 修改用户密码接口开发](https://www.yangmufa.cn/column/10054.html)
-  - [6.16 获取当前登录用户信息接口开发](https://www.yangmufa.cn/column/10055.html)
-  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yangmufa.cn/column/10056.html)
-  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yangmufa.cn/column/10057.html)
-  - [6.19 用户修改密码、退出登录功能开发](https://www.yangmufa.cn/column/10058.html)
-  - [6.20 小结](https://www.yangmufa.cn/column/10059.html)
-
-  
-
-  
-- 七、管理后台：文章分类模块开发
-  - [7.1 分类模块接口分析](https://www.yangmufa.cn/column/10060.html)
-  - [7.2 文章分类：新增接口开发](https://www.yangmufa.cn/column/10061.html)
-  - [7.3 文章分类：分页接口开发](https://www.yangmufa.cn/column/10062.html)
-  - [7.4 文章分类：删除接口开发](https://www.yangmufa.cn/column/10063.html)
-  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yangmufa.cn/column/10064.html)
-  - [7.6 后台分类管理页面：样式布局](https://www.yangmufa.cn/column/10065.html)
-  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yangmufa.cn/column/10066.html)
-  - [7.8 文章分类：分页列表数据动态渲染](https://www.yangmufa.cn/column/10067.html)
-  - [7.9 文章分类：新增功能开发](https://www.yangmufa.cn/column/10068.html)
-  - [7.10 文章分类：删除功能开发](https://www.yangmufa.cn/column/10069.html)
-  - [7.11 通用表单对话框组件封装](https://www.yangmufa.cn/column/10070.html)
-  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yangmufa.cn/column/10071.html)
-  
-
-
-- 八、管理后台：标签模块开发
-  - [8.1 标签模块接口分析【视频讲解】](https://www.yangmufa.cn/column/10072.html)
-  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10073.html)
-  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yangmufa.cn/column/10074.html)
-  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10075.html)
-  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yangmufa.cn/column/10076.html)
-  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yangmufa.cn/column/10077.html)
-  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yangmufa.cn/column/10078.html)
-  
-  
-  
-- 九、管理后台：博客设置模块开发
-  - [9.1 博客设置模块功能分析、表设计](https://www.yangmufa.cn/column/10079.html)
-  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yangmufa.cn/column/10080.html)
-  - [9.3 文件上传接口开发](https://www.yangmufa.cn/column/10081.html)
-  - [9.4 博客设置: 更新接口开发](https://www.yangmufa.cn/column/10082.html)
-  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yangmufa.cn/column/10083.html)
-  - [9.6 博客设置：获取详情接口开发](https://www.yangmufa.cn/column/10084.html)
-  - [9.7 博客设置页面：样式布局](https://www.yangmufa.cn/column/10085.html)
-  - [9.8 管理后台：滚动样式优化](https://www.yangmufa.cn/column/10086.html)
-  - [9.9 博客设置页：数据渲染、图片上传](https://www.yangmufa.cn/column/10087.html)
-  - [9.10 博客设置页：更新设置](https://www.yangmufa.cn/column/10088.html)
-  
-
-
-
-- 十、管理后台：文章模块开发
-  - [10.1 文章管理模块功能分析、表设计](https://www.yangmufa.cn/column/10090.html)
-  - [10.2 文章管理：文章发布接口开发（1）](https://www.yangmufa.cn/column/10091.html)
-  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yangmufa.cn/column/10092.html)
-  - [10.4 文章管理：文章删除接口开发](https://www.yangmufa.cn/column/10093.html)
-  - [10.5 文章管理：分页接口开发](https://www.yangmufa.cn/column/10094.html)
-  - [10.6 文章管理：获取文章详情接口开发](https://www.yangmufa.cn/column/10095.html)
-  - [10.7 文章管理：文章更新接口开发](https://www.yangmufa.cn/column/10096.html)
-  - [10.8 文章管理：分页列表开发](https://www.yangmufa.cn/column/10097.html)
-  - [10.9 文章管理页：删除文章开发](https://www.yangmufa.cn/column/10098.html)
-  - [10.10 文章管理页：写文章对话框样式布局](https://www.yangmufa.cn/column/10099.html)
-  - [10.11 文章管理页：文章发布功能开发](https://www.yangmufa.cn/column/10100.html)
-  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yangmufa.cn/column/10101.html)
-  - [10.13 文章管理页：文章编辑功能开发](https://www.yangmufa.cn/column/10102.html)
-  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yangmufa.cn/column/10103.html)
-  
-  
-  
-  
-  
-
-- 十一、博客前台：首页开发
-   - [11.1 前台首页、归档页接口分析](https://www.yangmufa.cn/column/10104.html)
-   - [11.2 前台首页：文章分页接口开发](https://www.yangmufa.cn/column/10105.html)
-   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yangmufa.cn/column/10106.html)
-   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yangmufa.cn/column/10107.html)
-   - [11.5 前台 Header 头组件封装](https://www.yangmufa.cn/column/10108.html)   
-   - [11.6 首页样式布局设计（1）](https://www.yangmufa.cn/column/10109.html)
-   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yangmufa.cn/column/10110.html)
-   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yangmufa.cn/column/10111.html)
-   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yangmufa.cn/column/10112.html)
-   - [11.10 首页文章分页数据渲染](https://www.yangmufa.cn/column/10113.html)
-   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yangmufa.cn/column/10114.html)
-   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yangmufa.cn/column/10115.html)
-   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yangmufa.cn/column/10116.html)
-   
-   
-
-- 十二、博客前台：归档列表页、分类列表页、标签列表页开发
-   - [12.1 归档页、分类列表页接口分析](https://www.yangmufa.cn/column/10117.html)
-   - [12.2 文章归档分页接口开发](https://www.yangmufa.cn/column/10118.html)
-   - [12.3 前台归档页：样式布局设计](https://www.yangmufa.cn/column/10119.html)
-   - [12.4 前台归档页：分页列表功能开发](https://www.yangmufa.cn/column/10120.html)
-   - [12.5 前台分类页开发](https://www.yangmufa.cn/column/10121.html)
-   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10122.html)
-   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yangmufa.cn/column/10123.html)
-   - [12.8 分类-文章列表页开发](https://www.yangmufa.cn/column/10124.html)
-   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yangmufa.cn/column/10125.html)
-   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10130.html)
-   - [12.11 标签-文章列表页开发](https://www.yangmufa.cn/column/10131.html)
-
-
-- 十三、博客前台：文章详情页开发
-   - [13.1 文章详情页接口分析](https://www.yangmufa.cn/column/10126.html)
-   - [13.2 后端封装 Markdown 装换工具类](https://www.yangmufa.cn/column/10127.html)
-   - [13.3 获取文章详情接口开发](https://www.yangmufa.cn/column/10128.html)
-   - [13.4 文章详情页：样式布局设计](https://www.yangmufa.cn/column/10129.html)
-
-   - *努力爆肝中，每天更新两小节, 按目前的更新速度，1.0 版本差不多还剩1个半月更新完毕...*
-- 十四、管理后台：仪表盘模块开发
-- 十五、项目部署上线
-  - 云服务器选购
-  - 相关环境安装（JDK、Docker、Nginx、Mysql）
-  - Nginx 配合 Spring Boot 部署
-  - 部署前端项目以及通过 IP 访问
-  - 域名选购
-  - 网站备案
-  - 域名映射，项目正式上线
-
-
-
-## 👨🏻‍💻 适用人群
-
-- **在校学生**，有一定基础，想做毕业设计，或者为找工作准备，需要实战项目加分；
-
-  > 💡 TIP: 小白也没关系，鲲鲲将会告诉你学习路线是啥，哪里有免费的高质量学习视频可以白嫖，学完这些技术栈后再来做实战项目，或者学一点基础边实战边学习都可以。
-
-- **已经参与工作，对前后端分离感兴趣**，想学习 Vue 3 前端，对独立上线自己网站感兴趣的童鞋；
-- **想独立接私活**，需要同时会后端、前端技术栈的童鞋；
-
-## ✊ 如何加入？
-
-鲲鲲已经将本站的专栏模块接入了知识星球，想要查看专栏内容，需要订阅我星球后，*微信扫码授权登录后即可解锁所有内容*。因为目前也是刚开始运营，所以价格不会太高，星球官方定价最低必须是 50 元。鲲鲲最终定价为 <font class="text-xl" style=''color: red''><b>限时 35 元（附 15 元的优惠券，记得扫码领取下方优惠券加入哟）</b></font>，后续随着内容慢慢的更新迭代，会慢慢涨上去，所以早加入更具性价比哟~ 
-
-<font class="text-xl" style=''color: red''><b>星球支持 3 天无理由退费</b></font>，感兴趣的小伙伴*可先加入，看看内容质量如何，不合适直接退款就行，觉得确实内容很干货，就留下来学习，无套路!*
-
-<div class="flex items-center justify-center text-lg text-red-500 font-bold mb-2">扫描下方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👇👇</div>
-
-!["领取优惠券加入，更划算"](https://img.yangmufa.cn/ibp/169355760680941 "领取优惠券加入，更划算")
-
-<div class="flex items-center justify-center text-lg text-red-500 font-bold">扫描上方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👆👆</div>
-
-
-
-
-## ❓ 关于答疑
-
-小伙伴们如果在跟着专栏学习，手敲项目的过程中遇到问题，碰到无法解决的问题，**可在鲲鲲的知识星球内部提问**，我会统一来解答, 如果星球说不清楚的，就加私人微信，打包发项目，亲自给你看哪一步有问题，保证跟上项目进度，不落下任何一个小伙伴，大家一起冲冲冲~
-
-## 😃 加微信咨询
-
-对专栏感兴趣的小伙伴，也可以加鲲鲲私人微信来咨询，扫描下方二维码即可，记得备注【*咨询*】哟：
-
-![扫描二维码，添加鲲鲲私人微信](https://img.yangmufa.cn/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")');
 COMMIT;
 
 -- ----------------------------
@@ -2185,9 +2191,23 @@ INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUE
 INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (153, 19, 5);
 INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (156, 20, 14);
 INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (161, 24, 15);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (296, 1, 1);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (297, 1, 5);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (298, 1, 12);
 INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (211, 27, 17);
 INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (214, 28, 5);
 INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (308, 32, 5);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (230, 10, 1);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (231, 10, 13);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (232, 10, 10);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (233, 10, 18);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (234, 10, 22);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (235, 10, 19);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (236, 10, 12);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (237, 10, 14);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (238, 10, 20);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (239, 10, 21);
+INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (240, 10, 5);
 INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (241, 12, 5);
 INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (309, 2051609138701668352, 2051609138001219584);
 INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (310, 2051609513676640256, 2051609513538228224);
@@ -2197,9 +2217,6 @@ INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUE
 INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (314, 2055960627280744448, 19);
 INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (315, 2056031402947907584, 10);
 INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (316, 31, 12);
-INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (317, 1, 12);
-INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (318, 1, 1);
-INSERT INTO "public"."blog_article_tag_rel" ("id", "article_id", "tag_id") VALUES (319, 1, 5);
 COMMIT;
 
 -- ----------------------------
@@ -2245,7 +2262,6 @@ INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time"
 INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time", "is_deleted", "articles_total", "sort") VALUES (15, '74', '2025-09-14 23:23:50.166817', '2025-09-14 23:23:50.166817', 0, 0, 7);
 INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time", "is_deleted", "articles_total", "sort") VALUES (13, '999999999', '2025-09-14 23:23:31.689365', '2025-09-14 23:23:31.689365', 0, 0, 7);
 INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time", "is_deleted", "articles_total", "sort") VALUES (9, '4444', '2025-09-14 23:23:08.30614', '2025-09-14 23:23:08.30614', 0, 0, 5);
-INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time", "is_deleted", "articles_total", "sort") VALUES (11, '99999', '2025-09-14 23:23:20.007407', '2025-09-14 23:23:20.007407', 0, 4, 6);
 INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time", "is_deleted", "articles_total", "sort") VALUES (21, '44455', '2025-09-14 23:24:27.466987', '2025-09-14 23:24:27.466987', 0, 0, 5);
 INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time", "is_deleted", "articles_total", "sort") VALUES (23, '555551', '2025-09-14 23:24:34.799228', '2025-09-14 23:24:34.799228', 0, 1, 6);
 INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time", "is_deleted", "articles_total", "sort") VALUES (2051609137841836032, '接口冒烟分类-updated-1777976710', '2026-05-04 18:25:10.169559', '2026-05-05 10:25:10.489307', 1, 0, 0);
@@ -2255,6 +2271,7 @@ INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time"
 INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time", "is_deleted", "articles_total", "sort") VALUES (10, '55555', '2025-09-14 15:23:14.015701', '2026-05-07 13:10:29.618909', 1, 0, 9);
 INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time", "is_deleted", "articles_total", "sort") VALUES (28, 'test', '2025-10-12 11:22:30.529926', '2026-05-11 17:37:40.869291', 0, 0, 2);
 INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time", "is_deleted", "articles_total", "sort") VALUES (18, '1113', '2025-09-14 23:24:07.277198', '2026-05-11 17:37:48.600156', 0, 0, 1);
+INSERT INTO "public"."blog_category" ("id", "name", "create_time", "update_time", "is_deleted", "articles_total", "sort") VALUES (11, '99999', '2025-09-14 23:23:20.007407', '2026-05-24 14:11:54.387075', 0, 4, 6);
 COMMIT;
 
 -- ----------------------------
@@ -2543,49 +2560,49 @@ COMMIT;
 DROP TABLE IF EXISTS "public"."blog_settings";
 CREATE TABLE "public"."blog_settings" (
   "id" int8 NOT NULL DEFAULT nextval('blog_settings_id_seq'::regclass),
-  "name" varchar(60) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "logo" varchar(120) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "name" varchar(60) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "author" varchar(20) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "avatar" varchar(120) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "introduction" varchar(120) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "copyright_declaration" varchar(255) COLLATE "pg_catalog"."default",
+  "avatar" varchar(120) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "github_homepage" varchar(60) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "csdn_homepage" varchar(60) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "gitee_homepage" varchar(60) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "zhihu_homepage" varchar(60) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "douyin_homepage" varchar(120) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "mail" varchar(60) COLLATE "pg_catalog"."default" DEFAULT ''::character varying,
   "is_comment_sensi_word_open" bool NOT NULL,
   "is_comment_examine_open" bool NOT NULL,
-  "is_auto_theme" bool
+  "is_auto_theme" bool,
+  "douyin_homepage" varchar(120) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying
 )
 ;
 ALTER TABLE "public"."blog_settings" OWNER TO "postgres";
 COMMENT ON COLUMN "public"."blog_settings"."id" IS 'id';
-COMMENT ON COLUMN "public"."blog_settings"."name" IS '博客名称';
 COMMENT ON COLUMN "public"."blog_settings"."logo" IS '博客Logo';
+COMMENT ON COLUMN "public"."blog_settings"."name" IS '博客名称';
 COMMENT ON COLUMN "public"."blog_settings"."author" IS '作者名';
-COMMENT ON COLUMN "public"."blog_settings"."avatar" IS '作者头像';
 COMMENT ON COLUMN "public"."blog_settings"."introduction" IS '介绍语';
 COMMENT ON COLUMN "public"."blog_settings"."copyright_declaration" IS '版权声明';
+COMMENT ON COLUMN "public"."blog_settings"."avatar" IS '作者头像';
 COMMENT ON COLUMN "public"."blog_settings"."github_homepage" IS 'GitHub 主页访问地址';
 COMMENT ON COLUMN "public"."blog_settings"."csdn_homepage" IS 'CSDN 主页访问地址';
 COMMENT ON COLUMN "public"."blog_settings"."gitee_homepage" IS 'Gitee 主页访问地址';
 COMMENT ON COLUMN "public"."blog_settings"."zhihu_homepage" IS '知乎主页访问地址';
-COMMENT ON COLUMN "public"."blog_settings"."douyin_homepage" IS '抖音主页访问地址';
 COMMENT ON COLUMN "public"."blog_settings"."mail" IS '博主邮箱地址';
 COMMENT ON COLUMN "public"."blog_settings"."is_comment_sensi_word_open" IS '是否开启评论敏感词过滤, 0:不开启；1：开启';
 COMMENT ON COLUMN "public"."blog_settings"."is_comment_examine_open" IS '是否开启评论审核, 0: 未开启；1：开启';
 COMMENT ON COLUMN "public"."blog_settings"."is_auto_theme" IS '是否根据时间自动调整白天黑夜主题';
+COMMENT ON COLUMN "public"."blog_settings"."douyin_homepage" IS '抖音主页访问地址';
 COMMENT ON TABLE "public"."blog_settings" IS '博客设置表';
 
 -- ----------------------------
 -- Records of blog_settings
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."blog_settings" ("id", "name", "logo", "author", "avatar", "introduction", "copyright_declaration", "github_homepage", "csdn_homepage", "gitee_homepage", "zhihu_homepage", "douyin_homepage", "mail", "is_comment_sensi_word_open", "is_comment_examine_open", "is_auto_theme") VALUES (1, '薄荷博客V2', 'https://img.yangmufa.cn/blog-system/mint-logo.svg', '程序员-杨工子', 'https://img.yangmufa.cn/blog-system/author-avatar.jpg', '大家好,我是练习编程两年半的"程序员-杨工子",喜欢CV、Tab、Agent。', '本文为 程序员-杨工子 原创文章，遵循 CC BY 4.0 版权协议，转载请附上原文出处和链接。
+INSERT INTO "public"."blog_settings" ("id", "logo", "name", "author", "introduction", "copyright_declaration", "avatar", "github_homepage", "csdn_homepage", "gitee_homepage", "zhihu_homepage", "mail", "is_comment_sensi_word_open", "is_comment_examine_open", "is_auto_theme", "douyin_homepage") VALUES (1, 'http://127.0.0.1:9000/blog-article/logo_1779611309395_loading-lemonade.svg', 'Mint.Blog', '程序员-杨工子', '大家好,我是练习编程两年半的"程序员-杨工子",喜欢CV、Tab、Agent。', '本文为 程序员-杨工子 原创文章，遵循 CC BY 4.0 版权协议，转载请附上原文出处和链接。
 如您认为本文内容侵犯了您的合法权益，请通过以下方式提供书面证明材料，我将在核实后24小时内处理。
-📧 联系邮箱：yangmufa@163.com', 'https://github.com/YangMufa', 'https://blog.csdn.net/YangMufa', 'https://gitee.com/YangMufa', 'https://www.zhihu.com/people/YangMufa', 'https://v.douyin.com/8r27sSQYrz0', 'yangmufa@163.com', 't', 'f', 't');
+📧 联系邮箱：yangmufa@163.com', 'http://127.0.0.1:9000/blog-article/avatar_1779611286250_CSDN.svg', 'https://github.com/YangMufa', 'https://blog.csdn.net/YangMufa', 'https://gitee.com/YangMufa', 'https://www.zhihu.com/people/YangMufa', 'yangmufa@163.com', 't', 'f', 't', 'https://v.douyin.com/8r27sSQYrz0');
 COMMIT;
 
 -- ----------------------------
@@ -2649,18 +2666,18 @@ INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", 
 INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (213, '2026-05-01', 0, '2026-04-30 11:39:41.21098', '2026-04-30 11:39:41.211019');
 INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (215, '2026-05-03', 98, '2026-05-02 00:19:49.646413', '2026-05-03 17:07:55.501733');
 INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (220, '2026-05-07', 28, '2026-05-07 14:30:59.143729', '2026-05-07 15:49:47.318007');
+INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (233, '2026-05-21', 36, '2026-05-21 13:15:20.817646', '2026-05-21 16:59:15.405243');
+INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (234, '2026-05-23', 0, '2026-05-22 06:09:08.473552', '2026-05-22 06:09:08.473594');
 INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (222, '2026-05-10', 9, '2026-05-10 16:01:47.957639', '2026-05-10 17:38:06.967999');
 INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (221, '2026-05-11', 1, '2026-05-10 13:17:11.256083', '2026-05-11 16:48:50.56198');
 INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (224, '2026-05-13', 160, '2026-05-12 05:53:02.230803', '2026-05-13 16:50:02.864013');
 INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (226, '2026-05-15', 0, '2026-05-14 01:32:05.010943', '2026-05-14 01:32:05.010992');
 INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (225, '2026-05-14', 7, '2026-05-13 00:52:48.792054', '2026-05-14 15:58:03.116066');
+INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (232, '2026-05-22', 14, '2026-05-21 01:58:24.42557', '2026-05-22 09:49:15.564506');
+INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (236, '2026-05-25', 0, '2026-05-24 00:53:06.674567', '2026-05-24 00:53:06.674594');
 INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (227, '2026-05-17', 50, '2026-05-16 06:52:22.749708', '2026-05-17 17:48:47.533376');
 INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (230, '2026-05-19', 0, '2026-05-18 15:21:14.783154', '2026-05-18 15:21:14.783197');
-INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (233, '2026-05-21', 15, '2026-05-21 13:15:20.817646', '2026-05-21 19:32:36.482734');
-INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (232, '2026-05-22', 1, '2026-05-21 01:58:24.42557', '2026-05-22 07:12:13.015968');
-INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (234, '2026-05-23', 20, '2026-05-22 00:05:31.676011', '2026-05-23 18:18:43.199795');
-INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (236, '2026-05-25', 0, '2026-05-24 00:02:23.456951', '2026-05-24 00:02:23.456988');
-INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (235, '2026-05-24', 62, '2026-05-23 00:05:31.644511', '2026-05-24 09:27:45.545753');
+INSERT INTO "public"."blog_statistics_article_pv" ("id", "pv_date", "pv_count", "create_time", "update_time") VALUES (235, '2026-05-24', 1, '2026-05-23 04:44:45.034737', '2026-05-24 07:23:41.23329');
 COMMIT;
 
 -- ----------------------------
@@ -2741,8 +2758,8 @@ COMMENT ON TABLE "public"."sys_user" IS '用户表';
 -- ----------------------------
 BEGIN;
 INSERT INTO "public"."sys_user" ("id", "username", "display_name", "password", "is_deleted", "create_time", "update_time") VALUES (1, 'SuperAdmin', '超级管理员', '$2a$12$5WVbBlCSnBrqhpvm8m7FeeBtP1VWZsQKR5vUdzP.w3UF9vHtVPkri', 0, '2023-07-03 11:57:18', '2023-09-24 16:23:29');
-INSERT INTO "public"."sys_user" ("id", "username", "display_name", "password", "is_deleted", "create_time", "update_time") VALUES (3, 'yangmufa', '杨工子', '$2a$12$NGsaRQccxI3QW9rszhjWhO8d7uvCeTALueRAi7r3KyLq4HoiR/ScS', 0, '2023-07-07 01:22:05', '2026-05-17 08:59:19.709202');
 INSERT INTO "public"."sys_user" ("id", "username", "display_name", "password", "is_deleted", "create_time", "update_time") VALUES (2, 'VisitorAdmin', '演示管理员', '$2a$12$MYSVQQeDptyqlHqjBrX6G.d9.CguyIJ0Z2.i5y3KcowClOCERbIN6', 0, '2025-08-25 11:39:10', '2026-05-16 12:39:09.819159');
+INSERT INTO "public"."sys_user" ("id", "username", "display_name", "password", "is_deleted", "create_time", "update_time") VALUES (3, 'Test', '杨工子', '$2a$15$NGsaRQccxI34W9rszhjWhO8d7uvCeTALueRAi7r3KyLq4Hoib/cS', 0, '2023-07-07 01:22:05', '2026-05-17 08:59:19.709202');
 COMMIT;
 
 -- ----------------------------
@@ -2833,24 +2850,31 @@ INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "e
 INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2056395133481521152, 3, '4E978D61AB34C474732624C0B417ECD251325765C5C2138320F6434A40459641', '2026-05-25 15:23:00.40087+00', 1, '2026-05-18 16:16:56.605873+00', '2026-05-18 15:23:00.406821+00');
 INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2056407024597602304, 2, '63860B0869F6398EE32E9A71ED96C013FBEA841DA47C3F79A7C86C6F254BC3CC', '2026-05-25 16:10:15.467651+00', 1, '2026-05-18 16:17:34.926506+00', '2026-05-18 16:10:15.478638+00');
 INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2056408706895187968, 3, 'B89BCA8E3E97DE7678A0A4EF4D9B1AF0D506CE7B73424D7C530BCC98AFEDF8DC', '2026-05-25 16:16:56.602613+00', 1, '2026-05-19 13:59:59.260095+00', '2026-05-18 16:16:56.602745+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058132769300680704, 2, '40D228F19B5C2BFC347266897DCC88FBDB18DCC28FB898F7E5AED9953FB7241D', '2026-05-30 10:27:45.080906+00', 1, '2026-05-24 05:50:42.816426+00', '2026-05-23 10:27:45.08867+00');
 INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2056736628768116736, 3, '8800CEE7AC8AD3651208676D96A607D9BB999385BA2EA7D6391B0B3AF55A173C', '2026-05-26 13:59:59.222501+00', 1, '2026-05-19 16:47:44.940328+00', '2026-05-19 13:59:59.234415+00');
 INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2056408867620917248, 2, '91B3B6A96D61C60351599AD548DEA3399B999256FDA2B00A805C4D92DE5D4690', '2026-05-25 16:17:34.9254+00', 1, '2026-05-21 13:13:32.033854+00', '2026-05-18 16:17:34.925495+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057449714030350336, 2, 'B13EB20469EA03FAD1D70F6C25D07A5238BCA28CF96749A9D0FD3BAF540AA8D8', '2026-05-28 13:13:31.989451+00', 1, '2026-05-21 15:23:15.34108+00', '2026-05-21 13:13:32.005048+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057482359632171008, 2, '35A8052F7AA040C94D8416F81A6EF4513014EABE852D1B535733CDEDE87D9CD1', '2026-05-28 15:23:15.267107+00', 0, NULL, '2026-05-21 15:23:15.296498+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2056778847310974976, 3, '4CF571940641021F197EC2CBA7A4BB865A176F4B62663D3419D0A1EF6024EEE6', '2026-05-26 16:47:44.889371+00', 1, '2026-05-21 15:33:17.182069+00', '2026-05-19 16:47:44.908352+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2056778847369695232, 3, '8A481BF225F5D6B6F5AF64775CFC2FDCFEF69BF26B79707FEA17CF3CC3C3DC3E', '2026-05-26 16:47:44.940328+00', 1, '2026-05-21 15:33:17.182069+00', '2026-05-19 16:47:44.941458+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057484883831427072, 3, '5E45D2DF95997D613CCCCD0A78DABF128EA140143959E33918414D60FF55AEA8', '2026-05-28 15:33:17.176483+00', 1, '2026-05-21 17:34:54.706635+00', '2026-05-21 15:33:17.176779+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057515492079439872, 3, '7073941A87998BD8D6B5E77C6D09EB7DDEB62F9E9ADBB1A9E2FA06665E17FCC4', '2026-05-28 17:34:54.706635+00', 1, '2026-05-22 15:29:55.878414+00', '2026-05-21 17:34:54.722636+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057846427551404032, 3, 'C0DB99804253DC62945C20B59F78D09154F1393EE7ED872B081360D6B01FF2A5', '2026-05-29 15:29:55.878414+00', 1, '2026-05-23 04:47:51.010671+00', '2026-05-22 15:29:55.902191+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058047230392274944, 3, '8197825692DC48EA8EA252B55EA3B1ED8C69CDD2A145E333AE199AFF260C67B4', '2026-05-30 04:47:51.010671+00', 1, '2026-05-23 09:28:42.845928+00', '2026-05-23 04:47:51.030785+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058117912077668352, 3, 'B40CABA19D43C844AB48F16BEC1796FAB7E278DB37C4A9762801EC76EBF862E3', '2026-05-30 09:28:42.845928+00', 1, '2026-05-23 13:56:45.593511+00', '2026-05-23 09:28:42.867861+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058185367932243968, 3, 'DF0EEE4FABA51D4B61B6D5C0C7047E144830430048D3DEEE30C32FDF05500232', '2026-05-30 13:56:45.533568+00', 1, '2026-05-23 15:59:18.210666+00', '2026-05-23 13:56:45.569136+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058216207504510976, 3, 'DD341849DF49FA865687383F183093BDB6C9E5B057D675677683771E0B049F07', '2026-05-30 15:59:18.210666+00', 1, '2026-05-23 18:02:34.779113+00', '2026-05-23 15:59:18.234135+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058247230929899520, 3, 'E537F2B54058582689E63ACF96AB7286039876FFEB2F2E812CA6F953E39C1C0A', '2026-05-30 18:02:34.779113+00', 1, '2026-05-24 02:28:26.410847+00', '2026-05-23 18:02:34.798325+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058374534435835904, 3, 'D082F01D96CC36BF57D904F19EC58A2E3E4B9D042470E0BA2C1E6E35C8DCB8A3', '2026-05-31 02:28:26.410847+00', 1, '2026-05-24 07:04:58.648533+00', '2026-05-24 02:28:26.411913+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058444127879696384, 3, 'FBCA692A7E52AB6007DB4911094D6EDBAA454016CB1B2F83652CAE0883BF9939', '2026-05-31 07:04:58.648533+00', 1, '2026-05-24 08:12:33.888349+00', '2026-05-24 07:04:58.693192+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058461136256372736, 3, '795C459E0851BA536C70063D8EFEA69DCE8803AFEA2CDA7A24D45C1A7B620EBE', '2026-05-31 08:12:33.826155+00', 1, '2026-05-24 08:12:48.547441+00', '2026-05-24 08:12:33.857414+00');
-INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058461197698732032, 3, '563F0D77C8B9667FF88D70012FF61BB11C00F14F42D9FE3259EAA9551062DA34', '2026-05-31 08:12:48.543124+00', 0, NULL, '2026-05-24 08:12:48.543445+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057449714030350336, 2, 'B13EB20469EA03FAD1D70F6C25D07A5238BCA28CF96749A9D0FD3BAF540AA8D8', '2026-05-28 13:13:31.989451+00', 1, '2026-05-21 15:43:33.528549+00', '2026-05-21 13:13:32.005048+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057487469011668992, 2, '566498804FAF4247315256C5110087137A6C0EC85C748D7E3C9EE3D3FF1B546D', '2026-05-28 15:43:33.528549+00', 1, '2026-05-21 15:43:33.760001+00', '2026-05-21 15:43:33.532231+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057503823097892864, 2, 'C14C5845C50B3A51B0BFB96827C5F9207F17A5446EB6CB14C526926422852160', '2026-05-28 16:48:32.605602+00', 1, '2026-05-21 17:19:45.629919+00', '2026-05-21 16:48:32.616174+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057511678991536128, 2, 'FD30476A59DAC88AFF0F6C141078784004648B5B9F1BE8D49352ECCB9218008D', '2026-05-28 17:19:45.595964+00', 1, '2026-05-22 06:34:12.401413+00', '2026-05-21 17:19:45.60673+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057711607898836992, 2, 'EA2E67ADF0F2898705993114F4D545124418CD5D7A0A2FB07C57BBDAFA8DF718', '2026-05-29 06:34:12.368024+00', 1, '2026-05-22 11:51:01.472196+00', '2026-05-22 06:34:12.377973+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057791337700397056, 2, 'FD24AEF4FD98499DB3C47535AB58D22C5EA759813FDCD0C5E2B2853321052D49', '2026-05-29 11:51:01.445448+00', 1, '2026-05-22 18:32:52.026251+00', '2026-05-22 11:51:01.454351+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057892464693481472, 2, 'BDC88C172D574CBED06BAD0FE1199F4F80DBD89198245622406EF7773A3E026B', '2026-05-29 18:32:52.026267+00', 1, '2026-05-23 09:01:19.670266+00', '2026-05-22 18:32:52.028798+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2057892464706064384, 2, '3F26822AD7CFBB2E5F5B19E1AD489E0C2EF6EB89BFCCCE1C45D093FC0DC604F5', '2026-05-29 18:32:52.026251+00', 1, '2026-05-23 10:27:45.105557+00', '2026-05-22 18:32:52.028801+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058111020173496320, 2, '51307BE975CA7916E40B60866DFDE499C9A4B39F9C9938B38A4CF89E173BBAC4', '2026-05-30 09:01:19.670266+00', 1, '2026-05-23 10:27:45.105557+00', '2026-05-23 09:01:19.679304+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2056778847310974976, 3, '4CF571940641021F197EC2CBA7A4BB865A176F4B62663D3419D0A1EF6024EEE6', '2026-05-26 16:47:44.889371+00', 1, '2026-05-23 10:31:04.083724+00', '2026-05-19 16:47:44.908352+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2056778847369695232, 3, '8A481BF225F5D6B6F5AF64775CFC2FDCFEF69BF26B79707FEA17CF3CC3C3DC3E', '2026-05-26 16:47:44.940328+00', 1, '2026-05-23 10:31:04.083724+00', '2026-05-19 16:47:44.941458+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058133603837153280, 3, '2B142949FD8F092F3F6F15F0DF711FB57709B565C058298F4A5C16B38BCB3FE5', '2026-05-30 10:31:04.081581+00', 1, '2026-05-23 12:59:51.59262+00', '2026-05-23 10:31:04.081681+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058171048649691136, 3, '13D53E4CA420AE518870C5A5639A45C4E8D4DA370C29E5B2BD37F8328FC9EFF7', '2026-05-30 12:59:51.59262+00', 1, '2026-05-23 13:56:35.911567+00', '2026-05-23 12:59:51.597451+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058185327272660992, 3, '40A3C6F615E5F6DBDA0D3920CB16C38C92A493F1D6889F3982000D471F766B98', '2026-05-30 13:56:35.908225+00', 1, '2026-05-23 15:57:54.931058+00', '2026-05-23 13:56:35.908424+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058215857888301056, 3, 'A4C24964B4BF0699EB4DC7A404AF5F0682B4894D4C403A494D2752ABB36B86D9', '2026-05-30 15:57:54.931058+00', 1, '2026-05-23 17:59:42.68062+00', '2026-05-23 15:57:54.939539+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058246508683333632, 3, '9DE80FFE0C0986CB67A803A1B92C9B424E61BF3FB02AE668A272A5990495B416', '2026-05-30 17:59:42.68062+00', 1, '2026-05-24 02:39:26.566454+00', '2026-05-23 17:59:42.686678+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058425438228844544, 2, 'A0221D8E53CC3A64A116BD606D5D8E8A9A044730065E4F4243407CE9887C5C96', '2026-05-31 05:50:42.789409+00', 1, '2026-05-24 05:51:04.900335+00', '2026-05-24 05:50:42.798049+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058425530818105344, 2, 'F40C3404A2799C4D018902B4F7E1D171B0D389FDCBAD1A7C09698C5255502B90', '2026-05-31 05:51:04.897668+00', 0, NULL, '2026-05-24 05:51:04.897835+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058377303326593024, 3, 'BFE6DC8D2EDA91540FBA8F886F53552ED894661F9928E633564B660C0118E157', '2026-05-31 02:39:26.566454+00', 1, '2026-05-24 05:59:38.177914+00', '2026-05-24 02:39:26.567858+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058427683699822592, 3, '0527B14432E85806ADF14A3CA725A588AC04315CECB7C85346515C5CF78A5E2B', '2026-05-31 05:59:38.158762+00', 1, '2026-05-24 08:04:49.660687+00', '2026-05-24 05:59:38.162372+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058459189130432512, 3, '00BC305661A975A44223F4BEA2FF95238AD95B09B4669C7219F4FBCA24D8A04E', '2026-05-31 08:04:49.660687+00', 1, '2026-05-24 14:04:42.740394+00', '2026-05-24 08:04:49.663225+00');
+INSERT INTO "public"."sys_user_refresh_token" ("id", "user_id", "token_hash", "expires_at", "is_revoked", "revoked_at", "create_time") VALUES (2058549757248409600, 3, '42E824254A23947349F83041E039E43C67290C9692CBB935C5314E3B3CC8C252', '2026-05-31 14:04:42.740394+00', 0, NULL, '2026-05-24 14:04:42.749045+00');
 COMMIT;
 
 -- ----------------------------
