@@ -1,0 +1,563 @@
+/* ===========================================
+   通用主题系统 - CSS变量定义
+   =========================================== */
+
+/* 根元素CSS变量定义 */
+:root {
+  /* 主色调 */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-300: #93c5fd;
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #1e3a8a;
+
+  /* 灰度色调 */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+
+  /* 语义化颜色 */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+
+  /* 白天模式主题变量 */
+  --theme-bg-primary: var(--gray-50);
+  --theme-bg-secondary: #ffffff;
+  --theme-bg-tertiary: var(--gray-100);
+  --theme-text-primary: var(--gray-900);
+  --theme-text-secondary: var(--gray-700);
+  --theme-text-tertiary: var(--gray-500);
+  --theme-border: var(--gray-200);
+  --theme-border-hover: var(--gray-300);
+  --theme-shadow: rgba(0, 0, 0, 0.1);
+  --theme-shadow-hover: rgba(0, 0, 0, 0.15);
+  --theme-accent: var(--primary-500);
+  --theme-accent-hover: var(--primary-600);
+}
+
+/* 暗黑模式主题变量 */
+.dark {
+  --theme-bg-primary: var(--gray-900);
+  --theme-bg-secondary: var(--gray-800);
+  --theme-bg-tertiary: var(--gray-700);
+  --theme-text-primary: var(--gray-100);
+  --theme-text-secondary: var(--gray-300);
+  --theme-text-tertiary: var(--gray-400);
+  --theme-border: var(--gray-700);
+  --theme-border-hover: var(--gray-600);
+  --theme-shadow: rgba(0, 0, 0, 0.3);
+  --theme-shadow-hover: rgba(0, 0, 0, 0.4);
+  --theme-accent: var(--primary-400);
+  --theme-accent-hover: var(--primary-300);
+}
+
+/* ===========================================
+   通用主题类名
+   =========================================== */
+
+/* 背景色类 */
+.theme-bg-primary {
+  background-color: var(--theme-bg-primary);
+}
+
+.theme-bg-secondary {
+  background-color: var(--theme-bg-secondary);
+}
+
+.theme-bg-tertiary {
+  background-color: var(--theme-bg-tertiary);
+}
+
+/* 文字颜色类 */
+.theme-text-primary {
+  color: var(--theme-text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--theme-text-secondary);
+}
+
+.theme-text-tertiary {
+  color: var(--theme-text-tertiary);
+}
+
+/* 边框类 */
+.theme-border {
+  border-color: var(--theme-border);
+}
+
+.theme-border-hover:hover {
+  border-color: var(--theme-border-hover);
+}
+
+/* 阴影类 */
+.theme-shadow {
+  box-shadow: 0 1px 3px var(--theme-shadow);
+}
+
+.theme-shadow-hover:hover {
+  box-shadow: 0 4px 12px var(--theme-shadow-hover);
+}
+
+/* 强调色类 */
+.theme-accent {
+  color: var(--theme-accent);
+}
+
+.theme-accent-bg {
+  background-color: var(--theme-accent);
+}
+
+.theme-accent-hover:hover {
+  color: var(--theme-accent-hover);
+}
+
+/* ===========================================
+   通用组件样式
+   =========================================== */
+
+/* 卡片组件 */
+.theme-card {
+  background-color: var(--theme-bg-secondary);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px var(--theme-shadow);
+  transition: all 0.3s ease;
+}
+
+.theme-card:hover {
+  box-shadow: 0 4px 12px var(--theme-shadow-hover);
+  border-color: var(--theme-border-hover);
+}
+
+/* 按钮组件 */
+.theme-btn {
+  background-color: var(--theme-accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.theme-btn:hover {
+  background-color: var(--theme-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--theme-shadow-hover);
+}
+
+.theme-btn-secondary {
+  background-color: var(--theme-bg-tertiary);
+  color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
+}
+
+.theme-btn-secondary:hover {
+  background-color: var(--theme-border);
+  border-color: var(--theme-border-hover);
+}
+
+/* 输入框组件 */
+.theme-input {
+  background-color: var(--theme-bg-secondary);
+  color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  padding: 12px;
+  transition: all 0.3s ease;
+}
+
+.theme-input:focus {
+  outline: none;
+  border-color: var(--theme-accent);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.theme-input::placeholder {
+  color: var(--theme-text-tertiary);
+}
+
+/* 导航组件 */
+.theme-nav {
+  background-color: var(--theme-bg-secondary);
+  border-bottom: 1px solid var(--theme-border);
+  backdrop-filter: blur(10px);
+}
+
+.theme-nav-item {
+  color: var(--theme-text-secondary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.theme-nav-item:hover {
+  color: var(--theme-accent);
+  background-color: var(--theme-bg-tertiary);
+}
+
+.theme-nav-item.active {
+  color: var(--theme-accent);
+  background-color: var(--theme-bg-tertiary);
+  font-weight: 600;
+}
+
+/* ===========================================
+   主题切换开关通用样式
+   =========================================== */
+
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 32px;
+}
+
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.theme-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+  transition: all 0.3s ease;
+  border-radius: 32px;
+  box-shadow: 0 4px 15px var(--theme-shadow);
+}
+
+.theme-switch-slider:before {
+  position: absolute;
+  content: "☀️";
+  height: 24px;
+  width: 24px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 2px 8px var(--theme-shadow);
+}
+
+.theme-switch input:checked + .theme-switch-slider {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.theme-switch input:checked + .theme-switch-slider:before {
+  transform: translateX(28px);
+  content: "🌙";
+}
+
+.theme-switch-slider:hover {
+  box-shadow: 0 6px 20px var(--theme-shadow-hover);
+}
+
+/* ===========================================
+   响应式设计
+   =========================================== */
+
+@media (max-width: 768px) {
+  .theme-card {
+    border-radius: 8px;
+    margin: 8px;
+  }
+  
+  .theme-btn {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+  
+  .theme-switch {
+    width: 50px;
+    height: 28px;
+  }
+  
+  .theme-switch-slider:before {
+    height: 20px;
+    width: 20px;
+    font-size: 12px;
+  }
+  
+  .theme-switch input:checked + .theme-switch-slider:before {
+    transform: translateX(22px);
+  }
+}
+
+/* ===========================================
+   动画效果
+   =========================================== */
+
+@keyframes theme-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes theme-slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.theme-fade-in {
+  animation: theme-fade-in 0.3s ease-out;
+}
+
+.theme-slide-in {
+  animation: theme-slide-in 0.3s ease-out;
+}
+
+/* 主题切换过渡动画 */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* 禁用某些元素的过渡动画以提高性能 */
+.no-transition,
+.no-transition * {
+  transition: none !important;
+}
+
+/* ===========================================
+   主题容器样式 - 确保子元素继承主题
+   =========================================== */
+
+/* 主题容器基础样式 */
+.theme-container {
+  background-color: var(--theme-bg-secondary);
+  color: var(--theme-text-primary);
+}
+
+/* 强制子元素继承主题颜色 */
+.theme-container,
+.theme-container * {
+  color: var(--theme-text-primary) !important;
+}
+
+/* 为特定元素保持原有颜色 */
+.theme-container .text-green-800,
+.theme-container .text-green-300,
+.theme-container .text-gray-400,
+.theme-container .text-gray-500,
+.theme-container .text-red-500,
+.theme-container .text-blue-600 {
+  color: inherit;
+}
+
+/* ===========================================
+   Ant Design Vue 组件主题覆盖
+   =========================================== */
+
+/* 在主题容器内的 Ant Design 组件样式覆盖 */
+.theme-container .ant-btn {
+  background-color: var(--theme-bg-tertiary) !important;
+  color: var(--theme-text-primary) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.theme-container .ant-btn-primary {
+  background-color: var(--theme-accent) !important;
+  color: white !important;
+  border-color: var(--theme-accent) !important;
+}
+
+.theme-container .ant-btn:hover {
+  background-color: var(--theme-border-hover) !important;
+  border-color: var(--theme-border-hover) !important;
+}
+
+.theme-container .ant-btn-primary:hover {
+  background-color: var(--theme-accent-hover) !important;
+  border-color: var(--theme-accent-hover) !important;
+}
+
+/* Input 组件 */
+.theme-container .ant-input,
+.theme-container .ant-input-password,
+.theme-container .ant-select-selector,
+.theme-container .ant-picker {
+  background-color: var(--theme-bg-secondary) !important;
+  color: var(--theme-text-primary) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.theme-container .ant-input:focus,
+.theme-container .ant-input-password:focus,
+.theme-container .ant-select-focused .ant-select-selector,
+.theme-container .ant-picker:focus {
+  border-color: var(--theme-accent) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Card 组件 */
+.theme-container .ant-card {
+  background-color: var(--theme-bg-secondary) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.theme-container .ant-card-head {
+  background-color: var(--theme-bg-tertiary) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.theme-container .ant-card-head-title {
+  color: var(--theme-text-primary) !important;
+}
+
+/* Table 组件 */
+.theme-container .ant-table {
+  background-color: var(--theme-bg-secondary) !important;
+}
+
+.theme-container .ant-table-thead > tr > th {
+  background-color: var(--theme-bg-tertiary) !important;
+  color: var(--theme-text-primary) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.theme-container .ant-table-tbody > tr > td {
+  background-color: var(--theme-bg-secondary) !important;
+  color: var(--theme-text-primary) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.theme-container .ant-table-tbody > tr:hover > td {
+  background-color: var(--theme-bg-tertiary) !important;
+}
+
+/* Modal 组件 */
+.theme-container .ant-modal-content {
+  background-color: var(--theme-bg-secondary) !important;
+}
+
+.theme-container .ant-modal-header {
+  background-color: var(--theme-bg-tertiary) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.theme-container .ant-modal-title {
+  color: var(--theme-text-primary) !important;
+}
+
+.theme-container .ant-modal-body {
+  color: var(--theme-text-primary) !important;
+}
+
+/* Form 组件 */
+.theme-container .ant-form-item-label > label {
+  color: var(--theme-text-primary) !important;
+}
+
+/* Select 组件 */
+.theme-container .ant-select-dropdown {
+  background-color: var(--theme-bg-secondary) !important;
+}
+
+.theme-container .ant-select-item {
+  color: var(--theme-text-primary) !important;
+}
+
+.theme-container .ant-select-item:hover {
+  background-color: var(--theme-bg-tertiary) !important;
+}
+
+.theme-container .ant-select-item-option-selected {
+  background-color: var(--theme-accent) !important;
+  color: white !important;
+}
+
+/* Pagination 组件 */
+.theme-container .ant-pagination-item {
+  background-color: var(--theme-bg-secondary) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.theme-container .ant-pagination-item a {
+  color: var(--theme-text-primary) !important;
+}
+
+.theme-container .ant-pagination-item:hover {
+  border-color: var(--theme-accent) !important;
+}
+
+.theme-container .ant-pagination-item-active {
+  background-color: var(--theme-accent) !important;
+  border-color: var(--theme-accent) !important;
+}
+
+.theme-container .ant-pagination-item-active a {
+  color: white !important;
+}
+
+/* Switch 组件 */
+.theme-container .ant-switch {
+  background-color: var(--theme-border) !important;
+}
+
+.theme-container .ant-switch-checked {
+  background-color: var(--theme-accent) !important;
+}
+
+/* Tag 组件 */
+.theme-container .ant-tag {
+  background-color: var(--theme-bg-tertiary) !important;
+  color: var(--theme-text-primary) !important;
+  border-color: var(--theme-border) !important;
+}
+
+/* Tooltip 组件 */
+.theme-container .ant-tooltip-inner {
+  background-color: var(--theme-bg-primary) !important;
+  color: var(--theme-text-primary) !important;
+}
+
+/* ===========================================
+   通用文本和背景强制继承
+   =========================================== */
+
+/* 强制所有文本元素继承主题颜色 */
+.theme-text-inherit,
+.theme-text-inherit * {
+  color: inherit !important;
+}
+
+/* 强制所有背景元素继承主题背景 */
+.theme-bg-inherit,
+.theme-bg-inherit * {
+  background-color: inherit !important;
+}

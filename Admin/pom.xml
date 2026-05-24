@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- 指定父项目为 MintBlog -->
+	<parent>
+		<groupId>cn.yangmufa.blog</groupId>
+		<artifactId>mintblog-java</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<groupId>cn.yangmufa.blog</groupId>
+	<artifactId>Admin</artifactId>
+	<version>${revision}</version>
+	<name>Admin</name>
+	<description>Admin(负责管理后台相关功能)</description>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>cn.yangmufa.blog</groupId>
+			<artifactId>Common</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>cn.yangmufa.blog</groupId>
+			<artifactId>Jwt</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>cn.yangmufa.blog</groupId>
+			<artifactId>Search</artifactId>
+		</dependency>
+
+		<!-- 免写冗余的 Java 样板式代码 -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- 单元测试 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- knife4j -->
+		<dependency>
+			<groupId>com.github.xiaoymin</groupId>
+			<artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
+		</dependency>
+
+		<!-- Spring Security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- 入参校验 -->
+		<dependency>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+
+		<!-- 对象存储 Minio -->
+		<dependency>
+			<groupId>io.minio</groupId>
+			<artifactId>minio</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+		</dependency>
+
+	</dependencies>
+
+
+</project>

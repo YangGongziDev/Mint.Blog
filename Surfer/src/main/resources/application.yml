@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    # 默认激活 dev 环境
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 10MB # 限制单个上传文件的最大大小为 10MB。如果上传的文件大小超过这个值，将会被拒绝上传。
+      max-request-size: 10MB # 限制整个上传请求的最大大小为 10MB。这包括所有上传文件的大小之和。如果请求总大小超过这个值，将会被拒绝。
+  mail:
+    host: smtp.qq.com # 邮件服务器的地址，小哈这里使用的 QQ 邮件
+    username: root # 发送邮件的邮箱账号
+    password: MintBlog # 授权码，或发送邮件的邮箱账号的密码
+    default-encoding: utf-8 # 邮件内容的字符编码
+    protocol: smtps # 邮件传输协议：smtps 表示SMTP over SSL，是一种加密的SMTP连接方式，用于确保邮件传输的安全性。
+    port: 465 # 邮件服务器的端口号：465 是 SMTPS（SMTP over SSL）的常用端口号，用于加密的邮件传输。
+    
+jwt:
+  # 签发人
+  issuer: MintBlog
+  # 秘钥
+  secret: sFPYPg/4RGz3Yq3qHNkI6lVVI168UrciMvWUvsLzHDbs2wTi3ZTLa4YrU0qhQmlRpfbp563QIA+Zbhnk3Mr4Tg==
+  # token 过期时间（单位：分钟） 24*60
+  tokenExpireTime: 1440
+  # token 请求头中的 key 值
+  tokenHeaderKey: Authorization
+  # token 请求头中的 value 值前缀
+  tokenPrefix: Bearer
+
+

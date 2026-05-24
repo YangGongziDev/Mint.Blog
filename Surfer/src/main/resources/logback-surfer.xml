@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration >
+    <jmxConfigurator/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <!-- 应用名称 -->
+    <property scope="context" name="appName" value="MintBlog" />
+    <!-- 自定义日志输出路径，以及日志名称前缀 -->
+    <!--<property name="LOG_FILE" value="E:\\DevelopmentKitProject\\RocSeries\MintBlog\\Logs\\${appName}.%d{yyyy-MM-dd}"/>-->
+    <property name="LOG_FILE" value="/opt/blog-server-java/logs/${appName}.%d{yyyy-MM-dd}"/>
+    <property name="FILE_LOG_PATTERN" value="[TraceId: %X{traceId}] %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"/>
+    <!-- <property name="CONSOLE_LOG_PATTERN" value="${FILE_LOG_PATTERN}"/> -->
+
+    <!-- dev 环境（仅输出到控制台） -->
+    <springProfile name="dev">
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <!-- prod 环境（仅输出到文件中） -->
+    <springProfile name="prod">
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_FILE}-%i.log</FileNamePattern>
+                <MaxHistory>30</MaxHistory>
+                <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>200MB</maxFileSize>
+                </TimeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
+</configuration>

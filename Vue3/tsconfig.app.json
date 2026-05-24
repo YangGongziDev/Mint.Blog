@@ -1,0 +1,27 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+
+    /* Module Resolution */
+    "allowImportingTsExtensions": true,//允许在导入语句中使用 .ts 扩展名
+    "noEmit": true,//禁用 TypeScript 编译输出（因为 Vite 负责编译）
+
+    /*src文件夹别名*/
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*", //路径映射，相对于baseUrl
+      ],
+    },
+
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
+}

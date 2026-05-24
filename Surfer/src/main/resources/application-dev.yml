@@ -1,0 +1,62 @@
+server:
+  port: 8100
+spring:
+  application:
+    name: MintBlog
+  security:
+    user:
+      name: admin # 登录用户名
+      password: admin # 登录密码
+  datasource:
+    # PostgreSQL 数据库驱动类
+    driver-class-name: org.postgresql.Driver
+    # PostgreSQL 数据库连接的URL
+    url: jdbc:postgresql://localhost:5432/MintBlog?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    # 数据库用户名
+    username: postgres
+    # 数据库密码
+    password: MintBlog
+    # HikariCP是一个高性能的连接池实现
+    hikari:
+      # Hikari连接池中最小空闲连接数
+      minimum-idle: 5
+      # Hikari连接池中允许的最大连接数
+      maximum-pool-size: 20
+      # 连接是否自动提交事务
+      auto-commit: true
+      # 连接在连接池中闲置的最长时间，超过这个时间会被释放
+      idle-timeout: 30000
+      # 连接池的名字
+      pool-name: MintBlog-HikariCP
+      # 连接在连接池中的最大存活时间，超过这个时间会被强制关闭
+      max-lifetime: 1800000
+      # 获取连接的超时时间
+      connection-timeout: 30000
+      # 用于测试连接是否可用的SQL查询，这里使用的是SELECT 1，表示执行这个查询来测试连接
+      connection-test-query: SELECT 1
+
+# log 日志
+logging:
+  config: classpath:logback-surfer.xml
+
+# knife4j的增强配置
+knife4j:
+  enable: true # 开启增强配置
+  setting:
+    language: zh_cn
+    enable-search: false
+    enable-footer: false
+    enable-footer-custom: true
+    footer-custom-content: MintBlog License 2.0 | Copyright 2025 [程序员-杨工子](https://www.yangmufa.cn)
+
+# minio (上传图片需要，需配置成自己的地址)
+minio:
+  endpoint: http://127.0.0.1:9000
+  accessKey: MintBlog
+  secretKey: MintBlog
+  bucketName: mintblog
+
+# Lucene 全文检索
+lucene:
+  indexDir: /Users/yangmufa/UserDevelopment/Java/MintBlog/lucene-index # lucene 索引存放的位置
+#  indexDir: E:\\DevelopmentKitProject\\IntelliJ\\MintBlog\\lucene-index # lucene 索引存放的位置

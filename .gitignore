@@ -1,0 +1,75 @@
+HELP.md
+# system
+.DS_Store
+**/.DS_Store
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+.cursor
+
+# Misc
+*.cache
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# .NET
+bin/
+obj/
+.vs/
+TestResults/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Vue / Node
+node_modules/
+dist/
+dist-ssr/
+coverage/
+vite.svg
+*.local
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Java
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+target/
+.mtj.tmp/
+hs_err_pid*
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+
+

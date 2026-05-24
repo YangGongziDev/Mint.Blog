@@ -1,0 +1,36 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e3f2fd;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#bbdefb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#grad1)" rx="10"/>
+  
+  <!-- Main illustration -->
+  <g transform="translate(100, 50)">
+    <!-- Document stack -->
+    <rect x="20" y="80" width="120" height="140" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="2" rx="8"/>
+    <rect x="30" y="70" width="120" height="140" fill="#fafafa" stroke="#e0e0e0" stroke-width="2" rx="8"/>
+    <rect x="40" y="60" width="120" height="140" fill="#ffffff" stroke="#e0e0e0" stroke-width="2" rx="8"/>
+    
+    <!-- Document lines -->
+    <line x1="60" y1="90" x2="140" y2="90" stroke="#e0e0e0" stroke-width="2"/>
+    <line x1="60" y1="110" x2="130" y2="110" stroke="#e0e0e0" stroke-width="2"/>
+    <line x1="60" y1="130" x2="135" y2="130" stroke="#e0e0e0" stroke-width="2"/>
+    <line x1="60" y1="150" x2="125" y2="150" stroke="#e0e0e0" stroke-width="2"/>
+    
+    <!-- Magnifying glass -->
+    <circle cx="120" cy="40" r="25" fill="none" stroke="#90caf9" stroke-width="3"/>
+    <line x1="140" y1="60" x2="155" y2="75" stroke="#90caf9" stroke-width="3" stroke-linecap="round"/>
+    
+    <!-- Question mark in magnifying glass -->
+    <text x="120" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#64b5f6">?</text>
+  </g>
+  
+  <!-- Text -->
+  <text x="200" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#666">暂无文章</text>
+  <text x="200" y="265" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#999">该分类下还没有发布任何文章</text>
+</svg>

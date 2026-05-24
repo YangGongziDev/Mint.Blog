@@ -1,0 +1,54 @@
+server:
+  port: 8100
+  tomcat:
+    connection-timeout: 6s
+  servlet:
+    session:
+      timeout: 6s
+spring:
+  application:
+    name: MintBlog
+  datasource:
+    # 指定数据库驱动类的完整类名，这里使用的是 PostgreSQL 数据库的驱动类
+    driver-class-name: org.postgresql.Driver
+    # 数据库连接的URL，指向PostgreSQL数据库，端口是5432，配置了一系列参数，如使用Unicode编码、字符编码为UTF-8、不使用SSL等
+    url: jdbc:postgresql://172.17.0.1:5432/MintBlog?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    # 数据库用户名
+    username: postgres
+    # 数据库密码
+    password: MintBlog
+  # HikariCP是一个高性能的连接池实现
+  hikari: # 数据库连接池使用 Hikari
+    minimum-idle: 5 # 连接池中最小空闲连接数
+    maximum-pool-size: 20 # 连接池中允许的最大连接数
+    auto-commit: true # 是否自动提交事务
+    idle-timeout: 30000 # 连接在连接池中闲置的最长时间，超过这个时间会被释放。
+    pool-name: MintBlog-HikariCP # 自定义连接池的名字
+    max-lifetime: 1800000 # 连接在连接池中的最大存活时间，超过这个时间会被强制关闭。
+    connection-timeout: 30000 # 连接的超时时间
+    connection-test-query: SELECT 1 # 用于测试连接是否可用的SQL查询
+
+# log 日志
+logging:
+  config: classpath:logback-surfer.xml
+
+# knife4j的增强配置
+knife4j:
+  enable: true # 开启增强配置
+  setting:
+    language: zh_cn
+    enable-search: false
+    enable-footer: false
+    enable-footer-custom: true
+    footer-custom-content: MintBlog License 2.0 | Copyright 2025 [程序员-杨工子](https://www.yangmufa.cn)
+
+# minio (上传图片需要，需配置成自己的地址)
+minio:
+  endpoint: https://img.blog.cn
+  accessKey: MintBlog
+  secretKey: MintBlog
+  bucketName: mintblog
+
+# Lucene 全文检索
+lucene:
+  indexDir: /opt/blog-server-java/lucene-index # lucene 索引存放的位置

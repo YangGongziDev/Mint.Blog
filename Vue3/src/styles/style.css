@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+html {
+  /* 1个rem的基数：使用 clamp 限制在 14px-17px，随视口宽度柔性缩放 */
+  font-size: clamp(14px, 1.25vw, 17px) !important;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+body {
+  overflow-y: hidden;
+  overflow-x: hidden;
+  #app {
+    overflow-y: hidden;
+    overflow-x: hidden;
+  }
+}
+
+html.dark {
+  /* 覆盖 VueUse 的设置 */
+  /* color-scheme: auto !important;  */
+  /* 或者完全移除 */
+  color-scheme: unset !important;
+}
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 8px;   /* 垂直滚动条宽度 */
+  height: 100%;  /* 水平滚动条高度 */
+}
+::-webkit-scrollbar-track {
+  background-color: rgba(73, 177, 245, 0.2);  /* 浅蓝色半透明背景 */
+  border-radius: 2em;  /* 圆角边框 */
+}
+::-webkit-scrollbar-thumb {
+  background-color: #49b1f5;  /* 蓝色背景 */
+  background-image: -webkit-linear-gradient(45deg,
+      rgba(255, 255, 255, 0.4) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.4) 75%,
+      transparent 75%,
+      transparent);  /* 45度斜纹渐变效果 */
+  border-radius: 2em;  /* 圆角边框 */
+}
+::-webkit-scrollbar-corner {
+  background-color: transparent;  /* 透明背景 */
+}
+/* 移除表单元素焦点时的默认阴影效果 */
+[type='text']:focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus {
+    box-shadow: 0 0 0 1px transparent inset!important;
+}
+
+/* 设置按钮中图标与文字的水平对齐 */
+.ant-btn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 上传组件预览框样式 */
+.ant-upload{
+  border: 1px dashed #d9d9d9 !important;
+  img{
+    /* 移除全局虚线边框，由组件自己控制 */
+    /* border: 1px dashed #d9d9d9 !important; */
+  }
+}
+
+/* 设置所有a标签和按钮鼠标悬停时显示手指光标 */
+a, button, .ant-btn {
+  cursor: pointer;
+}
+
+/* Ant Design Vue 确认弹框按钮：水平显示并靠右 */
+.ant-modal-confirm .ant-modal-confirm-btns {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: flex-end !important;
+  gap: 12px;
+  width: 100%;
+}
