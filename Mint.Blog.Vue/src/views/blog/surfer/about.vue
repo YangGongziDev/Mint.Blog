@@ -3,7 +3,7 @@ defineOptions({
   name: 'AboutPage'
 });
 
-const highlights = ['前后端分离', '博客后台管理', '文章与评论', 'Wiki 知识库', '统计分析'];
+const highlights = ['前后端分离', '博客后台管理', '文章与评论', '专栏', '统计分析'];
 
 const stats = [
   { label: '项目版本', value: 'v2.0.0' },
@@ -15,7 +15,7 @@ const stats = [
 const projectInfo = [
   { label: '项目名称', value: 'Mint.Blog' },
   { label: '作者', value: '程序员-杨工子' },
-  { label: '开源协议', value: 'MIT' },
+  { label: '开源协议', value: 'GPL-3.0 license' },
   { label: '项目定位', value: '个人博客 / 内容管理 / 知识整理' },
   { label: '项目仓库', value: 'https://github.com/YangMufa/Mint.Blog', link: 'https://github.com/YangMufa/Mint.Blog' },
   { label: '站点首页', value: 'https://www.yangmufa.cn', link: 'https://www.yangmufa.cn' },
@@ -34,8 +34,8 @@ const features = [
     desc: '包含分类、标签、评论、友链、博客设置等完整内容管理模块。'
   },
   {
-    title: 'Wiki 模块',
-    desc: '支持知识库目录组织与文章关联，适合沉淀专题化内容。'
+    title: '专栏 模块',
+    desc: '支持专栏组织与文章关联，适合沉淀专题化内容。'
   },
   {
     title: '统计分析',
@@ -70,7 +70,7 @@ const frontendStack = [
           <div class="eyebrow">MINT.BLOG</div>
           <h1 class="hero-title">Mint.Blog 薄荷博客</h1>
           <p class="hero-desc">
-            一个面向个人博客场景的前后端分离项目，聚焦文章发布、分类标签、评论互动、友情链接、Wiki、统计分析与后台管理。
+            一个面向个人博客场景的前后端分离项目，聚焦文章发布、分类标签、评论互动、友情链接、专栏、统计分析与后台管理。
           </p>
 
           <div class="hero-tags">

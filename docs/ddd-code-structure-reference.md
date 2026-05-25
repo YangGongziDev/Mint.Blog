@@ -221,7 +221,7 @@ Mint.Blog.Domain/
     Friend/{Entities,ValueObjects,Events,Services,Repositories}
     Message/{Entities,ValueObjects,Events,Services,Repositories}
     Setting/{Entities,ValueObjects,Events,Services,Repositories}
-    Wiki/{Entities,ValueObjects,Events,Services,Repositories}
+    Column/{Entities,ValueObjects,Events,Services,Repositories}
     Statistics/{Entities,ValueObjects,Events,Services,Repositories}
   System/
     User/{Entities,ValueObjects,Events,Services,Repositories}
@@ -241,7 +241,7 @@ Mint.Blog.Application/
     Friend/{Commands,Queries,Dtos}
     Message/{Commands,Queries,Dtos}
     Setting/{Commands,Queries,Dtos}
-    Wiki/{Commands,Queries,Dtos}
+    Column/{Commands,Queries,Dtos}
     Statistics/{Commands,Queries,Dtos}
   System/
     Auth/{Commands,Queries,Dtos}
@@ -264,7 +264,7 @@ Mint.Blog.Infrastructure/
     Friend/{Repositories,Persistence}
     Message/{Repositories,Persistence}
     Setting/{Repositories,Persistence}
-    Wiki/{Repositories,Persistence}
+    Column/{Repositories,Persistence}
     Statistics/{Repositories,Persistence,BackgroundJobs}
     Persistence/{ISqlSugarDbContext,SqlSugarDbContext,SqlSugarUnitOfWork}
   System/

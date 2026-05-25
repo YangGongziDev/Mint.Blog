@@ -1,3 +1,4 @@
+using Mint.Blog.Application.Abstractions;
 using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
 using Mint.Blog.Application.Blog.Column.Queries.GetAdminColumnCatalog;
 using Mint.Blog.Application.Blog.Column.Queries.GetAdminColumnPageList;
@@ -36,8 +37,7 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext)
 		var pageSize = query.PageSize <= 0 ? 10 : query.PageSize;
 		var skip = (pageNumber - 1) * pageSize;
 
-		var columnQuery = dbContext.Client.Queryable<ColumnDataModel>()
-			.Where(x => x.IsDeleted == 0);
+		var columnQuery = dbContext.Client.Queryable<ColumnDataModel>();
 
 		if (!string.IsNullOrWhiteSpace(query.Title)) {
 			var keyword = query.Title.Trim();
@@ -91,7 +91,7 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext)
 
 		var validArticleIds = await GetValidArticleIdsAsync(catalogs, cancellationToken);
 		var articleCatalogs = catalogs
-			.Where(x => validArticleIds.Contains(x.ArticleId))
+			.Where(x => x.ArticleId.HasValue && validArticleIds.Contains(x.ArticleId.Value))
 			.OrderBy(x => x.Sort)
 			.ThenBy(x => x.Id)
 			.ToArray();
@@ -103,8 +103,8 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext)
 		var next = currentIndex < articleCatalogs.Length - 1 ? articleCatalogs[currentIndex + 1] : null;
 
 		return new BlogColumnArticlePreNextDto(
-			previous is null ? null : new BlogColumnArticleLinkDto(previous.ArticleId, previous.Title),
-			next is null ? null : new BlogColumnArticleLinkDto(next.ArticleId, next.Title));
+			previous is null ? null : new BlogColumnArticleLinkDto(previous.ArticleId ?? 0, previous.Title),
+			next is null ? null : new BlogColumnArticleLinkDto(next.ArticleId ?? 0, next.Title));
 	}
 
 	public async Task<IReadOnlyCollection<BlogColumnCatalogItemDto>> GetAsync(BlogColumnCatalogQuery query,
@@ -137,12 +137,12 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext)
 		return columns.Select(column => {
 			var columnCatalogs = catalogs.Where(x => x.ColumnId == column.Id).ToList();
 			var firstArticleId = columnCatalogs
-				.Where(x => x.Level == 2 && x.ArticleId > 0 && validArticleIds.Contains(x.ArticleId))
+				.Where(x => x.Level == 2 && x.ArticleId.HasValue && x.ArticleId > 0 && validArticleIds.Contains(x.ArticleId.Value))
 				.OrderBy(x => x.Id)
 				.Select(x => (long?)x.ArticleId)
 				.FirstOrDefault();
 
-			var articleTotal = columnCatalogs.Count(x => x.ArticleId > 0 && validArticleIds.Contains(x.ArticleId));
+			var articleTotal = columnCatalogs.Count(x => x.ArticleId.HasValue && x.ArticleId > 0 && validArticleIds.Contains(x.ArticleId.Value));
 
 			return new BlogColumnListItemDto(
 				column.Id,
@@ -241,7 +241,7 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext)
 			await dbContext.Client.Insertable(new ColumnCatalogDataModel {
 				Id = parentId,
 				ColumnId = columnId,
-				ArticleId = 0,
+				ArticleId = null,
 				Title = parent.Title,
 				Level = 1,
 				ParentId = 0,
@@ -299,7 +299,7 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext)
 	private static AdminColumnPageItemDto MapToAdminPageItem(ColumnDataModel column, IReadOnlySet<long> validArticleIds,
 		IReadOnlyCollection<ColumnCatalogDataModel> catalogs){
 		var articlesTotal = catalogs.Count(x =>
-			x.ColumnId == column.Id && x.ArticleId > 0 && validArticleIds.Contains(x.ArticleId));
+			x.ColumnId == column.Id && x.ArticleId.HasValue && x.ArticleId > 0 && validArticleIds.Contains(x.ArticleId.Value));
 
 		return new AdminColumnPageItemDto(
 			column.Id,
@@ -311,7 +311,8 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext)
 			column.CreatedAt,
 			column.Weight > 0,
 			column.IsPublish != 0,
-			articlesTotal);
+			articlesTotal,
+			column.IsDeleted);
 	}
 
 	private static IReadOnlyCollection<AdminColumnCatalogItemDto> BuildAdminCatalogTree(
@@ -323,20 +324,20 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext)
 				.Where(x => x.ParentId == parent.Id && x.Level == 2)
 				.OrderBy(x => x.Sort)
 				.ThenBy(x => x.Id)
-				.Select(child => new AdminColumnCatalogItemDto(child.Id, child.ArticleId, child.Title, child.Sort,
-					child.Level, child.IsDeleted != 0, false, []))
-				.ToArray();
+				.Select(child => new AdminColumnCatalogItemDto(child.Id, child.ArticleId ?? 0, child.Title, child.Sort,
+				child.Level, child.IsDeleted != 0, false, []))
+			.ToArray();
 
-			return new AdminColumnCatalogItemDto(parent.Id, parent.ArticleId, parent.Title, parent.Sort, parent.Level,
-				parent.IsDeleted != 0, false, children);
+		return new AdminColumnCatalogItemDto(parent.Id, parent.ArticleId ?? 0, parent.Title, parent.Sort, parent.Level,
+			parent.IsDeleted != 0, false, children);
 		}).ToArray();
 	}
 
 	private async Task<HashSet<long>> GetValidArticleIdsAsync(IReadOnlyCollection<ColumnCatalogDataModel> catalogs,
 		CancellationToken cancellationToken){
 		var articleIds = catalogs
-			.Where(x => x.Level == 2 && x.ArticleId > 0)
-			.Select(x => x.ArticleId)
+			.Where(x => x.Level == 2 && x.ArticleId.HasValue && x.ArticleId > 0)
+			.Select(x => x.ArticleId!.Value)
 			.Distinct()
 			.ToArray();
 
@@ -350,6 +351,22 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext)
 		return validArticleIds.ToHashSet();
 	}
 
+	public async Task ValidateArticleIdsAsync(IReadOnlyCollection<long> articleIds, CancellationToken cancellationToken = default){
+		if (articleIds.Count == 0) return;
+
+		var distinctIds = articleIds.Distinct().ToArray();
+		var existingIds = await dbContext.Client.Queryable<ArticleDataModel>()
+			.Where(x => distinctIds.Contains(x.Id) && x.IsDeleted == 0)
+			.Select(x => x.Id)
+			.ToListAsync();
+
+		var existingSet = existingIds.ToHashSet();
+		var invalidIds = distinctIds.Where(id => !existingSet.Contains(id)).ToArray();
+
+		Guard.Against(invalidIds.Length > 0, ErrorCodes.ArticleNotFound,
+			$"以下文章 ID 不存在或已删除：{string.Join(", ", invalidIds)}");
+	}
+
 	private static IReadOnlyCollection<BlogColumnCatalogItemDto> BuildBlogCatalogTree(
 		IReadOnlyCollection<ColumnCatalogDataModel> catalogs,
 		IReadOnlySet<long> validArticleIds){
@@ -361,13 +378,13 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext)
 
 		return level1.Select(parent => {
 			var children = catalogs
-				.Where(x => x.ParentId == parent.Id && x.Level == 2 && x.ArticleId > 0 && validArticleIds.Contains(x.ArticleId))
+				.Where(x => x.ParentId == parent.Id && x.Level == 2 && x.ArticleId.HasValue && x.ArticleId > 0 && validArticleIds.Contains(x.ArticleId.Value))
 				.OrderBy(x => x.Sort)
 				.ThenBy(x => x.Id)
-				.Select(child => new BlogColumnCatalogItemDto(child.Id, child.ArticleId, child.Title, child.Level, []))
+				.Select(child => new BlogColumnCatalogItemDto(child.Id, child.ArticleId ?? 0, child.Title, child.Level, []))
 				.ToArray();
 
-			return new BlogColumnCatalogItemDto(parent.Id, parent.ArticleId, parent.Title, parent.Level, children);
+			return new BlogColumnCatalogItemDto(parent.Id, parent.ArticleId ?? 0, parent.Title, parent.Level, children);
 		}).ToArray();
 	}
 }

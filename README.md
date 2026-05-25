@@ -1,9 +1,13 @@
 <div align="center">
   <img src="./Mint.Blog.Vue/public/favicon.svg" width="160" />
-  <h1>Mint.Blog</h1>
-  <h2>作者：<a href="https://www.yangmufa.cn/surfer/my">程序员·杨工子</a></h2>
+  <h1>Mint.Blog V2</h1>
+  <h2>作者：<a href="https://www.yangmufa.cn/surfer/my">程序员-杨工子</a></h2>
   <span>中文 | <a href="./README.en_US.md">English</a></span>
 </div>
+
+---
+<h4>原 RocBlog (鲲鹏博客) 已更名为 Mint.Blog V1</h4>
+<h4>代码并入 Mint.Net 仓库<a href="https://github.com/YangMufa/Mint.Blog/tree/mint-blog-v1-java"> mint-blog-v1-java</a> 分支</h4>
 
 ---
 
@@ -144,7 +148,7 @@ pnpm build
 
 ## 声明
 
-1.本项目基于 [2026 程序员·杨工子 © GPL3.0](./LICENSE) 协议开源，仅供学习参考，为了保护原作者的权益，商业使用或二次开源请保留原作者版权信息并遵循GPL3.0协议，本人承诺当Github仓库Star突破2000后次项目将改为MIT协议开源。
+1.本项目基于 [2026 程序员·杨工子 © GPL3.0](./LICENSE) 协议开源，仅供学习参考，为了保护原作者的成果权益，商业使用或二次开源请保留原作者版权信息并遵循GPL3.0协议，本人承诺当Github仓库Star突破2000后此项目将改为MIT协议开源。
 
 2.本项目前端从如下项目获得了不少灵感,请多多支持他们:  
 - [soybean-admin-antd](https://github.com/soybeanjs/soybean-admin-antd)  

@@ -54,7 +54,6 @@ type Stat = {
   categoryTotalCount: number;
   tagTotalCount: number;
   columnTotalCount?: number;
-  wikiTotalCount?: number;
   pvTotalCount: number;
 };
 
@@ -89,7 +88,7 @@ function formatCount(n: number): string {
 }
 
 const statCards = computed(() => [
-  { label: '专栏', value: stat.value.columnTotalCount ?? stat.value.wikiTotalCount ?? 0 },
+  { label: '专栏', value: stat.value.columnTotalCount ?? 0 },
   { label: '文章', value: stat.value.articleTotalCount },
   { label: '分类', value: stat.value.categoryTotalCount },
   { label: '标签', value: stat.value.tagTotalCount },
@@ -274,7 +273,7 @@ onMounted(async () => {
             @click="isWeixinSponsorQrCodeOpen = true"
           />
         </ATooltip>
-        
+
       </div>
     </section>
 
@@ -311,7 +310,7 @@ onMounted(async () => {
     <section v-if="!hideColumns" class="side-card">
       <h3 class="side-title">专栏</h3>
       <div v-if="columns.length">
-        <button v-for="column in visibleColumns" :key="column.id" class="wiki" @click="goColumn(column.id, column.firstArticleId)">
+        <button v-for="column in visibleColumns" :key="column.id" class="column" @click="goColumn(column.id, column.firstArticleId)">
           <img v-if="column.cover" :src="column.cover" alt="" class="h-9 w-9 rounded-xl object-cover" />
           <span class="min-w-0 flex-1 truncate text-left">{{ column.title }}</span>
           <span class="tag-count">{{ column.articlesTotal ?? 0 }}</span>
@@ -465,7 +464,7 @@ onMounted(async () => {
   font-weight: 900;
   line-height: 1.4;
 }
-.wiki {
+.column {
   display: flex;
   align-items: center;
   gap: 10px;

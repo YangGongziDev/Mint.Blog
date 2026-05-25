@@ -19,7 +19,7 @@ export interface AdminCommentPageQuery {
 }
 
 export interface AdminCommentPageItem {
-  id: number;
+  id: string;
   routerUrl: string;
   avatar: string;
   nickname: string;
@@ -44,13 +44,13 @@ export function getCommentPageList(params: AdminCommentPageQuery) {
   }>;
 }
 
-export function examineComment(commentId: number, data: ExamineCommentPayload) {
+export function examineComment(commentId: string, data: ExamineCommentPayload) {
   return axios.patch(`/blog/admin/comment/${commentId}/examine`, { id: commentId, ...data }) as Promise<{
     success: boolean;
   }>;
 }
 
-export function deleteComment(commentId: number, deleteType: number) {
+export function deleteComment(commentId: string, deleteType: number) {
   return axios.patch(`/blog/admin/comment/${commentId}/delete`, { id: commentId, deleteType }) as Promise<{
     success: boolean;
   }>;

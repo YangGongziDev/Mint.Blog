@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { message as antMessage } from 'ant-design-vue';
 import { getMessageList, publishMessage, type MessageItem } from '@/service/blog/surfer/message';
 
@@ -7,8 +8,14 @@ const colorOptions = ['#3ecf9a', '#539dfd', '#f59e0b', '#ef4444', '#a855f7', '#1
 
 const loading = ref(false);
 const submitting = ref(false);
+const route = useRoute();
+const router = useRouter();
 const messages = ref<MessageItem[]>([]);
-const pageNumber = ref(1);
+const pageNumber = computed(() => {
+  const q = route.query.page;
+  const n = Number(q);
+  return Number.isFinite(n) && n > 0 ? n : 1;
+});
 const pageSize = ref(12);
 const totalCount = ref(0);
 
@@ -41,19 +48,22 @@ function resetForm() {
   form.color = colorOptions[0];
 }
 
-async function loadMessages(page = pageNumber.value) {
+async function loadMessages() {
   loading.value = true;
   try {
-    const response = await getMessageList(page, pageSize.value);
+    const response = await getMessageList(pageNumber.value, pageSize.value);
     if (response.success) {
       messages.value = response.data.items || [];
-      pageNumber.value = response.data.pageNumber || page;
       pageSize.value = response.data.pageSize || pageSize.value;
       totalCount.value = response.data.totalCount || messages.value.length;
     }
   } finally {
     loading.value = false;
   }
+}
+
+function goPage(page: number) {
+  router.replace({ query: { page: page > 1 ? String(page) : undefined } });
 }
 
 async function submitMessage() {
@@ -75,7 +85,8 @@ async function submitMessage() {
     if (response.success) {
       antMessage.success('留言发布成功');
       resetForm();
-      await loadMessages(1);
+      router.replace({ query: {} });
+      await loadMessages();
     }
   } finally {
     submitting.value = false;
@@ -85,6 +96,13 @@ async function submitMessage() {
 onMounted(() => {
   loadMessages();
 });
+
+watch(
+  () => route.query.page,
+  () => {
+    loadMessages();
+  }
+);
 </script>
 
 <template>
@@ -169,11 +187,11 @@ onMounted(() => {
 
           <div v-if="totalCount > pageSize" class="mt-6 flex justify-center">
             <APagination
-              v-model:current="pageNumber"
+              :current="pageNumber"
               :page-size="pageSize"
               :total="totalCount"
               :show-size-changer="false"
-              @change="loadMessages"
+              @change="goPage"
             />
           </div>
         </section>

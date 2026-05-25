@@ -51,7 +51,7 @@ const inputRef = ref();
 const formRef = ref<FormInstance>();
 const editFormRef = ref<FormInstance>();
 const createForm = reactive({ tags: [] as string[] });
-const editForm = reactive({ id: undefined as number | undefined, name: '' });
+const editForm = reactive({ id: undefined as string | undefined, name: '' });
 const query = reactive({ name: '', startDate: '', endDate: '' });
 
 const modalWidth = computed(() => (appStore.isMobile ? '92vw' : 500));
@@ -116,7 +116,7 @@ function sortTags(items: TagListItem[]) {
     const sortA = Number(a.sort || 0);
     const sortB = Number(b.sort || 0);
     if (sortB !== sortA) return sortB - sortA;
-    return Number(a.id) - Number(b.id);
+    return a.id.localeCompare(b.id);
   });
 }
 
@@ -278,7 +278,7 @@ async function handleDelete() {
   }
 }
 
-async function updateTagSortValue(id: number, sort: number) {
+async function updateTagSortValue(id: string, sort: number) {
   const res = await updateTagSort(id, sort);
   if (!res.success) throw new Error('更新排序失败');
 }

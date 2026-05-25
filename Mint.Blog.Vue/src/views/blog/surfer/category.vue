@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { CalendarOutlined, DownOutlined, FolderOutlined, UpOutlined } from '@ant-design/icons-vue';
 import { getCategoryArticlePageList, getCategoryList } from '@/service/blog/surfer/category';
@@ -26,7 +26,11 @@ const allCategories = ref<CategoryItem[]>([]);
 const articles = ref<ArticleItem[]>([]);
 const categoryName = ref((route.query.name as string) || '');
 const categoryId = ref((route.query.id as string) || '');
-const current = ref(1);
+const current = computed(() => {
+  const q = route.query.page;
+  const n = Number(q);
+  return Number.isFinite(n) && n > 0 ? n : 1;
+});
 const size = ref(10);
 const total = ref(0);
 const pages = ref(0);
@@ -46,7 +50,6 @@ function getCategoryArticles(pageNo: number) {
     .then(res => {
       if (res.success) {
         articles.value = res.data;
-        current.value = res.current;
         size.value = res.size;
         total.value = res.total;
         pages.value = res.pages;
@@ -68,6 +71,9 @@ function goArticleDetailPage(articleId: number) {
 function goCategoryPage(id: number, name: string) {
   router.push({ path: '/blog/surfer/category', query: { id: String(id), name } });
 }
+function goPage(page: number) {
+  router.replace({ query: { ...route.query, page: page > 1 ? String(page) : undefined } });
+}
 
 const byArticles = <T extends { id: number; articlesTotal?: number }>(list: T[]) =>
   [...list].sort((a, b) => (b.articlesTotal || 0) - (a.articlesTotal || 0) || a.id - b.id);
@@ -75,7 +81,7 @@ const byArticles = <T extends { id: number; articlesTotal?: number }>(list: T[])
 watch(route, newRoute => {
   categoryName.value = (newRoute.query.name as string) || '';
   categoryId.value = (newRoute.query.id as string) || '';
-  getCategoryArticles(1);
+  getCategoryArticles(current.value);
 });
 
 onMounted(async () => {
@@ -200,11 +206,11 @@ onMounted(async () => {
 
         <div v-if="pages > 0" class="flex justify-center pt-4">
           <APagination
-            v-model:current="current"
+            :current="current"
             :page-size="size"
             :total="total"
             :show-size-changer="false"
-            @change="getCategoryArticles"
+            @change="goPage"
           />
         </div>
       </div>

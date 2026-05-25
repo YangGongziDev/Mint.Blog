@@ -18,7 +18,7 @@ export interface AdminColumnPageQuery {
 }
 
 export interface AdminColumnPageItem {
-  id: number;
+  id: string;
   title: string;
   cover: string;
   summary: string;
@@ -32,7 +32,7 @@ export interface AdminColumnPageItem {
 }
 
 export interface DeleteColumnPayload {
-  columnId: number;
+  columnId: string;
   deleteType: number;
 }
 
@@ -43,8 +43,8 @@ export interface ColumnFormModel {
 }
 
 export interface AdminColumnCatalogItem {
-  id: number;
-  articleId: number;
+  id: string;
+  articleId: string;
   title: string;
   sort: number;
   level: number;
@@ -64,7 +64,7 @@ export function getColumnPageList(params: AdminColumnPageQuery) {
   }>;
 }
 
-export function getColumnCatalog(columnId: number) {
+export function getColumnCatalog(columnId: string) {
   return axios.get(`/blog/admin/column/${columnId}/catalog`) as Promise<{
     success: boolean;
     data: AdminColumnCatalogItem[];
@@ -72,29 +72,29 @@ export function getColumnCatalog(columnId: number) {
 }
 
 export function createColumn(data: ColumnFormModel) {
-  return axios.post('/blog/admin/column', data) as Promise<{ success: boolean; data: { id: number } }>;
+  return axios.post('/blog/admin/column', data) as Promise<{ success: boolean; data: { id: string } }>;
 }
 
-export function updateColumn(columnId: number, data: ColumnFormModel) {
-  return axios.put(`/blog/admin/column/${columnId}`, data) as Promise<{ success: boolean; data: { id: number } }>;
+export function updateColumn(columnId: string, data: ColumnFormModel) {
+  return axios.put(`/blog/admin/column/${columnId}`, data) as Promise<{ success: boolean; data: { id: string } }>;
 }
 
-export function setColumnPublish(columnId: number, isPublish: boolean) {
+export function setColumnPublish(columnId: string, isPublish: boolean) {
   return axios.patch(`/blog/admin/column/${columnId}/publish`, { columnId: columnId, isPublish }) as Promise<{ success: boolean }>;
 }
 
-export function setColumnTop(columnId: number, isTop: boolean) {
+export function setColumnTop(columnId: string, isTop: boolean) {
   return axios.patch(`/blog/admin/column/${columnId}/top`, { columnId: columnId, isTop }) as Promise<{ success: boolean }>;
 }
 
-export function updateColumnSort(columnId: number, sort: number) {
+export function updateColumnSort(columnId: string, sort: number) {
   return axios.patch(`/blog/admin/column/${columnId}/sort`, { columnId: columnId, sort }) as Promise<{ success: boolean }>;
 }
 
-export function updateColumnCatalog(columnId: number, data: UpdateColumnCatalogPayload) {
+export function updateColumnCatalog(columnId: string, data: UpdateColumnCatalogPayload) {
   return axios.put(`/blog/admin/column/${columnId}/catalog`, { columnId: columnId, ...data }) as Promise<{ success: boolean }>;
 }
 
-export function deleteColumn(columnId: number, deleteType = 1) {
-  return axios.delete(`/blog/admin/column/${columnId}`, { data: { columnId, deleteType } }) as Promise<{ success: boolean }>;
+export function deleteColumn(columnId: string, deleteType = 1) {
+  return axios.delete(`/blog/admin/column/${columnId}`, { data: { deleteType } }) as Promise<{ success: boolean }>;
 }

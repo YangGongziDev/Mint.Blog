@@ -7,7 +7,10 @@ using Mint.Blog.Domain.Blog.Category.Repositories;
 using Mint.Blog.Domain.Blog.Tag.Repositories;
 using Mint.Blog.Infrastructure.Blog.Article.Persistence;
 using Mint.Blog.Infrastructure.Blog.Category.Persistence;
+using Mint.Blog.Infrastructure.Blog.Column.Persistence;
+using Mint.Blog.Infrastructure.Blog.Friend.Persistence;
 using Mint.Blog.Infrastructure.Blog.Persistence.SqlSugar;
+using Mint.Blog.Infrastructure.Blog.Setting.Persistence;
 using SqlSugar;
 
 namespace Mint.Blog.Infrastructure.Blog.Article.Drafts;
@@ -359,8 +362,23 @@ public sealed partial class ArticleDraftService(
 			.AnyAsync();
 		if (draftCoverUsed) return true;
 
-		return await dbContext.Client.Queryable<ArticleDraftContentDataModel>()
+		var draftContentUsed = await dbContext.Client.Queryable<ArticleDraftContentDataModel>()
 			.Where(x => x.Content.Contains(image))
+			.AnyAsync();
+		if (draftContentUsed) return true;
+
+		var columnCoverUsed = await dbContext.Client.Queryable<ColumnDataModel>()
+			.Where(x => x.Cover == image)
+			.AnyAsync();
+		if (columnCoverUsed) return true;
+
+		var settingUsed = await dbContext.Client.Queryable<BlogSettingDataModel>()
+			.Where(x => x.Logo == image || x.Avatar == image)
+			.AnyAsync();
+		if (settingUsed) return true;
+
+		return await dbContext.Client.Queryable<FriendDataModel>()
+			.Where(x => x.Avatar == image)
 			.AnyAsync();
 	}
 
@@ -380,8 +398,23 @@ public sealed partial class ArticleDraftService(
 			.AnyAsync();
 		if (draftCoverUsed) return true;
 
-		return await dbContext.Client.Queryable<ArticleDraftContentDataModel>()
+		var draftContentUsed = await dbContext.Client.Queryable<ArticleDraftContentDataModel>()
 			.Where(x => x.DraftId != currentDraftId && x.Content.Contains(image))
+			.AnyAsync();
+		if (draftContentUsed) return true;
+
+		var columnCoverUsed = await dbContext.Client.Queryable<ColumnDataModel>()
+			.Where(x => x.Cover == image)
+			.AnyAsync();
+		if (columnCoverUsed) return true;
+
+		var settingUsed = await dbContext.Client.Queryable<BlogSettingDataModel>()
+			.Where(x => x.Logo == image || x.Avatar == image)
+			.AnyAsync();
+		if (settingUsed) return true;
+
+		return await dbContext.Client.Queryable<FriendDataModel>()
+			.Where(x => x.Avatar == image)
 			.AnyAsync();
 	}
 

@@ -10,6 +10,19 @@ public sealed class UpdateColumnCatalogCommandHandler(IColumnRepository columnRe
 
 		var normalizedCatalogs = Normalize(command.Catalogs);
 
+		var articleIds = normalizedCatalogs
+			.Where(x => x.ArticleId.HasValue && x.ArticleId > 0)
+			.Select(x => x.ArticleId!.Value)
+			.ToArray();
+
+		var duplicatedIds = articleIds.GroupBy(id => id).Where(g => g.Count() > 1).Select(g => g.Key).ToArray();
+		Guard.Against(duplicatedIds.Length > 0, ErrorCodes.ColumnCatalogArticleDuplicate,
+			$"以下文章 ID 在同一专栏中重复引用：{string.Join(", ", duplicatedIds)}");
+
+		if (articleIds.Length > 0) {
+			await columnRepository.ValidateArticleIdsAsync(articleIds.Distinct().ToArray(), cancellationToken);
+		}
+
 		await unitOfWork.BeginTransactionAsync(cancellationToken);
 		try {
 			await columnRepository.UpdateCatalogAsync(command.ColumnId, normalizedCatalogs, cancellationToken);
@@ -26,11 +39,12 @@ public sealed class UpdateColumnCatalogCommandHandler(IColumnRepository columnRe
 
 		for (var i = 0; i < catalogs.Count; i++) {
 			var parent = catalogs.ElementAt(i);
-			result.Add(new ColumnCatalogUpsertModel(parent.Title.Trim(), 0, 1, 0, i + 1));
+			result.Add(new ColumnCatalogUpsertModel(parent.Title.Trim(), null, 1, 0, i + 1, parent.IsDeleted));
 
 			for (var j = 0; j < parent.Children.Count; j++) {
 				var child = parent.Children.ElementAt(j);
-				result.Add(new ColumnCatalogUpsertModel(child.Title.Trim(), child.ArticleId, 2, i + 1, j + 1));
+				var articleId = child.ArticleId > 0 ? child.ArticleId : (long?)null;
+				result.Add(new ColumnCatalogUpsertModel(child.Title.Trim(), articleId, 2, i + 1, j + 1, child.IsDeleted));
 			}
 		}
 

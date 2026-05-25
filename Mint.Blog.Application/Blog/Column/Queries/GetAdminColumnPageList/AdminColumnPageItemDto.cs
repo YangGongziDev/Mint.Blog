@@ -10,4 +10,5 @@ public sealed record AdminColumnPageItemDto(
 	DateTimeOffset CreatedAt,
 	bool IsTop,
 	bool IsPublish,
-	int ArticlesTotal);
+	int ArticlesTotal,
+	short IsDeleted);

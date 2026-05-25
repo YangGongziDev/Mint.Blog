@@ -106,7 +106,7 @@ const statistics = ref<BlogStatisticsInfo>({
   articleTotalCount: 0,
   categoryTotalCount: 0,
   tagTotalCount: 0,
-  wikiTotalCount: 0,
+  columnTotalCount: 0,
   pvTotalCount: 0
 });
 
@@ -123,6 +123,13 @@ interface CardData {
 
 const cardData = computed<CardData[]>(() => [
   {
+    key: 'pvTotalCount',
+    title: '访问总量',
+    value: statistics.value.pvTotalCount,
+    color: { start: '#fcbc25', end: '#f68057' },
+    icon: 'mdi:chart-line'
+  },
+  {
     key: 'articleTotalCount',
     title: '文章总数',
     value: statistics.value.articleTotalCount,
@@ -130,9 +137,9 @@ const cardData = computed<CardData[]>(() => [
     icon: 'mdi:file-document-multiple-outline'
   },
   {
-    key: 'wikiTotalCount',
+    key: 'columnTotalCount',
     title: '专栏总数',
-    value: statistics.value.wikiTotalCount,
+    value: statistics.value.columnTotalCount,
     color: { start: '#43e97b', end: '#38f9d7' },
     icon: 'mdi:bookshelf'
   },
@@ -150,13 +157,6 @@ const cardData = computed<CardData[]>(() => [
     color: { start: '#56cdf3', end: '#719de3' },
     icon: 'mdi:tag-multiple-outline'
   },
-  {
-    key: 'pvTotalCount',
-    title: '访问总量',
-    value: statistics.value.pvTotalCount,
-    color: { start: '#fcbc25', end: '#f68057' },
-    icon: 'mdi:chart-line'
-  }
 ]);
 
 interface GradientBgProps {
@@ -223,39 +223,52 @@ const quickLinks = [
 ];
 
 async function loadStatistics() {
-  const response = await getStatisticsInfo();
-  if (response.success) statistics.value = response.data;
+  try {
+    const response = await getStatisticsInfo();
+    if (response.success) {
+      const d = response.data;
+      statistics.value = {
+        articleTotalCount: Number(d.articleTotalCount),
+        categoryTotalCount: Number(d.categoryTotalCount),
+        tagTotalCount: Number(d.tagTotalCount),
+        columnTotalCount: Number(d.columnTotalCount),
+        pvTotalCount: Number(d.pvTotalCount)
+      };
+    }
 
-  updateLineOptions(opts => {
-    opts.series[0].data = [
-      statistics.value.articleTotalCount,
-      statistics.value.articleTotalCount,
-      statistics.value.categoryTotalCount,
-      statistics.value.tagTotalCount,
-      Math.max(1, Math.round(statistics.value.articleTotalCount / 2)),
-      statistics.value.wikiTotalCount
-    ];
-    opts.series[1].data = [
-      Math.round(statistics.value.pvTotalCount * 0.18),
-      Math.round(statistics.value.pvTotalCount * 0.32),
-      Math.round(statistics.value.pvTotalCount * 0.12),
-      Math.round(statistics.value.pvTotalCount * 0.1),
-      Math.round(statistics.value.pvTotalCount * 0.08),
-      Math.round(statistics.value.pvTotalCount * 0.2)
-    ];
-    return opts;
-  });
+    updateLineOptions(opts => {
+      opts.series[0].data = [
+        statistics.value.articleTotalCount,
+        statistics.value.articleTotalCount,
+        statistics.value.categoryTotalCount,
+        statistics.value.tagTotalCount,
+        Math.max(1, Math.round(statistics.value.articleTotalCount / 2)),
+        statistics.value.columnTotalCount
+      ];
+      opts.series[1].data = [
+        Math.round(statistics.value.pvTotalCount * 0.18),
+        Math.round(statistics.value.pvTotalCount * 0.32),
+        Math.round(statistics.value.pvTotalCount * 0.12),
+        Math.round(statistics.value.pvTotalCount * 0.1),
+        Math.round(statistics.value.pvTotalCount * 0.08),
+        Math.round(statistics.value.pvTotalCount * 0.2)
+      ];
+      return opts;
+    });
 
-  updatePieOptions(opts => {
-    opts.series[0].data = [
-      { name: '文章', value: statistics.value.articleTotalCount },
-      { name: '专栏', value: statistics.value.wikiTotalCount },
-      {name: '访问', value: statistics.value.pvTotalCount },
-      { name: '分类', value: statistics.value.categoryTotalCount },
-      { name: '标签', value: statistics.value.tagTotalCount },
-    ];
-    return opts;
-  });
+    updatePieOptions(opts => {
+      opts.series[0].data = [
+        { name: '文章', value: statistics.value.articleTotalCount },
+        { name: '专栏', value: statistics.value.columnTotalCount },
+        { name: '访问', value: statistics.value.pvTotalCount },
+        { name: '分类', value: statistics.value.categoryTotalCount },
+        { name: '标签', value: statistics.value.tagTotalCount },
+      ];
+      return opts;
+    });
+  } catch (err) {
+    console.error('Dashboard load failed:', err);
+  }
 }
 
 onMounted(() => {

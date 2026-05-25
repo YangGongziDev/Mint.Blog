@@ -236,19 +236,27 @@ sudo mkdir -p /opt/mint-blog
 ```json
 {
   "PostgreSql": {
-    "ConnectionString": "Host=127.0.0.1;Port=5432;Database=Mint.Blog;Username=postgres;Password=YangMufa666"
+    "ConnectionString": "Host=127.0.0.1;Port=5432;Database=Mint.Blog;Username=postgres;Password=MintBlog"
+  },
+  "Minio": {
+    "Endpoint": "http://minio:9000",
+    "UseSsl": false,
+    "PublicEndpoint": "https://img.example.com",
+    "AccessKey": "登录名",
+    "SecretKey": "密码",
+    "BucketName": "blog-article"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning",
+      "Microsoft.AspNetCore": "Warning"
+    }
   },
   "Jwt": {
     "Issuer": "Mint.Blog",
     "Audience": "Mint.Blog",
     "SecurityKey": "请替换为至少32位以上的生产密钥",
     "AccessTokenExpireMinutes": 120
-  },
-  "Minio": {
-    "Endpoint": "http://服务器IP或域名:9000",
-    "AccessKey": "登录名",
-    "SecretKey": "密码",
-    "BucketName": "blog"
   },
   "Smtp": {
     "Host": "smtp.qq.com",
@@ -265,7 +273,10 @@ sudo mkdir -p /opt/mint-blog
 }
 ```
 
-如果 MinIO 用域名，`Endpoint` 改为 `https://image.example.com`。
+> **Minio 配置说明**：
+> - `Endpoint`：后端直连 MinIO 的地址。MinIO 和 WebApi 同属一个 Docker 网络时，填容器名（如 `minio`）或内网 IP，走内网最快；否则填 `http://服务器IP:9000`
+> - `UseSsl`：`Endpoint` 用 HTTPS 时设为 `true`，内网 HTTP 为 `false`
+> - `PublicEndpoint`：浏览器访问图片的公网地址，如 `https://img.example.com`。最终图片 URL = `PublicEndpoint` + 桶名 + 文件名
 
 前台测试：
 

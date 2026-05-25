@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import type { TableColumnsType, TablePaginationConfig } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
+import axios from 'axios';
 import { DeleteOutlined, EditOutlined, LinkOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons-vue';
 import {
   type ManagedImageListItem,
@@ -33,6 +34,7 @@ const selectedRowKeys = ref<string[]>([]);
 const selectedRows = ref<ManagedImageListItem[]>([]);
 const bucketOptions = ref<MinioBucketItem[]>([]);
 const bucketLoadFailed = ref(false);
+const permissionDenied = ref(false);
 const total = ref(0);
 const bucketModalVisible = ref(false);
 const bucketLoading = ref(false);
@@ -76,7 +78,7 @@ const columns = computed<TableColumnsType<ManagedImageListItem>>(() => [
   { title: '桶名称', dataIndex: 'bucketName', key: 'bucketName', width: 140, align: 'center' },
   { title: '图片', dataIndex: 'url', key: 'image', width: 140, align: 'center' },
   { title: '照片链接', dataIndex: 'url', key: 'url', width: 360, align: 'center' },
-  { title: '被引用的文章', key: 'referencedArticles', width: 240, align: 'center' },
+  { title: '引用位置', key: 'referencedArticles', width: 240, align: 'center' },
   { title: '文章链接', key: 'articleLinks', width: 260, align: 'center' },
   { title: '文件大小', dataIndex: 'size', key: 'size', width: 120, align: 'center' },
   { title: '更新时间', dataIndex: 'lastModified', key: 'lastModified', width: 180, align: 'center' },
@@ -122,17 +124,23 @@ async function loadBuckets() {
     const res = await getMinioBuckets();
     if (res.success) {
       bucketLoadFailed.value = false;
+      permissionDenied.value = false;
       bucketOptions.value = res.data;
       if (!query.bucketName && res.data.length) query.bucketName = res.data[0].name;
       if (!res.data.length) resetImageTable();
       return true;
     }
-  } catch {
+  } catch (err: any) {
     bucketLoadFailed.value = true;
+    permissionDenied.value = axios.isAxiosError(err) && err.response?.status === 403;
     bucketOptions.value = [];
     query.bucketName = '';
     resetImageTable();
-    message.error('图片存储服务暂时不可用，请稍后重试或联系管理员检查 MinIO 配置');
+    if (permissionDenied.value) {
+      message.warning('您没有权限访问图片管理功能，请联系管理员分配 ROLE_ADMIN 或 ROLE_SUPER 角色');
+    } else {
+      message.error('图片存储服务暂时不可用，请稍后重试或联系管理员检查 MinIO 配置');
+    }
   }
 
   return false;
@@ -141,7 +149,11 @@ async function loadBuckets() {
 async function loadData() {
   if (bucketLoadFailed.value) {
     resetImageTable();
-    message.warning('图片存储服务暂时不可用，无法查询图片列表');
+    if (permissionDenied.value) {
+      message.warning('权限不足，无法查询图片列表');
+    } else {
+      message.warning('图片存储服务暂时不可用，无法查询图片列表');
+    }
     return;
   }
 
@@ -548,7 +560,7 @@ async function confirmDelete(record: ManagedImageListItem) {
       await loadData();
     }
   } catch {
-    message.error('删除失败，请检查该图片是否正在被文章引用');
+    message.error('删除失败，请检查该图片是否正在被 文章、专栏、友链、封面、LOGO、系统 引用');
   }
 }
 
@@ -643,6 +655,7 @@ onMounted(async () => {
               </AButton>
               <APopconfirm
                 title="确定批量删除选中的图片吗？正在被文章引用的图片会自动跳过。"
+                :overlay-style="{ minWidth: '260px' }"
                 @confirm="confirmBatchDelete"
               >
                 <AButton danger :disabled="!selectedCount">
@@ -660,7 +673,14 @@ onMounted(async () => {
         v-if="bucketLoadFailed"
         class="bucket-error-state flex flex-1 items-center justify-center px-6 py-10 text-center"
       >
-        <div>
+        <div v-if="permissionDenied">
+          <div class="mb-2 text-base font-semibold text-orange-500">权限不足</div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            您当前的角色没有权限访问图片管理功能，请联系管理员分配 ROLE_ADMIN 或 ROLE_SUPER 角色。
+          </div>
+          <AButton class="mt-4" @click="onRetryLoadBuckets">重新加载</AButton>
+        </div>
+        <div v-else>
           <div class="mb-2 text-base font-semibold text-red-500">图片存储服务暂时不可用</div>
           <div class="text-sm text-gray-500 dark:text-gray-400">
             请检查 MinIO 是否正常启动、桶权限和后端配置是否正确。页面已停止加载图片列表，避免显示旧数据。
@@ -736,6 +756,7 @@ onMounted(async () => {
               </ATooltip>
               <APopconfirm
                 title="确定删除这张图片吗？如果文章仍在引用，图片会无法显示。"
+                overlay-class-name="image-delete-popconfirm"
                 @confirm="confirmDelete(record as ManagedImageListItem)"
               >
                 <ATooltip title="删除">
@@ -1009,6 +1030,12 @@ onMounted(async () => {
 
 :global(.image-page-select-dropdown) {
   min-width: 120px !important;
+}
+
+:global(.image-delete-popconfirm) {
+  min-width: 280px;
+  width: max-content !important;
+  transition-property: opacity, transform !important;
 }
 
 @media (max-width: 640px) {

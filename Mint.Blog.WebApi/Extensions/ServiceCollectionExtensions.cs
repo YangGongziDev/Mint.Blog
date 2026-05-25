@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.IdentityModel.Tokens;
 using Mint.Blog.Application.Abstractions;
 using Mint.Blog.Infrastructure.Options;
+using Mint.Blog.WebApi.Json;
 using Mint.Blog.WebApi.Middleware;
 
 namespace Mint.Blog.WebApi.Extensions;
@@ -12,7 +13,11 @@ public static class ServiceCollectionExtensions {
 	public static IServiceCollection AddWebApi(this IServiceCollection services, IConfiguration configuration){
 		var jwtOptions = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
 
-		services.AddControllers();
+		services.AddControllers()
+			.AddJsonOptions(options => {
+				options.JsonSerializerOptions.Converters.Add(new LongToStringJsonConverter());
+				options.JsonSerializerOptions.Converters.Add(new NullableLongToStringJsonConverter());
+			});
 		services.AddEndpointsApiExplorer();
 		services.AddOpenApi();
 		services.AddHttpLogging(options => {

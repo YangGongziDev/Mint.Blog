@@ -10,7 +10,7 @@ interface PageResult<T> {
 }
 
 export interface ArticleTagItem {
-  id: number;
+  id: string;
   name: string;
 }
 
@@ -19,7 +19,7 @@ export interface AdminArticleListItem {
   title: string;
   summary: string;
   cover: string;
-  categoryId: number;
+  categoryId: string | null;
   categoryName: string;
   tags: ArticleTagItem[];
   isTop: boolean;
@@ -39,8 +39,8 @@ export interface ArticleFormModel {
   summary: string;
   content: string;
   cover: string;
-  categoryId?: number;
-  tagIds: number[];
+  categoryId?: string;
+  tagIds: string[];
 }
 
 export interface ArticleDraftDetail {
@@ -50,8 +50,8 @@ export interface ArticleDraftDetail {
   summary: string;
   content: string;
   cover: string;
-  categoryId?: number | null;
-  tagIds: number[];
+  categoryId?: string | null;
+  tagIds: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -62,7 +62,7 @@ export interface ArticleDraftListItem {
   title: string;
   summary: string;
   cover: string;
-  categoryId?: number | null;
+  categoryId?: string | null;
   categoryName: string;
   isNewArticleDraft: boolean;
   createdAt: string;
@@ -72,14 +72,14 @@ export interface ArticleDraftListItem {
 export interface SaveArticleDraftPayload extends Omit<ArticleFormModel, 'categoryId'> {
   draftId?: string | null;
   articleId?: string | null;
-  categoryId?: number | null;
+  categoryId?: string | null;
 }
 
 export interface ArticlePageQuery {
   pageNumber: number;
   pageSize: number;
-  categoryId?: number;
-  tagId?: number;
+  categoryId?: string;
+  tagId?: string;
   title?: string;
   startDate?: string;
   endDate?: string;

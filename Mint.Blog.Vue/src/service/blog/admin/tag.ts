@@ -10,7 +10,7 @@ interface PageResult<T> {
 }
 
 export interface TagListItem {
-  id: number;
+  id: string;
   name: string;
   articlesTotal: number;
   createTime?: string;
@@ -49,35 +49,35 @@ export function getTagPageList(params: TagPageQuery) {
 export function createTag(data: TagFormModel) {
   return axios.post('/blog/admin/tag', data) as Promise<{
     success: boolean;
-    data: { id: number };
+    data: { id: string };
   }>;
 }
 
-export function updateTag(tagId: number, data: TagFormModel) {
+export function updateTag(tagId: string, data: TagFormModel) {
   return axios.put(`/blog/admin/tag/${tagId}`, data) as Promise<{
     success: boolean;
-    data: { id: number };
+    data: { id: string };
   }>;
 }
 
-export function updateTagSort(tagId: number, sort: number) {
+export function updateTagSort(tagId: string, sort: number) {
   return axios.patch(`/blog/admin/tag/${tagId}/sort`, { tagId, sort }) as Promise<{
     success: boolean;
-    data: { id: number; sort: number };
+    data: { id: string; sort: number };
   }>;
 }
 
-export function moveTagSortFirst(tagId: number) {
+export function moveTagSortFirst(tagId: string) {
   return axios.patch(`/blog/admin/tag/${tagId}/sort/first`) as Promise<{ success: boolean }>;
 }
 
-export function moveTagSortLast(tagId: number) {
+export function moveTagSortLast(tagId: string) {
   return axios.patch(`/blog/admin/tag/${tagId}/sort/last`) as Promise<{ success: boolean }>;
 }
 
-export function deleteTag(tagId: number, deleteType = 1) {
-  return axios.delete(`/blog/admin/tag/${tagId}`, { data: { tagId, deleteType } }) as Promise<{
+export function deleteTag(tagId: string, deleteType = 1) {
+  return axios.delete(`/blog/admin/tag/${tagId}`, { data: { deleteType } }) as Promise<{
     success: boolean;
-    data: { id: number };
+    data: { id: string };
   }>;
 }

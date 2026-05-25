@@ -4,7 +4,7 @@ export * from './tag';
 export * from './setting';
 export * from './friend';
 export * from './comment';
-export * from './wiki';
+export * from './column';
 export * from './article';
 export * from './image';
 export * from './file';

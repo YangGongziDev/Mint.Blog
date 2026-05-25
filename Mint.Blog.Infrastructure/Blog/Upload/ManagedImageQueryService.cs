@@ -7,6 +7,8 @@ using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
 using Mint.Blog.Application.Blog.Upload.Images;
 using Mint.Blog.Infrastructure.Blog.Article.Drafts;
 using Mint.Blog.Infrastructure.Blog.Article.Persistence;
+using Mint.Blog.Infrastructure.Blog.Column.Persistence;
+using Mint.Blog.Infrastructure.Blog.Friend.Persistence;
 using Mint.Blog.Infrastructure.Blog.Persistence.SqlSugar;
 using Mint.Blog.Infrastructure.Blog.Setting.Persistence;
 using Mint.Blog.Infrastructure.Options;
@@ -84,6 +86,12 @@ public sealed class ManagedImageQueryService(
 			.ToListAsync();
 		foreach (var article in coverArticles) AddReference(references, article.Id, article.Title);
 
+		var columnCoverArticles = await dbContext.Client.Queryable<ColumnDataModel>()
+			.Where(column => column.Cover == imageUrl)
+			.Select(column => new { column.Id, column.Title })
+			.ToListAsync();
+		foreach (var column in columnCoverArticles) AddReference(references, -1000 - column.Id, $"专栏封面：{column.Title}", "/blog/admin/column");
+
 		var contentArticles = await dbContext.Client.Queryable<ArticleContentDataModel>()
 			.InnerJoin<ArticleDataModel>((content, article) => content.ArticleId == article.Id)
 			.Where(content => content.Content.Contains(imageUrl))
@@ -115,6 +123,14 @@ public sealed class ManagedImageQueryService(
 			if (setting.Avatar == imageUrl) {
 				AddReference(references, -2, $"作者头像：{setting.Name}", "/blog/admin/blog-settings");
 			}
+		}
+
+		var friendAvatars = await dbContext.Client.Queryable<FriendDataModel>()
+			.Where(x => x.Avatar == imageUrl)
+			.Select(x => new { x.Id, x.Name })
+			.ToListAsync();
+		foreach (var friend in friendAvatars) {
+			AddReference(references, -2000 - friend.Id, $"友链头像：{friend.Name}", "/blog/admin/friend");
 		}
 
 		return references.Values.ToArray();

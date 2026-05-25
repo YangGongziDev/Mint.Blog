@@ -7,40 +7,40 @@ public sealed class BlogSettingDataModel {
 	[SugarColumn(IsPrimaryKey = true, ColumnName = "id")]
 	public long Id { get; set; }
 
-	[SugarColumn(ColumnName = "logo")]
+	[SugarColumn(ColumnName = "logo", ColumnDataType = "text")]
 	public string Logo { get; set; } = string.Empty;
 
-	[SugarColumn(ColumnName = "name")]
+	[SugarColumn(ColumnName = "name", ColumnDataType = "varchar(200)")]
 	public string Name { get; set; } = string.Empty;
 
-	[SugarColumn(ColumnName = "author")]
+	[SugarColumn(ColumnName = "author", ColumnDataType = "varchar(200)")]
 	public string Author { get; set; } = string.Empty;
 
-	[SugarColumn(ColumnName = "introduction")]
+	[SugarColumn(ColumnName = "introduction", ColumnDataType = "text")]
 	public string Introduction { get; set; } = string.Empty;
 
-	[SugarColumn(ColumnName = "copyright_declaration")]
+	[SugarColumn(ColumnName = "copyright_declaration", ColumnDataType = "text")]
 	public string CopyrightDeclaration { get; set; } = string.Empty;
 
-	[SugarColumn(ColumnName = "avatar")]
+	[SugarColumn(ColumnName = "avatar", ColumnDataType = "text")]
 	public string Avatar { get; set; } = string.Empty;
 
-	[SugarColumn(ColumnName = "github_homepage")]
+	[SugarColumn(ColumnName = "github_homepage", ColumnDataType = "text")]
 	public string GithubHomepage { get; set; } = string.Empty;
 
-	[SugarColumn(ColumnName = "csdn_homepage")]
+	[SugarColumn(ColumnName = "csdn_homepage", ColumnDataType = "text")]
 	public string CsdnHomepage { get; set; } = string.Empty;
 
-	[SugarColumn(ColumnName = "gitee_homepage")]
+	[SugarColumn(ColumnName = "gitee_homepage", ColumnDataType = "text")]
 	public string GiteeHomepage { get; set; } = string.Empty;
 
-	[SugarColumn(ColumnName = "zhihu_homepage")]
+	[SugarColumn(ColumnName = "zhihu_homepage", ColumnDataType = "text")]
 	public string ZhihuHomepage { get; set; } = string.Empty;
 
-	[SugarColumn(ColumnName = "douyin_homepage")]
+	[SugarColumn(ColumnName = "douyin_homepage", ColumnDataType = "text")]
 	public string DouyinHomepage { get; set; } = string.Empty;
 
-	[SugarColumn(ColumnName = "mail")]
+	[SugarColumn(ColumnName = "mail", ColumnDataType = "varchar(200)")]
 	public string Mail { get; set; } = string.Empty;
 
 	[SugarColumn(ColumnName = "is_comment_sensi_word_open")]

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onActivated, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, onActivated, onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { CalendarOutlined, EyeOutlined, FolderOutlined } from '@ant-design/icons-vue';
 import { getArticlePageList } from '@/service/blog/surfer/article';
 import defaultCoverImg1 from '@/assets/blog/surfer/home-default-article-cover/default-article-cover-image1.jpeg';
@@ -31,8 +31,13 @@ type Page = Api<Article[]> & { current: number; size: number; total: number; pag
 
 // --------------- state ---------------
 const router = useRouter();
+const route = useRoute();
+const current = computed(() => {
+  const q = route.query.page;
+  const n = Number(q);
+  return Number.isFinite(n) && n > 0 ? n : 1;
+});
 const articles = ref<Article[]>([]);
-const current = ref(1);
 const size = ref(10);
 const total = ref(0);
 const pages = ref(0);
@@ -124,14 +129,14 @@ function toTop() {
 }
 
 // --------------- data fetching ---------------
-async function fetchArticles(page = current.value) {
-  if (page < 1 || (pages.value && page > pages.value)) return;
+async function fetchArticles() {
+  const page = current.value;
+  if (page < 1) return;
   loading.value = true;
   try {
     const res = await getArticlePageList<Page>({ current: page, size: size.value });
     if (res.success) {
       articles.value = res.data || [];
-      current.value = res.current;
       total.value = res.total;
       pages.value = res.pages;
       toTop();
@@ -142,6 +147,13 @@ async function fetchArticles(page = current.value) {
     pages.value = 0;
   } finally {
     loading.value = false;
+  }
+}
+
+// --------------- navigation ---------------
+function goPage(page: number) {
+  if (page !== current.value) {
+    router.replace({ query: { page: page > 1 ? String(page) : undefined } });
   }
 }
 
@@ -170,6 +182,13 @@ onActivated(() => {
 
   pickSwiperImage();
 });
+
+watch(
+  () => route.query.page,
+  () => {
+    fetchArticles();
+  }
+);
 </script>
 
 <template>
@@ -326,11 +345,11 @@ onActivated(() => {
           <!-- Pagination -->
           <div v-if="pages > 0" class="surfer-pagination flex justify-center pt-0">
             <APagination
-              v-model:current="current"
+              :current="current"
               :page-size="size"
               :total="total"
               :show-size-changer="false"
-              @change="fetchArticles"
+              @change="goPage"
             />
           </div>
         </section>

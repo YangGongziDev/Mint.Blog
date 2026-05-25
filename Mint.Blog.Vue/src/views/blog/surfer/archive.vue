@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { CalendarOutlined } from '@ant-design/icons-vue';
 import { getArchivePageList } from '@/service/blog/surfer/archive';
 import SurferSidebar from '@/components/blog/surfer/sidebar-right.vue';
@@ -18,9 +18,14 @@ type PageResult = {
   pages: number;
 };
 
+const route = useRoute();
 const router = useRouter();
 const archives = ref<ArchiveMonth[]>([]);
-const current = ref(1);
+const current = computed(() => {
+  const q = route.query.page;
+  const n = Number(q);
+  return Number.isFinite(n) && n > 0 ? n : 1;
+});
 const size = ref(20);
 const total = ref(0);
 const pages = ref(0);
@@ -40,7 +45,6 @@ function getArchives(pageNo: number) {
     .then(res => {
       if (res.success) {
         archives.value = res.data || [];
-        current.value = res.current;
         size.value = res.size;
         total.value = res.total;
         pages.value = res.pages;
@@ -69,8 +73,12 @@ function getArchives(pageNo: number) {
 function goArticle(id: number) {
   router.push(`/blog/surfer/articles/${id}`);
 }
+function goPage(page: number) {
+  router.replace({ query: { ...route.query, page: page > 1 ? String(page) : undefined } });
+}
 
 watch(selectedYear, () => {
+  router.replace({ query: { ...route.query, page: undefined } });
   getArchives(1);
 });
 
@@ -162,11 +170,11 @@ onMounted(() => {
 
           <div v-if="pages > 0" class="flex justify-center pt-4">
             <APagination
-              v-model:current="current"
+              :current="current"
               :page-size="size"
               :total="total"
               :show-size-changer="false"
-              @change="getArchives"
+              @change="goPage"
             />
           </div>
         </template>

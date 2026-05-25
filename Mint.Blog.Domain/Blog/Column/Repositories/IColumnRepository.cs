@@ -11,11 +11,12 @@ public interface IColumnRepository {
 
 	Task UpdateCatalogAsync(long columnId, IReadOnlyCollection<ColumnCatalogUpsertModel> catalogs,
 		CancellationToken cancellationToken = default);
+	Task ValidateArticleIdsAsync(IReadOnlyCollection<long> articleIds, CancellationToken cancellationToken = default);
 }
 
 public sealed record ColumnCatalogUpsertModel(
 	string Title,
-	long ArticleId,
+	long? ArticleId,
 	int Level,
 	long ParentId,
 	int Sort,

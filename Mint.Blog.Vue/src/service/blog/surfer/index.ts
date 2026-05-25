@@ -4,7 +4,7 @@ export * from './site';
 export * from './article';
 export * from './category';
 export * from './tag';
-export * from './wiki';
+export * from './column';
 export * from './statistics';
 export * from './setting';
 export * from './comment';

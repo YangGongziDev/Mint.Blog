@@ -11,7 +11,7 @@ public sealed class ColumnCatalogDataModel {
 	public long ColumnId { get; set; }
 
 	[SugarColumn(ColumnName = "article_id")]
-	public long ArticleId { get; set; }
+	public long? ArticleId { get; set; }
 
 	[SugarColumn(ColumnName = "title")]
 	public string Title { get; set; } = string.Empty;

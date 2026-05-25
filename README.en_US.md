@@ -1,9 +1,13 @@
 <div align="center">
   <img src="./Mint.Blog.Vue/public/favicon.svg" width="160" />
-  <h1>Mint.Blog</h1>
-  <h2>Author: <a href="https://www.yangmufa.cn/surfer/my">Coder·YangGongZi</a></h2>
+  <h1>Mint.Blog V2</h1>
+  <h2>Author: <a href="https://www.yangmufa.cn/surfer/my">Coder-YangGongZi</a></h2>
   <span><a href="./README.md">中文</a> | English</span>
 </div>
+
+---
+<h3>Original RocBlog (RocBlog) renamed to Mint.Blog V1</h3>
+<h3>Code merged into the Mint.Net repository under the <a href="https://github.com/YangMufa/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a> branch</h3>
 
 ---
 

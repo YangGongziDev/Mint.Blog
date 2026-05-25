@@ -4,7 +4,7 @@ export interface AdminDashboardStatistics {
   articleTotalCount: number;
   categoryTotalCount: number;
   tagTotalCount: number;
-  wikiTotalCount: number;
+  columnTotalCount: number;
   pvTotalCount: number;
 }
 

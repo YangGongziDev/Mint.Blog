@@ -214,7 +214,7 @@ src/router/
 
 - 父级入口使用清晰前缀，如 `/blog-admin`、`/blog-surfer`
 - 子路由在模块文件中使用相对子路径，如 `article/list`、`articles/:id`
-- 参数路径使用显式参数名，如 `:id`、`:wikiId`
+- 参数路径使用显式参数名，如 `:id`、`:columnId`
 
 ### 2. 路由名称
 
@@ -481,7 +481,7 @@ const blank = computed(() => props.blank || Boolean(router.currentRoute.value.me
 
 - `article/edit/:id`
 - `articles/:id`
-- `wiki/:wikiId`
+- `column/:columnId`
 
 统一要求：
 

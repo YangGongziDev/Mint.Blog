@@ -276,7 +276,7 @@ const deleteModalVisible = ref(false);
 const createSubmitLoading = ref(false);
 const editSubmitLoading = ref(false);
 const deleteLoading = ref(false);
-const editingId = ref<number | null>(null);
+const editingId = ref<string | null>(null);
 const createFormRef = ref<FormInstance>();
 const editFormRef = ref<FormInstance>();
 const currentDeleteFriend = ref<AdminFriendPageItem | null>(null);
@@ -378,7 +378,7 @@ function normalizeAndSortItems(items: AdminFriendPageItem[]) {
       const sortA = Number(a.sort || 0);
       const sortB = Number(b.sort || 0);
       if (sortA !== sortB) return sortB - sortA;
-      return Number(a.id) - Number(b.id);
+      return a.id.localeCompare(b.id);
     });
 }
 
@@ -497,7 +497,7 @@ async function handleStatusChange(record: AdminFriendPageItem) {
   await loadData();
 }
 
-async function updateFriendSortFunction(id: number, sort: number) {
+async function updateFriendSortFunction(id: string, sort: number) {
   const res = await updateFriendSort(id, sort);
   if (!res.success) {
     message.error('更新排序失败');

@@ -46,7 +46,7 @@ const currentDeleteCategory = ref<CategoryListItem | null>(null);
 const formRef = ref<FormInstance>();
 const editFormRef = ref<FormInstance>();
 const form = reactive({ name: '' });
-const editForm = reactive({ id: undefined as number | undefined, name: '' });
+const editForm = reactive({ id: undefined as string | undefined, name: '' });
 const query = reactive({ name: '', startDate: '', endDate: '' });
 
 const modalWidth = computed(() => (appStore.isMobile ? '92vw' : 480));
@@ -118,7 +118,7 @@ function getCreateTime(record: CategoryListItem) {
   return record.createTime || record.createdAt || '';
 }
 function sortCategories(items: CategoryListItem[]) {
-  return [...items].sort((a, b) => Number(b.sort || 0) - Number(a.sort || 0) || Number(a.id) - Number(b.id));
+  return [...items].sort((a, b) => Number(b.sort || 0) - Number(a.sort || 0) || a.id.localeCompare(b.id));
 }
 async function loadData() {
   loading.value = true;
@@ -235,7 +235,7 @@ async function handleDelete() {
     deleteLoading.value = false;
   }
 }
-async function updateCategorySortValue(id: number, sort: number) {
+async function updateCategorySortValue(id: string, sort: number) {
   const res = await updateCategorySort(id, sort);
   if (!res.success) throw new Error('排序更新失败');
 }

@@ -18,7 +18,7 @@ export interface AdminFriendPageQuery {
 }
 
 export interface AdminFriendPageItem {
-  id: number;
+  id: string;
   name: string;
   description: string;
   url: string;
@@ -50,37 +50,37 @@ export function getFriendPageList(params: AdminFriendPageQuery) {
 }
 
 export function createFriend(data: FriendFormModel) {
-  return axios.post('/blog/admin/friend', data) as Promise<{ success: boolean; data: { id: number } }>;
+  return axios.post('/blog/admin/friend', data) as Promise<{ success: boolean; data: { id: string } }>;
 }
 
-export function updateFriend(friendId: number, data: FriendFormModel) {
-  return axios.put(`/blog/admin/friend/${friendId}`, data) as Promise<{ success: boolean; data: { id: number } }>;
+export function updateFriend(friendId: string, data: FriendFormModel) {
+  return axios.put(`/blog/admin/friend/${friendId}`, data) as Promise<{ success: boolean; data: { id: string } }>;
 }
 
-export function setFriendTop(friendId: number, isTop: boolean) {
+export function setFriendTop(friendId: string, isTop: boolean) {
   return axios.patch(`/blog/admin/friend/${friendId}/top`, { friendId, isTop }) as Promise<{ success: boolean }>;
 }
 
-export function setFriendStatus(friendId: number, status: string) {
+export function setFriendStatus(friendId: string, status: string) {
   return axios.patch(`/blog/admin/friend/${friendId}/status`, { friendId, status }) as Promise<{ success: boolean }>;
 }
 
-export function updateFriendSort(friendId: number, sort: number) {
+export function updateFriendSort(friendId: string, sort: number) {
   return axios.patch(`/blog/admin/friend/${friendId}/sort`, { friendId, sort }) as Promise<{
     success: boolean;
-    data: { id: number; sort: number };
+    data: { id: string; sort: number };
   }>;
 }
 
-export function moveFriendSortFirst(friendId: number) {
+export function moveFriendSortFirst(friendId: string) {
   return axios.patch(`/blog/admin/friend/${friendId}/sort/first`) as Promise<{ success: boolean }>;
 }
 
-export function moveFriendSortLast(friendId: number) {
+export function moveFriendSortLast(friendId: string) {
   return axios.patch(`/blog/admin/friend/${friendId}/sort/last`) as Promise<{ success: boolean }>;
 }
 
-export function deleteFriend(friendId: number, deleteType: number) {
+export function deleteFriend(friendId: string, deleteType: number) {
   return axios.patch(`/blog/admin/friend/${friendId}/delete`, { friendId, deleteType }) as Promise<{
     success: boolean;
   }>;

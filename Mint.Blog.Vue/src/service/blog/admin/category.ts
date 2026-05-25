@@ -10,7 +10,7 @@ interface PageResult<T> {
 }
 
 export interface CategoryListItem {
-  id: number;
+  id: string;
   name: string;
   articlesTotal: number;
   createTime?: string;
@@ -49,35 +49,35 @@ export function getCategoryPageList(params: CategoryPageQuery) {
 export function createCategory(data: CategoryFormModel) {
   return axios.post('/blog/admin/category', data) as Promise<{
     success: boolean;
-    data: { id: number };
+    data: { id: string };
   }>;
 }
 
-export function updateCategory(categoryId: number, data: CategoryFormModel) {
+export function updateCategory(categoryId: string, data: CategoryFormModel) {
   return axios.put(`/blog/admin/category/${categoryId}`, data) as Promise<{
     success: boolean;
-    data: { id: number };
+    data: { id: string };
   }>;
 }
 
-export function updateCategorySort(categoryId: number, sort: number) {
+export function updateCategorySort(categoryId: string, sort: number) {
   return axios.patch(`/blog/admin/category/${categoryId}/sort`, { categoryId, sort }) as Promise<{
     success: boolean;
-    data: { id: number; sort: number };
+    data: { id: string; sort: number };
   }>;
 }
 
-export function moveCategorySortFirst(categoryId: number) {
+export function moveCategorySortFirst(categoryId: string) {
   return axios.patch(`/blog/admin/category/${categoryId}/sort/first`) as Promise<{ success: boolean }>;
 }
 
-export function moveCategorySortLast(categoryId: number) {
+export function moveCategorySortLast(categoryId: string) {
   return axios.patch(`/blog/admin/category/${categoryId}/sort/last`) as Promise<{ success: boolean }>;
 }
 
-export function deleteCategory(categoryId: number, deleteType = 1) {
-  return axios.delete(`/blog/admin/category/${categoryId}`, { data: { categoryId, deleteType } }) as Promise<{
+export function deleteCategory(categoryId: string, deleteType = 1) {
+  return axios.delete(`/blog/admin/category/${categoryId}`, { data: { deleteType } }) as Promise<{
     success: boolean;
-    data: { id: number };
+    data: { id: string };
   }>;
 }

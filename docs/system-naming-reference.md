@@ -222,7 +222,7 @@
 
 - 实体：`Article`、`Comment`、`User`
 - 值对象：`ArticleTitle`、`EmailAddress`、`PasswordHash`
-- 聚合根：`Article`、`Wiki`
+- 聚合根：`Article`、`Column`
 - 领域事件：`ArticleCreatedDomainEvent`
 - 仓储接口：`IArticleRepository`
 

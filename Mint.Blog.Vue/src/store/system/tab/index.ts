@@ -53,6 +53,9 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
   /** Tabs */
   const tabs = ref<App.Global.Tab[]>([]);
 
+  /** Tab visit order - most recent first, used to determine which tab to activate when closing */
+  const tabVisitOrder = ref<string[]>([]);
+
   /** Get active tab */
   const homeTab = ref<App.Global.Tab>();
 
@@ -88,6 +91,8 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    */
   function setActiveTabId(id: string) {
     activeTabId.value = id;
+    const order = tabVisitOrder.value.filter(tid => tid !== id);
+    tabVisitOrder.value = [id, ...order];
   }
 
   /**
@@ -141,6 +146,8 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
     const isRemoveActiveTab = activeTabId.value === tabId;
     const updatedTabs = filterTabsById(tabId, tabs.value);
 
+    tabVisitOrder.value = tabVisitOrder.value.filter(id => id !== tabId);
+
     function update() {
       tabs.value = updatedTabs;
     }
@@ -150,7 +157,11 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
       return;
     }
 
-    const activeTab = updatedTabs.at(-1) || homeTab.value;
+    const activeTab = tabVisitOrder.value
+      .map(id => updatedTabs.find(t => t.id === id))
+      .find(t => t !== undefined)
+      || updatedTabs.at(-1)
+      || homeTab.value;
 
     if (activeTab) {
       await switchRouteByTab(activeTab);
@@ -184,6 +195,8 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
     const remainTabIds = [...getFixedTabIds(tabs.value), ...excludes];
     const removedTabsIds = tabs.value.map(tab => tab.id).filter(id => !remainTabIds.includes(id));
 
+    tabVisitOrder.value = tabVisitOrder.value.filter(id => remainTabIds.includes(id));
+
     const isRemoveActiveTab = removedTabsIds.includes(activeTabId.value);
     const updatedTabs = filterTabsByIds(removedTabsIds, tabs.value);
 
@@ -196,7 +209,11 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
       return;
     }
 
-    const activeTab = updatedTabs[updatedTabs.length - 1] || homeTab.value;
+    const activeTab = tabVisitOrder.value
+      .map(id => updatedTabs.find(t => t.id === id))
+      .find(t => t !== undefined)
+      || updatedTabs[updatedTabs.length - 1]
+      || homeTab.value;
 
     await switchRouteByTab(activeTab);
     update();

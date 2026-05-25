@@ -1,18 +1,18 @@
 /*
  Navicat Premium Dump SQL
 
- Source Server         : Local_Docker-YangMufa666
+ Source Server         : AliCloud_Docker-YangMufa666
  Source Server Type    : PostgreSQL
- Source Server Version : 180003 (180003)
- Source Host           : localhost:5432
+ Source Server Version : 170002 (170002)
+ Source Host           : 47.116.10.106:5432
  Source Catalog        : Mint.Blog
  Source Schema         : public
 
  Target Server Type    : PostgreSQL
- Target Server Version : 180003 (180003)
+ Target Server Version : 170002 (170002)
  File Encoding         : 65001
 
- Date: 24/05/2026 22:39:03
+ Date: 25/05/2026 21:40:22
 */
 
 
@@ -334,7 +334,7 @@ DROP TABLE IF EXISTS "public"."blog_column";
 CREATE TABLE "public"."blog_column" (
   "id" int8 NOT NULL DEFAULT nextval('blog_wiki_id_seq'::regclass),
   "title" varchar(120) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "cover" varchar(120) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "cover" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "summary" varchar(160) COLLATE "pg_catalog"."default" DEFAULT ''::character varying,
   "create_time" timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "update_time" timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -485,40 +485,40 @@ ALTER TABLE "public"."blog_message" OWNER TO "postgres";
 DROP TABLE IF EXISTS "public"."blog_settings";
 CREATE TABLE "public"."blog_settings" (
   "id" int8 NOT NULL DEFAULT nextval('blog_settings_id_seq'::regclass),
-  "logo" varchar(120) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "name" varchar(60) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "author" varchar(20) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "introduction" varchar(120) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "copyright_declaration" varchar(255) COLLATE "pg_catalog"."default",
-  "avatar" varchar(120) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "github_homepage" varchar(60) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "csdn_homepage" varchar(60) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "gitee_homepage" varchar(60) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "zhihu_homepage" varchar(60) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "mail" varchar(60) COLLATE "pg_catalog"."default" DEFAULT ''::character varying,
+  "name" varchar(200) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "logo" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "author" varchar(200) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "avatar" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "introduction" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "copyright_declaration" text COLLATE "pg_catalog"."default",
+  "github_homepage" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "csdn_homepage" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "gitee_homepage" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "zhihu_homepage" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "douyin_homepage" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "mail" varchar(200) COLLATE "pg_catalog"."default" DEFAULT ''::character varying,
   "is_comment_sensi_word_open" bool NOT NULL,
   "is_comment_examine_open" bool NOT NULL,
-  "is_auto_theme" bool,
-  "douyin_homepage" varchar(120) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying
+  "is_auto_theme" bool
 )
 ;
 ALTER TABLE "public"."blog_settings" OWNER TO "postgres";
 COMMENT ON COLUMN "public"."blog_settings"."id" IS 'id';
-COMMENT ON COLUMN "public"."blog_settings"."logo" IS '博客Logo';
 COMMENT ON COLUMN "public"."blog_settings"."name" IS '博客名称';
+COMMENT ON COLUMN "public"."blog_settings"."logo" IS '博客Logo';
 COMMENT ON COLUMN "public"."blog_settings"."author" IS '作者名';
+COMMENT ON COLUMN "public"."blog_settings"."avatar" IS '作者头像';
 COMMENT ON COLUMN "public"."blog_settings"."introduction" IS '介绍语';
 COMMENT ON COLUMN "public"."blog_settings"."copyright_declaration" IS '版权声明';
-COMMENT ON COLUMN "public"."blog_settings"."avatar" IS '作者头像';
 COMMENT ON COLUMN "public"."blog_settings"."github_homepage" IS 'GitHub 主页访问地址';
 COMMENT ON COLUMN "public"."blog_settings"."csdn_homepage" IS 'CSDN 主页访问地址';
 COMMENT ON COLUMN "public"."blog_settings"."gitee_homepage" IS 'Gitee 主页访问地址';
 COMMENT ON COLUMN "public"."blog_settings"."zhihu_homepage" IS '知乎主页访问地址';
+COMMENT ON COLUMN "public"."blog_settings"."douyin_homepage" IS '抖音主页访问地址';
 COMMENT ON COLUMN "public"."blog_settings"."mail" IS '博主邮箱地址';
 COMMENT ON COLUMN "public"."blog_settings"."is_comment_sensi_word_open" IS '是否开启评论敏感词过滤, 0:不开启；1：开启';
 COMMENT ON COLUMN "public"."blog_settings"."is_comment_examine_open" IS '是否开启评论审核, 0: 未开启；1：开启';
 COMMENT ON COLUMN "public"."blog_settings"."is_auto_theme" IS '是否根据时间自动调整白天黑夜主题';
-COMMENT ON COLUMN "public"."blog_settings"."douyin_homepage" IS '抖音主页访问地址';
 COMMENT ON TABLE "public"."blog_settings" IS '博客设置表';
 
 -- ----------------------------

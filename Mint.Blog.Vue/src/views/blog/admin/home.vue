@@ -110,7 +110,7 @@ const statistics = ref<AdminDashboardStatistics>({
   articleTotalCount: 0,
   categoryTotalCount: 0,
   tagTotalCount: 0,
-  wikiTotalCount: 0,
+  columnTotalCount: 0,
   pvTotalCount: 0
 });
 
@@ -127,40 +127,40 @@ interface CardData {
 
 const cardData = computed<CardData[]>(() => [
   {
+    key: 'pvTotalCount',
+    title: '访问总量',
+    value: statistics.value.pvTotalCount,
+    color: { start: '#fcbc25', end: '#f68057' },
+    icon: 'mdi:eye-outline'
+  },
+  {
     key: 'articleTotalCount',
-    title: '文章',
+    title: '文章总数',
     value: statistics.value.articleTotalCount,
     color: { start: '#ec4786', end: '#b955a4' },
     icon: 'mdi:file-document-multiple-outline'
   },
   {
-    key: 'wikiTotalCount',
-    title: '知识库',
-    value: statistics.value.wikiTotalCount,
+    key: 'columnTotalCount',
+    title: '专栏总数',
+    value: statistics.value.columnTotalCount,
     color: { start: '#43e97b', end: '#38f9d7' },
     icon: 'mdi:bookshelf'
   },
   {
     key: 'categoryTotalCount',
-    title: '分类',
+    title: '分类总数',
     value: statistics.value.categoryTotalCount,
     color: { start: '#865ec0', end: '#5144b4' },
     icon: 'mdi:shape-outline'
   },
   {
     key: 'tagTotalCount',
-    title: '标签',
+    title: '标签总数',
     value: statistics.value.tagTotalCount,
     color: { start: '#56cdf3', end: '#719de3' },
     icon: 'mdi:tag-multiple-outline'
   },
-  {
-    key: 'pvTotalCount',
-    title: '总浏览量',
-    value: statistics.value.pvTotalCount,
-    color: { start: '#fcbc25', end: '#f68057' },
-    icon: 'mdi:eye-outline'
-  }
 ]);
 
 interface GradientBgProps {
@@ -225,28 +225,43 @@ const migrationItems = [
 ];
 
 async function loadDashboard() {
-  const [statisticsRes, pvRes, publishRes] = await Promise.all([
-    getDashboardStatistics(),
-    getDashboardPvStatistics(),
-    getDashboardPublishArticleStatistics()
-  ]);
+  try {
+    const [statisticsRes, pvRes, publishRes] = await Promise.all([
+      getDashboardStatistics(),
+      getDashboardPvStatistics(),
+      getDashboardPublishArticleStatistics()
+    ]);
 
-  if (statisticsRes.success) statistics.value = statisticsRes.data;
+    if (statisticsRes.success) {
+      const d = statisticsRes.data;
+      statistics.value = {
+        articleTotalCount: Number(d.articleTotalCount),
+        categoryTotalCount: Number(d.categoryTotalCount),
+        tagTotalCount: Number(d.tagTotalCount),
+        columnTotalCount: Number(d.columnTotalCount),
+        pvTotalCount: Number(d.pvTotalCount)
+      };
+    } else {
+      console.warn('Statistics API returned success=false');
+    }
 
-  if (pvRes.success) {
-    updatePvOptions(opts => {
-      opts.xAxis.data = pvRes.data.pvDates;
-      opts.series[0].data = pvRes.data.pvCounts;
-      return opts;
-    });
-  }
+    if (pvRes.success) {
+      updatePvOptions(opts => {
+        opts.xAxis.data = pvRes.data.pvDates;
+        opts.series[0].data = pvRes.data.pvCounts.map(Number);
+        return opts;
+      });
+    }
 
-  if (publishRes.success) {
-    updatePublishOptions(opts => {
-      opts.xAxis.data = publishRes.data.dates;
-      opts.series[0].data = publishRes.data.counts;
-      return opts;
-    });
+    if (publishRes.success) {
+      updatePublishOptions(opts => {
+        opts.xAxis.data = publishRes.data.dates;
+        opts.series[0].data = publishRes.data.counts.map(Number);
+        return opts;
+      });
+    }
+  } catch (err) {
+    console.error('Dashboard load failed:', err);
   }
 }
 

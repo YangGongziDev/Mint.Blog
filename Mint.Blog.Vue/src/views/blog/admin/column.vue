@@ -31,6 +31,7 @@ import {
   updateColumnSort
 } from '@/service/blog/admin/column';
 import { uploadBlogImage } from '@/service/blog/admin/image';
+import { getArticlePageList } from '@/service/blog/admin/article';
 import { useAppStore } from '@/store/system/app';
 
 const appStore = useAppStore();
@@ -42,9 +43,9 @@ const formModalVisible = ref(false);
 const editFormModalVisible = ref(false);
 const deleteModalVisible = ref(false);
 const catalogModalVisible = ref(false);
-const editingId = ref<number | null>(null);
+const editingId = ref<string | null>(null);
 const currentDeleteColumn = ref<AdminColumnPageItem | null>(null);
-const currentCatalogColumnId = ref<number | null>(null);
+const currentCatalogColumnId = ref<string | null>(null);
 const formRef = ref<FormInstance>();
 const editFormRef = ref<FormInstance>();
 const formSubmitLoading = ref(false);
@@ -54,7 +55,9 @@ const deleteType = ref<number | null>(null);
 const pendingCoverImage = ref<File | null>(null);
 const pendingEditCoverImage = ref<File | null>(null);
 const originalCoverUrl = ref('');
-const catalogJson = ref('[]');
+const catalogItems = ref<AdminColumnCatalogItem[]>([]);
+const articleSearchLoading = ref(false);
+const articleSearchOptions = ref<{ label: string; value: string; title: string }[]>([]);
 const query = reactive({ pageNumber: 1, pageSize: 10, title: '', startDate: '', endDate: '' });
 const formModel = reactive<ColumnFormModel>({ title: '', summary: '', cover: '' });
 const editFormModel = reactive<ColumnFormModel>({ title: '', summary: '', cover: '' });
@@ -99,13 +102,13 @@ function sortColumns(list: AdminColumnPageItem[]) {
   weightItems.sort((a, b) => {
     if (a.weight !== b.weight) return b.weight - a.weight;
     if ((a.sort || 0) !== (b.sort || 0)) return (b.sort || 0) - (a.sort || 0);
-    return Number(a.id) - Number(b.id);
+    return a.id.localeCompare(b.id);
   });
 
   const sortItems = list.filter(item => !item.weight || item.weight <= 0);
   sortItems.sort((a, b) => {
     if ((a.sort || 0) !== (b.sort || 0)) return (b.sort || 0) - (a.sort || 0);
-    return Number(a.id) - Number(b.id);
+    return a.id.localeCompare(b.id);
   });
 
   return [...weightItems, ...sortItems];
@@ -205,16 +208,20 @@ function handleEditCoverInputChange(event: Event) {
   }
   (event.target as HTMLInputElement).value = '';
 }
+function buildColumnCoverImageName(file: File) {
+  const extension = file.name.includes('.') ? `.${file.name.split('.').pop()}` : '';
+  return `column_${Date.now()}${extension}`;
+}
 function getOriginalImageName(url: string) {
   return url ? url.split('/').pop() || '' : '';
 }
 async function uploadPendingCover(target: ColumnFormModel, file: File | null, oldCoverUrl = '') {
   if (!file) return;
-  const res = await uploadBlogImage(
-    file,
-    `column_cover_${Date.now()}_${file.name}`,
-    getOriginalImageName(oldCoverUrl)
-  );
+  const res = await uploadBlogImage({
+    newImageFile: file,
+    newImageOriginalName: buildColumnCoverImageName(file),
+    oldImageName: getOriginalImageName(oldCoverUrl)
+  });
   if (res.success) target.cover = res.data.url;
 }
 async function handleSubmit() {
@@ -258,7 +265,7 @@ async function handlePublishChange(record: AdminColumnPageItem) {
   if (res.success) message.success(record.isPublish ? '发布成功' : '已取消发布');
   await loadData();
 }
-async function updateColumnSortValue(id: number, sort: number) {
+async function updateColumnSortValue(id: string, sort: number) {
   const res = await updateColumnSort(id, sort || 0);
   if (!res.success) {
     await loadData();
@@ -266,7 +273,7 @@ async function updateColumnSortValue(id: number, sort: number) {
   }
   message.success('排序更新成功');
 }
-async function moveColumnUp(record: AdminColumnPageItem, index: number) {
+async function moveColumnUp(_record: AdminColumnPageItem, index: number) {
   if (index === 0) {
     message.warning('已经是第一个了');
     return;
@@ -282,7 +289,7 @@ async function moveColumnUp(record: AdminColumnPageItem, index: number) {
   await updateColumnSortValue(current.id, current.sort);
   await updateColumnSortValue(previous.id, previous.sort);
 }
-async function moveColumnDown(record: AdminColumnPageItem, index: number) {
+async function moveColumnDown(_record: AdminColumnPageItem, index: number) {
   if (index === tableData.value.length - 1) {
     message.warning('已经是最后一个了');
     return;
@@ -320,21 +327,94 @@ async function moveColumnToLast(record: AdminColumnPageItem, index: number) {
   await updateColumnSortValue(record.id, record.sort);
   await loadData();
 }
+function createCatalogItem(level: 1 | 2, sort: number): AdminColumnCatalogItem {
+  return {
+    id: `temp_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+    articleId: '',
+    title: '',
+    sort,
+    level,
+    isDeleted: false,
+    editing: true,
+    children: []
+  };
+}
+function addCatalogParent() {
+  catalogItems.value.push(createCatalogItem(1, catalogItems.value.length + 1));
+}
+function addCatalogChild(parent: AdminColumnCatalogItem) {
+  parent.children.push(createCatalogItem(2, parent.children.length + 1));
+}
+function removeCatalogParent(index: number) {
+  catalogItems.value.splice(index, 1);
+}
+function removeCatalogChild(parent: AdminColumnCatalogItem, index: number) {
+  parent.children.splice(index, 1);
+}
+function handleArticleSearch(searchText: string) {
+  articleSearchLoading.value = true;
+  getArticlePageList({ pageNumber: 1, pageSize: 20, title: searchText || undefined })
+    .then(res => {
+      const items = res.data?.records || res.data?.items || [];
+      articleSearchOptions.value = items.map(item => ({ label: `${item.title} (${item.id})`, value: item.id, title: item.title }));
+    })
+    .finally(() => {
+      articleSearchLoading.value = false;
+    });
+}
+function handleArticleSelect(articleId: string, child: AdminColumnCatalogItem) {
+  const option = articleSearchOptions.value.find(o => o.value === articleId);
+  if (option) {
+    child.title = option.title;
+  }
+}
+function moveCatalogItem(list: AdminColumnCatalogItem[], index: number, direction: -1 | 1) {
+  const targetIndex = index + direction;
+  if (targetIndex < 0 || targetIndex >= list.length) return;
+  const [item] = list.splice(index, 1);
+  list.splice(targetIndex, 0, item);
+}
+function normalizeCatalogForSubmit() {
+  return catalogItems.value.map((parent, parentIndex) => ({
+    ...parent,
+    title: parent.title.trim(),
+    articleId: '0',
+    level: 1,
+    sort: parentIndex + 1,
+    children: parent.children.map((child, childIndex) => ({
+      ...child,
+      title: child.title.trim(),
+      articleId: child.articleId || '0',
+      level: 2,
+      sort: childIndex + 1,
+      children: []
+    }))
+  }));
+}
+function validateCatalogItems(catalogs: AdminColumnCatalogItem[]) {
+  for (const parent of catalogs) {
+    if (!parent.title) return '一级目录标题不能为空';
+    for (const child of parent.children) {
+      if (!child.title) return '文章目录标题不能为空';
+      if (!child.articleId) return '请选择文章';
+    }
+  }
+  return '';
+}
 async function openCatalogModal(record: AdminColumnPageItem) {
   currentCatalogColumnId.value = record.id;
   const res = await getColumnCatalog(record.id);
   if (res.success) {
-    catalogJson.value = JSON.stringify(res.data, null, 2);
+    catalogItems.value = res.data || [];
     catalogModalVisible.value = true;
   }
 }
 async function handleCatalogSubmit() {
   if (!currentCatalogColumnId.value) return;
-  let catalogs: AdminColumnCatalogItem[] = [];
-  try {
-    catalogs = JSON.parse(catalogJson.value) as AdminColumnCatalogItem[];
-  } catch {
-    message.error('目录 JSON 格式不正确');
+  const catalogs = normalizeCatalogForSubmit();
+  const errorMessage = validateCatalogItems(catalogs);
+  if (errorMessage) {
+    message.error(errorMessage);
     return;
   }
   const res = await updateColumnCatalog(currentCatalogColumnId.value, { catalogs });
@@ -347,6 +427,9 @@ function openDeleteModal(record: AdminColumnPageItem) {
   currentDeleteColumn.value = record;
   deleteType.value = isColumnDeleted(record) ? 3 : 1;
   deleteModalVisible.value = true;
+}
+function previewColumn(record: AdminColumnPageItem) {
+  window.open(`/blog/surfer/column/${record.id}`, '_blank');
 }
 function handleDeleteCancel() {
   deleteModalVisible.value = false;
@@ -499,7 +582,7 @@ onMounted(() => loadData());
               </ATooltip>
 
               <ATooltip title="预览">
-                <AButton size="small" shape="circle">
+                <AButton size="small" shape="circle" @click="previewColumn(record as AdminColumnPageItem)">
                   <template #icon><EyeOutlined /></template>
                 </AButton>
               </ATooltip>
@@ -522,13 +605,13 @@ onMounted(() => loadData());
         </AFormItem>
         <AFormItem label="封面" name="cover">
           <label class="upload-preview">
-            <input type="file" accept="image/*" class="hidden" @change="handleCoverInputChange" />
+            <input type="file" accept="image/*" style="display:none" @change="handleCoverInputChange" />
             <img v-if="formModel.cover" :src="formModel.cover" class="upload-image" alt="cover" />
-            <span v-else class="upload-placeholder">
+            <div v-else class="upload-placeholder">
               <PlusOutlined class="upload-icon" />
-              <span class="upload-title">上传封面</span>
-              <span class="upload-hint">建议尺寸 200x120px</span>
-            </span>
+              <div class="upload-title">上传封面</div>
+              <div class="upload-hint">建议尺寸 200x120px</div>
+            </div>
           </label>
         </AFormItem>
         <AFormItem label="摘要" name="summary">
@@ -548,13 +631,13 @@ onMounted(() => loadData());
         </AFormItem>
         <AFormItem label="封面" name="cover">
           <label class="upload-preview">
-            <input type="file" accept="image/*" class="hidden" @change="handleEditCoverInputChange" />
+            <input type="file" accept="image/*" style="display:none" @change="handleEditCoverInputChange" />
             <img v-if="editFormModel.cover" :src="editFormModel.cover" class="upload-image" alt="cover" />
-            <span v-else class="upload-placeholder">
+            <div v-else class="upload-placeholder">
               <PlusOutlined class="upload-icon" />
-              <span class="upload-title">上传封面</span>
-              <span class="upload-hint">建议尺寸 200x120px</span>
-            </span>
+              <div class="upload-title">上传封面</div>
+              <div class="upload-hint">建议尺寸 200x120px</div>
+            </div>
           </label>
         </AFormItem>
         <AFormItem label="摘要" name="summary">
@@ -631,8 +714,64 @@ onMounted(() => loadData());
     </AModal>
 
     <AModal v-model:open="catalogModalVisible" title="编辑目录" :width="wideModalWidth" @ok="handleCatalogSubmit">
-      <AAlert class="mb-4" type="info" show-icon message="当前首版提供目录 JSON 编辑，后续可替换为拖拽树形编辑器。" />
-      <ATextarea v-model:value="catalogJson" :rows="appStore.isMobile ? 12 : 18" class="font-mono" />
+      <div class="catalog-editor">
+        <div class="mb-3 mt-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+          <AAlert class="sm:mb-0" type="info" show-icon message="一级目录用于分组，二级目录关联文章；保存后会按当前顺序重建目录。" />
+          <AButton type="primary" @click="addCatalogParent">
+            <template #icon><PlusOutlined /></template>
+            新增一级目录
+          </AButton>
+        </div>
+        <AEmpty v-if="catalogItems.length === 0" description="暂无目录，请先新增一级目录" />
+        <div v-else class="space-y-4">
+          <ACard v-for="(parent, parentIndex) in catalogItems" :key="parent.id" size="small" class="catalog-parent-card">
+            <template #title>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-sm font-medium">一级目录</span>
+                <AInput v-model:value="parent.title" placeholder="请输入一级目录标题" class="min-w-[220px] flex-1" />
+                <ATag :color="parent.isDeleted ? 'error' : 'success'">{{ parent.isDeleted ? '已删除' : '正常' }}</ATag>
+              </div>
+            </template>
+            <template #extra>
+              <ASpace>
+                <AButton size="small" :disabled="parentIndex === 0" @click="moveCatalogItem(catalogItems, parentIndex, -1)">上移</AButton>
+                <AButton size="small" :disabled="parentIndex === catalogItems.length - 1" @click="moveCatalogItem(catalogItems, parentIndex, 1)">下移</AButton>
+                <AButton size="small" @click="parent.isDeleted = !parent.isDeleted">{{ parent.isDeleted ? '恢复' : '逻辑删除' }}</AButton>
+                <AButton size="small" danger @click="removeCatalogParent(parentIndex)">移除</AButton>
+              </ASpace>
+            </template>
+
+            <div class="space-y-2">
+              <div v-for="(child, childIndex) in parent.children" :key="child.id" class="catalog-child-row">
+                <AInput v-model:value="child.title" placeholder="文章目录标题" class="min-w-[180px] flex-1" />
+                <ASelect
+                  v-model:value="child.articleId"
+                  :options="articleSearchOptions"
+                  :loading="articleSearchLoading"
+                  show-search
+                  :filter-option="false"
+                  placeholder="选择文章"
+                  class="w-[220px]"
+                  @focus="handleArticleSearch('')"
+                  @search="handleArticleSearch"
+                  @change="(val: any) => handleArticleSelect(val, child)"
+                />
+                <ATag :color="child.isDeleted ? 'error' : 'success'">{{ child.isDeleted ? '已删除' : '正常' }}</ATag>
+                <ASpace>
+                  <AButton size="small" :disabled="childIndex === 0" @click="moveCatalogItem(parent.children, childIndex, -1)">上移</AButton>
+                  <AButton size="small" :disabled="childIndex === parent.children.length - 1" @click="moveCatalogItem(parent.children, childIndex, 1)">下移</AButton>
+                  <AButton size="small" @click="child.isDeleted = !child.isDeleted">{{ child.isDeleted ? '恢复' : '逻辑删除' }}</AButton>
+                  <AButton size="small" danger @click="removeCatalogChild(parent, childIndex)">移除</AButton>
+                </ASpace>
+              </div>
+              <AButton type="dashed" block @click="addCatalogChild(parent)">
+                <template #icon><PlusOutlined /></template>
+                新增文章目录
+              </AButton>
+            </div>
+          </ACard>
+        </div>
+      </div>
     </AModal>
   </div>
 </template>
@@ -686,10 +825,37 @@ onMounted(() => loadData());
 .table-card :deep(.ant-table-thead > tr > th) {
   background: rgb(var(--container-bg-color));
 }
-.upload-preview {
-  width: 160px;
-  height: 100px;
+
+.catalog-editor {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.catalog-parent-card :deep(.ant-card-head) {
+  align-items: flex-start;
+  padding-block: 10px;
+}
+
+.catalog-parent-card :deep(.ant-card-head-title) {
+  min-width: 0;
+}
+
+.catalog-child-row {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid rgb(var(--base-text-color) / 10%);
+  border-radius: 8px;
+  background: rgb(var(--base-text-color) / 3%);
+}
+.upload-preview {
+  position: relative;
+  width: 220px;
+  height: 132px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
@@ -708,16 +874,19 @@ onMounted(() => loadData());
   }
 }
 .upload-image {
-  width: 94%;
-  height: 94%;
-  object-fit: cover;
+  display: block;
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
   border-radius: 10px;
+  object-fit: contain;
+  background: rgb(var(--container-bg-color));
 }
 .upload-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  padding: 12px;
   color: rgb(var(--base-text-color) / 55%);
 }
 .upload-icon {

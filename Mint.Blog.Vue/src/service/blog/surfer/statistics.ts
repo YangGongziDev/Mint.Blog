@@ -4,7 +4,7 @@ export interface BlogStatisticsInfo {
   articleTotalCount: number;
   categoryTotalCount: number;
   tagTotalCount: number;
-  wikiTotalCount: number;
+  columnTotalCount: number;
   pvTotalCount: number;
 }
 

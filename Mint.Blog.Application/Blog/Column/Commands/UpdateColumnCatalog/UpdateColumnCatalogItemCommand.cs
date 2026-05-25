@@ -6,4 +6,5 @@ public sealed record UpdateColumnCatalogItemCommand(
 	string Title,
 	int Sort,
 	int Level,
+	bool IsDeleted,
 	IReadOnlyCollection<UpdateColumnCatalogItemCommand> Children);
