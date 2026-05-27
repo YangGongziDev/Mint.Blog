@@ -3,6 +3,9 @@ HELP.md
 .DS_Store
 **/.DS_Store
 
+# .Net
+**/Mint.Blog.
+
 ### STS ###
 .apt_generated
 .classpath

@@ -2,46 +2,78 @@
   <img src="https://img.yangmufa.cn/blog-system/mint-logo.svg" width="160" />
   <h1>mint-blog-v1-java 已停止更新</h1>
   <h1>欢迎体验基于 .Net DDD 的 Mint.Blog V2 版本</h1>
-  <h2>作者：<a href="https://www.yangmufa.cn/surfer/my">程序员·杨工子</a></h2>
+  <h2>作者：<a href="https://www.yangmufa.cn/blog/surfer/author">程序员-杨工子</a></h2>
   <span>中文 | <a href="./README.en.md">English</a></span>
 </div>
 
 
 #### 介绍
-采用Java/Vue技术栈实现.
+Mint.Blog V1（原 RocBlog 鲲鹏博客）基于 **Java Spring Boot + Vue2** 技术栈构建，是一款前后端分离的博客系统。当前分支已停止更新，请移步 [main](https://github.com/YangMufa/Mint.Blog) 分支体验基于 .NET DDD 的 V2 版本。
 
-#### 软件架构
-软件架构说明
+**核心特性：**
 
+- 📝 文章管理：Markdown 编辑、分类 / 标签、置顶、知识库
+- 🖼️ 图片管理：MinIO 对象存储
+- 💬 评论系统：文章评论、邮件通知
+- 🔐 认证授权：Spring Security + JWT
+- 📊 后台看板：访问量、文章量统计
+- 📱 响应式布局：移动端 / 桌面端适配
 
-#### 安装教程
+#### 技术栈
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+| 层级 | 技术 |
+|------|------|
+| 后端框架 | Spring Boot 2.x |
+| ORM | Spring Data JPA |
+| 数据库 | MySQL |
+| 对象存储 | MinIO |
+| 认证 | Spring Security + JWT |
+| 接口文档 | Knife4j (Swagger) |
+| 前端框架 | Vue 2 + Vue Router + Vuex |
+| UI 组件 | Element UI |
+| 构建工具 | Maven (后端) / Vue CLI (前端) |
 
-#### 使用说明
+#### 项目结构
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+```
+mint-blog-v1-java/
+├── Admin/                        # Spring Boot 后端
+│   └── src/main/java/cn/yangmufa/blog/
+│       ├── admin/                # 管理后台模块
+│       └── blog/                 # 博客前台模块
+├── Front/                        # Vue2 前台
+└── Blog-Admin/                   # Vue2 管理后台
+
+```
+
+#### 本地运行
+
+**后端：**
+```bash
+cd Admin
+mvn spring-boot:run
+```
+
+**前台：**
+```bash
+cd Front
+npm install
+npm run serve
+```
+
+**管理后台：**
+```bash
+cd Blog-Admin
+npm install
+npm run serve
+```
 
 #### 参与贡献
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+1. Fork 本仓库
+2. 新建 `Feat_xxx` 分支
+3. 提交代码
+4. 新建 Pull Request
 
 
 ## 演示

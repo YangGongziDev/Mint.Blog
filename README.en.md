@@ -2,44 +2,76 @@
   <img src="https://img.yangmufa.cn/blog-system/mint-logo.svg" width="160" />
   <h1>mint-blog-v1-java Has stopped updating</h1>
   <h1>Welcome to experience the V2 version of Mint.Blog based on.Net DDD</h1>
-  <h2>author：<a href="https://www.yangmufa.cn/surfer/my">程序员·杨工子</a></h2>
-  <span>Chinese | <a href="./README.md">English</a></span>
+  <h2>author：<a href="https://www.yangmufa.cn/blog/surfer/author">程序员-杨工子</a></h2>
+  <span>English | <a href="./README.md">中文</a></span>
 </div>
 
 #### Description
-It is implemented using the Java/Vue technology stack.
+Mint.Blog V1 (formerly RocBlog / Kunpeng Blog) is a blog system built on the **Java Spring Boot + Vue2** tech stack with separated frontend and backend. This branch is no longer maintained. Please visit the [main](https://github.com/YangMufa/Mint.Blog) branch for the .NET DDD-based V2 version.
 
-#### Software Architecture
-Software architecture description
+**Core Features:**
 
-#### Installation
+- 📝 Article Management: Markdown editing, categories/tags, pinning, wiki
+- 🖼️ Image Management: MinIO object storage
+- 💬 Comments System: Article comments, email notifications
+- 🔐 Auth & Authorization: Spring Security + JWT
+- 📊 Admin Dashboard: Page views, article stats
+- 📱 Responsive Layout: Mobile / desktop adaptation
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+#### Tech Stack
 
-#### Instructions
+| Layer | Technology |
+|------|------|
+| Backend Framework | Spring Boot 2.x |
+| ORM | Spring Data JPA |
+| Database | MySQL |
+| Object Storage | MinIO |
+| Auth | Spring Security + JWT |
+| API Docs | Knife4j (Swagger) |
+| Frontend Framework | Vue 2 + Vue Router + Vuex |
+| UI Components | Element UI |
+| Build Tool | Maven (backend) / Vue CLI (frontend) |
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+#### Project Structure
+
+```
+mint-blog-v1-java/
+├── Admin/                        # Spring Boot backend
+│   └── src/main/java/cn/yangmufa/blog/
+│       ├── admin/                # Admin module
+│       └── blog/                 # Blog front-end module
+├── Front/                        # Vue2 front-end
+└── Blog-Admin/                   # Vue2 admin panel
+```
+
+#### Local Development
+
+**Backend:**
+```bash
+cd Admin
+mvn spring-boot:run
+```
+
+**Front-end:**
+```bash
+cd Front
+npm install
+npm run serve
+```
+
+**Admin Panel:**
+```bash
+cd Blog-Admin
+npm install
+npm run serve
+```
 
 #### Contribution
 
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
-
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+1. Fork the repository
+2. Create `Feat_xxx` branch
+3. Commit your code
+4. Create Pull Request
 
 ## Demo
 ![](https://img.yangmufa.cn/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_V1_%E6%96%87%E7%AB%A0%E8%AF%A6%E6%83%85.png)
