@@ -7,7 +7,7 @@
 
 ---
 <h4>原 RocBlog (鲲鹏博客) 已更名为 Mint.Blog V1</h4>
-<h4>代码并入 Mint.Net 仓库<a href="https://github.com/YangMufa/Mint.Blog/tree/mint-blog-v1-java"> mint-blog-v1-java</a> 分支</h4>
+<h4>代码并入 Mint.Blog 仓库<a href="https://github.com/YangMufa/Mint.Blog/tree/mint-blog-v1-java"> mint-blog-v1-java</a> 分支</h4>
 
 ---
 

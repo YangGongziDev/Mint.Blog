@@ -7,7 +7,7 @@
 
 ---
 <h3>Original RocBlog (RocBlog) renamed to Mint.Blog V1</h3>
-<h3>Code merged into the Mint.Net repository under the <a href="https://github.com/YangMufa/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a> branch</h3>
+<h3>Code merged into the Mint.Blog repository under the <a href="https://github.com/YangMufa/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a> branch</h3>
 
 ---
 
