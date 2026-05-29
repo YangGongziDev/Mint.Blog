@@ -7,7 +7,8 @@
 </div>
 
 #### Description
-Mint.Blog V1 (formerly RocBlog / Kunpeng Blog) is a blog system built on the **Java Spring Boot + Vue2** tech stack with separated frontend and backend. This branch is no longer maintained. Please visit the [main](https://github.com/YangMufa/Mint.Blog) branch for the .NET DDD-based V2 version.
+mint-blog-v1-java (formerly RocBlog / Kunpeng Blog) is a blog system built on the **Java Spring Boot + Vue3** tech stack with separated frontend and backend.  
+This branch is no longer maintained. Please visit the [main](https://github.com/YangMufa/Mint.Blog) branch for the .NET DDD-based V2 version.
 
 **Core Features:**
 
@@ -40,8 +41,8 @@ mint-blog-v1-java/
 │   └── src/main/java/cn/yangmufa/blog/
 │       ├── admin/                # Admin module
 │       └── blog/                 # Blog front-end module
-├── Front/                        # Vue2 front-end
-└── Blog-Admin/                   # Vue2 admin panel
+├── Front/                        # Vue3 front-end
+└── Blog-Admin/                   # Vue3 admin panel
 ```
 
 #### Local Development
