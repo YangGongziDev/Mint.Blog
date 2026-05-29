@@ -8,7 +8,8 @@
 
 
 #### 介绍
-Mint.Blog V1（原 RocBlog 鲲鹏博客）基于 **Java Spring Boot + Vue2** 技术栈构建，是一款前后端分离的博客系统。当前分支已停止更新，请移步 [main](https://github.com/YangMufa/Mint.Blog) 分支体验基于 .NET DDD 的 V2 版本。
+mint-blog-v1-java（原 RocBlog 鲲鹏博客）基于 **Java Spring Boot + Vue3** 技术栈构建，是一款前后端分离的博客系统。  
+当前分支已停止更新，请移步 [main](https://github.com/YangMufa/Mint.Blog) 分支体验基于 .NET DDD 的 V2 版本。
 
 **核心特性：**
 
@@ -41,8 +42,8 @@ mint-blog-v1-java/
 │   └── src/main/java/cn/yangmufa/blog/
 │       ├── admin/                # 管理后台模块
 │       └── blog/                 # 博客前台模块
-├── Front/                        # Vue2 前台
-└── Blog-Admin/                   # Vue2 管理后台
+├── Front/                        # Vue3 前台
+└── Blog-Admin/                   # Vue3 管理后台
 
 ```
 
