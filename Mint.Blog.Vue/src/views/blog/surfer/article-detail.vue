@@ -649,7 +649,7 @@ onActivated(() => {
                   <button
                     v-if="article.preArticle"
                     class="cursor-pointer flex flex-col h-full p-4 text-base font-medium text-[#557468] bg-white border border-gray-200 rounded-lg hover:border-[#3ecf9a] hover:bg-[#f0faf5] hover:text-[#3ecf9a] dark:bg-[#2c333e]/72 dark:border-[#334155] dark:text-[#cbd5e1] dark:hover:bg-[white/8] dark:hover:text-white transition-colors max-w-[48%]"
-                    @click="router.push('/blog/surfer/articles/' + article.preArticle.articleId)"
+                    @click="router.push('/blog/surfer/article/' + article.preArticle.articleId)"
                   >
                     <div>
                       <LeftOutlined class="inline w-3.5 h-3.5 mr-2 mb-1" />
@@ -661,7 +661,7 @@ onActivated(() => {
                   <button
                     v-if="article.nextArticle"
                     class="cursor-pointer flex flex-col h-full text-right p-4 text-base font-medium text-[#557468] bg-white border border-gray-200 rounded-lg hover:border-[#3ecf9a] hover:bg-[#f0faf5] hover:text-[#3ecf9a] dark:bg-[#2c333e]/72 dark:border-[#334155] dark:text-[#cbd5e1] dark:hover:bg-[white/8] dark:hover:text-white transition-colors max-w-[48%] ml-auto"
-                    @click="router.push('/blog/surfer/articles/' + article.nextArticle.articleId)"
+                    @click="router.push('/blog/surfer/article/' + article.nextArticle.articleId)"
                   >
                     <div>
                       下一篇
@@ -677,7 +677,7 @@ onActivated(() => {
         </ACol>
 
         <ACol v-show="desktopTocVisible && hasTocHeadings" :xs="0" :md="6">
-          <SurferToc :header-offset="200" />
+          <SurferToc :header-offset="150" />
         </ACol>
       </ARow>
     </main>

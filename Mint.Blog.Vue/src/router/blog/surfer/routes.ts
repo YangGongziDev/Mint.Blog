@@ -24,7 +24,7 @@ export const blogSurferRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: 'articles/:id',
+    path: 'article/:id',
     name: 'blog-surfer_article_detail',
     component: () => import('@/views/blog/surfer/article-detail.vue'),
     props: true,

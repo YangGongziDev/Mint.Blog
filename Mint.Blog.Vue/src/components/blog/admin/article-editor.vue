@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import type { FormInstance, FormProps } from 'ant-design-vue';
+import type { FormInstance, FormProps, TablePaginationConfig } from 'ant-design-vue';
 import { Modal, message } from 'ant-design-vue';
 import { PictureOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { MdEditor } from 'md-editor-v3';
@@ -20,7 +20,7 @@ import {
 } from '@/service/blog/admin/article';
 import { type CategoryListItem, getCategoryList } from '@/service/blog/admin/category';
 import { type TagListItem, getTagList } from '@/service/blog/admin/tag';
-import { deleteBlogImages, uploadBlogImage } from '@/service/blog/admin/image';
+import { deleteBlogImages, getManagedImagePageList, getMinioBuckets, type ManagedImageListItem, type MinioBucketItem, uploadBlogImage } from '@/service/blog/admin/image';
 import { useAppStore } from '@/store/system/app';
 import { resolveServiceErrorMessage } from '@/utils/service-error';
 
@@ -52,6 +52,19 @@ const tags = ref<TagListItem[]>([]);
 const pendingCoverImage = ref<File | null>(null);
 const originalCoverUrl = ref('');
 const imageSelectorVisible = ref(false);
+const gallerySelectorVisible = ref(false);
+const galleryLoading = ref(false);
+const galleryBuckets = ref<MinioBucketItem[]>([]);
+const galleryImages = ref<ManagedImageListItem[]>([]);
+const galleryTotal = ref(0);
+const selectedGalleryImageUrl = ref('');
+const galleryQuery = reactive({
+  pageNumber: 1,
+  pageSize: 12,
+  bucketName: '',
+  fileName: '',
+  sortOrder: 'lastModifiedDesc' as 'lastModifiedDesc' | 'lastModifiedAsc' | 'nameAsc' | 'nameDesc'
+});
 const contentImages = ref<string[]>([]);
 const selectedImageIndex = ref(-1);
 const serverDraftId = ref<string | null>(null);
@@ -79,6 +92,16 @@ const formModel = reactive<ArticleFormModel>({
 });
 
 const modalWidth = computed(() => (appStore.isMobile ? '92vw' : 680));
+const galleryModalWidth = computed(() => (appStore.isMobile ? '96vw' : 920));
+const galleryPagination = computed<TablePaginationConfig>(() => ({
+  current: galleryQuery.pageNumber,
+  pageSize: galleryQuery.pageSize,
+  total: galleryTotal.value,
+  showSizeChanger: true,
+  pageSizeOptions: ['12', '24', '48'],
+  showTotal: total => `共 ${total} 张图片`,
+  size: appStore.isMobile ? 'small' : 'default'
+}));
 const uploadPercent = computed(() =>
   processingState.uploadTotal ? Math.round((processingState.uploadDone / processingState.uploadTotal) * 100) : 0
 );
@@ -374,6 +397,95 @@ function handleImageSelectConfirm() {
   formRef.value?.validateFields(['cover']).catch(() => undefined);
 }
 
+async function loadGalleryBuckets() {
+  const res = await getMinioBuckets();
+  if (!res.success) return false;
+  galleryBuckets.value = res.data;
+  if (!galleryQuery.bucketName && res.data.length) galleryQuery.bucketName = res.data[0].name;
+  return true;
+}
+
+async function loadGalleryImages() {
+  if (!galleryQuery.bucketName) {
+    galleryImages.value = [];
+    galleryTotal.value = 0;
+    return;
+  }
+
+  galleryLoading.value = true;
+  try {
+    const res = await getManagedImagePageList({
+      pageNumber: galleryQuery.pageNumber,
+      pageSize: galleryQuery.pageSize,
+      bucketName: galleryQuery.bucketName,
+      fileName: galleryQuery.fileName || undefined,
+      sortOrder: galleryQuery.sortOrder
+    });
+    if (res.success) {
+      galleryImages.value = res.data.items || res.data.records || [];
+      galleryTotal.value = res.data.totalCount || res.data.total || 0;
+    }
+  } finally {
+    galleryLoading.value = false;
+  }
+}
+
+async function openGallerySelector() {
+  gallerySelectorVisible.value = true;
+  selectedGalleryImageUrl.value = formModel.cover || '';
+  try {
+    if (!galleryBuckets.value.length) {
+      const loaded = await loadGalleryBuckets();
+      if (!loaded) return;
+    }
+    galleryQuery.pageNumber = 1;
+    await loadGalleryImages();
+  } catch (error) {
+    message.error(resolveServiceErrorMessage(error));
+  }
+}
+
+async function handleGalleryBucketChange() {
+  galleryQuery.pageNumber = 1;
+  selectedGalleryImageUrl.value = '';
+  await loadGalleryImages();
+}
+
+async function handleGallerySearch() {
+  galleryQuery.pageNumber = 1;
+  await loadGalleryImages();
+}
+
+async function handleGalleryReset() {
+  galleryQuery.fileName = '';
+  galleryQuery.sortOrder = 'lastModifiedDesc';
+  galleryQuery.pageNumber = 1;
+  await loadGalleryImages();
+}
+
+async function handleGalleryPageChange(page: TablePaginationConfig) {
+  galleryQuery.pageNumber = page.current || 1;
+  galleryQuery.pageSize = page.pageSize || 12;
+  await loadGalleryImages();
+}
+
+function handleGallerySelectConfirm() {
+  if (!selectedGalleryImageUrl.value) {
+    message.warning('请选择一张图库图片');
+    return;
+  }
+  formModel.cover = selectedGalleryImageUrl.value;
+  pendingCoverImage.value = null;
+  gallerySelectorVisible.value = false;
+  formRef.value?.validateFields(['cover']).catch(() => undefined);
+}
+
+function formatImageSize(size: number) {
+  if (size < 1024) return `${size} B`;
+  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KiB`;
+  return `${(size / 1024 / 1024).toFixed(2)} MiB`;
+}
+
 async function loadOptions() {
   const [categoryRes, tagRes] = await Promise.all([getCategoryList(), getTagList()]);
   if (categoryRes.success) categories.value = categoryRes.data;
@@ -498,7 +610,7 @@ async function handleSaveDraft() {
       savedAt: new Date().toISOString()
     });
     hideProcessing(0);
-    message.warning('服务端保存失败，已临时保存到本地');
+    message.warning(`${resolveServiceErrorMessage(res)}，已临时保存到本地`);
   } catch (error) {
     await cleanupCurrentAttemptUploads();
     Object.assign(formModel, beforePrepareForm);
@@ -543,7 +655,7 @@ async function handleSubmit() {
         await cleanupCurrentAttemptUploads();
         Object.assign(formModel, beforePrepareForm);
         hideProcessing(0);
-        message.error('草稿同步失败，请稍后重试');
+        message.error(resolveServiceErrorMessage(draftRes));
         return;
       }
       serverDraftId.value = draftRes.data.id;
@@ -573,7 +685,7 @@ async function handleSubmit() {
     await cleanupCurrentAttemptUploads();
     Object.assign(formModel, beforePrepareForm);
     hideProcessing(0);
-    message.error('保存失败，请稍后重试');
+    message.error(resolveServiceErrorMessage(res));
   } catch (error) {
     await cleanupCurrentAttemptUploads();
     Object.assign(formModel, beforePrepareForm);
@@ -628,10 +740,16 @@ onBeforeUnmount(() => {
                 <span class="upload-title">上传封面</span>
               </span>
             </label>
-            <AButton html-type="button" @click="openImageSelector">
-              <template #icon><PictureOutlined /></template>
-              从正文选择
-            </AButton>
+            <ASpace wrap>
+              <AButton html-type="button" @click="openImageSelector">
+                <template #icon><PictureOutlined /></template>
+                从正文选择
+              </AButton>
+              <AButton html-type="button" @click="openGallerySelector">
+                <template #icon><PictureOutlined /></template>
+                从 RustFS 图库选择
+              </AButton>
+            </ASpace>
           </div>
         </AFormItem>
         <AFormItem label="摘要" name="summary">
@@ -694,6 +812,79 @@ onBeforeUnmount(() => {
           <img :src="img" alt="content image" />
         </button>
       </div>
+    </AModal>
+
+    <AModal
+      v-model:open="gallerySelectorVisible"
+      title="从 RustFS 图库选择封面"
+      :width="galleryModalWidth"
+      :confirm-loading="galleryLoading"
+      @ok="handleGallerySelectConfirm"
+    >
+      <ASpace direction="vertical" :size="16" class="w-full">
+        <AForm layout="inline" class="gallery-filter-form">
+          <AFormItem label="桶">
+            <ASelect
+              v-model:value="galleryQuery.bucketName"
+              class="gallery-bucket-select"
+              placeholder="请选择桶"
+              :options="galleryBuckets.map(item => ({ label: item.name, value: item.name }))"
+              @change="handleGalleryBucketChange"
+            />
+          </AFormItem>
+          <AFormItem label="名称">
+            <AInput
+              v-model:value="galleryQuery.fileName"
+              allow-clear
+              placeholder="搜索图片名称"
+              @press-enter="handleGallerySearch"
+            />
+          </AFormItem>
+          <AFormItem label="排序">
+            <ASelect v-model:value="galleryQuery.sortOrder" class="gallery-sort-select" @change="handleGallerySearch">
+              <ASelectOption value="lastModifiedDesc">时间倒序</ASelectOption>
+              <ASelectOption value="lastModifiedAsc">时间正序</ASelectOption>
+              <ASelectOption value="nameAsc">名称 A-Z</ASelectOption>
+              <ASelectOption value="nameDesc">名称 Z-A</ASelectOption>
+            </ASelect>
+          </AFormItem>
+          <AFormItem>
+            <ASpace>
+              <AButton type="primary" :loading="galleryLoading" @click="handleGallerySearch">搜索</AButton>
+              <AButton @click="handleGalleryReset">重置</AButton>
+            </ASpace>
+          </AFormItem>
+        </AForm>
+
+        <ASpin :spinning="galleryLoading">
+          <AEmpty v-if="!galleryImages.length" description="暂无图片" />
+          <div v-else class="gallery-grid">
+            <button
+              v-for="image in galleryImages"
+              :key="image.url"
+              type="button"
+              class="gallery-image-card"
+              :class="{ active: selectedGalleryImageUrl === image.url }"
+              @click="selectedGalleryImageUrl = image.url"
+            >
+              <img :src="image.url" :alt="image.fileName" />
+              <span class="gallery-image-mask">
+                <span class="gallery-image-name" :title="image.fileName">{{ image.fileName }}</span>
+                <span class="gallery-image-meta">{{ formatImageSize(image.size) }}</span>
+                <span class="gallery-image-meta">{{ image.lastModified || '-' }}</span>
+              </span>
+            </button>
+          </div>
+        </ASpin>
+
+        <div class="flex justify-end">
+          <APagination
+            v-bind="galleryPagination"
+            @change="(page, pageSize) => handleGalleryPageChange({ current: page, pageSize })"
+            @show-size-change="(page, pageSize) => handleGalleryPageChange({ current: page, pageSize })"
+          />
+        </div>
+      </ASpace>
     </AModal>
 
     <div v-if="processingState.visible" class="processing-mask">
@@ -790,6 +981,86 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.gallery-filter-form {
+  row-gap: 12px;
+}
+
+.gallery-bucket-select {
+  min-width: 180px;
+}
+
+.gallery-sort-select {
+  min-width: 140px;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  max-height: min(56vh, 520px);
+  overflow-y: auto;
+  padding: 2px 4px 4px 2px;
+}
+
+.gallery-image-card {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  aspect-ratio: 16 / 10;
+  background: rgb(var(--base-text-color) / 5%);
+  text-align: left;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.gallery-image-card.active {
+  border-color: rgb(var(--primary-color));
+  box-shadow: 0 8px 22px rgb(var(--primary-color) / 20%);
+}
+
+.gallery-image-card:hover {
+  transform: translateY(-1px);
+}
+
+.gallery-image-card img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.gallery-image-mask {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 18px 10px 8px;
+  color: #fff;
+  background: linear-gradient(180deg, transparent, rgb(15 23 42 / 82%));
+}
+
+.gallery-image-name {
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gallery-image-meta {
+  overflow: hidden;
+  font-size: 11px;
+  opacity: 0.82;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .editor-sticky-actions {

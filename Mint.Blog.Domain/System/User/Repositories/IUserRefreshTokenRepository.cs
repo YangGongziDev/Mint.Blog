@@ -7,5 +7,5 @@ public interface IUserRefreshTokenRepository {
 	Task<UserRefreshTokenEntity?> GetByTokenHashAsync(string tokenHash, CancellationToken cancellationToken = default);
 	Task RevokeAsync(UserRefreshTokenEntity refreshToken, CancellationToken cancellationToken = default);
 	Task RevokeAllByUserIdAsync(long userId, CancellationToken cancellationToken = default);
-	Task DeleteInvalidTokensCreatedBeforeAsync(DateTimeOffset retentionBoundary, CancellationToken cancellationToken = default);
+	Task<int> DeleteInvalidTokensCreatedBeforeAsync(DateTimeOffset retentionBoundary, CancellationToken cancellationToken = default);
 }

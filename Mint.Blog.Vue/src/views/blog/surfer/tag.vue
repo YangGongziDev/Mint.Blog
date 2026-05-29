@@ -66,7 +66,7 @@ function getTagArticles(pageNo: number) {
 }
 
 function goArticleDetailPage(articleId: number) {
-  router.push(`/blog/surfer/articles/${articleId}`);
+  router.push(`/blog/surfer/article/${articleId}`);
 }
 function goTagPage(id: number, name: string) {
   router.push({ path: '/blog/surfer/tag', query: { id: String(id), name } });

@@ -190,14 +190,53 @@ function handleInputConfirm() {
   inputValue.value = '';
 }
 
+function normalizeTagName(name: string) {
+  return name.trim().toLowerCase();
+}
+
+function findDuplicateTagName(tags: string[]) {
+  const tagNameSet = new Set<string>();
+  return tags.find(tag => {
+    const tagName = normalizeTagName(tag);
+    if (tagNameSet.has(tagName)) return true;
+    tagNameSet.add(tagName);
+    return false;
+  });
+}
+
+async function findExistingTagName(tags: string[]) {
+  const results = await Promise.all(tags.map(tag => getTagPageList({ pageNumber: 1, pageSize: 1000, name: tag })));
+
+  for (const [index, res] of results.entries()) {
+    const tag = tags[index];
+    const items = res.success ? (res.data.items ?? res.data.records ?? []) : [];
+    const existingTag = items.find(item => normalizeTagName(item.name) === normalizeTagName(tag));
+    if (existingTag) return tag;
+  }
+
+  return '';
+}
+
 async function handleCreateSubmit() {
   if (dynamicTags.value.length === 0) {
     message.warning('请至少添加一个标签');
     return;
   }
 
+  const duplicateTag = findDuplicateTagName(dynamicTags.value);
+  if (duplicateTag) {
+    message.warning(`标签“${duplicateTag}”重复，请勿重复添加`);
+    return;
+  }
+
   submitLoading.value = true;
   try {
+    const existingTag = await findExistingTagName(dynamicTags.value);
+    if (existingTag) {
+      message.warning(`标签“${existingTag}”已存在，请勿重复添加`);
+      return;
+    }
+
     const results = await Promise.all(dynamicTags.value.map(tag => createTag({ name: tag })));
     if (results.some(res => !res.success)) return;
 
@@ -228,6 +267,11 @@ function cancelEditTag() {
 async function handleEditSubmit() {
   await editFormRef.value?.validate();
   if (!editForm.id) return;
+
+  if (currentEditTag.value && isTagDeleted(currentEditTag.value)) {
+    message.warning('已删除的标签不能编辑，请先取消删除后再修改');
+    return;
+  }
 
   editSubmitLoading.value = true;
   try {

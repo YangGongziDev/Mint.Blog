@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { DownOutlined, GithubOutlined, UpOutlined, ZhihuOutlined } from '@ant-design/icons-vue';
+import { DownOutlined, GithubOutlined, UpOutlined } from '@ant-design/icons-vue';
 import { getBlogSettingsDetail } from '@/service/blog/surfer/setting';
 import { getCategoryList } from '@/service/blog/surfer/category';
 import { getStatisticsInfo } from '@/service/blog/surfer/statistics';
@@ -172,7 +172,12 @@ onMounted(async () => {
 <template>
   <aside class="space-y-4 lg:sticky lg:top-10">
     <section class="side-card text-center">
-      <div v-if="loading" class="mx-auto h-20 w-20 animate-pulse rounded-full bg-[#3ecf9a]/10 dark:bg-white/8"></div>
+      <div v-if="loading" class="side-author-skeleton">
+        <div class="mx-auto h-20 w-20 rounded-full bg-[#3ecf9a]/10 dark:bg-white/8"></div>
+        <div class="mx-auto mt-4 h-5 w-32 rounded-full bg-[#3ecf9a]/10 dark:bg-white/8"></div>
+        <div class="mx-auto mt-3 h-3 w-44 max-w-full rounded-full bg-[#3ecf9a]/10 dark:bg-white/8"></div>
+        <div class="mx-auto mt-2 h-3 w-32 max-w-full rounded-full bg-[#3ecf9a]/10 dark:bg-white/8"></div>
+      </div>
       <template v-else>
         <img
           class="sidebar-avatar mx-auto h-20 w-20 object-cover"
@@ -279,50 +284,69 @@ onMounted(async () => {
 
     <section v-if="!hideCategories" class="side-card">
       <h3 class="side-title">分类</h3>
-      <div v-if="categories.length" class="flex flex-wrap gap-2">
-        <button v-for="c in visibleCategories" :key="c.id" class="tag" @click="goCategory(c.id, c.name)">
-          <span class="tag-name">{{ c.name }}</span><span class="tag-count">{{ c.articlesTotal }}</span>
-        </button>
+      <div v-if="loading" class="side-skeleton-pill-list">
+        <span v-for="i in 8" :key="i"></span>
       </div>
-      <button v-if="hasMoreCategories" class="side-more" @click="isCategoriesExpanded = !isCategoriesExpanded">
-        {{ isCategoriesExpanded ? '收起分类' : `展开全部 ${categories.length}` }}
-        <UpOutlined v-if="isCategoriesExpanded" class="text-[10px]" />
-        <DownOutlined v-else class="text-[10px]" />
-      </button>
-      <div v-if="!categories.length" class="mini-empty">暂无分类，发布文章后会自动归档。</div>
+      <template v-else>
+        <div v-if="categories.length" class="flex flex-wrap gap-2">
+          <button v-for="c in visibleCategories" :key="c.id" class="tag" @click="goCategory(c.id, c.name)">
+            <span class="tag-name">{{ c.name }}</span><span class="tag-count">{{ c.articlesTotal }}</span>
+          </button>
+        </div>
+        <button v-if="hasMoreCategories" class="side-more" @click="isCategoriesExpanded = !isCategoriesExpanded">
+          {{ isCategoriesExpanded ? '收起分类' : `展开全部 ${categories.length}` }}
+          <UpOutlined v-if="isCategoriesExpanded" class="text-[10px]" />
+          <DownOutlined v-else class="text-[10px]" />
+        </button>
+        <div v-if="!categories.length" class="mini-empty">暂无分类，发布文章后会自动归档。</div>
+      </template>
     </section>
 
     <section v-if="!hideTags" class="side-card">
       <h3 class="side-title">标签</h3>
-      <div v-if="tags.length" class="flex flex-wrap gap-2">
-        <button v-for="tag in visibleTags" :key="tag.id" class="tag" @click="goTag(tag.id, tag.name)">
-          <span class="tag-name">{{ tag.name }}</span><span class="tag-count">{{ tag.articlesTotal ?? 0 }}</span>
-        </button>
+      <div v-if="loading" class="side-skeleton-pill-list">
+        <span v-for="i in 12" :key="i"></span>
       </div>
-      <button v-if="hasMoreTags" class="side-more" @click="isTagsExpanded = !isTagsExpanded">
-        {{ isTagsExpanded ? '收起标签' : `展开全部 ${tags.length}` }}
-        <UpOutlined v-if="isTagsExpanded" class="text-[10px]" />
-        <DownOutlined v-else class="text-[10px]" />
-      </button>
-      <div v-if="!tags.length" class="mini-empty">暂无标签，后续内容会在这里聚合。</div>
+      <template v-else>
+        <div v-if="tags.length" class="flex flex-wrap gap-2">
+          <button v-for="tag in visibleTags" :key="tag.id" class="tag" @click="goTag(tag.id, tag.name)">
+            <span class="tag-name">{{ tag.name }}</span><span class="tag-count">{{ tag.articlesTotal ?? 0 }}</span>
+          </button>
+        </div>
+        <button v-if="hasMoreTags" class="side-more" @click="isTagsExpanded = !isTagsExpanded">
+          {{ isTagsExpanded ? '收起标签' : `展开全部 ${tags.length}` }}
+          <UpOutlined v-if="isTagsExpanded" class="text-[10px]" />
+          <DownOutlined v-else class="text-[10px]" />
+        </button>
+        <div v-if="!tags.length" class="mini-empty">暂无标签，后续内容会在这里聚合。</div>
+      </template>
     </section>
 
     <section v-if="!hideColumns" class="side-card">
       <h3 class="side-title">专栏</h3>
-      <div v-if="columns.length">
-        <button v-for="column in visibleColumns" :key="column.id" class="column" @click="goColumn(column.id, column.firstArticleId)">
-          <img v-if="column.cover" :src="column.cover" alt="" class="h-9 w-9 rounded-xl object-cover" />
-          <span class="min-w-0 flex-1 truncate text-left">{{ column.title }}</span>
-          <span class="tag-count">{{ column.articlesTotal ?? 0 }}</span>
-          <em v-if="column.isTop" class="text-xs text-red-500 not-italic">置顶</em>
-        </button>
+      <div v-if="loading" class="side-skeleton-column-list">
+        <div v-for="i in 5" :key="i" class="side-skeleton-column">
+          <span class="side-skeleton-cover"></span>
+          <span class="side-skeleton-text"></span>
+          <span class="side-skeleton-count"></span>
+        </div>
       </div>
-      <button v-if="hasMoreColumns" class="side-more" @click="isColumnsExpanded = !isColumnsExpanded">
-        {{ isColumnsExpanded ? '收起专栏' : `展开全部 ${columns.length}` }}
-        <UpOutlined v-if="isColumnsExpanded" class="text-[10px]" />
-        <DownOutlined v-else class="text-[10px]" />
-      </button>
-      <div v-if="!columns.length" class="mini-empty">暂无专栏，专题内容整理后会展示在这里。</div>
+      <template v-else>
+        <div v-if="columns.length">
+          <button v-for="column in visibleColumns" :key="column.id" class="column" @click="goColumn(column.id, column.firstArticleId)">
+            <img v-if="column.cover" :src="column.cover" alt="" class="h-9 w-9 rounded-xl object-cover" />
+            <span class="min-w-0 flex-1 truncate text-left">{{ column.title }}</span>
+            <span class="tag-count">{{ column.articlesTotal ?? 0 }}</span>
+            <em v-if="column.isTop" class="text-xs text-red-500 not-italic">置顶</em>
+          </button>
+        </div>
+        <button v-if="hasMoreColumns" class="side-more" @click="isColumnsExpanded = !isColumnsExpanded">
+          {{ isColumnsExpanded ? '收起专栏' : `展开全部 ${columns.length}` }}
+          <UpOutlined v-if="isColumnsExpanded" class="text-[10px]" />
+          <DownOutlined v-else class="text-[10px]" />
+        </button>
+        <div v-if="!columns.length" class="mini-empty">暂无专栏，专题内容整理后会展示在这里。</div>
+      </template>
     </section>
 
     <AModal v-model:open="isWechatOfficialAccountQrCodeOpen" :footer="null" centered destroy-on-close title="微信公众号">
@@ -362,6 +386,66 @@ onMounted(async () => {
   transform: translateY(-4px);
   border-color: rgb(62 207 154 / 40%);
   box-shadow: 0 24px 60px rgb(62 207 154 / 16%);
+}
+.side-author-skeleton,
+.side-skeleton-pill-list,
+.side-skeleton-column-list {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+.side-skeleton-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.side-skeleton-pill-list span {
+  display: block;
+  width: 72px;
+  max-width: 100%;
+  height: 28px;
+  border-radius: 999px;
+  background: rgb(62 207 154 / 10%);
+}
+.side-skeleton-pill-list span:nth-child(3n + 1) {
+  width: 58px;
+}
+.side-skeleton-pill-list span:nth-child(3n + 2) {
+  width: 92px;
+}
+.side-skeleton-column-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.side-skeleton-column {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 8px;
+}
+.side-skeleton-cover,
+.side-skeleton-text,
+.side-skeleton-count {
+  display: block;
+  background: rgb(62 207 154 / 10%);
+}
+.side-skeleton-cover {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 12px;
+}
+.side-skeleton-text {
+  height: 14px;
+  min-width: 0;
+  flex: 1;
+  border-radius: 999px;
+}
+.side-skeleton-count {
+  width: 34px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: 999px;
 }
 .sidebar-avatar {
   flex-shrink: 0;
@@ -546,6 +630,12 @@ onMounted(async () => {
   }
   .mini-empty {
     color: #94a3b8;
+  }
+  .side-skeleton-pill-list span,
+  .side-skeleton-cover,
+  .side-skeleton-text,
+  .side-skeleton-count {
+    background: rgb(83 157 253 / 10%);
   }
 }
 </style>

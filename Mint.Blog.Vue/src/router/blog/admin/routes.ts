@@ -42,6 +42,10 @@ export const blogAdminRoutes: RouteRecordRaw[] = [
     }
   },
   {
+    path: 'blog-settings',
+    redirect: { name: 'blog-admin_blog-settings' }
+  },
+  {
     path: 'friend',
     name: 'blog-admin_friend',
     component: () => import('@/views/blog/admin/friend.vue'),

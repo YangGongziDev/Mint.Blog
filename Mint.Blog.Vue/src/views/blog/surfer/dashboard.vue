@@ -216,7 +216,7 @@ const { domRef: pieChartDomRef, updateOptions: updatePieOptions } = useEcharts((
 }));
 
 const quickLinks = [
-  { title: '文章列表', description: '浏览所有公开文章', icon: 'mdi:post-outline', path: '/blog/surfer/articles' },
+  { title: '文章列表', description: '浏览所有公开文章', icon: 'mdi:post-outline', path: '/blog/surfer/home' },
   { title: '专栏', description: '查看体系化专栏内容', icon: 'mdi:bookshelf', path: '/blog/surfer/column' },
   { title: '分类', description: '按分类探索内容', icon: 'mdi:shape-outline', path: '/blog/surfer/category' },
   { title: '标签', description: '按标签聚合内容', icon: 'mdi:tag-multiple-outline', path: '/blog/surfer/tag' },

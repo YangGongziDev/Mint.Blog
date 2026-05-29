@@ -71,7 +71,7 @@ function getArchives(pageNo: number) {
 }
 
 function goArticle(id: number) {
-  router.push(`/blog/surfer/articles/${id}`);
+  router.push(`/blog/surfer/article/${id}`);
 }
 function goPage(page: number) {
   router.replace({ query: { ...route.query, page: page > 1 ? String(page) : undefined } });

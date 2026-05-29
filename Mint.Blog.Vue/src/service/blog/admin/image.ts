@@ -42,6 +42,7 @@ export interface ManagedImagePageQuery {
   bucketName?: string;
   fileName?: string;
   used?: boolean;
+  sortOrder?: 'lastModifiedDesc' | 'lastModifiedAsc' | 'nameAsc' | 'nameDesc';
 }
 
 export function getMinioBuckets() {

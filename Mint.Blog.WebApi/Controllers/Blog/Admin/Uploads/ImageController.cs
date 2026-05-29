@@ -62,7 +62,7 @@ public sealed class ImageController(
 		return Ok(ApiResponse<object>.Ok(default(object?)));
 	}
 	/// <summary>
-	///     分页查询 MinIO 图片及文章引用信息。
+	///     分页查询 RustFS 图片及文章引用信息。
 	/// </summary>
 	[HttpGet]
 	[ProducesResponseType(typeof(ApiResponse<PagedResult<ManagedImageListItemDto>>), StatusCodes.Status200OK)]
@@ -73,9 +73,10 @@ public sealed class ImageController(
 		[FromQuery] string? bucketName = null,
 		[FromQuery] string? fileName = null,
 		[FromQuery] bool? used = null,
+		[FromQuery] string? sortOrder = null,
 		CancellationToken cancellationToken = default){
 		var result = await managedImageQueryService.GetAsync(
-			new ManagedImageListQuery(pageNumber, pageSize, bucketName, fileName, used), cancellationToken);
+			new ManagedImageListQuery(pageNumber, pageSize, bucketName, fileName, used, sortOrder), cancellationToken);
 		return Ok(ApiResponse<PagedResult<ManagedImageListItemDto>>.Ok(result));
 	}
 	/// <summary>

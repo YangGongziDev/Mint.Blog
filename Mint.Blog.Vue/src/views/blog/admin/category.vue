@@ -43,6 +43,7 @@ const editLoading = ref(false);
 const deleteLoading = ref(false);
 const deleteType = ref<number | null>(null);
 const currentDeleteCategory = ref<CategoryListItem | null>(null);
+const currentEditCategory = ref<CategoryListItem | null>(null);
 const formRef = ref<FormInstance>();
 const editFormRef = ref<FormInstance>();
 const form = reactive({ name: '' });
@@ -164,11 +165,27 @@ function handleCancel() {
   createModalVisible.value = false;
   formRef.value?.resetFields();
 }
+function normalizeCategoryName(name: string) {
+  return name.trim().toLowerCase();
+}
+async function categoryExists(name: string) {
+  const normalizedName = normalizeCategoryName(name);
+  const res = await getCategoryPageList({ pageNumber: 1, pageSize: 1000, name });
+  const items = res.success ? (res.data.items ?? res.data.records ?? []) : [];
+  return items.some(item => normalizeCategoryName(item.name) === normalizedName);
+}
 async function handleSubmit() {
   await formRef.value?.validate();
+  const name = form.name.trim();
+
   submitLoading.value = true;
   try {
-    const res = await createCategory({ name: form.name });
+    if (await categoryExists(name)) {
+      message.warning(`分类“${name}”已存在，请勿重复添加`);
+      return;
+    }
+
+    const res = await createCategory({ name });
     if (res.success) {
       message.success('添加成功');
       handleCancel();
@@ -179,12 +196,14 @@ async function handleSubmit() {
   }
 }
 function openEditModal(record: CategoryListItem) {
+  currentEditCategory.value = record;
   editForm.id = record.id;
   editForm.name = record.name;
   editModalVisible.value = true;
 }
 function handleEditCancel() {
   editModalVisible.value = false;
+  currentEditCategory.value = null;
   editForm.id = undefined;
   editForm.name = '';
   editFormRef.value?.resetFields();
@@ -192,6 +211,12 @@ function handleEditCancel() {
 async function handleEditSubmit() {
   await editFormRef.value?.validate();
   if (!editForm.id) return;
+
+  if (currentEditCategory.value && isCategoryDeleted(currentEditCategory.value)) {
+    message.warning('已删除的分类不能编辑，请先取消删除后再修改');
+    return;
+  }
+
   editLoading.value = true;
   try {
     const res = await updateCategory(editForm.id, { name: editForm.name });

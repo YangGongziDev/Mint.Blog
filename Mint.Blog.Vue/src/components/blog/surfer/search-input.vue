@@ -63,7 +63,7 @@ function onFocus() {
 
 function goArticle(id: number) {
   closeAll();
-  router.push(`/blog/surfer/articles/${id}`);
+  router.push(`/blog/surfer/article/${id}`);
 }
 
 function closeAll() {

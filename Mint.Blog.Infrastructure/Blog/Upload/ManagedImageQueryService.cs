@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
+using Amazon.S3;
+using Amazon.S3.Model;
 using Microsoft.Extensions.Options;
-using Minio;
-using Minio.DataModel.Args;
 using Mint.Blog.Application.Abstractions;
 using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
 using Mint.Blog.Application.Blog.Upload.Images;
@@ -16,8 +16,8 @@ using Mint.Blog.Infrastructure.Options;
 namespace Mint.Blog.Infrastructure.Blog.Upload;
 
 public sealed class ManagedImageQueryService(
-	IMinioClient minioClient,
-	IOptions<MinioOptions> minioOptions,
+	IAmazonS3 rustFsClient,
+	IOptions<RustFsOptions> rustFsOptions,
 	ISqlSugarDbContext dbContext) : IManagedImageQueryService {
 	private static readonly HashSet<string> ImageExtensions = new(StringComparer.OrdinalIgnoreCase) {
 		".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".svg", ".ico", ".avif"
@@ -28,7 +28,7 @@ public sealed class ManagedImageQueryService(
 		var pageNumber = Math.Max(query.PageNumber, 1);
 		var pageSize = Math.Clamp(query.PageSize, 1, 200);
 		var bucketName = string.IsNullOrWhiteSpace(query.BucketName)
-			? minioOptions.Value.BucketName
+			? rustFsOptions.Value.BucketName
 			: query.BucketName.Trim();
 
 		var objects = await GetImageObjectsAsync(bucketName, cancellationToken);
@@ -56,7 +56,8 @@ public sealed class ManagedImageQueryService(
 		}
 
 		var totalCount = items.Count;
-		var pageItems = items
+		var orderedItems = ApplySort(items, query.SortOrder);
+		var pageItems = orderedItems
 			.Skip((pageNumber - 1) * pageSize)
 			.Take(pageSize)
 			.ToArray();
@@ -66,62 +67,73 @@ public sealed class ManagedImageQueryService(
 
 	private async Task<List<ManagedImageObject>> GetImageObjectsAsync(string bucketName, CancellationToken cancellationToken){
 		var result = new List<ManagedImageObject>();
-		await foreach (var item in minioClient.ListObjectsEnumAsync(new ListObjectsArgs()
-			.WithBucket(bucketName)
-			.WithRecursive(true), cancellationToken)) {
-			if (item.IsDir || !IsImageObject(item.Key)) continue;
+		string? continuationToken = null;
+		do {
+			var response = await rustFsClient.ListObjectsV2Async(new ListObjectsV2Request {
+				BucketName = bucketName,
+				ContinuationToken = continuationToken
+			}, cancellationToken);
 
-			result.Add(new ManagedImageObject(item.Key, item.Size > long.MaxValue ? long.MaxValue : (long)item.Size, item.LastModifiedDateTime));
-		}
+			foreach (var item in response.S3Objects) {
+				if (item.Key.EndsWith("/", StringComparison.Ordinal) || !IsImageObject(item.Key)) continue;
+
+				result.Add(new ManagedImageObject(item.Key, item.Size, item.LastModified));
+			}
+
+			continuationToken = response.IsTruncated ? response.NextContinuationToken : null;
+		} while (!string.IsNullOrWhiteSpace(continuationToken));
 
 		return result.OrderByDescending(item => item.LastModified ?? DateTime.MinValue).ToList();
 	}
 
 	private async Task<IReadOnlyCollection<ManagedImageArticleReferenceDto>> GetReferencedArticlesAsync(string imageUrl){
-		var references = new Dictionary<long, ManagedImageArticleReferenceDto>();
+		var references = new Dictionary<string, ManagedImageArticleReferenceDto>();
 
 		var coverArticles = await dbContext.Client.Queryable<ArticleDataModel>()
 			.Where(article => article.Cover == imageUrl)
 			.Select(article => new { article.Id, article.Title })
 			.ToListAsync();
-		foreach (var article in coverArticles) AddReference(references, article.Id, article.Title);
+		foreach (var article in coverArticles) AddReference(references, $"article-cover:{article.Id}", article.Id, $"文章封面：{article.Title}");
 
 		var columnCoverArticles = await dbContext.Client.Queryable<ColumnDataModel>()
 			.Where(column => column.Cover == imageUrl)
 			.Select(column => new { column.Id, column.Title })
 			.ToListAsync();
-		foreach (var column in columnCoverArticles) AddReference(references, -1000 - column.Id, $"专栏封面：{column.Title}", "/blog/admin/column");
+		foreach (var column in columnCoverArticles) {
+			var columnUrl = await BuildColumnDetailUrlAsync(column.Id);
+			AddReference(references, $"column-cover:{column.Id}", (-1000 - column.Id).ToString(), $"专栏封面：{column.Title}", columnUrl);
+		}
 
 		var contentArticles = await dbContext.Client.Queryable<ArticleContentDataModel>()
 			.InnerJoin<ArticleDataModel>((content, article) => content.ArticleId == article.Id)
 			.Where(content => content.Content.Contains(imageUrl))
 			.Select((content, article) => new { article.Id, article.Title })
 			.ToListAsync();
-		foreach (var article in contentArticles) AddReference(references, article.Id, article.Title);
+		foreach (var article in contentArticles) AddReference(references, $"article-content:{article.Id}", article.Id, $"文章内容：{article.Title}");
 
 		var draftCoverArticles = await dbContext.Client.Queryable<ArticleDraftDataModel>()
 			.Where(draft => draft.ArticleId != null && draft.Cover == imageUrl)
 			.Select(draft => new { ArticleId = draft.ArticleId!.Value, draft.Title })
 			.ToListAsync();
-		foreach (var article in draftCoverArticles) AddReference(references, article.ArticleId, article.Title);
+		foreach (var article in draftCoverArticles) AddReference(references, $"draft-cover:{article.ArticleId}", article.ArticleId, $"文章封面（草稿）：{article.Title}");
 
 		var draftContentArticles = await dbContext.Client.Queryable<ArticleDraftContentDataModel>()
 			.InnerJoin<ArticleDraftDataModel>((content, draft) => content.DraftId == draft.Id)
 			.Where((content, draft) => draft.ArticleId != null && content.Content.Contains(imageUrl))
 			.Select((content, draft) => new { ArticleId = draft.ArticleId!.Value, draft.Title })
 			.ToListAsync();
-		foreach (var article in draftContentArticles) AddReference(references, article.ArticleId, article.Title);
+		foreach (var article in draftContentArticles) AddReference(references, $"draft-content:{article.ArticleId}", article.ArticleId, $"文章内容（草稿）：{article.Title}");
 
 		var setting = await dbContext.Client.Queryable<BlogSettingDataModel>()
 			.Select(x => new { x.Name, x.Logo, x.Avatar })
 			.SingleAsync();
 		if (setting is not null) {
 			if (setting.Logo == imageUrl) {
-				AddReference(references, -1, $"博客 LOGO：{setting.Name}", "/blog/admin/blog-settings");
+				AddReference(references, "blog-logo", "-1", $"博客 LOGO：{setting.Name}", "/blog/admin/blog/settings");
 			}
 
 			if (setting.Avatar == imageUrl) {
-				AddReference(references, -2, $"作者头像：{setting.Name}", "/blog/admin/blog-settings");
+				AddReference(references, "blog-avatar", "-2", $"作者头像：{setting.Name}", "/blog/admin/blog/settings");
 			}
 		}
 
@@ -130,26 +142,52 @@ public sealed class ManagedImageQueryService(
 			.Select(x => new { x.Id, x.Name })
 			.ToListAsync();
 		foreach (var friend in friendAvatars) {
-			AddReference(references, -2000 - friend.Id, $"友链头像：{friend.Name}", "/blog/admin/friend");
+			AddReference(references, $"friend-avatar:{friend.Id}", (-2000 - friend.Id).ToString(), $"友链头像：{friend.Name}", "/blog/admin/friend");
 		}
 
 		return references.Values.ToArray();
 	}
 
-	private static void AddReference(IDictionary<long, ManagedImageArticleReferenceDto> references, long articleId,
-		string title, string? url = null){
-		if (references.ContainsKey(articleId)) return;
+	private async Task<string> BuildColumnDetailUrlAsync(long columnId){
+		var firstArticleId = await dbContext.Client.Queryable<ColumnCatalogDataModel>()
+			.Where(catalog => catalog.ColumnId == columnId && catalog.Level == 2 && catalog.ArticleId != null && catalog.ArticleId > 0 && catalog.IsDeleted == 0)
+			.OrderBy(catalog => catalog.Sort)
+			.Select(catalog => catalog.ArticleId)
+			.FirstAsync();
 
-		references[articleId] = new ManagedImageArticleReferenceDto(
-			articleId.ToString(),
+		return firstArticleId is > 0
+			? $"/blog/surfer/column/{columnId}?articleId={firstArticleId}"
+			: $"/blog/surfer/column/{columnId}";
+	}
+
+	private static void AddReference(IDictionary<string, ManagedImageArticleReferenceDto> references, string referenceKey,
+		long articleId, string title, string? url = null){
+		AddReference(references, referenceKey, articleId.ToString(), title, url);
+	}
+
+	private static void AddReference(IDictionary<string, ManagedImageArticleReferenceDto> references, string referenceKey,
+		string articleId, string title, string? url = null){
+		if (references.ContainsKey(referenceKey)) return;
+
+		references[referenceKey] = new ManagedImageArticleReferenceDto(
+			articleId,
 			string.IsNullOrWhiteSpace(title) ? $"文章 {articleId}" : title,
 			url ?? $"/blog/surfer/article/{articleId}");
 	}
 
+	private static IReadOnlyCollection<ManagedImageListItemDto> ApplySort(IReadOnlyCollection<ManagedImageListItemDto> items, string? sortOrder){
+		return (sortOrder ?? "lastModifiedDesc") switch {
+			"lastModifiedAsc" => items.OrderBy(item => item.LastModified ?? DateTime.MinValue).ToArray(),
+			"nameAsc" => items.OrderBy(item => item.FileName, StringComparer.OrdinalIgnoreCase).ToArray(),
+			"nameDesc" => items.OrderByDescending(item => item.FileName, StringComparer.OrdinalIgnoreCase).ToArray(),
+			_ => items.OrderByDescending(item => item.LastModified ?? DateTime.MinValue).ToArray()
+		};
+	}
+
 	private string BuildObjectUrl(string bucketName, string objectName){
-		var publicEndpoint = string.IsNullOrWhiteSpace(minioOptions.Value.PublicEndpoint)
-			? minioOptions.Value.Endpoint
-			: minioOptions.Value.PublicEndpoint;
+		var publicEndpoint = string.IsNullOrWhiteSpace(rustFsOptions.Value.PublicEndpoint)
+			? rustFsOptions.Value.Endpoint
+			: rustFsOptions.Value.PublicEndpoint;
 
 		return $"{publicEndpoint.TrimEnd('/')}/{bucketName}/{Uri.EscapeDataString(objectName).Replace("%2F", "/")}";
 	}

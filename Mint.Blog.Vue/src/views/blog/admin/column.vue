@@ -30,7 +30,13 @@ import {
   updateColumnCatalog,
   updateColumnSort
 } from '@/service/blog/admin/column';
-import { uploadBlogImage } from '@/service/blog/admin/image';
+import {
+  getManagedImagePageList,
+  getMinioBuckets,
+  type ManagedImageListItem,
+  type MinioBucketItem,
+  uploadBlogImage
+} from '@/service/blog/admin/image';
 import { getArticlePageList } from '@/service/blog/admin/article';
 import { useAppStore } from '@/store/system/app';
 
@@ -55,6 +61,20 @@ const deleteType = ref<number | null>(null);
 const pendingCoverImage = ref<File | null>(null);
 const pendingEditCoverImage = ref<File | null>(null);
 const originalCoverUrl = ref('');
+const gallerySelectorVisible = ref(false);
+const galleryLoading = ref(false);
+const galleryTarget = ref<'create' | 'edit'>('create');
+const galleryBuckets = ref<MinioBucketItem[]>([]);
+const galleryImages = ref<ManagedImageListItem[]>([]);
+const galleryTotal = ref(0);
+const selectedGalleryImageUrl = ref('');
+const galleryQuery = reactive({
+  pageNumber: 1,
+  pageSize: 12,
+  bucketName: '',
+  fileName: '',
+  sortOrder: 'lastModifiedDesc' as 'lastModifiedDesc' | 'lastModifiedAsc' | 'nameAsc' | 'nameDesc'
+});
 const catalogItems = ref<AdminColumnCatalogItem[]>([]);
 const articleSearchLoading = ref(false);
 const articleSearchOptions = ref<{ label: string; value: string; title: string }[]>([]);
@@ -62,6 +82,7 @@ const query = reactive({ pageNumber: 1, pageSize: 10, title: '', startDate: '', 
 const formModel = reactive<ColumnFormModel>({ title: '', summary: '', cover: '' });
 const editFormModel = reactive<ColumnFormModel>({ title: '', summary: '', cover: '' });
 const modalWidth = computed(() => (appStore.isMobile ? '92vw' : 600));
+const galleryModalWidth = computed(() => (appStore.isMobile ? '96vw' : 920));
 const deleteModalWidth = computed(() => (appStore.isMobile ? '92vw' : 600));
 const wideModalWidth = computed(() => (appStore.isMobile ? '92vw' : '72vw'));
 const pagination = computed<TablePaginationConfig>(() => ({
@@ -70,6 +91,15 @@ const pagination = computed<TablePaginationConfig>(() => ({
   total: total.value,
   showSizeChanger: true,
   showTotal: value => `共 ${value} 条`,
+  size: appStore.isMobile ? 'small' : 'default'
+}));
+const galleryPagination = computed<TablePaginationConfig>(() => ({
+  current: galleryQuery.pageNumber,
+  pageSize: galleryQuery.pageSize,
+  total: galleryTotal.value,
+  showSizeChanger: true,
+  pageSizeOptions: ['12', '24', '48'],
+  showTotal: value => `共 ${value} 张图片`,
   size: appStore.isMobile ? 'small' : 'default'
 }));
 const columns = computed<TableColumnsType<AdminColumnPageItem>>(() => [
@@ -224,6 +254,100 @@ async function uploadPendingCover(target: ColumnFormModel, file: File | null, ol
   });
   if (res.success) target.cover = res.data.url;
 }
+
+async function loadGalleryBuckets() {
+  const res = await getMinioBuckets();
+  if (!res.success) return false;
+  galleryBuckets.value = res.data;
+  if (!galleryQuery.bucketName && res.data.length) galleryQuery.bucketName = res.data[0].name;
+  return true;
+}
+
+async function loadGalleryImages() {
+  if (!galleryQuery.bucketName) {
+    galleryImages.value = [];
+    galleryTotal.value = 0;
+    return;
+  }
+
+  galleryLoading.value = true;
+  try {
+    const res = await getManagedImagePageList({
+      pageNumber: galleryQuery.pageNumber,
+      pageSize: galleryQuery.pageSize,
+      bucketName: galleryQuery.bucketName,
+      fileName: galleryQuery.fileName || undefined,
+      sortOrder: galleryQuery.sortOrder
+    });
+    if (res.success) {
+      galleryImages.value = res.data.items || res.data.records || [];
+      galleryTotal.value = res.data.totalCount || res.data.total || 0;
+    }
+  } finally {
+    galleryLoading.value = false;
+  }
+}
+
+async function openGallerySelector(target: 'create' | 'edit') {
+  galleryTarget.value = target;
+  selectedGalleryImageUrl.value = target === 'create' ? formModel.cover : editFormModel.cover;
+  gallerySelectorVisible.value = true;
+  if (!galleryBuckets.value.length) {
+    const loaded = await loadGalleryBuckets();
+    if (!loaded) return;
+  }
+  galleryQuery.pageNumber = 1;
+  await loadGalleryImages();
+}
+
+async function handleGalleryBucketChange() {
+  galleryQuery.pageNumber = 1;
+  selectedGalleryImageUrl.value = '';
+  await loadGalleryImages();
+}
+
+async function handleGallerySearch() {
+  galleryQuery.pageNumber = 1;
+  await loadGalleryImages();
+}
+
+async function handleGalleryReset() {
+  galleryQuery.fileName = '';
+  galleryQuery.sortOrder = 'lastModifiedDesc';
+  galleryQuery.pageNumber = 1;
+  await loadGalleryImages();
+}
+
+async function handleGalleryPageChange(page: TablePaginationConfig) {
+  galleryQuery.pageNumber = page.current || 1;
+  galleryQuery.pageSize = page.pageSize || 12;
+  await loadGalleryImages();
+}
+
+function handleGallerySelectConfirm() {
+  if (!selectedGalleryImageUrl.value) {
+    message.warning('请选择一张图库图片');
+    return;
+  }
+
+  if (galleryTarget.value === 'create') {
+    formModel.cover = selectedGalleryImageUrl.value;
+    pendingCoverImage.value = null;
+    formRef.value?.validateFields(['cover']).catch(() => undefined);
+  } else {
+    editFormModel.cover = selectedGalleryImageUrl.value;
+    pendingEditCoverImage.value = null;
+    editFormRef.value?.validateFields(['cover']).catch(() => undefined);
+  }
+
+  gallerySelectorVisible.value = false;
+}
+
+function formatImageSize(size: number) {
+  if (size < 1024) return `${size} B`;
+  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KiB`;
+  return `${(size / 1024 / 1024).toFixed(2)} MiB`;
+}
 async function handleSubmit() {
   await formRef.value?.validate();
   formSubmitLoading.value = true;
@@ -374,15 +498,20 @@ function moveCatalogItem(list: AdminColumnCatalogItem[], index: number, directio
   const [item] = list.splice(index, 1);
   list.splice(targetIndex, 0, item);
 }
+function normalizeCatalogId(id: string) {
+  return /^\d+$/.test(id) ? id : '0';
+}
 function normalizeCatalogForSubmit() {
   return catalogItems.value.map((parent, parentIndex) => ({
     ...parent,
+    id: normalizeCatalogId(parent.id),
     title: parent.title.trim(),
     articleId: '0',
     level: 1,
     sort: parentIndex + 1,
     children: parent.children.map((child, childIndex) => ({
       ...child,
+      id: normalizeCatalogId(child.id),
       title: child.title.trim(),
       articleId: child.articleId || '0',
       level: 2,
@@ -604,15 +733,18 @@ onMounted(() => loadData());
           <AInput v-model:value="formModel.title" allow-clear show-count :maxlength="20" placeholder="请输入专栏标题" />
         </AFormItem>
         <AFormItem label="封面" name="cover">
-          <label class="upload-preview">
-            <input type="file" accept="image/*" style="display:none" @change="handleCoverInputChange" />
-            <img v-if="formModel.cover" :src="formModel.cover" class="upload-image" alt="cover" />
-            <div v-else class="upload-placeholder">
-              <PlusOutlined class="upload-icon" />
-              <div class="upload-title">上传封面</div>
-              <div class="upload-hint">建议尺寸 200x120px</div>
-            </div>
-          </label>
+          <div class="cover-picker">
+            <label class="upload-preview">
+              <input type="file" accept="image/*" style="display:none" @change="handleCoverInputChange" />
+              <img v-if="formModel.cover" :src="formModel.cover" class="upload-image" alt="cover" />
+              <div v-else class="upload-placeholder">
+                <PlusOutlined class="upload-icon" />
+                <div class="upload-title">上传封面</div>
+                <div class="upload-hint">建议尺寸 200x120px</div>
+              </div>
+            </label>
+            <AButton html-type="button" @click="openGallerySelector('create')">从 RustFS 图库选择</AButton>
+          </div>
         </AFormItem>
         <AFormItem label="摘要" name="summary">
           <ATextarea v-model:value="formModel.summary" :rows="3" allow-clear show-count :maxlength="30" placeholder="请输入专栏摘要" />
@@ -630,15 +762,18 @@ onMounted(() => loadData());
           <AInput v-model:value="editFormModel.title" allow-clear show-count :maxlength="20" placeholder="请输入专栏标题" />
         </AFormItem>
         <AFormItem label="封面" name="cover">
-          <label class="upload-preview">
-            <input type="file" accept="image/*" style="display:none" @change="handleEditCoverInputChange" />
-            <img v-if="editFormModel.cover" :src="editFormModel.cover" class="upload-image" alt="cover" />
-            <div v-else class="upload-placeholder">
-              <PlusOutlined class="upload-icon" />
-              <div class="upload-title">上传封面</div>
-              <div class="upload-hint">建议尺寸 200x120px</div>
-            </div>
-          </label>
+          <div class="cover-picker">
+            <label class="upload-preview">
+              <input type="file" accept="image/*" style="display:none" @change="handleEditCoverInputChange" />
+              <img v-if="editFormModel.cover" :src="editFormModel.cover" class="upload-image" alt="cover" />
+              <div v-else class="upload-placeholder">
+                <PlusOutlined class="upload-icon" />
+                <div class="upload-title">上传封面</div>
+                <div class="upload-hint">建议尺寸 200x120px</div>
+              </div>
+            </label>
+            <AButton html-type="button" @click="openGallerySelector('edit')">从 RustFS 图库选择</AButton>
+          </div>
         </AFormItem>
         <AFormItem label="摘要" name="summary">
           <ATextarea v-model:value="editFormModel.summary" :rows="3" allow-clear show-count :maxlength="30" placeholder="请输入专栏摘要" />
@@ -711,6 +846,68 @@ onMounted(() => loadData());
           {{ getDeleteButtonText() }}
         </AButton>
       </div>
+    </AModal>
+
+    <AModal v-model:open="gallerySelectorVisible" title="从 RustFS 图库选择封面" :width="galleryModalWidth" @ok="handleGallerySelectConfirm">
+      <ASpace direction="vertical" :size="16" class="w-full">
+        <AForm layout="inline" class="gallery-filter-form">
+          <AFormItem label="桶">
+            <ASelect
+              v-model:value="galleryQuery.bucketName"
+              class="gallery-bucket-select"
+              placeholder="请选择桶"
+              :options="galleryBuckets.map(item => ({ label: item.name, value: item.name }))"
+              @change="handleGalleryBucketChange"
+            />
+          </AFormItem>
+          <AFormItem label="名称">
+            <AInput v-model:value="galleryQuery.fileName" allow-clear placeholder="搜索图片名称" @press-enter="handleGallerySearch" />
+          </AFormItem>
+          <AFormItem label="排序">
+            <ASelect v-model:value="galleryQuery.sortOrder" class="gallery-sort-select" @change="handleGallerySearch">
+              <ASelectOption value="lastModifiedDesc">时间倒序</ASelectOption>
+              <ASelectOption value="lastModifiedAsc">时间正序</ASelectOption>
+              <ASelectOption value="nameAsc">名称 A-Z</ASelectOption>
+              <ASelectOption value="nameDesc">名称 Z-A</ASelectOption>
+            </ASelect>
+          </AFormItem>
+          <AFormItem>
+            <ASpace>
+              <AButton type="primary" :loading="galleryLoading" @click="handleGallerySearch">搜索</AButton>
+              <AButton @click="handleGalleryReset">重置</AButton>
+            </ASpace>
+          </AFormItem>
+        </AForm>
+
+        <ASpin :spinning="galleryLoading">
+          <AEmpty v-if="!galleryImages.length" description="暂无图片" />
+          <div v-else class="gallery-grid">
+            <button
+              v-for="image in galleryImages"
+              :key="image.url"
+              type="button"
+              class="gallery-image-card"
+              :class="{ active: selectedGalleryImageUrl === image.url }"
+              @click="selectedGalleryImageUrl = image.url"
+            >
+              <img :src="image.url" :alt="image.fileName" />
+              <span class="gallery-image-mask">
+                <span class="gallery-image-name" :title="image.fileName">{{ image.fileName }}</span>
+                <span class="gallery-image-meta">{{ formatImageSize(image.size) }}</span>
+                <span class="gallery-image-meta">{{ image.lastModified || '-' }}</span>
+              </span>
+            </button>
+          </div>
+        </ASpin>
+
+        <div class="flex justify-end">
+          <APagination
+            v-bind="galleryPagination"
+            @change="(page, pageSize) => handleGalleryPageChange({ current: page, pageSize })"
+            @show-size-change="(page, pageSize) => handleGalleryPageChange({ current: page, pageSize })"
+          />
+        </div>
+      </ASpace>
     </AModal>
 
     <AModal v-model:open="catalogModalVisible" title="编辑目录" :width="wideModalWidth" @ok="handleCatalogSubmit">
@@ -851,6 +1048,12 @@ onMounted(() => loadData());
   border-radius: 8px;
   background: rgb(var(--base-text-color) / 3%);
 }
+.cover-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
 .upload-preview {
   position: relative;
   width: 220px;
@@ -903,6 +1106,75 @@ onMounted(() => loadData());
   margin-top: 4px;
   font-size: 12px;
   color: rgb(var(--base-text-color) / 45%);
+}
+.gallery-filter-form {
+  row-gap: 12px;
+}
+.gallery-bucket-select {
+  min-width: 180px;
+}
+.gallery-sort-select {
+  min-width: 140px;
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  max-height: min(56vh, 520px);
+  overflow-y: auto;
+  padding: 2px 4px 4px 2px;
+}
+.gallery-image-card {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  aspect-ratio: 16 / 10;
+  background: rgb(var(--base-text-color) / 5%);
+  text-align: left;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.gallery-image-card.active {
+  border-color: rgb(var(--primary-color));
+  box-shadow: 0 8px 22px rgb(var(--primary-color) / 20%);
+}
+.gallery-image-card:hover {
+  transform: translateY(-1px);
+}
+.gallery-image-card img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+.gallery-image-mask {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 18px 10px 8px;
+  color: #fff;
+  background: linear-gradient(180deg, transparent, rgb(15 23 42 / 82%));
+}
+.gallery-image-name {
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gallery-image-meta {
+  overflow: hidden;
+  font-size: 11px;
+  opacity: 0.82;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 :global(html:not(.dark)) .delete-info {
   border: 1px solid #ffccc7;

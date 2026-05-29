@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import { useTheme } from '@/composables/useTheme';
-import snakeLightSvg from '@/assets/blog/surfer/author/svg/snake-Light.svg';
+import { computed, ref } from 'vue';
+import { GithubOutlined, MailOutlined, QqOutlined, WechatOutlined } from '@ant-design/icons-vue';
+import { useThemeStore } from '@/store/system/theme';
 import siteProjectIcon1 from '@/assets/blog/surfer/author/img/i1.png';
 import siteProjectIcon2 from '@/assets/blog/surfer/author/img/i2.png';
 import siteProjectIcon3 from '@/assets/blog/surfer/author/img/i3.png';
@@ -14,902 +14,534 @@ import sponsorImg from '@/assets/blog/surfer/author/img/WeixinSponsor.jpg';
 
 defineOptions({ name: 'SurferAuthorPage' });
 
-const isDesktop = ref(false); // 默认不是桌面端
-const isDarkMode = ref(false); // 控制是否是暗黑模式
-const themeIcon = ref(snakeLightSvg); // 主题图标
-const showModal = ref<boolean>(false); // qq弹框
-const popPicture = ref(''); // 弹框图片
+type Showcase = { title: string; desc: string; img: string; link: string; type: '站点' | '项目' };
+type ContactType = 'qq' | 'wechat' | 'sponsor';
 
-// 使用统一的主题管理
-const { isDark, darkSwitch, toggleDark } = useTheme();
+const themeStore = useThemeStore();
+const pageClass = computed(() => ({ dark: themeStore.darkMode }));
+const modalOpen = ref(false);
+const modalImage = ref('');
 
-// 网站
-const site = ref([
-  { title: "MintBlogV2", introduce: "基于.Net10+Vue3程序员菜鲲的个人博客", img: siteProjectIcon1, link: "https://www.yangmufa.cn" },
-  { title: "MintJilehe", introduce: "基于JavaScript的鸡乐盒演示站", img: siteProjectIcon5, link: "https://jilehe.yangmufa.cn" },
-  { title: "MintAuthor(本页)", introduce: "基于Vue3的程序员在线简历演示站", img: siteProjectIcon6, link: "#" },
-]);
-// 项目
-const project = ref([
-  { title: "MintBlogV2", img: siteProjectIcon4, link: "https://github.com/YangMufa/Mint.Blog",introduce: "基于.Net10+PostgreSql18+Vue3的博客项目, 内置后台管理、权限管理、代码生成、资源导航、技术百科等模块",  },
-  { title: "MintAuthor", img: siteProjectIcon3, link: "https://github.com/YangMufa/MintAuthor",introduce: "炫酷唯美的 程序员专属 个人简介,采用TypeScript5 + Vite6 + Axios2 + Vue3 + NextJs15 + AntDesign5 + SCSS2",  },
-  { title: "MintJilehe", img: siteProjectIcon2, link: "https://github.com/YangMufa/MintJilehe",introduce: "唱、跳、rap、篮球,基于JavaScript + HTML5 + CSS3",  },
-]);
+const profileTags = ['C#.Net', 'Vue3', 'Full Stack', 'Blog', 'Agent', '骑行', '旅者'];
+const stats = [
+  { label: '主栈', value: 'C# / Vue' },
+  { label: '方向', value: 'B/S 全栈' },
+  { label: '坐标', value: 'Guangzhou' }
+];
+const timelines = [
+  { time: '2026.06', title: 'Mint.Blog V2 上线', desc: '.Net + Vue3 构建的新版本博客，合并旧版分支并完善后台能力。' },
+  { time: '2024.12', title: 'Mint.Blog V1 上线', desc: '基于 Java + Vue3 的个人博客。' },
+  { time: '2023.06', title: '工业自动化软件开发', desc: '参与新能源客户相关业务的软件代码编写与交付。' },
+  { time: '2022.06', title: '系统学习与沉淀', desc: '重新整理知识体系，持续补齐工程化和全栈能力。' },
+];
+const showcases: Showcase[] = [
+  {
+    type: '站点',
+    title: 'MintBlogV2',
+    desc: '基于 .Net10 + Vue3 的个人博客。',
+    img: siteProjectIcon1,
+    link: 'https://www.yangmufa.cn'
+  },
+];
+const skills = ['.Net', 'PostgreSQL', 'Vue3', 'TypeScript', 'Ant Design Vue', 'SCSS', 'Vite', 'RESTful API'];
+const modalImages: Record<ContactType, string> = { qq: qqImg, wechat: weixinImg, sponsor: sponsorImg };
 
-// 监听主题设定的值如果发生变化则动态设定对应的class
-const themeClass = computed(() => {
-  // return  isDarkMode.value ? "dark" : "light";
-  return darkSwitch.value ? 'dark' : 'light';
-});
-
-// 点击qq或打赏图标的回调
-const showModalHandle = (img: string) => {
-  if (img == 'qq') {
-    popPicture.value = qqImg;
-  }
-  if (img == 'weixin') {
-    popPicture.value = weixinImg;
-  }
-  if (img == 'sponsor') {
-    popPicture.value = sponsorImg;
-  }
-  showModal.value = true;
-};
-
-// 检查窗口是否大于992,并设定到isDesktop
-const checkIfDesktop = () => {
-  // 992px 作为桌面端的标准
-  isDesktop.value = window.innerWidth >= 992;
-};
-
-onMounted(() => {
-  // 页面加载时检测屏幕尺寸
-  checkIfDesktop();
-  // 监听窗口变化
-  window.addEventListener('resize', checkIfDesktop);
-  // 第一次加载或刷新后重新从localStore获取黑/白天设定
-  isDarkMode.value = localStorage.getItem('theme') === 'dark';
-});
-
-onBeforeUnmount(() => {
-  // 移除事件监听
-  window.removeEventListener('resize', checkIfDesktop);
-});
+function openContact(type: ContactType) {
+  modalImage.value = modalImages[type];
+  modalOpen.value = true;
+}
 </script>
 
 <template>
-  <div class="home-page">
-    <ALayout :class="themeClass">
-      <ALayoutContent>
-        <ARow :gutter="16">
-          <!-- 第一列：占5份，手机端隐藏 -->
-          <a-col v-if="isDesktop" class="layout-col-left" :span="5" :xs="0" :sm="0" :md="5" :lg="5">
-            <div class="head-portrait">
-              <img style="position: absolute;top:-15%;left:-10%;width: 120%; aspect-ratio: 1/1;" src="@/assets/blog/surfer/author/img/HeadPortraitKuang.png" alt="" />
-            </div>
-            <div class="left-div left-des">
-              <div class="left-des-item">
-                <img src="@/assets/blog/surfer/author/svg/location.svg" alt="" />
-                China-Guangzhou
+  <main class="author-page mx-auto max-w-screen-xl px-4 py-6 pb-12 md:px-6 md:py-8" :class="pageClass">
+    <section class="author-hero">
+      <div class="hero-avatar-wrap">
+        <div class="hero-avatar"></div>
+      </div>
+      <div class="hero-content">
+        <p class="eyebrow">About Author</p>
+        <h1>
+          你好，我是
+          <span>程序员-杨工子</span>
+        </h1>
+        <p class="hero-desc">
+          练习编程三年半，喜欢 CV、Tab、Agent。主要关注 C#.Net、Vue3 与 B/S 全栈开发，也把技术、生活和思考记录在 Mint
+          Blog。
+        </p>
+        <div class="tag-list">
+          <span v-for="tag in profileTags" :key="tag"># {{ tag }}</span>
+        </div>
+        <div class="contact-list">
+          <APopover trigger="click">
+            <template #content>
+              <AButton type="link" href="https://github.com/DevCaikun">Github</AButton>
+              <AButton type="link" href="https://gitee.com/DevCaikun">Gitee</AButton>
+            </template>
+            <button class="contact-btn">
+              <GithubOutlined />
+              Git
+            </button>
+          </APopover>
+          <APopover title="网易邮箱" trigger="click">
+            <template #content><AButton type="link" href="https://mail.163.com">yangmufa@163.com</AButton></template>
+            <button class="contact-btn">
+              <MailOutlined />
+              Mail
+            </button>
+          </APopover>
+          <button class="contact-btn" @click="openContact('qq')">
+            <QqOutlined />
+            QQ
+          </button>
+          <button class="contact-btn" @click="openContact('wechat')">
+            <WechatOutlined />
+            微信
+          </button>
+          <button class="contact-btn primary" @click="openContact('sponsor')">赞助</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="stat-grid">
+      <div v-for="item in stats" :key="item.label" class="stat-card">
+        <span>{{ item.label }}</span>
+        <strong>{{ item.value }}</strong>
+      </div>
+    </section>
+
+    <ARow :gutter="[{ xs: 0, sm: 16, md: 28 }, 28]">
+      <ACol :xs="24" :lg="16">
+        <section class="panel">
+          <div class="section-title">
+            <span></span>
+            <h2>站点与项目</h2>
+          </div>
+          <div class="showcase-grid">
+            <a
+              v-for="item in showcases"
+              :key="item.title + item.type"
+              class="showcase-card"
+              :href="item.link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img :src="item.img" :alt="item.title" />
+              <div>
+                <small>{{ item.type }}</small>
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.desc }}</p>
               </div>
-              <div class="left-des-item">
-                <img src="@/assets/blog/surfer/author/svg/briefcase.svg" alt="" />
-                Technology Ltd.
-              </div>
-            </div>
-            <div class="left-div left-tag">
-              <div class="left-tag-item">网瘾</div>
-              <div class="left-tag-item">小学生</div>
-              <div class="left-tag-item">动漫</div>
-              <div class="left-tag-item">《三体》</div>
-              <div class="left-tag-item">Coding</div>
-              <div class="left-tag-item">旅者</div>
-              <div class="left-tag-item">骑行</div>
-            </div>
-            <div class="left-div left-time">
-              <ul class="left-time-line">
-                <li>
-                  <div className="focus"></div>
-                  <div>
-                    <a className="link-text" href="#">Mint.Blog-V2<br/>：使用.Net+Vue3构建的博客网站2.0版本上线,同时v1版本并入v2仓库分支</a>
-                  </div>
-                  <div>：2026.6</div>
-                </li>
-                <li>
-                  <div className="focus"></div>
-                  <div>
-                    <a className="link-text" href="#">MintAuthor<br/>：基于Vue3的程序员在线简历上线开源</a>
-                  </div>
-                  <div>：2024.12</div>
-                </li>
-                <li>
-                  <div className="focus"></div>
-                  <div>
-                    <a className="link-text" href="#">加入广州XXX集团工业自动化领域<br/>：负责某新能源客户软件代码编写</a>
-                  </div>
-                  <div>：2023.6</div>
-                </li>
-                <li>
-                  <div className="focus"></div>
-                  <div>
-                    <a className="link-text" href="#">捡起了碎的一地的IT知识</a>
-                  </div>
-                  <div>：2023.2</div>
-                </li>
-                <li>
-                  <div className="focus"></div>
-                  <div>
-                    <a className="link-text" href="#">离职出来后洗心革面,决定专心学习巩固专业技能</a>
-                  </div>
-                  <div>：2022.6</div>
-                </li>
-                <li>
-                  <div className="focus"></div>
-                  <div>
-                    <a className="link-text" href="#">MintBlog-V1<br/>使用Java8+Vue3构建的博客网站1.0版本上线</a>
-                  </div>
-                  <div>：2021.9</div>
-                </li>
-                <li>
-                  <div className="focus"></div>
-                  <div>
-                    <a className="link-text" href="#">加入贵阳XX科技集团<br/>：负责某省东\南部某项业务的售后和运营</a>
-                  </div>
-                  <div>：2020.12</div>
-                </li>
-              </ul>
-            </div>
-          </a-col>
-          <!-- 第二列：占19份，手机和电脑端都显示 -->
-          <ACol class="layout-col-right" :span="19" :xs="24" :sm="24" :md="19" :lg="19">
-            <AModal v-model:open="showModal" centered :footer="null" close-icon="" title="" width="50">
-              <img :src="popPicture" alt="" style="max-width: 200px; max-height: 350px; margin: 20px" />
-            </AModal>
-            <div v-if="!isDesktop" class="index-head-portrait">
-              <img
-                style="position: absolute; top: -15%; left: -10%; width: 120%; aspect-ratio: 1/1"
-                src="@/assets/blog/surfer/author/img/HeadPortraitKuang.png"
-                alt=""
-              />
-            </div>
-            <div class="welcome">
-              Hello&nbsp;I'&nbsp;m
-              <span class="gradientText">杨工子</span>
-              <h6>练习编程两年半、喜欢CV、Tab、Agent 。</h6>
-            </div>
-            <div class="description">
-              👦
-              <span class="purpleText">C#.Net</span>
-              &nbsp; B/S&nbsp;
-              <span class="purpleText">Full Stack</span>
-              &nbsp; Developer
-            </div>
-            <div class="description">
-              📝 The only way to achieve greatness is to
-              <span class="purpleText textBackground">love</span>
-              and
-              <span class="purpleText textBackground">persevere</span>
-              in what you do.
-            </div>
-            <div class="iconContainer">
-              <APopover title="" trigger="click">
-                <template #content>
-                  <AButton link type="link" href="https://gitee.com/DevCaikun">Gitee</AButton>
-                  <br />
-                  <AButton link type="link" href="https://github.com/DevCaikun">Github</AButton>
-                </template>
-                <div class="iconItem">
-                  <img src="@/assets/blog/surfer/author/svg/github.svg" alt="" />
-                  <div class="iconTip">Git</div>
-                </div>
-              </APopover>
-              <APopover title="网易邮箱" trigger="click">
-                <template #content>
-                  <AButton link type="link" href="https://mail.163.com">yangmufa@163.com</AButton>
-                </template>
-                <div class="iconItem">
-                  <img src="@/assets/blog/surfer/author/svg/mail.svg" alt="" />
-                  <div class="iconTip">Mail</div>
-                </div>
-              </APopover>
-              <a class="iconItem" href="javascript:void(0)" @click="showModalHandle('sponsor')">
-                <img src="@/assets/blog/surfer/author/svg/sponsor.svg" alt="" />
-                <div class="iconTip">赞助</div>
-              </a>
-              <a class="iconItem" href="javascript:void(0)" @click="showModalHandle('qq')">
-                <img src="@/assets/blog/surfer/author/svg/qq.svg" alt="" />
-                <div class="iconTip">QQ</div>
-              </a>
-              <a class="iconItem" href="javascript:void(0)" @click="showModalHandle('weixin')">
-                <img src="@/assets/blog/surfer/author/svg/wechat.svg" alt="" />
-                <div class="iconTip">微信</div>
-              </a>
-              <!--              <a class="switch" href="javascript:void(0)">-->
-              <!--                <a-switch v-model:checked="isDarkMode" @change="toggleTheme" checked-children="开" un-checked-children="关" />-->
-              <!--                <a-switch v-model:checked="darkSwitch" @change="toggleTheme" checked-children="开" un-checked-children="关" />-->
-              <!--              </a>-->
-            </div>
-            <div class="tanChiShe">
-              <img :src="themeIcon" alt="" />
-            </div>
-            <div class="title">
-              <img src="@/assets/blog/surfer/author/svg/site.svg" alt="" />
-              Site
-            </div>
-            <div class="projectList">
-              <a
-                v-for="(siteData, index) in site"
-                :key="index"
-                class="projectItem a"
-                target="_blank"
-                :href="siteData.link"
-              >
-                <div class="projectItemLeft">
-                  <h1>{{ siteData.title }}</h1>
-                  <p>{{ siteData.introduce }}</p>
-                </div>
-                <div class="projectItemRight">
-                  <img :src="siteData.img.toString()" alt="" />
-                </div>
-              </a>
-            </div>
-            <div class="title">
-              <img src="@/assets/blog/surfer/author/svg/project.svg" alt="" />
-              Project
-            </div>
-            <div class="projectList">
-              <a
-                v-for="(projectData, index) in project"
-                :key="index"
-                class="projectItem b"
-                target="_blank"
-                :href="projectData.link"
-              >
-                <div class="projectItemLeft">
-                  <h1>{{ projectData.title }}</h1>
-                  <p>{{ projectData.introduce }}</p>
-                </div>
-                <div class="projectItemRight">
-                  <img :src="projectData.img.toString()" alt="" />
-                </div>
-              </a>
-            </div>
-            <div class="title">
-              <img src="@/assets/blog/surfer/author/svg/skills.svg" alt="" />
-              Skills
-            </div>
-            <div class="skill">
-              <img class="skillPcImg" src="@/assets/blog/surfer/author/svg/skillPc.svg" alt="" srcset="" />
-              <img class="skillWapImg" src="@/assets/blog/surfer/author/svg/skillWap.svg" alt="" srcset="" />
-            </div>
-          </ACol>
-        </ARow>
-      </ALayoutContent>
-    </ALayout>
-  </div>
+            </a>
+          </div>
+        </section>
+      </ACol>
+      <ACol :xs="24" :lg="8">
+        <section class="panel sticky-panel">
+          <div class="section-title">
+            <span></span>
+            <h2>成长记录</h2>
+          </div>
+          <ol class="timeline">
+            <li v-for="item in timelines" :key="item.time">
+              <time>{{ item.time }}</time>
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.desc }}</p>
+            </li>
+          </ol>
+        </section>
+      </ACol>
+    </ARow>
+
+    <section class="panel skill-panel">
+      <div class="section-title">
+        <span></span>
+        <h2>技能关键词</h2>
+      </div>
+      <div class="skill-list">
+        <span v-for="skill in skills" :key="skill">{{ skill }}</span>
+      </div>
+    </section>
+
+    <AModal v-model:open="modalOpen" centered :footer="null" title="" width="300px">
+      <img class="modal-image" :src="modalImage" alt="联系二维码" />
+    </AModal>
+  </main>
 </template>
 
 <style scoped lang="scss">
-@font-face {
-  font-family: 'a';
-  /*中文字体*/
-  src: url(@/assets/blog/surfer/author/fonts/Ubuntu-Regular.ttf);
-  font-display: swap;
+.author-page {
+  color: #0d3d2d;
 }
-@font-face {
-  font-family: 'b';
-  src: url(@/assets/blog/surfer/author/fonts/Ubuntu-Regular.ttf);
-  font-display: swap;
+.author-hero,
+.panel,
+.stat-card {
+  border: 1px solid rgb(62 207 154 / 50%);
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 4px 24px rgb(0 0 0 / 6%);
 }
-@font-face {
-  font-family: 'title';
-  /*英文字体*/
-  src: url(@/assets/blog/surfer/author/fonts/Pacifico-Regular.ttf);
-  font-display: swap;
+.author-hero {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 28px;
+  align-items: center;
+  padding: 34px;
+  overflow: hidden;
+  position: relative;
 }
-
-/* 默认白天模式 */
-.light {
-  background-color: rgba(255, 255, 255, 0.1);
+.author-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 8% 12%, rgb(62 207 154 / 16%), transparent 34%);
+  pointer-events: none;
+}
+.hero-avatar-wrap,
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+.hero-avatar {
+  width: 188px;
+  aspect-ratio: 1;
+  border-radius: 36px;
+  background: url('@/assets/blog/surfer/author/img/HeadPortrait.jpg') center/cover;
+  box-shadow: 0 18px 42px rgb(62 207 154 / 18%);
+}
+.eyebrow {
+  margin: 0 0 8px;
+  color: #3ecf9a;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 52px);
+  line-height: 1.15;
+  font-weight: 950;
+}
+h1 span {
+  color: #3ecf9a;
+}
+.hero-desc {
+  max-width: 760px;
+  margin: 14px 0 0;
+  color: #60786e;
+  font-size: 15px;
+  line-height: 1.9;
+  font-weight: 600;
+}
+.tag-list,
+.contact-list,
+.skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.tag-list {
+  margin-top: 18px;
+}
+.tag-list span,
+.skill-list span {
+  border-radius: 999px;
+  background: rgb(62 207 154 / 10%);
+  padding: 6px 12px;
+  color: #15956b;
+  font-size: 12px;
+  font-weight: 800;
+}
+.contact-list {
+  margin-top: 22px;
+}
+.contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  border-radius: 999px;
+  background: rgb(62 207 154 / 10%);
+  padding: 0 14px;
+  color: #15956b;
+  font-weight: 800;
+  transition: 0.25s;
+}
+.contact-btn:hover,
+.contact-btn.primary {
+  background: #3ecf9a;
   color: #fff;
+  transform: translateY(-2px);
 }
-/* 黑夜模式 */
-.dark {
-  background-color: rgba(0, 0, 0, 0.7) !important;
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 20px 0 28px;
 }
-
-.home-page {
-  width: 100%;
-  height: 100%;
-  background-image: url('@/assets/blog/surfer/author/background.jpg');
-  background-size: cover;
-  background-position: center;
-  :deep(.ant-layout) {
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background-color: rgb(0, 0, 0, 0.2);
-    background-blend-mode: multiply; //背景混合模式
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(5px);
-    .ant-layout-content {
-      width: 100%;
-      height: 95%;
-      padding: 0 15%;
-      .ant-row {
-        height: 100%;
-        .layout-col-left {
-          margin: 0%;
-          height: 100%;
-          overflow-y: scroll;
-          display: flex;
-          padding: 0 15px;
-          // 左边不会因为右边撑开父元素而一同滚动
-          position: sticky;
-          top: 0;
-          left: 0;
-          align-items: center;
-          flex-direction: column;
-          color: white;
-          .head-portrait {
-            flex-shrink: 0;
-            width: 80%;
-            position: relative;
-            aspect-ratio: 1/1;
-            margin-top: 50px;
-            background-size: cover;
-            border-radius: 50%;
-            background-image: url('@/assets/blog/surfer/author/img/HeadPortrait.jpg');
-          }
-          .left-div {
-            flex-shrink: 0;
-            width: 100%;
-            border-radius: 13px;
-            margin-top: 15px;
-            padding: 20px;
-            background-color: rgb(0, 0, 0, 0.3);
-          }
-          .left-des {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            .left-des-item {
-              display: flex;
-              align-items: center;
-              line-height: 20px;
-              font-size: 15px;
-              margin-bottom: 5px;
-              overflow: hidden;
-              img {
-                width: 26px;
-                height: 26px;
-                fill: var(--fill);
-                font-size: 18px;
-                margin-right: 10px;
-              }
-            }
-          }
-          .left-tag {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            padding: 14px;
-            .left-tag-item {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 28px;
-              margin: 0px 5px 5px 0;
-              padding: 10px;
-              font-size: 13px;
-              border-radius: 111px;
-              background: rgb(27 42 57 / 20%);
-            }
-          }
-          .left-time {
-            .left-time-line {
-              width: 100%;
-              //height: 200px;
-              max-height: 270px;
-              font-size: 13px;
-              padding-left: 8px;
-              scroll-snap-type: y mandatory;
-              overflow-y: scroll;
-              li {
-                list-style: none;
-                position: relative;
-                padding: 15px 0px 0px 15px;
-                border-left: 2px solid #d5d5d5;
-                border-radius: 0;
-                scroll-snap-align: end;
-                color: #ffffff;
-                .focus {
-                  width: 8px;
-                  height: 8px;
-                  border-radius: 22px;
-                  background-color: rgb(255 255 255);
-                  border: 2px solid #fff;
-                  position: absolute;
-                  left: -5px;
-                  top: 50%;
-                }
-                .link-text {
-                  word-wrap: break-word; /* 让长单词在容器边界处换行 */
-                  word-break: break-word; /* 支持国际化文本换行 */
-                  overflow-wrap: break-word; /* 标准化的写法 */
-                  white-space: normal; /* 允许文字换行 */
-                }
-              }
-              //第一个 li 子元素的第一个 .focus 子元素。
-              li:first-child {
-                .focus:first-child {
-                  background-color: #aaffcd;
-                  animation: focus 1.8s ease infinite;
-                }
-              }
-            }
-            //选中 left-time-line 元素的滚动条，并将其隐藏
-            .left-time-line::-webkit-scrollbar {
-              display: none;
-            }
-          }
-        }
-        //滚动条设置为不显示
-        .layout-col-left::-webkit-scrollbar {
-          display: none;
-        }
-        .layout-col-right {
-          height: 100%;
-          padding: 40px 0px;
-          display: flex;
-          flex-direction: column;
-          overflow-y: scroll;
-          color: white;
-          .index-head-portrait {
-            flex-shrink: 0;
-            width: 40%;
-            margin-top: 40px;
-            position: relative;
-            max-width: 200px;
-            aspect-ratio: 1/1;
-            background-size: cover;
-            border-radius: 50%;
-            border: 0.5px solid #ffffff;
-            background-image: url('@/assets/blog/surfer/author/img/HeadPortrait.jpg');
-          }
-          .welcome {
-            font-size: 60px;
-            font-weight: 500;
-            margin: 20px 0;
-            position: relative;
-            .gradientText {
-              //允许背景图像或背景颜色只在文本区域内显示，而不是在整个元素的背景中显示
-              -webkit-background-clip: text;
-              //引入自定义字体名称
-              font-family: 'title';
-              -webkit-text-fill-color: transparent;
-              background-size: 200%;
-              background-position: 0%;
-              animation: backgroundSizeAnimation 10s ease-in-out infinite;
-              //设置背景图像渐变
-              background-image: linear-gradient(120deg, rgb(133, 62, 255), #f76cc6 30%, rgb(255, 255, 255) 60%);
-            }
-            h6 {
-              margin: 0;
-              position: relative;
-              left: 0;
-              right: 0;
-              transform: scaleY(1); /* 垂直翻转文本 */
-              opacity: 0.5; /* 调整透明度以模拟水中倒影效果 */
-              filter: blur(2px); /* 添加模糊效果 */
-            }
-          }
-          .description {
-            font-size: 20px;
-            margin-top: 7px;
-            .purpleText {
-              color: #747bff;
-              font-weight: 800;
-            }
-            .textBackground {
-              font-weight: 800;
-              background: rgb(19, 20, 24, 0.2);
-              border-radius: 5px;
-              font-size: 17px;
-              margin: 0 3px;
-              padding: 2px 4px;
-            }
-          }
-          .iconContainer {
-            width: 100%;
-            height: auto;
-            display: flex;
-            align-items: center;
-            margin-top: 40px;
-            flex-wrap: wrap;
-            justify-content: start;
-            .iconItem {
-              width: 49px;
-              height: 43px;
-              box-sizing: border-box;
-              border-radius: 7px;
-              display: flex;
-              margin-left: 16px;
-              margin-bottom: 5px;
-              backdrop-filter: blur(0px);
-              background: rgba(249, 250, 251, 0.2);
-              align-items: center;
-              justify-content: center;
-              transition:
-                width 0.3s ease,
-                opacity 0.3s ease,
-                transform 0.3s ease;
-              flex-shrink: 0;
-              cursor: pointer;
-              img {
-                width: 29px;
-                height: 29px;
-                fill: #ffffff;
-                font-size: 22px;
-                margin-right: 3px;
-              }
-              .iconTip {
-                white-space: nowrap;
-                display: none;
-              }
-            }
-            .iconItem:hover {
-              width: 85px;
-              transform: translateY(-2px);
-              background: rgba(249, 250, 251, 0.2);
-            }
-            .iconItem:hover .iconTip {
-              display: block;
-            }
-            .switch {
-              width: 49px;
-              height: 43px;
-              box-sizing: border-box;
-              border-radius: 7px;
-              display: flex;
-              margin-left: 16px;
-              margin-bottom: 5px;
-              backdrop-filter: blur(0px);
-              background: rgba(249, 250, 251, 0.2);
-              align-items: center;
-              justify-content: center;
-              transition:
-                width 0.3s ease,
-                opacity 0.3s ease,
-                transform 0.3s ease;
-              flex-shrink: 0;
-              cursor: pointer;
-              .ant-switch-checked {
-                display: flex;
-                align-items: center;
-                .ant-switch-inner {
-                  text-align: center;
-                }
-              }
-            }
-            .switch:hover {
-              width: 55px;
-              background: rgba(249, 250, 251, 0.2);
-            }
-          }
-          .iconContainer::-webkit-scrollbar {
-            display: none;
-          }
-          .tanChiShe {
-            width: 99%;
-            img {
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-            }
-          }
-
-          .title {
-            display: flex;
-            align-items: center;
-            font-size: 26px;
-            font-weight: 800;
-            margin: 20px 0;
-            transition: transform 0.4s ease;
-            img {
-              margin-right: 8px;
-              height: 26px;
-              width: 26px;
-              fill: #ffffff;
-            }
-          }
-          .title:hover {
-            transform: translateY(-5px);
-          }
-          .projectList {
-            width: 100%;
-            height: auto;
-            display: flex; // 启用 Flexbox 布局
-            flex-wrap: wrap;
-            //justify-content: start;
-            //justify-content: space-between;
-            .child {
-              flex: 1; // 每个子元素平分父元素的宽度
-            }
-            .projectItem {
-              width: calc(25% - 5px);
-              margin: 5px 5px;
-              border-radius: 8px;
-              padding: 15px;
-              display: flex;
-              background-color: rgba(249, 250, 251, 0.22);
-              backdrop-filter: blur(0px);
-              -webkit-backdrop-filter: blur(0px);
-              transition:
-                opacity 0.5s ease,
-                background-color 0.2s ease,
-                border 0.2s ease,
-                transform 0.3s ease;
-              .projectItemLeft {
-                transition: width 0.4s ease;
-                width: 80%;
-                p {
-                  font-size: 12px;
-                  margin-top: 15px;
-                  color: rgb(228, 228, 228);
-                  word-wrap: break-word; /* 让长单词在容器边界处换行 */
-                  word-break: break-word; /* 支持国际化文本换行 */
-                  overflow-wrap: break-word; /* 标准化的写法 */
-                  white-space: normal; /* 允许文字换行 */
-                }
-                h1 {
-                  font-weight: normal;
-                  font-size: 16px;
-                  margin: 0px;
-
-                  transition: font-size 0.4s ease;
-                  color: rgb(255, 255, 255);
-                }
-              }
-              .projectItemRight {
-                overflow: hidden;
-                transition: width 0.4s ease;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 20%;
-                img {
-                  height: 39px;
-                  width: 39px;
-                }
-              }
-            }
-            .projectItem.pressed {
-              transform: scale(0.9);
-              /* 缩小到原来的0.9倍 */
-              background-color: rgb(19, 23, 27);
-            }
-            .projectItem:hover {
-              box-shadow: 0 8px 16px -4px #2c2d300c;
-              transform: translateY(-2px);
-              .projectItemLeft {
-                width: 100%;
-              }
-              .projectItemRight {
-                width: 0%;
-                img {
-                  transform: rotate(40deg);
-                }
-              }
-              h1 {
-                font-size: 18px;
-              }
-            }
-          }
-          .skill {
-            padding: 5px 5px 5px 5px;
-            width: 100%;
-            .skillPcImg {
-              width: 100%;
-              display: block !important;
-            }
-            .skillWapImg {
-              display: none !important;
-            }
-          }
-        }
-      }
-    }
-  }
+.stat-card {
+  padding: 18px 22px;
 }
-
-@media (max-width: 991px) {
-  :deep(.ant-layout) {
-    .ant-layout-content {
-      padding: 0 5% !important;
-      .ant-row {
-        height: 100%;
-        .layout-col-left {
-          .head-portrait {
-          }
-          .left-div {
-          }
-          .left-des {
-            .left-des-item {
-              img {
-              }
-            }
-          }
-          .left-tag {
-            .left-tag-item {
-            }
-          }
-          .left-time {
-            .left-time-line {
-              li {
-                .focus {
-                }
-              }
-              //第一个 li 子元素的第一个 .focus 子元素。
-              li:first-child {
-                .focus:first-child {
-                  background-color: #aaffcd;
-                  animation: focus 1.8s ease infinite;
-                }
-              }
-            }
-            //选中 left-time-line 元素的滚动条，并将其隐藏
-            .left-time-line::-webkit-scrollbar {
-              display: none;
-            }
-          }
-        }
-        //滚动条设置为不显示
-        .layout-col-left::-webkit-scrollbar {
-        }
-        .layout-col-right {
-          padding: 20px 0px !important;
-          .index-head-portrait {
-          }
-          .welcome {
-            font-size: 45px !important;
-            font-weight: 500;
-            .gradientText {
-            }
-            h6 {
-            }
-          }
-          .description {
-            font-size: 18px !important;
-            .purpleText {
-              font-weight: 500;
-            }
-            .textBackground {
-              font-weight: 500;
-              border-radius: 5px;
-              font-size: 17px;
-              margin: 0 3px;
-              padding: 2px 4px;
-            }
-          }
-          .iconContainer {
-            margin-top: 64px !important;
-            .iconItem {
-              margin-left: 16px;
-              img {
-                width: 22px;
-                height: 22px;
-                fill: #ffffff;
-                font-size: 22px;
-                margin-right: 3px;
-              }
-              .iconTip {
-              }
-            }
-            .iconItem:hover {
-            }
-            .iconItem:hover .iconTip {
-            }
-            .switch {
-              margin-left: 16px !important;
-            }
-            .switch:hover {
-            }
-          }
-          .iconContainer::-webkit-scrollbar {
-          }
-          .tanChiShe {
-            img {
-            }
-          }
-
-          .title {
-            font-size: 20px !important;
-            font-weight: 600 !important;
-            margin: 15px 0 !important;
-            img {
-            }
-          }
-          .title:hover {
-          }
-          .projectList {
-            //display: flex;
-            //flex-wrap: wrap;
-            //align-items: center;
-            //justify-content: center;
-            .projectItem {
-              width: calc(46.5% - 0px) !important;
-              padding: 10px !important;
-              .projectItemLeft {
-                h1 {
-                  font-size: 14px !important;
-                }
-                p {
-                  margin: 5px 0px !important;
-                  font-size: 11px !important;
-                }
-              }
-              .projectItemRight {
-                img {
-                  height: 29px !important;
-                  width: 29px !important;
-                }
-              }
-            }
-            .projectItem.pressed {
-            }
-            .projectItem:hover {
-              .projectItemLeft {
-                width: 100%;
-              }
-              .projectItemRight {
-                width: 0%;
-                img {
-                }
-              }
-              h1 {
-                font-size: 18px;
-              }
-            }
-          }
-          .skill {
-            .skillPcImg {
-              display: none !important;
-            }
-            .skillWapImg {
-              display: block !important;
-              width: 100%;
-            }
-          }
-        }
-      }
-    }
-  }
+.stat-card span {
+  display: block;
+  color: #8aa093;
+  font-size: 13px;
+  font-weight: 800;
 }
-
+.stat-card strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 20px;
+}
+.panel {
+  padding: 24px;
+}
+.sticky-panel {
+  position: sticky;
+  top: 18px;
+  display: flex;
+  max-height: calc(100vh - 140px);
+  flex-direction: column;
+}
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.section-title span {
+  width: 10px;
+  height: 28px;
+  border-radius: 999px;
+  background: #3ecf9a;
+  box-shadow: 0 8px 18px rgb(62 207 154 / 28%);
+}
+.section-title h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 950;
+}
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.showcase-card {
+  display: flex;
+  gap: 14px;
+  min-height: 132px;
+  padding: 16px;
+  border: 1px solid rgb(62 207 154 / 22%);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgb(255 255 255 / 96%), rgb(247 255 251 / 92%));
+  transition: 0.25s;
+}
+.showcase-card:hover {
+  transform: translateY(-3px);
+  border-color: rgb(62 207 154 / 50%);
+  box-shadow: 0 16px 36px rgb(62 207 154 / 12%);
+}
+.showcase-card img {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  border-radius: 16px;
+}
+.showcase-card small {
+  color: #3ecf9a;
+  font-size: 12px;
+  font-weight: 900;
+}
+.showcase-card h3 {
+  margin: 4px 0 6px;
+  color: #0d3d2d;
+  font-size: 18px;
+  font-weight: 950;
+}
+.showcase-card p,
+.timeline p {
+  margin: 0;
+  color: #60786e;
+  font-size: 13px;
+  line-height: 1.7;
+  font-weight: 600;
+}
+.timeline {
+  margin: 0;
+  padding: 0 8px 0 10px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(62 207 154 / 45%) transparent;
+}
+.timeline::-webkit-scrollbar {
+  width: 5px;
+}
+.timeline::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgb(62 207 154 / 45%);
+}
+.timeline::-webkit-scrollbar-track {
+  background: transparent;
+}
+.timeline li {
+  position: relative;
+  list-style: none;
+  padding: 0 0 22px 28px;
+}
+.timeline li::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 18px;
+  bottom: -4px;
+  width: 2px;
+  border-radius: 999px;
+  background: rgb(62 207 154 / 24%);
+}
+.timeline li:last-child::after {
+  display: none;
+}
+.timeline li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #3ecf9a;
+  box-shadow: 0 0 0 4px rgb(62 207 154 / 16%);
+}
+.timeline time {
+  color: #3ecf9a;
+  font-size: 12px;
+  font-weight: 900;
+}
+.timeline h3 {
+  margin: 5px 0 6px;
+  font-size: 16px;
+  font-weight: 950;
+}
+.skill-panel {
+  margin-top: 28px;
+}
+.modal-image {
+  display: block;
+  max-width: 220px;
+  max-height: 360px;
+  margin: 12px auto;
+  border-radius: 18px;
+}
 a:hover,
 a:link,
 a:visited,
 a:active,
 a:focus {
+  color: inherit;
   text-decoration: none;
   outline: none;
-  border: none;
-  color: inherit;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
-
-/* 设置滚动条样式 */
-::-webkit-scrollbar {
-  width: 0px;
+.dark .author-hero,
+.dark .panel,
+.dark .stat-card {
+  border-color: rgb(51 65 85);
+  background: rgb(44 51 62 / 88%);
+  box-shadow: 0 18px 52px rgb(83 157 253 / 8%);
 }
-::-webkit-scrollbar-thumb {
-  background-color: var(--main_text_color, #000000);
-  border-radius: 8px;
-  height: 20%;
+.dark {
+  color: #fff;
 }
-::-webkit-scrollbar-track {
-  background-color: var(--main_bg_color, linear-gradient(50deg, #a2d0ff, #ffffff));
+.dark .author-hero::before {
+  background: radial-gradient(circle at 8% 12%, rgb(83 157 253 / 14%), transparent 34%);
+}
+.dark h1 span,
+.dark .eyebrow,
+.dark .section-title h2,
+.dark .timeline time {
+  color: #539dfd;
+}
+.dark .hero-desc,
+.dark .showcase-card p,
+.dark .timeline p,
+.dark .stat-card span {
+  color: #cbd5e1;
+}
+.dark .tag-list span,
+.dark .skill-list span,
+.dark .contact-btn {
+  background: rgb(83 157 253 / 10%);
+  color: #7fb8ff;
+}
+.dark .contact-btn:hover,
+.dark .contact-btn.primary,
+.dark .section-title span {
+  background: #539dfd;
+  color: #fff;
+}
+.dark .showcase-card {
+  border-color: rgb(83 157 253 / 16%);
+  background: linear-gradient(135deg, rgb(30 41 59 / 94%), rgb(15 23 42 / 92%));
+}
+.dark .showcase-card h3 {
+  color: #fff;
+}
+.dark .timeline {
+  scrollbar-color: rgb(83 157 253 / 45%) transparent;
+}
+.dark .timeline::-webkit-scrollbar-thumb {
+  background: rgb(83 157 253 / 45%);
+}
+.dark .timeline li::before {
+  background: #539dfd;
+  box-shadow: 0 0 0 4px rgb(83 157 253 / 16%);
+}
+.dark .timeline li::after {
+  background: rgb(83 157 253 / 24%);
+}
+@media (max-width: 991px) {
+  .author-hero {
+    grid-template-columns: 1fr;
+    padding: 26px;
+  }
+  .hero-avatar {
+    width: 148px;
+    border-radius: 30px;
+  }
+  .stat-grid,
+  .showcase-grid {
+    grid-template-columns: 1fr;
+  }
+  .sticky-panel {
+    position: static;
+    max-height: none;
+  }
+  .timeline {
+    overflow: visible;
+  }
+}
+@media (max-width: 575px) {
+  .author-page {
+    padding-top: 16px;
+  }
+  .author-hero,
+  .panel {
+    border-radius: 24px;
+    padding: 20px;
+  }
+  .stat-grid {
+    gap: 10px;
+  }
+  .stat-card {
+    padding: 14px;
+  }
+  .stat-card strong {
+    font-size: 16px;
+  }
+  .contact-btn {
+    height: 34px;
+    padding: 0 12px;
+  }
 }
 </style>

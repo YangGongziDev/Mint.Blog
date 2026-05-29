@@ -19,6 +19,15 @@ const ERROR_CODE_I18N_MAP: Partial<Record<string, App.I18n.I18nKey>> = {
   forbidden: 'common.noPermission'
 };
 
+const ERROR_CODE_MESSAGE_MAP: Partial<Record<string, string>> = {
+  tag_not_found: '所选标签不存在或已被删除，请重新选择标签',
+  category_not_found: '所选分类不存在或已被删除，请重新选择分类',
+  article_not_found: '文章不存在或已被删除',
+  article_draft_not_found: '草稿不存在或已被删除',
+  file_upload_invalid: '文件上传失败，请检查文件或对象存储配置',
+  file_not_found: '文件不存在或已被删除'
+};
+
 function getApiErrorPayload(error: unknown): ApiErrorBody | null {
   if (typeof error === 'string') {
     return { message: error };
@@ -29,7 +38,7 @@ function getApiErrorPayload(error: unknown): ApiErrorBody | null {
     return axiosError.response?.data ?? null;
   }
 
-  if (error && typeof error === 'object' && ('errorCode' in error || 'message' in error || 'ErrorCode' in error)) {
+  if (error && typeof error === 'object' && ('errorCode' in error || 'message' in error || 'ErrorCode' in error || 'success' in error)) {
     return error as ApiErrorBody;
   }
 
@@ -49,6 +58,11 @@ export function resolveServiceErrorMessage(error: unknown, fallbackKey: App.I18n
   const payload = getApiErrorPayload(error);
   const errorCode = getErrorCode(payload);
   const mappedKey = ERROR_CODE_I18N_MAP[errorCode];
+  const mappedMessage = ERROR_CODE_MESSAGE_MAP[errorCode];
+
+  if (mappedMessage) {
+    return mappedMessage;
+  }
 
   if (mappedKey) {
     return $t(mappedKey);

@@ -2,8 +2,15 @@ HELP.md
 # system
 .DS_Store
 **/.DS_Store
-appsettings.Development.json
-appsettings.json
+
+# Java V1 branch (mint-blog-v1-java)
+/Admin/
+/Front/
+/Blog-Admin/
+/Common/
+/Jwt/
+/Search/
+/Surfer/
 
 ### STS ###
 .apt_generated

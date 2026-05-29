@@ -66,7 +66,7 @@ function getCategoryArticles(pageNo: number) {
 }
 
 function goArticleDetailPage(articleId: number) {
-  router.push(`/blog/surfer/articles/${articleId}`);
+  router.push(`/blog/surfer/article/${articleId}`);
 }
 function goCategoryPage(id: number, name: string) {
   router.push({ path: '/blog/surfer/category', query: { id: String(id), name } });

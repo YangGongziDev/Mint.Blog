@@ -605,7 +605,7 @@ onBeforeUnmount(() => {
         </div>
 
         <div v-show="desktopTocVisible && hasTocHeadings" class="col-span-1 mt-6 hidden md:block">
-          <SurferToc :key="route.query.articleId as string" :header-offset="200" />
+          <SurferToc :key="route.query.articleId as string" :header-offset="150" />
         </div>
       </div>
     </main>

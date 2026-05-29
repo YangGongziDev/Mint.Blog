@@ -5,4 +5,5 @@ public sealed record ManagedImageListQuery(
 	int PageSize = 20,
 	string? BucketName = null,
 	string? FileName = null,
-	bool? Used = null);
+	bool? Used = null,
+	string? SortOrder = null);

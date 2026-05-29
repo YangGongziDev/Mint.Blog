@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Minio;
+using Amazon.Runtime;
+using Amazon.S3;
+using Amazon.S3.Model;
 using Mint.Blog.Application.Abstractions;
 using Mint.Blog.Application.Blog.Article.Commands.CreateArticle;
 using Mint.Blog.Application.Blog.Article.Commands.DeleteArticle;
@@ -104,6 +106,7 @@ using Mint.Blog.Domain.Blog.Tag.Repositories;
 using Mint.Blog.Domain.System.User.Repositories;
 using Mint.Blog.Domain.Blog.Column.Repositories;
 using Mint.Blog.Infrastructure.System.Auth;
+using Mint.Blog.Infrastructure.System.User.BackgroundJobs;
 using Mint.Blog.Infrastructure.Blog.Statistics.BackgroundJobs;
 using Mint.Blog.Infrastructure.Blog.Comment.BackgroundJobs;
 using Mint.Blog.Infrastructure.Blog.Comment.QqUserInfo;
@@ -134,7 +137,7 @@ public static class ServiceCollectionExtensions {
 	public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration){
 		services.Configure<PostgreSqlOptions>(configuration.GetSection(PostgreSqlOptions.SectionName));
 		services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
-		services.Configure<MinioOptions>(configuration.GetSection(MinioOptions.SectionName));
+		services.Configure<RustFsOptions>(configuration.GetSection(RustFsOptions.SectionName));
 		services.Configure<SmtpOptions>(configuration.GetSection(SmtpOptions.SectionName));
 		services.Configure<CommentNotificationOptions>(
 			configuration.GetSection(CommentNotificationOptions.SectionName));
@@ -150,19 +153,21 @@ public static class ServiceCollectionExtensions {
 		services.AddHostedService<CommentNotificationBackgroundService>();
 		services.AddHostedService<ArticleReadTrackingBackgroundService>();
 		services.AddHostedService<PvRecordInitializationBackgroundService>();
-		services.AddSingleton<IMinioClient>(_ => {
-			var minioOptions = configuration.GetSection(MinioOptions.SectionName).Get<MinioOptions>() ?? new MinioOptions();
-			var endpoint = NormalizeMinioEndpoint(minioOptions.Endpoint, out var endpointUsesSsl);
-			if (string.IsNullOrWhiteSpace(endpoint))
-				throw new InvalidOperationException("Minio endpoint is not configured.");
+		services.AddHostedService<UserRefreshTokenCleanupBackgroundService>();
+		services.AddSingleton<IAmazonS3>(_ => {
+			var rustFsOptions = configuration.GetSection(RustFsOptions.SectionName).Get<RustFsOptions>() ?? new RustFsOptions();
+			if (string.IsNullOrWhiteSpace(rustFsOptions.Endpoint))
+				throw new InvalidOperationException("RustFS endpoint is not configured.");
 
-			var builder = new MinioClient()
-				.WithEndpoint(endpoint)
-				.WithCredentials(minioOptions.AccessKey, minioOptions.SecretKey);
+			var serviceUrl = NormalizeRustFsServiceUrl(rustFsOptions.Endpoint, rustFsOptions.UseSsl);
+			var credentials = new BasicAWSCredentials(rustFsOptions.AccessKey, rustFsOptions.SecretKey);
+			var config = new AmazonS3Config {
+				ServiceURL = serviceUrl,
+				ForcePathStyle = true,
+				UseHttp = !serviceUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
+			};
 
-			if (minioOptions.UseSsl || endpointUsesSsl) builder = builder.WithSSL();
-
-			return builder.Build();
+			return new AmazonS3Client(credentials, config);
 		});
 		services.AddScoped<ISqlSugarDbContext, SqlSugarDbContext>();
 		services.AddScoped<IUnitOfWork, SqlSugarUnitOfWork>();
@@ -172,10 +177,10 @@ public static class ServiceCollectionExtensions {
 		services.AddScoped<IAdminCredentialValidator, ConfiguredAdminCredentialValidator>();
 		services.AddScoped<IEmailSender, SmtpEmailSender>();
 		services.AddScoped<ICommentNotificationService, CommentNotificationService>();
-		services.AddScoped<IObjectStorageService, MinioObjectStorageService>();
+		services.AddScoped<IObjectStorageService, RustFsObjectStorageService>();
 		services.AddScoped<IImageUsageService, ImageUsageService>();
 		services.AddScoped<IImageReferenceUpdateService, ImageReferenceUpdateService>();
-		services.AddScoped<IObjectStorageBucketService, MinioBucketService>();
+		services.AddScoped<IObjectStorageBucketService, RustFsBucketService>();
 		services.AddScoped<IManagedImageQueryService, ManagedImageQueryService>();
 		services.AddScoped<StatisticsCommandRepository>();
 
@@ -289,16 +294,13 @@ public static class ServiceCollectionExtensions {
 		return services;
 	}
 
-	private static string NormalizeMinioEndpoint(string endpoint, out bool usesSsl){
-		usesSsl = false;
-		var trimmedEndpoint = endpoint.Trim();
+	private static string NormalizeRustFsServiceUrl(string endpoint, bool useSsl){
+		var trimmedEndpoint = endpoint.Trim().TrimEnd('/');
 		if (string.IsNullOrWhiteSpace(trimmedEndpoint)) return string.Empty;
 
-		if (Uri.TryCreate(trimmedEndpoint, UriKind.Absolute, out var uri)) {
-			usesSsl = string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase);
-			return uri.IsDefaultPort ? uri.Host : $"{uri.Host}:{uri.Port}";
-		}
+		if (Uri.TryCreate(trimmedEndpoint, UriKind.Absolute, out var uri)) return uri.ToString().TrimEnd('/');
 
-		return trimmedEndpoint;
+		var scheme = useSsl ? Uri.UriSchemeHttps : Uri.UriSchemeHttp;
+		return $"{scheme}://{trimmedEndpoint}";
 	}
 }

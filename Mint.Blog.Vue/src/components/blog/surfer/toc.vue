@@ -248,22 +248,26 @@ function getFooterRect(): number | null {
 }
 
 function scrollTocToActive() {
-  if (!tocCardRef.value) return;
-  const wrapper = tocCardRef.value.querySelector('.toc-wrapper') as HTMLElement | null;
-  if (!wrapper) return;
+  nextTick(() => {
+    if (!tocCardRef.value) return;
+    const wrapper = tocCardRef.value.querySelector('.toc-wrapper') as HTMLElement | null;
+    if (!wrapper) return;
 
-  const activeEl = wrapper.querySelector('.active') as HTMLElement | null;
-  if (!activeEl) return;
+    const activeEl = wrapper.querySelector('.active') as HTMLElement | null;
+    if (!activeEl) return;
 
-  const wrapperRect = wrapper.getBoundingClientRect();
-  const activeRect = activeEl.getBoundingClientRect();
-  const itemHeight = activeRect.height || 28;
+    const padding = 12;
+    const activeTop = activeEl.offsetTop;
+    const activeBottom = activeTop + activeEl.offsetHeight;
+    const visibleTop = wrapper.scrollTop;
+    const visibleBottom = visibleTop + wrapper.clientHeight;
 
-  if (activeRect.bottom > wrapperRect.bottom - 4) {
-    wrapper.scrollTop += activeRect.bottom - wrapperRect.bottom + itemHeight + 4;
-  } else if (activeRect.top < wrapperRect.top + 4) {
-    wrapper.scrollTop += activeRect.top - wrapperRect.top - itemHeight - 4;
-  }
+    if (activeBottom > visibleBottom - padding) {
+      wrapper.scrollTo({ top: activeBottom - wrapper.clientHeight + padding, behavior: 'smooth' });
+    } else if (activeTop < visibleTop + padding) {
+      wrapper.scrollTo({ top: Math.max(0, activeTop - padding), behavior: 'smooth' });
+    }
+  });
 }
 
 function unpinToc() {

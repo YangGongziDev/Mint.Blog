@@ -51,7 +51,7 @@ public sealed class UserRefreshTokenRepository(ISqlSugarDbContext dbContext) : I
 			.ExecuteCommandAsync(cancellationToken);
 	}
 
-	public Task DeleteInvalidTokensCreatedBeforeAsync(DateTimeOffset retentionBoundary,
+	public Task<int> DeleteInvalidTokensCreatedBeforeAsync(DateTimeOffset retentionBoundary,
 		CancellationToken cancellationToken = default){
 		return dbContext.Client.Deleteable<UserRefreshTokenDataModel>()
 			.Where(x => (x.IsRevoked == 1 || x.ExpiresAt < DateTimeOffset.UtcNow) && x.CreatedAt < retentionBoundary)

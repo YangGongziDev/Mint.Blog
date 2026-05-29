@@ -119,6 +119,16 @@ const cssVars = computed(() => {
     '--soy-primary-color-opacity3': addColorAlpha(primaryColor, 0.3),
     '--soy-primary-color-opacity4': addColorAlpha(primaryColor, 0.22),
     '--soy-primary-color-opacity5': addColorAlpha(primaryColor, 0.18)
+
+
+    // --soy-primary-color: #646cff;
+    // --soy-primary-color1: #f0f0ff;
+    // --soy-primary-color2: #1e204d;
+    // --soy-primary-color-opacity1: #646cff1a;
+    // --soy-primary-color-opacity2: #646cff26;
+    // --soy-primary-color-opacity3: #646cff4d;
+    // --soy-primary-color-opacity4: #646cff38;
+    // --soy-primary-color-opacity5: #646cff2e;
   };
 });
 
@@ -206,8 +216,7 @@ const ChromeTab = defineComponent({
         'div',
         {
           class: [
-            'relative inline-flex cursor-pointer items-center justify-center gap-[6px] whitespace-nowrap px-[16px] py-[6px] rounded-t-[10px]',
-            { '-mr-[18px]': !componentProps.darkMode },
+            'relative inline-flex cursor-pointer items-center justify-center gap-[6px] whitespace-nowrap px-[16px] py-[6px] -mr-[18px]',
             style['chrome-tab'],
             { [style['chrome-tab_dark']]: componentProps.darkMode },
             { [style['chrome-tab_active']]: componentProps.active },
@@ -215,17 +224,9 @@ const ChromeTab = defineComponent({
           ]
         },
         [
-          !componentProps.darkMode &&
-            h('div', { class: ['pointer-events-none absolute left-0 top-0 h-full w-full -z-[1]', style['chrome-tab__bg']] }, [h(ChromeTabBg)]),
+          h('div', { class: ['pointer-events-none absolute left-0 top-0 h-full w-full -z-[1]', style['chrome-tab__bg']] }, [h(ChromeTabBg)]),
           slots.default?.(),
-          !componentProps.darkMode &&
-            h('div', {
-              class: [
-                'absolute right-[7px] h-[16px] w-[1px] bg-[#1f2225]',
-                style['chrome-tab-divider'],
-                { [style['chrome-tab-divider_hidden']]: componentProps.active }
-              ]
-            })
+          h('div', { class: ['absolute right-[7px] h-[16px] w-[1px] bg-[#1f2225]', style['chrome-tab-divider']] })
         ]
       );
   }
@@ -366,8 +367,7 @@ watch(
   background-color: var(--soy-primary-color-opacity1);
 }
 .button-tab_active_dark {
-  border-color: var(--soy-primary-color-opacity4);
-  background-color: var(--soy-primary-color-opacity1);
+  background-color: var(--soy-primary-color-opacity2);
 }
 .button-tab .svg-close:hover {
   font-size: 12px;
@@ -390,15 +390,8 @@ watch(
 .chrome-tab_active .chrome-tab__bg {
   color: var(--soy-primary-color1);
 }
-.chrome-tab_active_dark {
-  background-color: var(--soy-primary-color-opacity5);
-  box-shadow: inset 0 0 0 1px var(--soy-primary-color-opacity4);
-}
-.chrome-tab_active_dark:hover {
-  background-color: var(--soy-primary-color-opacity5);
-}
 .chrome-tab_active_dark .chrome-tab__bg {
-  color: transparent;
+  color: var(--soy-primary-color2);
 }
 .chrome-tab:hover .chrome-tab__bg {
   color: #dee1e6;
@@ -406,21 +399,11 @@ watch(
 .chrome-tab_active:hover .chrome-tab__bg {
   color: var(--soy-primary-color1);
 }
-.chrome-tab_dark {
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-.chrome-tab_dark:hover {
-  background-color: var(--soy-primary-color-opacity1);
-}
-.chrome-tab_active_dark:hover {
-  color: var(--soy-primary-color);
-  background-color: var(--soy-primary-color-opacity5);
-}
 .chrome-tab_dark:hover .chrome-tab__bg {
-  color: transparent;
+  color: #333333;
 }
 .chrome-tab_active_dark:hover .chrome-tab__bg {
-  color: transparent;
+  color: var(--soy-primary-color2);
 }
 .chrome-tab .svg-close:hover {
   font-size: 12px;
@@ -432,9 +415,6 @@ watch(
 }
 .chrome-tab_dark .svg-close:hover {
   color: #000000;
-}
-.chrome-tab-divider_hidden {
-  opacity: 0;
 }
 .chrome-tab_active .chrome-tab-divider {
   opacity: 0;

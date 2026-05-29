@@ -337,9 +337,21 @@ function openImageUrl(url: string) {
   window.open(url, '_blank');
 }
 
+function resolveArticleHref(articleUrl: string) {
+  return router.resolve(articleUrl).href;
+}
+
+function resolveArticleFullUrl(articleUrl: string) {
+  return new URL(resolveArticleHref(articleUrl), window.location.origin).href;
+}
+
 function openArticleLink(articleUrl: string) {
-  const routePath = router.resolve(articleUrl).href;
-  window.open(routePath, '_blank');
+  window.open(resolveArticleHref(articleUrl), '_blank');
+}
+
+function copyArticleLink(articleUrl: string) {
+  navigator.clipboard.writeText(resolveArticleFullUrl(articleUrl));
+  message.success('完整文章链接已复制');
 }
 
 function openRenameModal(record: ManagedImageListItem) {
@@ -683,7 +695,7 @@ onMounted(async () => {
         <div v-else>
           <div class="mb-2 text-base font-semibold text-red-500">图片存储服务暂时不可用</div>
           <div class="text-sm text-gray-500 dark:text-gray-400">
-            请检查 MinIO 是否正常启动、桶权限和后端配置是否正确。页面已停止加载图片列表，避免显示旧数据。
+            请检查 RustFS 是否正常启动、桶权限和后端配置是否正确。页面已停止加载图片列表，避免显示旧数据。
           </div>
           <AButton class="mt-4" type="primary" @click="onRetryLoadBuckets">重新加载</AButton>
         </div>
@@ -731,15 +743,19 @@ onMounted(async () => {
           </template>
           <template v-else-if="column.key === 'articleLinks'">
             <ASpace v-if="record.referencedArticles.length" direction="vertical" :size="2">
-              <AButton
+              <APopconfirm
                 v-for="article in record.referencedArticles"
                 :key="article.articleId"
-                type="link"
-                size="small"
-                @click="openArticleLink(article.articleUrl)"
+                title="请选择文章链接操作"
+                ok-text="跳转预览"
+                cancel-text="复制链接"
+                @confirm="openArticleLink(article.articleUrl)"
+                @cancel="copyArticleLink(article.articleUrl)"
               >
-                {{ article.articleTitle }}
-              </AButton>
+                <AButton type="link" size="small">
+                  {{ article.articleTitle }}
+                </AButton>
+              </APopconfirm>
             </ASpace>
             <span v-else class="text-gray-400">-</span>
           </template>
@@ -773,7 +789,7 @@ onMounted(async () => {
 
     <AModal
       v-model:open="bucketModalVisible"
-      title="创建 MinIO 桶"
+      title="创建 RustFS 桶"
       :width="bucketModalWidth"
       :confirm-loading="bucketLoading"
       @ok="confirmCreateBucket"

@@ -159,7 +159,7 @@ function goPage(page: number) {
 
 // --------------- navigation ---------------
 function goArticle(id: number) {
-  router.push(`/blog/surfer/articles/${id}`);
+  router.push(`/blog/surfer/article/${id}`);
 }
 function goCategory(id?: number, name?: string) {
   if (id) router.push({ path: '/blog/surfer/category', query: { id: String(id), name } });
@@ -208,11 +208,24 @@ watch(
         <section class="mt-0 space-y-4 md:mt-0">
           <!-- Loading skeleton -->
           <div v-if="loading" class="space-y-4">
-            <div
-              v-for="i in 4"
-              :key="i"
-              class="h-48 animate-pulse rounded-3xl bg-white/80 dark:bg-white/5"
-            ></div>
+            <article v-for="i in 4" :key="i" class="home-skeleton-card">
+              <div class="home-skeleton-cover"></div>
+              <div class="home-skeleton-body">
+                <div class="home-skeleton-line home-skeleton-title"></div>
+                <div class="home-skeleton-line home-skeleton-summary"></div>
+                <div class="home-skeleton-line home-skeleton-summary-short"></div>
+                <div class="home-skeleton-meta">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <div class="home-skeleton-tags">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            </article>
           </div>
 
           <!-- Empty state -->
@@ -370,11 +383,66 @@ watch(
 }
 
 .card,
-.empty-card {
+.empty-card,
+.home-skeleton-card {
   border: 1px solid rgb(62 207 154 / 50%);
   border-radius: 24px;
   background: rgb(255 255 255);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+.home-skeleton-card {
+  display: flex;
+  min-height: 190px;
+  overflow: hidden;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+.home-skeleton-cover {
+  width: 42%;
+  min-width: 42%;
+  background: linear-gradient(135deg, rgb(62 207 154 / 13%), rgb(62 207 154 / 5%));
+  clip-path: polygon(0 0, 90% 0, 100% 100%, 0 100%);
+}
+.home-skeleton-body {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px 32px;
+}
+.home-skeleton-line,
+.home-skeleton-meta span,
+.home-skeleton-tags span {
+  display: block;
+  border-radius: 999px;
+  background: rgb(62 207 154 / 12%);
+}
+.home-skeleton-title {
+  width: min(68%, 360px);
+  height: 26px;
+}
+.home-skeleton-summary {
+  width: 92%;
+  height: 14px;
+}
+.home-skeleton-summary-short {
+  width: 64%;
+  height: 14px;
+}
+.home-skeleton-meta,
+.home-skeleton-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.home-skeleton-meta span {
+  width: 88px;
+  height: 20px;
+}
+.home-skeleton-tags span {
+  width: 64px;
+  height: 24px;
 }
 .empty-card {
   display: flex;
@@ -414,7 +482,8 @@ watch(
   border-color: rgb(62 207 154 / 40%);
 }
 @media (max-width: 639px) {
-  .card {
+  .card,
+  .home-skeleton-card {
     min-height: 154px;
     overflow: visible;
     border-color: rgb(62 207 154 / 30%);
@@ -423,6 +492,40 @@ watch(
       radial-gradient(circle at 6% 0%, rgb(62 207 154 / 9%), transparent 38%),
       linear-gradient(135deg, rgb(255 255 255 / 96%), rgb(247 255 251 / 92%));
     box-shadow: 0 14px 36px rgb(62 207 154 / 10%);
+  }
+
+  .home-skeleton-cover {
+    width: 112px;
+    min-width: 112px;
+    height: 118px;
+    align-self: center;
+    margin: 10px 0 10px 16px;
+    border-radius: 18px;
+    clip-path: none;
+  }
+
+  .home-skeleton-body {
+    gap: 10px;
+    padding: 18px 14px 18px 14px;
+  }
+
+  .home-skeleton-title {
+    width: 82%;
+    height: 22px;
+  }
+
+  .home-skeleton-summary-short,
+  .home-skeleton-tags {
+    display: none;
+  }
+
+  .home-skeleton-meta span {
+    width: 70px;
+    height: 18px;
+  }
+
+  .home-skeleton-meta span:nth-child(3) {
+    display: none;
   }
 
   .card-cover-glow {
@@ -586,10 +689,17 @@ watch(
   color: #fff;
 }
 .dark .card,
-.dark .empty-card {
+.dark .empty-card,
+.dark .home-skeleton-card {
   border-color: rgb(51 65 85);
   background: rgb(44 51 62 / 88%);
   box-shadow: 0 18px 52px rgb(83 157 253 / 8%);
+}
+.dark .home-skeleton-cover,
+.dark .home-skeleton-line,
+.dark .home-skeleton-meta span,
+.dark .home-skeleton-tags span {
+  background: rgb(83 157 253 / 10%);
 }
 .dark .mobile-category-pill {
   background: rgb(83 157 253 / 14%);
