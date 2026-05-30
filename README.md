@@ -22,52 +22,48 @@ mint-blog-v1-java（原 RocBlog 鲲鹏博客）基于 **Java Spring Boot + Vue3*
 
 #### 技术栈
 
-| 层级 | 技术 |
-|------|------|
-| 后端框架 | Spring Boot 2.x |
-| ORM | Spring Data JPA |
-| 数据库 | MySQL |
-| 对象存储 | MinIO |
-| 认证 | Spring Security + JWT |
-| 接口文档 | Knife4j (Swagger) |
-| 前端框架 | Vue 2 + Vue Router + Vuex |
-| UI 组件 | Element UI |
+| 层级 | 技术                        |
+|------|---------------------------|
+| 后端框架 | Spring Boot 2.x           |
+| ORM | Spring Data JPA           |
+| 数据库 | MySQL                     |
+| 对象存储 | MinIO                     |
+| 认证 | Spring Security + JWT     |
+| 接口文档 | Knife4j (Swagger)         |
+| 前端框架 | Vue 3 + Vue Router + Vuex |
+| UI 组件 | Element UI                |
 | 构建工具 | Maven (后端) / Vue CLI (前端) |
 
 #### 项目结构
 
 ```
 mint-blog-v1-java/
-├── Admin/                        # Spring Boot 后端
-│   └── src/main/java/cn/yangmufa/blog/
-│       ├── admin/                # 管理后台模块
-│       └── blog/                 # 博客前台模块
-├── Front/                        # Vue3 前台
-└── Blog-Admin/                   # Vue3 管理后台
-
+├── Admin/                        # 管理后台后端模块
+├── Surfer/                       # 博客前台后端模块
+├── Common/                       # 通用能力模块
+├── Jwt/                          # JWT 认证模块
+├── Search/                       # 站内搜索模块
+├── Vue3/                         # Vue3 + Vite 前端（前台与管理后台）
+├── Docs/                         # 部署文档与数据库脚本
+└── pom.xml                       # Maven 多模块父工程
 ```
 
 #### 本地运行
 
 **后端：**
 ```bash
-cd Admin
-mvn spring-boot:run
+mvn clean install
+mvn -pl Admin spring-boot:run
 ```
 
-**前台：**
+**前端：**
 ```bash
-cd Front
-npm install
-npm run serve
+cd Vue3
+pnpm install
+pnpm dev
 ```
 
-**管理后台：**
-```bash
-cd Blog-Admin
-npm install
-npm run serve
-```
+> 如果未安装 pnpm，也可以根据 `Vue3/package.json` 中的脚本使用 npm 运行，例如 `npm install`、`npm run dev`。
 
 #### 参与贡献
 

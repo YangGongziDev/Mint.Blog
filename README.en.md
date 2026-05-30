@@ -21,51 +21,48 @@ This branch is no longer maintained. Please visit the [main](https://github.com/
 
 #### Tech Stack
 
-| Layer | Technology |
-|------|------|
-| Backend Framework | Spring Boot 2.x |
-| ORM | Spring Data JPA |
-| Database | MySQL |
-| Object Storage | MinIO |
-| Auth | Spring Security + JWT |
-| API Docs | Knife4j (Swagger) |
-| Frontend Framework | Vue 2 + Vue Router + Vuex |
-| UI Components | Element UI |
+| Layer | Technology                           |
+|------|--------------------------------------|
+| Backend Framework | Spring Boot 2.x                      |
+| ORM | Spring Data JPA                      |
+| Database | MySQL                                |
+| Object Storage | MinIO                                |
+| Auth | Spring Security + JWT                |
+| API Docs | Knife4j (Swagger)                    |
+| Frontend Framework | Vue 3 + Vue Router + Vuex            |
+| UI Components | Element UI                           |
 | Build Tool | Maven (backend) / Vue CLI (frontend) |
 
 #### Project Structure
 
 ```
 mint-blog-v1-java/
-├── Admin/                        # Spring Boot backend
-│   └── src/main/java/cn/yangmufa/blog/
-│       ├── admin/                # Admin module
-│       └── blog/                 # Blog front-end module
-├── Front/                        # Vue3 front-end
-└── Blog-Admin/                   # Vue3 admin panel
+├── Admin/                        # Admin backend module
+├── Surfer/                       # Blog frontend backend module
+├── Common/                       # Shared common module
+├── Jwt/                          # JWT authentication module
+├── Search/                       # Site search module
+├── Vue3/                         # Vue3 + Vite frontend (site and admin panel)
+├── Docs/                         # Deployment docs and database scripts
+└── pom.xml                       # Maven multi-module parent project
 ```
 
 #### Local Development
 
 **Backend:**
 ```bash
-cd Admin
-mvn spring-boot:run
+mvn clean install
+mvn -pl Admin spring-boot:run
 ```
 
-**Front-end:**
+**Frontend:**
 ```bash
-cd Front
-npm install
-npm run serve
+cd Vue3
+pnpm install
+pnpm dev
 ```
 
-**Admin Panel:**
-```bash
-cd Blog-Admin
-npm install
-npm run serve
-```
+> If pnpm is not installed, you can also use npm according to the scripts in `Vue3/package.json`, for example `npm install` and `npm run dev`.
 
 #### Contribution
 
