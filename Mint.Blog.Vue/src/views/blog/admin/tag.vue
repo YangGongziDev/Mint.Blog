@@ -60,7 +60,7 @@ const deleteModalWidth = computed(() => (appStore.isMobile ? '92vw' : 600));
 
 const columns = computed<TableColumnsType<TagListItem>>(() => [
   { title: '序号', key: 'index', width: 80, align: 'center' },
-  { title: '标签名称', dataIndex: 'name', key: 'name', width: 200, align: 'center' },
+  { title: '标签名称', dataIndex: 'name', key: 'name', width: 200, align: 'center', ellipsis: true },
   { title: '文章数', dataIndex: 'articlesTotal', key: 'articlesTotal', width: 100, align: 'center' },
   { title: '创建时间', dataIndex: 'createTime', key: 'createTime', width: 180, align: 'center' },
   { title: '删除状态', dataIndex: 'isDeleted', key: 'isDeleted', width: 120, align: 'center' },

@@ -494,14 +494,18 @@ const handleSubmitFriendApplication = () => {
     });
 };
 
-// 计算属性：过滤后的友链
-const filteredFriends = computed(() => {
-  // 过滤掉已删除的友链
+interface FriendGroup {
+  key: string;
+  title: string;
+  friends: Friend[];
+}
+
+// 计算属性：过滤后的友链分组
+const friendGroups = computed<FriendGroup[]>(() => {
   const visibleFriends = friends.value.filter(friend => !friend.isDeleted);
 
-  // 工具函数：按 createTime 降序排序（次级按 id 升序保证稳定性）
   const sortByCreateTimeDesc = (list: Friend[]) => {
-    return list.sort((a, b) => {
+    return [...list].sort((a, b) => {
       const timeA = a.createTime ? new Date(a.createTime).getTime() : 0;
       const timeB = b.createTime ? new Date(b.createTime).getTime() : 0;
       if (timeA !== timeB) return timeB - timeA;
@@ -509,9 +513,8 @@ const filteredFriends = computed(() => {
     });
   };
 
-  // 工具函数：按 sort 降序排序（次级按 id 升序保证稳定性）
   const sortBySortDesc = (list: Friend[]) => {
-    return list.sort((a, b) => {
+    return [...list].sort((a, b) => {
       const sortA = a.sort ?? 0;
       const sortB = b.sort ?? 0;
       if (sortA !== sortB) return sortB - sortA;
@@ -519,33 +522,28 @@ const filteredFriends = computed(() => {
     });
   };
 
-  if (activeCategory.value === 'all') {
-    // 非 pending 的按：isTop=true 按 createTime 降序；isTop=false 按 sort 降序
-    const active = visibleFriends.filter(f => f.status === 'active');
-    const pending = visibleFriends.filter(f => f.status === 'pending');
-    const inactive = visibleFriends.filter(f => f.status === 'inactive');
-
-    const topList = sortByCreateTimeDesc(active.filter(f => f.isTop === true));
-    const normalList = sortBySortDesc(active.filter(f => !f.isTop));
-    const pendingSorted = sortByCreateTimeDesc(pending);
-    const inactiveSorted = sortBySortDesc(inactive);
-
-    return [...topList, ...normalList, ...pendingSorted, ...inactiveSorted];
-  }
-
   if (activeCategory.value === 'top') {
-    // 置顶分类不显示 pending；并按 createTime 降序
-    return sortByCreateTimeDesc(visibleFriends.filter(friend => friend.isTop && friend.status === 'active'));
+    const topFriends = sortByCreateTimeDesc(visibleFriends.filter(friend => friend.isTop && friend.status === 'active'));
+    return topFriends.length ? [{ key: 'top', title: '置顶友链', friends: topFriends }] : [];
   }
 
-  // 其它分类：也按上述两步排序，并将 pending 放最后
-  const list = visibleFriends.filter(friend => friend.category === activeCategory.value);
-  const topList = sortByCreateTimeDesc(list.filter(f => f.isTop === true && f.status === 'active'));
-  const normalList = sortBySortDesc(list.filter(f => !f.isTop && f.status === 'active'));
-  const pendingSorted = sortByCreateTimeDesc(list.filter(f => f.status === 'pending'));
-  const inactiveSorted = sortBySortDesc(list.filter(f => f.status === 'inactive'));
-  return [...topList, ...normalList, ...pendingSorted, ...inactiveSorted];
+  const scopedFriends =
+    activeCategory.value === 'all' ? visibleFriends : visibleFriends.filter(friend => friend.category === activeCategory.value);
+
+  const topFriends = sortByCreateTimeDesc(scopedFriends.filter(friend => friend.isTop && friend.status === 'active'));
+  const activeFriends = sortBySortDesc(scopedFriends.filter(friend => friend.status === 'active' && !friend.isTop));
+  const pendingFriends = sortByCreateTimeDesc(scopedFriends.filter(friend => friend.status === 'pending'));
+  const inactiveFriends = sortBySortDesc(scopedFriends.filter(friend => friend.status === 'inactive'));
+
+  return [
+    { key: 'top', title: '置顶友链', friends: topFriends },
+    { key: 'active', title: '已审核友链', friends: activeFriends },
+    { key: 'pending', title: '待审核友链', friends: pendingFriends },
+    { key: 'inactive', title: '已停用友链', friends: inactiveFriends }
+  ].filter(group => group.friends.length > 0);
 });
+
+const filteredFriends = computed(() => friendGroups.value.flatMap(group => group.friends));
 
 // 获取分类数量
 const getCategoryCount = (categoryKey: string) => {
@@ -604,7 +602,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="theme-bg-secondary theme-text-primary min-h-screen bg-gray-50 dark:bg-gray-900">
+  <div class="friend-page theme-text-primary min-h-screen">
     <section
       :key="friendHeroImageKey"
       class="friend-hero relative h-[340px] overflow-hidden bg-cover bg-center sm:h-[420px] md:h-[500px]"
@@ -685,18 +683,18 @@ onMounted(() => {
     </div>
 
     <!-- 主要内容区域 -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 pb-20">
       <!-- 分类标签页 -->
-      <div class="mb-8">
+      <div class="friend-category-bar sticky top-0 z-30 -mx-4 mb-8 border-b px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <div class="flex flex-wrap gap-2 justify-center">
           <button
             v-for="category in categories"
             :key="category.key"
-            class="theme-bg-secondary theme-text-primary border border-gray-300 dark:border-gray-600 px-4 py-2 rounded-lg font-medium transition-all duration-300"
+            class="friend-category-button border px-4 py-2 rounded-lg font-medium transition-all duration-300"
             :class="[
               activeCategory === category.key
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700'
+                ? 'friend-category-button-active shadow-lg'
+                : 'friend-category-button-normal'
             ]"
             @click="activeCategory = category.key"
           >
@@ -705,8 +703,8 @@ onMounted(() => {
               class="ml-2 px-2 py-0.5 text-xs rounded-full"
               :class="[
                 activeCategory === category.key
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                  ? 'friend-category-count-active'
+                  : 'friend-category-count-normal'
               ]"
             >
               {{ getCategoryCount(category.key) }}
@@ -718,7 +716,7 @@ onMounted(() => {
       <!-- 加载状态 -->
       <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <div v-for="i in 8" :key="i" class="animate-pulse">
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+          <div class="friend-card-skeleton rounded-xl p-6 shadow-sm">
             <div class="flex items-center space-x-4">
               <div class="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
               <div class="flex-1">
@@ -730,121 +728,132 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- 友链卡片网格 -->
-      <div
-        v-else-if="filteredFriends.length > 0"
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-      >
-        <div
-          v-for="friend in filteredFriends"
-          :key="friend.id"
-          class="theme-bg-secondary theme-text-primary friend-card relative bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm transition-all duration-300 border"
-          :class="[
-            friend.status === 'active'
-              ? 'border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 group cursor-pointer'
-              : friend.status === 'pending'
-                ? 'border-orange-200 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20'
-                : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/70 opacity-70'
-          ]"
-          @click="friend.status === 'active' ? visitFriend(friend.url) : null"
-        >
-          <span
-            v-if="friend.status === 'active' && friend.isTop"
-            class="absolute right-3 top-3 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-600 shadow-sm dark:bg-red-900/30 dark:text-red-400"
-          >
-            置顶
-          </span>
-          <div class="flex items-start space-x-4">
-            <!-- 头像 -->
-            <div class="flex-shrink-0">
-              <img
-                :src="friend.avatar || fallbackAvatar"
-                :alt="friend.name"
-                class="w-12 h-12 rounded-full object-cover ring-2 transition-all duration-300"
-                :class="[
-                  friend.status === 'active'
-                    ? 'ring-gray-200 dark:ring-gray-600 group-hover:ring-blue-300 dark:group-hover:ring-blue-600'
-                    : 'ring-orange-200 dark:ring-orange-600 opacity-70'
-                ]"
-                @error="handleImageError"
-              />
+      <!-- 友链卡片分组 -->
+      <div v-else-if="friendGroups.length > 0" class="space-y-10">
+        <section v-for="group in friendGroups" :key="group.key" class="friend-group">
+          <div class="mb-5 flex items-center justify-between gap-4">
+            <div>
+              <h2 class="theme-text-primary text-xl font-bold text-gray-900 dark:text-white">
+                {{ group.title }}
+              </h2>
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">共 {{ group.friends.length }} 个站点</p>
             </div>
-
-            <!-- 友链信息 -->
-            <div class="flex-1 min-w-0">
-              <!-- 标题行 -->
-              <div class="mb-1">
-                <h3
-                  class="theme-text-primary text-lg font-semibold transition-colors duration-300 truncate"
-                  :class="[
-                    friend.status === 'active'
-                      ? 'text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400'
-                      : friend.status === 'pending'
-                        ? 'text-orange-700 dark:text-orange-400'
-                        : 'text-gray-500 dark:text-gray-400'
-                  ]"
-                >
-                  {{ friend.name }}
-                </h3>
-              </div>
-
-              <!-- 状态标签行 -->
-              <div class="flex items-center gap-2 mb-2">
-                <!-- 分类标签 -->
-                <span
-                  class="px-2 py-0.5 text-xs font-medium rounded-full flex-shrink-0"
-                  :class="getCategoryStyle(friend.category)"
-                >
-                  {{ getCategoryLabel(friend.category) }}
-                </span>
-
-                <!-- 待审核状态标识 -->
-                <span
-                  v-if="friend.status === 'pending'"
-                  class="px-2 py-0.5 text-xs font-medium bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400 rounded-full flex-shrink-0"
-                >
-                  待审核
-                </span>
-                <span
-                  v-else-if="friend.status === 'inactive'"
-                  class="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400 rounded-full flex-shrink-0"
-                >
-                  已停用
-                </span>
-              </div>
-            </div>
+            <div class="h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
           </div>
-          <!-- 描述信息 -->
-          <div class="flex-1 min-w-0">
-            <!-- 描述（启用状态显示） -->
-            <p
-              v-if="friend.status === 'active'"
-              class="theme-text-primary text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2 leading-relaxed text-left"
-            >
-              {{ friend.description }}
-            </p>
-            <!-- 链接（启用状态显示） -->
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <div
-              v-if="friend.status === 'active'"
-              class="flex items-center text-xs text-gray-500 dark:text-gray-500 mt-3 justify-start"
+              v-for="friend in group.friends"
+              :key="friend.id"
+              class="friend-card theme-text-primary relative rounded-xl p-6 shadow-sm transition-all duration-300 border"
+              :class="[
+                friend.status === 'active'
+                  ? 'friend-card-active group cursor-pointer'
+                  : friend.status === 'pending'
+                    ? 'friend-card-pending'
+                    : 'friend-card-inactive opacity-70'
+              ]"
+              @click="friend.status === 'active' ? visitFriend(friend.url) : null"
             >
               <span
-                class="ml-[-2px] inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium flex-shrink-0"
-                :class="getCategoryStyle(friend.category)"
-                @click.stop="visitFriend(friend.url)"
+                v-if="friend.status === 'active' && friend.isTop"
+                class="absolute right-3 top-3 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-600 shadow-sm dark:bg-red-900/30 dark:text-red-400"
               >
-                <ExportOutlined class="mr-1 text-xs" />
-                访问{{ formatUrl(friend.url) }}
+                置顶
               </span>
+              <div class="flex items-start space-x-4">
+                <!-- 头像 -->
+                <div class="flex-shrink-0">
+                  <img
+                    :src="friend.avatar || fallbackAvatar"
+                    :alt="friend.name"
+                    class="w-12 h-12 rounded-full object-cover ring-2 transition-all duration-300"
+                    :class="[
+                      friend.status === 'active'
+                        ? 'ring-gray-200 dark:ring-gray-600 group-hover:ring-blue-300 dark:group-hover:ring-blue-600'
+                        : 'ring-orange-200 dark:ring-orange-600 opacity-70'
+                    ]"
+                    @error="handleImageError"
+                  />
+                </div>
+
+                <!-- 友链信息 -->
+                <div class="flex-1 min-w-0">
+                  <!-- 标题行 -->
+                  <div class="mb-1">
+                    <h3
+                      class="theme-text-primary text-lg font-semibold transition-colors duration-300 truncate"
+                      :class="[
+                        friend.status === 'active'
+                          ? 'text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400'
+                          : friend.status === 'pending'
+                            ? 'text-orange-700 dark:text-orange-400'
+                            : 'text-gray-500 dark:text-gray-400'
+                      ]"
+                    >
+                      {{ friend.name }}
+                    </h3>
+                  </div>
+
+                  <!-- 状态标签行 -->
+                  <div class="flex items-center gap-2 mb-2">
+                    <!-- 分类标签 -->
+                    <span
+                      class="px-2 py-0.5 text-xs font-medium rounded-full flex-shrink-0"
+                      :class="getCategoryStyle(friend.category)"
+                    >
+                      {{ getCategoryLabel(friend.category) }}
+                    </span>
+
+                    <!-- 待审核状态标识 -->
+                    <span
+                      v-if="friend.status === 'pending'"
+                      class="px-2 py-0.5 text-xs font-medium bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400 rounded-full flex-shrink-0"
+                    >
+                      待审核
+                    </span>
+                    <span
+                      v-else-if="friend.status === 'inactive'"
+                      class="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400 rounded-full flex-shrink-0"
+                    >
+                      已停用
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!-- 描述信息 -->
+              <div class="flex-1 min-w-0">
+                <!-- 描述（启用状态显示） -->
+                <p
+                  v-if="friend.status === 'active'"
+                  class="theme-text-primary text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2 leading-relaxed text-left"
+                >
+                  {{ friend.description }}
+                </p>
+                <!-- 链接（启用状态显示） -->
+                <div
+                  v-if="friend.status === 'active'"
+                  class="flex items-center text-xs text-gray-500 dark:text-gray-500 mt-3 justify-start"
+                >
+                  <span
+                    class="ml-[-2px] inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium flex-shrink-0"
+                    :class="getCategoryStyle(friend.category)"
+                    @click.stop="visitFriend(friend.url)"
+                  >
+                    <ExportOutlined class="mr-1 text-xs" />
+                    访问{{ formatUrl(friend.url) }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
 
       <!-- 空状态 -->
       <div v-else class="text-center py-16">
         <div
-          class="theme-bg-secondary border border-gray-200 dark:border-gray-700 mx-auto w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4"
+          class="empty-state-card mx-auto w-24 h-24 rounded-full flex items-center justify-center mb-4"
         >
           <LinkOutlined class="text-3xl text-gray-400" />
         </div>
@@ -1218,6 +1227,81 @@ onMounted(() => {
 </style>
 
 <style scoped lang="scss">
+.friend-page {
+  --friend-bg: rgb(var(--layout-bg-color));
+  --friend-card-bg: rgb(var(--container-bg-color));
+  --friend-card-soft-bg: rgb(var(--base-text-color) / 3.5%);
+  --friend-card-hover-border: rgb(var(--primary-color) / 55%);
+  --friend-border: rgb(var(--base-text-color) / 10%);
+  --friend-border-strong: rgb(var(--base-text-color) / 16%);
+  --friend-text: rgb(var(--base-text-color));
+  --friend-text-muted: rgb(var(--base-text-color) / 66%);
+  --friend-primary-soft: rgb(var(--primary-color) / 10%);
+  --friend-primary-strong: rgb(var(--primary-color));
+  --friend-pending-bg: rgb(245 158 11 / 10%);
+  --friend-pending-border: rgb(245 158 11 / 26%);
+  --friend-inactive-bg: rgb(var(--base-text-color) / 4.5%);
+
+  background: var(--friend-bg);
+}
+
+.friend-category-bar {
+  border-color: var(--friend-border);
+  background: color-mix(in srgb, var(--friend-bg) 88%, transparent);
+}
+
+.friend-category-button {
+  border-color: var(--friend-border-strong);
+  color: var(--friend-text);
+}
+
+.friend-category-button-active {
+  border-color: var(--friend-primary-strong);
+  background: var(--friend-primary-strong);
+  color: #fff;
+}
+
+.friend-category-button-normal {
+  background: var(--friend-card-bg);
+}
+
+.friend-category-button-normal:hover {
+  border-color: var(--friend-card-hover-border);
+  background: var(--friend-primary-soft);
+}
+
+.friend-category-count-active {
+  background: rgb(255 255 255 / 18%);
+  color: #fff;
+}
+
+.friend-category-count-normal {
+  background: rgb(var(--base-text-color) / 7%);
+  color: var(--friend-text-muted);
+}
+
+.friend-card,
+.friend-card-skeleton,
+.empty-state-card {
+  border-color: var(--friend-border);
+  background: var(--friend-card-bg);
+}
+
+.friend-card-active:hover {
+  border-color: var(--friend-card-hover-border);
+  box-shadow: 0 16px 40px rgb(var(--primary-color) / 12%);
+}
+
+.friend-card-pending {
+  border-color: var(--friend-pending-border);
+  background: var(--friend-pending-bg);
+}
+
+.friend-card-inactive {
+  border-color: var(--friend-border);
+  background: var(--friend-inactive-bg);
+}
+
 .friend-card {
   &:hover {
     transform: translateY(-2px);

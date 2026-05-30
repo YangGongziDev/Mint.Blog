@@ -68,8 +68,8 @@ const pagination = computed<TablePaginationConfig>(() => ({
 const deleteModalWidth = computed(() => (appStore.isMobile ? '92vw' : 550));
 const columns = computed<TableColumnsType<AdminArticleListItem>>(() => [
   { title: '序号', key: 'index', width: 80, align: 'center' },
-  { title: '标题', dataIndex: 'title', key: 'title', width: 220, align: 'center' },
-  { title: '摘要', dataIndex: 'summary', key: 'summary', width: 380, align: 'center' },
+  { title: '标题', dataIndex: 'title', key: 'title', width: 220, align: 'center', ellipsis: true },
+  { title: '摘要', dataIndex: 'summary', key: 'summary', width: 380, align: 'center', ellipsis: true },
   { title: '封面', dataIndex: 'cover', key: 'cover', width: 180, align: 'center' },
   { title: '是否置顶', dataIndex: 'isTop', key: 'isTop', width: 100, align: 'center' },
   { title: '删除状态', dataIndex: 'isDeleted', key: 'isDeleted', width: 100, align: 'center' },
@@ -255,6 +255,12 @@ onMounted(() => {
       >
         <template #bodyCell="{ column, record, index }">
           <template v-if="column.key === 'index'">{{ index + 1 }}</template>
+          <template v-else-if="column.key === 'title'">
+            <ATypographyParagraph :content="record.title" :ellipsis="{ rows: 2 }" class="table-text-cell !mb-0" />
+          </template>
+          <template v-else-if="column.key === 'summary'">
+            <ATypographyParagraph :content="record.summary" :ellipsis="{ rows: 2 }" class="table-text-cell !mb-0" />
+          </template>
           <template v-else-if="column.key === 'cover'">
             <AImage :width="100" :src="record.cover" />
           </template>
@@ -365,7 +371,11 @@ onMounted(() => {
 
     <AModal v-model:open="draftModalVisible" title="草稿箱" :footer="null" width="900px">
       <ATable :data-source="draftData" :loading="draftLoading" :pagination="false" :row-key="record => record.id" size="middle">
-        <ATableColumn title="标题" data-index="title" key="title" />
+        <ATableColumn title="标题" data-index="title" key="title">
+          <template #default="{ record }">
+            <ATypographyParagraph :content="record.title" :ellipsis="{ rows: 2 }" class="draft-title-cell !mb-0" />
+          </template>
+        </ATableColumn>
         <ATableColumn title="类型" key="type">
           <template #default="{ record }">
             <ATag :color="record.isNewArticleDraft ? 'processing' : 'warning'">
@@ -439,6 +449,18 @@ onMounted(() => {
 
 .table-card :deep(.ant-table-thead > tr > th) {
   background: rgb(var(--container-bg-color));
+}
+
+.table-text-cell {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.draft-title-cell {
+  max-width: 360px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 @media (max-width: 640px) {

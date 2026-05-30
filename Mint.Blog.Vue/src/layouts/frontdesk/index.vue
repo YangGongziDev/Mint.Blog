@@ -342,7 +342,9 @@ const siderPaddingClass = computed(() => {
         :class="[commonClass, contentClass, leftGapClass, { 'overflow-y-auto': isContentScroll }]"
       >
         <Menu :key="menuRenderKey" />
-        <RouterView />
+        <div class="flex-1">
+          <RouterView />
+        </div>
         <footer v-if="showFooter" v-show="!fullContent" class="flex-shrink-0" :class="commonClass">
           <Footer />
         </footer>

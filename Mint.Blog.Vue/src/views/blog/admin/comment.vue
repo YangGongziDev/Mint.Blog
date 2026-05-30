@@ -52,12 +52,17 @@
             <AAvatar :size="40" :src="record.avatar" />
           </template>
           <template v-else-if="column.key === 'routerUrl'">
-            <a :href="`#${record.routerUrl}`" target="_blank" class="text-blue-500 hover:text-blue-700">
-              {{ record.routerUrl }}
-            </a>
+            <ATooltip :title="record.routerUrl">
+              <a :href="`#${record.routerUrl}`" target="_blank" class="comment-route-link text-blue-500 hover:text-blue-700">
+                {{ record.routerUrl }}
+              </a>
+            </ATooltip>
+          </template>
+          <template v-else-if="column.key === 'nickname'">
+            <ATypographyParagraph :content="record.nickname" :ellipsis="{ rows: 1 }" class="comment-text-cell !mb-0" />
           </template>
           <template v-else-if="column.key === 'content'">
-            <ATypographyParagraph :content="record.content" :ellipsis="{ rows: 2 }" class="!mb-0 max-w-[260px]" />
+            <ATypographyParagraph :content="record.content" :ellipsis="{ rows: 2 }" class="comment-text-cell !mb-0" />
           </template>
           <template v-else-if="column.key === 'status'">
             <ATag :color="getStatusMeta(record.status).color">{{ getStatusMeta(record.status).label }}</ATag>
@@ -258,10 +263,10 @@ const pagination = computed<TablePaginationConfig>(() => ({
 
 const columns = computed<TableColumnsType<AdminCommentPageItem>>(() => [
   { title: '序号', key: 'index', width: 80, align: 'center' },
-  { title: '路由', dataIndex: 'routerUrl', key: 'routerUrl' },
+  { title: '路由', dataIndex: 'routerUrl', key: 'routerUrl', width: 260, ellipsis: true },
   { title: '头像', key: 'avatar', width: 70 },
-  { title: '昵称', dataIndex: 'nickname', key: 'nickname' },
-  { title: '评论内容', dataIndex: 'content', key: 'content' },
+  { title: '昵称', dataIndex: 'nickname', key: 'nickname', width: 160, ellipsis: true },
+  { title: '评论内容', dataIndex: 'content', key: 'content', width: 280, ellipsis: true },
   { title: '发布时间', dataIndex: 'createdAt', key: 'createdAt', width: 180, align: 'center' },
   { title: '状态', key: 'status', width: 100, align: 'center' },
   { title: '删除状态', key: 'isDeleted', width: 100, align: 'center' },
@@ -444,6 +449,20 @@ onMounted(() => {
 
 .table-card :deep(.ant-table-thead > tr > th) {
   background: rgb(var(--container-bg-color));
+}
+
+.comment-route-link,
+.comment-text-cell {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.comment-route-link {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 :global(html:not(.dark)) .delete-info {

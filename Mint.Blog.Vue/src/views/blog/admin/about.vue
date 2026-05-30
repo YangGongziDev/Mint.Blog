@@ -49,7 +49,7 @@ const backendStack = [
   { name: 'SqlSugar', desc: '负责数据库访问与数据模型映射。' },
   { name: 'PostgreSQL', desc: '作为核心业务数据存储，承载博客内容与统计数据。' },
   { name: 'JWT', desc: '提供后台登录鉴权与接口访问授权能力。' },
-  { name: 'MinIO', desc: '用于图片与文件对象存储。' }
+  { name: 'RustFS', desc: '用于图片与文件对象存储。' }
 ];
 
 const frontendStack = [

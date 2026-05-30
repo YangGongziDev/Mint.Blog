@@ -734,30 +734,39 @@ onMounted(async () => {
             </div>
           </template>
           <template v-else-if="column.key === 'referencedArticles'">
-            <ASpace v-if="record.referencedArticles.length" wrap>
-              <ATag v-for="article in record.referencedArticles" :key="article.articleId" color="processing">
-                {{ article.articleTitle }}
-              </ATag>
-            </ASpace>
-            <ATag v-else color="default">未使用</ATag>
+            <div class="reference-cell">
+              <ASpace v-if="record.referencedArticles.length" wrap :size="4">
+                <ATag
+                  v-for="article in record.referencedArticles"
+                  :key="article.articleId"
+                  color="processing"
+                  class="reference-tag"
+                >
+                  <span class="reference-tag-text" :title="article.articleTitle">{{ article.articleTitle }}</span>
+                </ATag>
+              </ASpace>
+              <ATag v-else color="default">未使用</ATag>
+            </div>
           </template>
           <template v-else-if="column.key === 'articleLinks'">
-            <ASpace v-if="record.referencedArticles.length" direction="vertical" :size="2">
-              <APopconfirm
-                v-for="article in record.referencedArticles"
-                :key="article.articleId"
-                title="请选择文章链接操作"
-                ok-text="跳转预览"
-                cancel-text="复制链接"
-                @confirm="openArticleLink(article.articleUrl)"
-                @cancel="copyArticleLink(article.articleUrl)"
-              >
-                <AButton type="link" size="small">
-                  {{ article.articleTitle }}
-                </AButton>
-              </APopconfirm>
-            </ASpace>
-            <span v-else class="text-gray-400">-</span>
+            <div class="article-link-cell">
+              <ASpace v-if="record.referencedArticles.length" direction="vertical" :size="2" class="w-full">
+                <span v-for="article in record.referencedArticles" :key="article.articleId" class="article-link-item">
+                  <APopconfirm
+                    title="请选择文章链接操作"
+                    ok-text="跳转预览"
+                    cancel-text="复制链接"
+                    @confirm="openArticleLink(article.articleUrl)"
+                    @cancel="copyArticleLink(article.articleUrl)"
+                  >
+                    <AButton type="link" size="small" class="article-link-button">
+                      <span :title="article.articleTitle">{{ article.articleTitle }}</span>
+                    </AButton>
+                  </APopconfirm>
+                </span>
+              </ASpace>
+              <span v-else class="text-gray-400">-</span>
+            </div>
           </template>
           <template v-else-if="column.key === 'size'">{{ formatSize(record.size) }}</template>
           <template v-else-if="column.key === 'action'">
@@ -1010,6 +1019,58 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   gap: 8px;
+}
+
+.reference-cell,
+.article-link-cell {
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.reference-cell :deep(.ant-space),
+.article-link-cell :deep(.ant-space) {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.reference-tag {
+  max-width: 100%;
+  margin-inline-end: 0;
+  vertical-align: middle;
+}
+
+.reference-tag-text {
+  display: inline-block;
+  max-width: 210px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.article-link-button {
+  max-width: 100%;
+  height: auto;
+  min-height: 24px;
+  padding-inline: 0;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.article-link-item {
+  display: block;
+  max-width: 100%;
+}
+
+.article-link-button span {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .select-option-text {

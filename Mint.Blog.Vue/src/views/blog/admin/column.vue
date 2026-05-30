@@ -104,8 +104,8 @@ const galleryPagination = computed<TablePaginationConfig>(() => ({
 }));
 const columns = computed<TableColumnsType<AdminColumnPageItem>>(() => [
   { title: '序号', key: 'index', width: 80, align: 'center' },
-  { title: '标题', dataIndex: 'title', key: 'title' },
-  { title: '摘要', dataIndex: 'summary', key: 'summary' },
+  { title: '标题', dataIndex: 'title', key: 'title', width: 220, ellipsis: true },
+  { title: '摘要', dataIndex: 'summary', key: 'summary', width: 280, ellipsis: true },
   { title: '封面', key: 'cover', width: 140, align: 'center' },
   { title: '是否置顶', key: 'isTop', width: 100, align: 'center' },
   { title: '文章数', dataIndex: 'articlesTotal', key: 'articlesTotal', width: 100, align: 'center' },
@@ -634,11 +634,14 @@ onMounted(() => loadData());
       >
         <template #bodyCell="{ column, record, index }">
           <template v-if="column.key === 'index'">{{ index + 1 }}</template>
+          <template v-else-if="column.key === 'title'">
+            <ATypographyParagraph :content="record.title" :ellipsis="{ rows: 2 }" class="column-text-cell !mb-0" />
+          </template>
           <template v-else-if="column.key === 'cover'">
             <AImage :width="100" :src="record.cover" />
           </template>
           <template v-else-if="column.key === 'summary'">
-            <ATypographyParagraph :content="record.summary" :ellipsis="{ rows: 2 }" class="!mb-0 max-w-[260px]" />
+            <ATypographyParagraph :content="record.summary" :ellipsis="{ rows: 2 }" class="column-text-cell !mb-0" />
           </template>
           <template v-else-if="column.key === 'articlesTotal'">{{ record.articlesTotal }}</template>
           <template v-else-if="column.key === 'isTop'">
@@ -1021,6 +1024,12 @@ onMounted(() => loadData());
 
 .table-card :deep(.ant-table-thead > tr > th) {
   background: rgb(var(--container-bg-color));
+}
+
+.column-text-cell {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .catalog-editor {

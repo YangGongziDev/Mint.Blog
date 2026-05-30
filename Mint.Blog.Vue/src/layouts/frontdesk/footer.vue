@@ -98,8 +98,7 @@ onMounted(async () => {
 }
 
 .footer-animals-layer {
-  position: sticky;
-  bottom: 0;
+  position: relative;
   z-index: 30;
   display: flex;
   width: 100%;
