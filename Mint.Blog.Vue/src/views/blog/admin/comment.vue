@@ -64,6 +64,9 @@
           <template v-else-if="column.key === 'content'">
             <ATypographyParagraph :content="record.content" :ellipsis="{ rows: 2 }" class="comment-text-cell !mb-0" />
           </template>
+          <template v-else-if="column.key === 'createdAt'">
+            {{ formatDateTime(record.createdAt) }}
+          </template>
           <template v-else-if="column.key === 'status'">
             <ATag :color="getStatusMeta(record.status).color">{{ getStatusMeta(record.status).label }}</ATag>
           </template>
@@ -118,7 +121,7 @@
           <AInput :value="currentComment.mail" disabled />
         </AFormItem>
         <AFormItem label="发布时间">
-          <AInput :value="currentComment.createdAt" disabled />
+          <AInput :value="formatDateTime(currentComment.createdAt)" disabled />
         </AFormItem>
         <AFormItem label="状态">
           <ATag :color="getStatusMeta(currentComment.status).color">{{ getStatusMeta(currentComment.status).label }}</ATag>
@@ -226,6 +229,8 @@ import {
   type AdminCommentPageItem
 } from '@/service/blog/admin/comment';
 import { useAppStore } from '@/store/system/app';
+import type { TimeSortOrder } from '@/utils/date-time';
+import { compareDateTime, formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
 
 const appStore = useAppStore();
 const loading = ref(false);
@@ -241,7 +246,15 @@ const submitLoading = ref(false);
 const deleteLoading = ref(false);
 const formRef = ref<FormInstance>();
 
-const query = reactive({ pageNumber: 1, pageSize: 10, routerUrl: '', startDate: '', endDate: '', status: undefined as number | undefined });
+const query = reactive({
+  pageNumber: 1,
+  pageSize: 10,
+  routerUrl: '',
+  startDate: '',
+  endDate: '',
+  status: undefined as number | undefined,
+  sortOrder: 'timeDesc' as TimeSortOrder
+});
 const examineForm = reactive({ status: 2, reason: '' });
 const rules: FormProps['rules'] = {
   status: [{ required: true, message: '状态不能为空', trigger: 'blur' }],
@@ -267,7 +280,16 @@ const columns = computed<TableColumnsType<AdminCommentPageItem>>(() => [
   { title: '头像', key: 'avatar', width: 70 },
   { title: '昵称', dataIndex: 'nickname', key: 'nickname', width: 160, ellipsis: true },
   { title: '评论内容', dataIndex: 'content', key: 'content', width: 280, ellipsis: true },
-  { title: '发布时间', dataIndex: 'createdAt', key: 'createdAt', width: 180, align: 'center' },
+  {
+    title: '发布时间',
+    dataIndex: 'createdAt',
+    key: 'createdAt',
+    width: 180,
+    align: 'center',
+    sorter: (a, b) => compareDateTime(a.createdAt, b.createdAt),
+    sortOrder: getAntdTimeSortOrder(query.sortOrder),
+    sortDirections: ['descend', 'ascend']
+  },
   { title: '状态', key: 'status', width: 100, align: 'center' },
   { title: '删除状态', key: 'isDeleted', width: 100, align: 'center' },
   { title: '操作', key: 'action', width: 150, align: 'center', fixed: 'right', className: 'blog-admin-action-column' }
@@ -311,9 +333,10 @@ function handleDateChange(_: unknown, dateStrings: [string, string]) {
   query.endDate = dateStrings[1];
 }
 
-function handleTableChange(page: TablePaginationConfig) {
+function handleTableChange(page: TablePaginationConfig, ...changeArgs: [unknown?, unknown?]) {
   query.pageNumber = page.current || 1;
   query.pageSize = page.pageSize || 10;
+  query.sortOrder = resolveTimeSortOrder(getTableSortOrder(changeArgs[1]), query.sortOrder);
   loadData();
 }
 

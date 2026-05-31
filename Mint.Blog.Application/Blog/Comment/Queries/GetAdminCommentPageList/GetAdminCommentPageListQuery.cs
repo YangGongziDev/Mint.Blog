@@ -6,4 +6,5 @@ public sealed record GetAdminCommentPageListQuery(
 	string? RouterUrl,
 	DateOnly? StartDate,
 	DateOnly? EndDate,
-	int? Status);
+	int? Status,
+	string? SortOrder = null);

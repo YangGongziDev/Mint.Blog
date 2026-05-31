@@ -116,8 +116,13 @@ public sealed class FriendRepository(ISqlSugarDbContext dbContext)
 		}
 
 		var totalCount = await friendQuery.CountAsync(cancellationToken);
-		var friends = await friendQuery
-			.OrderByDescending(x => x.CreatedAt)
+		var orderedFriendQuery = query.SortOrder?.ToLowerInvariant() switch {
+			"timeasc" => friendQuery.OrderBy(x => x.CreatedAt),
+			"timedesc" => friendQuery.OrderByDescending(x => x.CreatedAt),
+			_ => friendQuery.OrderByDescending(x => x.IsTop).OrderByDescending(x => x.Sort).OrderByDescending(x => x.CreatedAt)
+		};
+
+		var friends = await orderedFriendQuery
 			.Skip(skip)
 			.Take(pageSize)
 			.ToListAsync(cancellationToken);

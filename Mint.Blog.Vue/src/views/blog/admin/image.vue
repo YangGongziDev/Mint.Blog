@@ -23,6 +23,7 @@ import {
   uploadBlogImage
 } from '@/service/blog/admin/image';
 import { useAppStore } from '@/store/system/app';
+import { compareDateTime, formatDateTime, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
 
 defineOptions({ name: 'BlogAdminImageManage' });
 
@@ -60,7 +61,8 @@ const query = reactive({
   pageSize: 20,
   bucketName: '',
   fileName: '',
-  used: undefined as 'true' | 'false' | undefined
+  used: undefined as 'true' | 'false' | undefined,
+  sortOrder: 'lastModifiedDesc' as 'lastModifiedDesc' | 'lastModifiedAsc'
 });
 
 const pagination = computed<TablePaginationConfig>(() => ({
@@ -81,7 +83,16 @@ const columns = computed<TableColumnsType<ManagedImageListItem>>(() => [
   { title: '引用位置', key: 'referencedArticles', width: 240, align: 'center' },
   { title: '文章链接', key: 'articleLinks', width: 260, align: 'center' },
   { title: '文件大小', dataIndex: 'size', key: 'size', width: 120, align: 'center' },
-  { title: '更新时间', dataIndex: 'lastModified', key: 'lastModified', width: 180, align: 'center' },
+  {
+    title: '更新时间',
+    dataIndex: 'lastModified',
+    key: 'lastModified',
+    width: 180,
+    align: 'center',
+    sorter: (a, b) => compareDateTime(a.lastModified, b.lastModified),
+    sortOrder: query.sortOrder === 'lastModifiedAsc' ? 'ascend' : 'descend',
+    sortDirections: ['descend', 'ascend']
+  },
   { title: '操作', key: 'action', width: 150, align: 'center', fixed: appStore.isMobile ? undefined : 'right' }
 ]);
 const tableScrollX = 1670;
@@ -169,7 +180,8 @@ async function loadData() {
       pageSize: query.pageSize,
       bucketName: query.bucketName || undefined,
       fileName: query.fileName || undefined,
-      used: query.used === undefined ? undefined : query.used === 'true'
+      used: query.used === undefined ? undefined : query.used === 'true',
+      sortOrder: query.sortOrder
     };
     const res = await getManagedImagePageList(params);
     if (res.success) {
@@ -182,10 +194,15 @@ async function loadData() {
   }
 }
 
-function handleTableChange(page: TablePaginationConfig) {
+function handleTableChange(page: TablePaginationConfig, ...changeArgs: [unknown?, unknown?]) {
   if (bucketLoadFailed.value) return;
   query.pageNumber = page.current || 1;
   query.pageSize = page.pageSize || 20;
+  query.sortOrder =
+    resolveTimeSortOrder(
+      getTableSortOrder(changeArgs[1]),
+      query.sortOrder === 'lastModifiedAsc' ? 'timeAsc' : 'timeDesc'
+    ) === 'timeAsc' ? 'lastModifiedAsc' : 'lastModifiedDesc';
   loadData();
 }
 
@@ -769,6 +786,7 @@ onMounted(async () => {
             </div>
           </template>
           <template v-else-if="column.key === 'size'">{{ formatSize(record.size) }}</template>
+          <template v-else-if="column.key === 'lastModified'">{{ formatDateTime(record.lastModified) }}</template>
           <template v-else-if="column.key === 'action'">
             <ASpace>
               <ATooltip title="改名">

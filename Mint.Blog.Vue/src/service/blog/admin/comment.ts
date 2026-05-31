@@ -1,3 +1,4 @@
+import type { TimeSortOrder } from '@/utils/date-time';
 import axios from '../../axios';
 
 interface PageResult<T> {
@@ -16,6 +17,7 @@ export interface AdminCommentPageQuery {
   startDate?: string;
   endDate?: string;
   status?: number;
+  sortOrder?: TimeSortOrder;
 }
 
 export interface AdminCommentPageItem {

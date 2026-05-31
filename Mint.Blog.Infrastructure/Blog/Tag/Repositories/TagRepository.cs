@@ -43,9 +43,13 @@ public sealed class TagRepository(ISqlSugarDbContext dbContext)
 		}
 
 		var totalCount = await tagQueryable.CountAsync();
-		var tags = await tagQueryable
-			.OrderBy(x => x.Sort)
-			.OrderBy(x => x.Name)
+		var orderedTagQueryable = query.SortOrder?.ToLowerInvariant() switch {
+			"timeasc" => tagQueryable.OrderBy(x => x.CreatedAt).OrderBy(x => x.Sort).OrderBy(x => x.Name),
+			"timedesc" => tagQueryable.OrderByDescending(x => x.CreatedAt).OrderBy(x => x.Sort).OrderBy(x => x.Name),
+			_ => tagQueryable.OrderBy(x => x.Sort).OrderBy(x => x.Name).OrderByDescending(x => x.CreatedAt)
+		};
+
+		var tags = await orderedTagQueryable
 			.Skip(skip)
 			.Take(normalizedPageSize)
 			.ToListAsync();

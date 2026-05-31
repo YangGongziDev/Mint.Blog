@@ -31,9 +31,10 @@ public sealed class ArticleController(
 		[FromQuery] string? title = null,
 		[FromQuery] DateOnly? startDate = null,
 		[FromQuery] DateOnly? endDate = null,
+		[FromQuery] string? sortOrder = null,
 		CancellationToken cancellationToken = default){
 		var result = await articleListQueryService.GetAsync(
-			new ArticleListQuery(pageNumber, pageSize, categoryId, tagId, title, startDate, endDate),
+			new ArticleListQuery(pageNumber, pageSize, categoryId, tagId, title, startDate, endDate, sortOrder),
 			cancellationToken);
 		var response = new PagedResult<object>(
 			result.Items.Select(item => new {

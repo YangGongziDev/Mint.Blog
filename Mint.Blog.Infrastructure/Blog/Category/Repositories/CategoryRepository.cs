@@ -136,9 +136,13 @@ public sealed class CategoryRepository(ISqlSugarDbContext dbContext)
 		}
 
 		var totalCount = await categoryQueryable.CountAsync();
-		var categories = await categoryQueryable
-			.OrderBy(x => x.Sort)
-			.OrderBy(x => x.Name)
+		var orderedCategoryQueryable = query.SortOrder?.ToLowerInvariant() switch {
+			"timeasc" => categoryQueryable.OrderBy(x => x.CreatedAt).OrderBy(x => x.Sort).OrderBy(x => x.Name),
+			"timedesc" => categoryQueryable.OrderByDescending(x => x.CreatedAt).OrderBy(x => x.Sort).OrderBy(x => x.Name),
+			_ => categoryQueryable.OrderBy(x => x.Sort).OrderBy(x => x.Name).OrderByDescending(x => x.CreatedAt)
+		};
+
+		var categories = await orderedCategoryQueryable
 			.Skip(skip)
 			.Take(normalizedPageSize)
 			.ToListAsync();

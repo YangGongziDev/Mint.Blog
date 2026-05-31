@@ -55,9 +55,13 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext)
 		}
 
 		var totalCount = await columnQuery.CountAsync();
-		var items = await columnQuery
-			.OrderByDescending(x => x.Weight)
-			.OrderByDescending(x => x.CreatedAt)
+		var orderedColumnQuery = query.SortOrder?.ToLowerInvariant() switch {
+			"timeasc" => columnQuery.OrderBy(x => x.CreatedAt).OrderByDescending(x => x.Weight),
+			"timedesc" => columnQuery.OrderByDescending(x => x.CreatedAt).OrderByDescending(x => x.Weight),
+			_ => columnQuery.OrderByDescending(x => x.Weight).OrderByDescending(x => x.Sort).OrderByDescending(x => x.CreatedAt)
+		};
+
+		var items = await orderedColumnQuery
 			.Skip(skip)
 			.Take(pageSize)
 			.ToListAsync();

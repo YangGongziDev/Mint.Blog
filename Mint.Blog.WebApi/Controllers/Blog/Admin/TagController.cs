@@ -44,9 +44,10 @@ public sealed class TagController(
 		[FromQuery] string? name = null,
 		[FromQuery] DateOnly? startDate = null,
 		[FromQuery] DateOnly? endDate = null,
+		[FromQuery] string? sortOrder = null,
 		CancellationToken cancellationToken = default){
 		var tags = await tagPageListQueryService.GetAsync(
-			new TagPageListQuery(pageNumber, pageSize, keyword, name, startDate, endDate),
+			new TagPageListQuery(pageNumber, pageSize, keyword, name, startDate, endDate, sortOrder),
 			cancellationToken);
 		return Ok(ApiResponse<PagedResult<TagListItemDto>>.Ok(tags));
 	}

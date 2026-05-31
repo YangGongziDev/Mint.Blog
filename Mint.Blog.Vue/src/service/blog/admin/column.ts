@@ -1,3 +1,4 @@
+import type { TimeSortOrder } from '@/utils/date-time';
 import axios from '../../axios';
 
 interface PageResult<T> {
@@ -15,6 +16,7 @@ export interface AdminColumnPageQuery {
   title?: string;
   startDate?: string;
   endDate?: string;
+  sortOrder?: TimeSortOrder;
 }
 
 export interface AdminColumnPageItem {
@@ -80,19 +82,27 @@ export function updateColumn(columnId: string, data: ColumnFormModel) {
 }
 
 export function setColumnPublish(columnId: string, isPublish: boolean) {
-  return axios.patch(`/blog/admin/column/${columnId}/publish`, { columnId: columnId, isPublish }) as Promise<{ success: boolean }>;
+  return axios.patch(`/blog/admin/column/${columnId}/publish`, { columnId, isPublish }) as Promise<{
+    success: boolean;
+  }>;
 }
 
 export function setColumnTop(columnId: string, isTop: boolean) {
-  return axios.patch(`/blog/admin/column/${columnId}/top`, { columnId: columnId, isTop }) as Promise<{ success: boolean }>;
+  return axios.patch(`/blog/admin/column/${columnId}/top`, { columnId, isTop }) as Promise<{
+    success: boolean;
+  }>;
 }
 
 export function updateColumnSort(columnId: string, sort: number) {
-  return axios.patch(`/blog/admin/column/${columnId}/sort`, { columnId: columnId, sort }) as Promise<{ success: boolean }>;
+  return axios.patch(`/blog/admin/column/${columnId}/sort`, { columnId, sort }) as Promise<{
+    success: boolean;
+  }>;
 }
 
 export function updateColumnCatalog(columnId: string, data: UpdateColumnCatalogPayload) {
-  return axios.put(`/blog/admin/column/${columnId}/catalog`, { columnId: columnId, ...data }) as Promise<{ success: boolean }>;
+  return axios.put(`/blog/admin/column/${columnId}/catalog`, { columnId, ...data }) as Promise<{
+    success: boolean;
+  }>;
 }
 
 export function deleteColumn(columnId: string, deleteType = 1) {

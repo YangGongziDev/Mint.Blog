@@ -25,6 +25,8 @@ import {
   updateTagSort
 } from '@/service/blog/admin/tag';
 import { useAppStore } from '@/store/system/app';
+import type { TimeSortOrder } from '@/utils/date-time';
+import { compareDateTime, formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
 
 defineOptions({ name: 'BlogAdminTagList' });
 
@@ -52,7 +54,7 @@ const formRef = ref<FormInstance>();
 const editFormRef = ref<FormInstance>();
 const createForm = reactive({ tags: [] as string[] });
 const editForm = reactive({ id: undefined as string | undefined, name: '' });
-const query = reactive({ name: '', startDate: '', endDate: '' });
+const query = reactive({ name: '', startDate: '', endDate: '', sortOrder: undefined as TimeSortOrder | undefined });
 
 const modalWidth = computed(() => (appStore.isMobile ? '92vw' : 500));
 const editModalWidth = computed(() => (appStore.isMobile ? '92vw' : 480));
@@ -62,7 +64,16 @@ const columns = computed<TableColumnsType<TagListItem>>(() => [
   { title: '序号', key: 'index', width: 80, align: 'center' },
   { title: '标签名称', dataIndex: 'name', key: 'name', width: 200, align: 'center', ellipsis: true },
   { title: '文章数', dataIndex: 'articlesTotal', key: 'articlesTotal', width: 100, align: 'center' },
-  { title: '创建时间', dataIndex: 'createTime', key: 'createTime', width: 180, align: 'center' },
+  {
+    title: '创建时间',
+    dataIndex: 'createTime',
+    key: 'createTime',
+    width: 180,
+    align: 'center',
+    sorter: (a, b) => compareDateTime(getRawCreateTime(a), getRawCreateTime(b)),
+    sortOrder: query.sortOrder ? getAntdTimeSortOrder(query.sortOrder) : undefined,
+    sortDirections: ['descend', 'ascend']
+  },
   { title: '删除状态', dataIndex: 'isDeleted', key: 'isDeleted', width: 120, align: 'center' },
   { title: '操作', dataIndex: 'action', key: 'action', width: 220, align: 'center' }
 ]);
@@ -107,17 +118,12 @@ function isDeleteTypeDisabled(type: number) {
   return false;
 }
 
-function getCreateTime(record: TagListItem) {
+function getRawCreateTime(record: TagListItem) {
   return record.createTime || record.createdAt || '';
 }
 
-function sortTags(items: TagListItem[]) {
-  return [...items].sort((a, b) => {
-    const sortA = Number(a.sort || 0);
-    const sortB = Number(b.sort || 0);
-    if (sortB !== sortA) return sortB - sortA;
-    return a.id.localeCompare(b.id);
-  });
+function getCreateTime(record: TagListItem) {
+  return formatDateTime(getRawCreateTime(record));
 }
 
 async function loadData() {
@@ -128,11 +134,12 @@ async function loadData() {
       pageSize: pageSize.value,
       name: query.name || undefined,
       startDate: query.startDate || undefined,
-      endDate: query.endDate || undefined
+      endDate: query.endDate || undefined,
+      sortOrder: query.sortOrder
     });
     if (res.success) {
       const items = res.data.items ?? res.data.records ?? [];
-      tableData.value = sortTags(items);
+      tableData.value = items;
       total.value = res.data.totalCount ?? res.data.total ?? 0;
       current.value = res.data.pageNumber;
       pageSize.value = res.data.pageSize;
@@ -151,14 +158,16 @@ function handleReset() {
   query.name = '';
   query.startDate = '';
   query.endDate = '';
+  query.sortOrder = undefined;
   dateRange.value = undefined;
   current.value = 1;
   loadData();
 }
 
-function handleTableChange(page: { current?: number; pageSize?: number }) {
+function handleTableChange(page: { current?: number; pageSize?: number }, ...changeArgs: [unknown?, unknown?, { action?: string }?]) {
   current.value = page.current ?? 1;
   pageSize.value = page.pageSize ?? 20;
+  if (changeArgs[2]?.action === 'sort') query.sortOrder = resolveTimeSortOrder(getTableSortOrder(changeArgs[1]), query.sortOrder);
   loadData();
 }
 
@@ -328,6 +337,7 @@ async function updateTagSortValue(id: string, sort: number) {
 }
 
 async function moveTagUp(_record: TagListItem, index: number) {
+  query.sortOrder = undefined;
   if (index === 0) return;
 
   try {
@@ -348,6 +358,7 @@ async function moveTagUp(_record: TagListItem, index: number) {
 }
 
 async function moveTagDown(_record: TagListItem, index: number) {
+  query.sortOrder = undefined;
   if (index === tableData.value.length - 1) return;
 
   try {
@@ -368,6 +379,7 @@ async function moveTagDown(_record: TagListItem, index: number) {
 }
 
 async function moveTagToFirst(record: TagListItem, index: number) {
+  query.sortOrder = undefined;
   if (index === 0) {
     message.warning('已经是第一个了');
     return;
@@ -381,6 +393,7 @@ async function moveTagToFirst(record: TagListItem, index: number) {
 }
 
 async function moveTagToLast(record: TagListItem, index: number) {
+  query.sortOrder = undefined;
   if (index === tableData.value.length - 1) {
     message.warning('已经是最后一个了');
     return;

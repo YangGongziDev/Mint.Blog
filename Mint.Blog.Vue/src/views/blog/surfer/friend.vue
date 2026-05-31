@@ -64,7 +64,7 @@ function pickFriendHeroImage() {
 // 网站信息数据对象
 const siteInfo = ref({
   name: '程序员-杨工子',
-  icon: 'https://img.yangmufa.cn/roc-blog/8c492941ce294ff597feb51f4fd8ff92.jpg',
+  icon: 'https://img.yangmufa.cn/blog-system/author-avatar.jpg',
   category: '技术类',
   url: 'https://www.yangmufa.cn',
   description: '我是程序员-杨工子；练习编程两年半，C#.Net全栈工程师、MintBlog(薄荷博客)作者。'
@@ -536,10 +536,10 @@ const friendGroups = computed<FriendGroup[]>(() => {
   const inactiveFriends = sortBySortDesc(scopedFriends.filter(friend => friend.status === 'inactive'));
 
   return [
-    { key: 'top', title: '置顶友链', friends: topFriends },
-    { key: 'active', title: '已审核友链', friends: activeFriends },
-    { key: 'pending', title: '待审核友链', friends: pendingFriends },
-    { key: 'inactive', title: '已停用友链', friends: inactiveFriends }
+    { key: 'top', title: '置顶', friends: topFriends },
+    { key: 'active', title: '已确认', friends: activeFriends },
+    { key: 'pending', title: '待审核', friends: pendingFriends },
+    { key: 'inactive', title: '已停用', friends: inactiveFriends }
   ].filter(group => group.friends.length > 0);
 });
 

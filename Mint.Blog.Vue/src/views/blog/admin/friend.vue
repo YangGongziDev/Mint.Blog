@@ -264,6 +264,8 @@ import {
   updateFriendSort
 } from '@/service/blog/admin/friend';
 import { useAppStore } from '@/store/system/app';
+import type { TimeSortOrder } from '@/utils/date-time';
+import { compareDateTime, formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
 
 const appStore = useAppStore();
 const loading = ref(false);
@@ -282,7 +284,14 @@ const editFormRef = ref<FormInstance>();
 const currentDeleteFriend = ref<AdminFriendPageItem | null>(null);
 const deleteType = ref<number | null>(null);
 
-const query = reactive({ pageNumber: 1, pageSize: 10, name: '', startDate: '', endDate: '' });
+const query = reactive({
+  pageNumber: 1,
+  pageSize: 10,
+  name: '',
+  startDate: '',
+  endDate: '',
+  sortOrder: undefined as TimeSortOrder | undefined
+});
 const createForm = reactive<FriendFormModel>({ name: '', avatar: '', category: '', url: '', description: '' });
 const editForm = reactive<FriendFormModel>({ name: '', avatar: '', category: '', url: '', description: '' });
 
@@ -326,7 +335,17 @@ const columns = computed<TableColumnsType<AdminFriendPageItem>>(() => [
   { title: '分类', dataIndex: 'category', key: 'category', width: 100, align: 'center' },
   { title: '网站图标', key: 'avatar', width: 100, align: 'center' },
   { title: '是否置顶', key: 'isTop', width: 100, align: 'center' },
-  { title: '创建时间', dataIndex: 'createTime', key: 'createTime', width: 170, align: 'center', ellipsis: true },
+  {
+    title: '创建时间',
+    dataIndex: 'createTime',
+    key: 'createTime',
+    width: 170,
+    align: 'center',
+    ellipsis: true,
+    sorter: (a, b) => compareDateTime(getRawCreateTime(a), getRawCreateTime(b)),
+    sortOrder: query.sortOrder ? getAntdTimeSortOrder(query.sortOrder) : undefined,
+    sortDirections: ['descend', 'ascend']
+  },
   { title: '审核状态', key: 'status', width: 120, align: 'center' },
   { title: '删除状态', key: 'isDeleted', width: 100, align: 'center' },
   { title: '操作', key: 'action', width: appStore.isMobile ? 220 : 300, align: 'center', className: 'blog-admin-action-column' }
@@ -366,20 +385,16 @@ function isDeleteTypeDisabled(type: number) {
   return false;
 }
 
-function getCreateTime(record: AdminFriendPageItem) {
+function getRawCreateTime(record: AdminFriendPageItem) {
   return (record as AdminFriendPageItem & { createTime?: string }).createTime || record.createdAt;
 }
 
-function normalizeAndSortItems(items: AdminFriendPageItem[]) {
-  return items
-    .map(item => ({ ...item, status: item.status || 'pending' }))
-    .sort((a, b) => {
-      if (a.isTop !== b.isTop) return b.isTop ? 1 : -1;
-      const sortA = Number(a.sort || 0);
-      const sortB = Number(b.sort || 0);
-      if (sortA !== sortB) return sortB - sortA;
-      return a.id.localeCompare(b.id);
-    });
+function getCreateTime(record: AdminFriendPageItem) {
+  return formatDateTime(getRawCreateTime(record));
+}
+
+function normalizeItems(items: AdminFriendPageItem[]) {
+  return items.map(item => ({ ...item, status: item.status || 'pending' }));
 }
 
 async function loadData() {
@@ -388,7 +403,7 @@ async function loadData() {
     const res = await getFriendPageList({ ...query });
     if (res.success) {
       const items = res.data.items || res.data.records || [];
-      tableData.value = normalizeAndSortItems(items);
+      tableData.value = normalizeItems(items);
       total.value = res.data.totalCount || res.data.total || 0;
     }
   } finally {
@@ -401,9 +416,10 @@ function handleDateChange(_: unknown, dateStrings: [string, string]) {
   query.endDate = dateStrings[1];
 }
 
-function handleTableChange(page: TablePaginationConfig) {
+function handleTableChange(page: TablePaginationConfig, ...changeArgs: [unknown?, unknown?, { action?: string }?]) {
   query.pageNumber = page.current || 1;
   query.pageSize = page.pageSize || 10;
+  if (changeArgs[2]?.action === 'sort') query.sortOrder = resolveTimeSortOrder(getTableSortOrder(changeArgs[1]), query.sortOrder);
   loadData();
 }
 
@@ -412,6 +428,7 @@ function handleReset() {
   query.name = '';
   query.startDate = '';
   query.endDate = '';
+  query.sortOrder = undefined;
   dateRange.value = undefined;
   loadData();
 }
@@ -483,6 +500,7 @@ async function handleEditSubmit() {
 }
 
 async function handleTopChange(record: AdminFriendPageItem) {
+  query.sortOrder = undefined;
   const res = await setFriendTop(record.id, record.isTop);
   if (res.success) message.success(record.isTop ? '置顶成功' : '已取消置顶');
   await loadData();
@@ -509,6 +527,7 @@ async function updateFriendSortFunction(id: string, sort: number) {
 }
 
 async function moveFriendUp(index: number) {
+  query.sortOrder = undefined;
   if (index === 0) {
     message.warning('已经是第一个了');
     return;
@@ -529,6 +548,7 @@ async function moveFriendUp(index: number) {
 }
 
 async function moveFriendDown(index: number) {
+  query.sortOrder = undefined;
   if (index === tableData.value.length - 1) {
     message.warning('已经是最后一个了');
     return;
@@ -549,6 +569,7 @@ async function moveFriendDown(index: number) {
 }
 
 async function moveFriendToFirst(record: AdminFriendPageItem, index: number) {
+  query.sortOrder = undefined;
   if (index === 0) {
     message.warning('已经是第一个了');
     return;
@@ -560,6 +581,7 @@ async function moveFriendToFirst(record: AdminFriendPageItem, index: number) {
 }
 
 async function moveFriendToLast(record: AdminFriendPageItem, index: number) {
+  query.sortOrder = undefined;
   if (index === tableData.value.length - 1) {
     message.warning('已经是最后一个了');
     return;

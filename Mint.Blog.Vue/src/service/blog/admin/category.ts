@@ -1,3 +1,4 @@
+import type { TimeSortOrder } from '@/utils/date-time';
 import axios from '../../axios';
 
 interface PageResult<T> {
@@ -30,6 +31,7 @@ export interface CategoryPageQuery {
   name?: string;
   startDate?: string;
   endDate?: string;
+  sortOrder?: TimeSortOrder;
 }
 
 export function getCategoryList() {

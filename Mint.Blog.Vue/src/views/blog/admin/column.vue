@@ -30,15 +30,12 @@ import {
   updateColumnCatalog,
   updateColumnSort
 } from '@/service/blog/admin/column';
-import {
-  getManagedImagePageList,
-  getMinioBuckets,
-  type ManagedImageListItem,
-  type MinioBucketItem,
-  uploadBlogImage
-} from '@/service/blog/admin/image';
+import { uploadBlogImage } from '@/service/blog/admin/image';
 import { getArticlePageList } from '@/service/blog/admin/article';
 import { useAppStore } from '@/store/system/app';
+import type { TimeSortOrder } from '@/utils/date-time';
+import { compareDateTime, formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
+import RustfsImageSelector from '@/components/blog/admin/rustfs-image-selector.vue';
 
 const appStore = useAppStore();
 const loading = ref(false);
@@ -62,27 +59,21 @@ const pendingCoverImage = ref<File | null>(null);
 const pendingEditCoverImage = ref<File | null>(null);
 const originalCoverUrl = ref('');
 const gallerySelectorVisible = ref(false);
-const galleryLoading = ref(false);
 const galleryTarget = ref<'create' | 'edit'>('create');
-const galleryBuckets = ref<MinioBucketItem[]>([]);
-const galleryImages = ref<ManagedImageListItem[]>([]);
-const galleryTotal = ref(0);
-const selectedGalleryImageUrl = ref('');
-const galleryQuery = reactive({
-  pageNumber: 1,
-  pageSize: 12,
-  bucketName: '',
-  fileName: '',
-  sortOrder: 'lastModifiedDesc' as 'lastModifiedDesc' | 'lastModifiedAsc' | 'nameAsc' | 'nameDesc'
-});
 const catalogItems = ref<AdminColumnCatalogItem[]>([]);
 const articleSearchLoading = ref(false);
 const articleSearchOptions = ref<{ label: string; value: string; title: string }[]>([]);
-const query = reactive({ pageNumber: 1, pageSize: 10, title: '', startDate: '', endDate: '' });
+const query = reactive({
+  pageNumber: 1,
+  pageSize: 10,
+  title: '',
+  startDate: '',
+  endDate: '',
+  sortOrder: undefined as TimeSortOrder | undefined
+});
 const formModel = reactive<ColumnFormModel>({ title: '', summary: '', cover: '' });
 const editFormModel = reactive<ColumnFormModel>({ title: '', summary: '', cover: '' });
 const modalWidth = computed(() => (appStore.isMobile ? '92vw' : 600));
-const galleryModalWidth = computed(() => (appStore.isMobile ? '96vw' : 920));
 const deleteModalWidth = computed(() => (appStore.isMobile ? '92vw' : 600));
 const wideModalWidth = computed(() => (appStore.isMobile ? '92vw' : '72vw'));
 const pagination = computed<TablePaginationConfig>(() => ({
@@ -93,15 +84,7 @@ const pagination = computed<TablePaginationConfig>(() => ({
   showTotal: value => `共 ${value} 条`,
   size: appStore.isMobile ? 'small' : 'default'
 }));
-const galleryPagination = computed<TablePaginationConfig>(() => ({
-  current: galleryQuery.pageNumber,
-  pageSize: galleryQuery.pageSize,
-  total: galleryTotal.value,
-  showSizeChanger: true,
-  pageSizeOptions: ['12', '24', '48'],
-  showTotal: value => `共 ${value} 张图片`,
-  size: appStore.isMobile ? 'small' : 'default'
-}));
+
 const columns = computed<TableColumnsType<AdminColumnPageItem>>(() => [
   { title: '序号', key: 'index', width: 80, align: 'center' },
   { title: '标题', dataIndex: 'title', key: 'title', width: 220, ellipsis: true },
@@ -109,7 +92,16 @@ const columns = computed<TableColumnsType<AdminColumnPageItem>>(() => [
   { title: '封面', key: 'cover', width: 140, align: 'center' },
   { title: '是否置顶', key: 'isTop', width: 100, align: 'center' },
   { title: '文章数', dataIndex: 'articlesTotal', key: 'articlesTotal', width: 100, align: 'center' },
-  { title: '发布时间', dataIndex: 'createdAt', key: 'createdAt', width: 180, align: 'center' },
+  {
+    title: '发布时间',
+    dataIndex: 'createdAt',
+    key: 'createdAt',
+    width: 180,
+    align: 'center',
+    sorter: (a, b) => compareDateTime(a.createdAt, b.createdAt),
+    sortOrder: query.sortOrder ? getAntdTimeSortOrder(query.sortOrder) : undefined,
+    sortDirections: ['descend', 'ascend']
+  },
   { title: '是否发布', key: 'isPublish', width: 100, align: 'center' },
   { title: '删除状态', dataIndex: 'isDeleted', key: 'isDeleted', width: 120, align: 'center' },
   { title: '操作', key: 'action', width: 250, align: 'center', className: 'blog-admin-action-column' }
@@ -127,23 +119,6 @@ const rules: FormProps['rules'] = {
   ],
   cover: [{ required: true, message: '请上传封面', trigger: 'change' }]
 };
-function sortColumns(list: AdminColumnPageItem[]) {
-  const weightItems = list.filter(item => item.weight > 0);
-  weightItems.sort((a, b) => {
-    if (a.weight !== b.weight) return b.weight - a.weight;
-    if ((a.sort || 0) !== (b.sort || 0)) return (b.sort || 0) - (a.sort || 0);
-    return a.id.localeCompare(b.id);
-  });
-
-  const sortItems = list.filter(item => !item.weight || item.weight <= 0);
-  sortItems.sort((a, b) => {
-    if ((a.sort || 0) !== (b.sort || 0)) return (b.sort || 0) - (a.sort || 0);
-    return a.id.localeCompare(b.id);
-  });
-
-  return [...weightItems, ...sortItems];
-}
-
 function isColumnDeleted(record: AdminColumnPageItem) {
   return Boolean((record as AdminColumnPageItem & { isDeleted?: boolean | number }).isDeleted);
 }
@@ -163,7 +138,7 @@ async function loadData() {
     const res = await getColumnPageList({ ...query });
     if (res.success) {
       const list = res.data.items || res.data.records || [];
-      tableData.value = sortColumns(list);
+      tableData.value = list;
       total.value = res.data.totalCount || res.data.total || 0;
     }
   } finally {
@@ -174,13 +149,14 @@ function handleDateChange(_: unknown, dateStrings: [string, string]) {
   query.startDate = dateStrings[0];
   query.endDate = dateStrings[1];
 }
-function handleTableChange(page: TablePaginationConfig) {
+function handleTableChange(page: TablePaginationConfig, ...changeArgs: [unknown?, unknown?, { action?: string }?]) {
   query.pageNumber = page.current || 1;
   query.pageSize = page.pageSize || 10;
+  if (changeArgs[2]?.action === 'sort') query.sortOrder = resolveTimeSortOrder(getTableSortOrder(changeArgs[1]), query.sortOrder);
   loadData();
 }
 function handleReset() {
-  Object.assign(query, { pageNumber: 1, title: '', startDate: '', endDate: '' });
+  Object.assign(query, { pageNumber: 1, title: '', startDate: '', endDate: '', sortOrder: undefined });
   dateRange.value = undefined;
   loadData();
 }
@@ -255,98 +231,25 @@ async function uploadPendingCover(target: ColumnFormModel, file: File | null, ol
   if (res.success) target.cover = res.data.url;
 }
 
-async function loadGalleryBuckets() {
-  const res = await getMinioBuckets();
-  if (!res.success) return false;
-  galleryBuckets.value = res.data;
-  if (!galleryQuery.bucketName && res.data.length) galleryQuery.bucketName = res.data[0].name;
-  return true;
-}
-
-async function loadGalleryImages() {
-  if (!galleryQuery.bucketName) {
-    galleryImages.value = [];
-    galleryTotal.value = 0;
-    return;
-  }
-
-  galleryLoading.value = true;
-  try {
-    const res = await getManagedImagePageList({
-      pageNumber: galleryQuery.pageNumber,
-      pageSize: galleryQuery.pageSize,
-      bucketName: galleryQuery.bucketName,
-      fileName: galleryQuery.fileName || undefined,
-      sortOrder: galleryQuery.sortOrder
-    });
-    if (res.success) {
-      galleryImages.value = res.data.items || res.data.records || [];
-      galleryTotal.value = res.data.totalCount || res.data.total || 0;
-    }
-  } finally {
-    galleryLoading.value = false;
-  }
-}
-
-async function openGallerySelector(target: 'create' | 'edit') {
+function openGallerySelector(target: 'create' | 'edit') {
   galleryTarget.value = target;
-  selectedGalleryImageUrl.value = target === 'create' ? formModel.cover : editFormModel.cover;
   gallerySelectorVisible.value = true;
-  if (!galleryBuckets.value.length) {
-    const loaded = await loadGalleryBuckets();
-    if (!loaded) return;
-  }
-  galleryQuery.pageNumber = 1;
-  await loadGalleryImages();
 }
 
-async function handleGalleryBucketChange() {
-  galleryQuery.pageNumber = 1;
-  selectedGalleryImageUrl.value = '';
-  await loadGalleryImages();
+function getGallerySelectedUrl() {
+  return galleryTarget.value === 'create' ? formModel.cover : editFormModel.cover;
 }
 
-async function handleGallerySearch() {
-  galleryQuery.pageNumber = 1;
-  await loadGalleryImages();
-}
-
-async function handleGalleryReset() {
-  galleryQuery.fileName = '';
-  galleryQuery.sortOrder = 'lastModifiedDesc';
-  galleryQuery.pageNumber = 1;
-  await loadGalleryImages();
-}
-
-async function handleGalleryPageChange(page: TablePaginationConfig) {
-  galleryQuery.pageNumber = page.current || 1;
-  galleryQuery.pageSize = page.pageSize || 12;
-  await loadGalleryImages();
-}
-
-function handleGallerySelectConfirm() {
-  if (!selectedGalleryImageUrl.value) {
-    message.warning('请选择一张图库图片');
-    return;
-  }
-
+function handleGallerySelect(url: string) {
   if (galleryTarget.value === 'create') {
-    formModel.cover = selectedGalleryImageUrl.value;
+    formModel.cover = url;
     pendingCoverImage.value = null;
     formRef.value?.validateFields(['cover']).catch(() => undefined);
   } else {
-    editFormModel.cover = selectedGalleryImageUrl.value;
+    editFormModel.cover = url;
     pendingEditCoverImage.value = null;
     editFormRef.value?.validateFields(['cover']).catch(() => undefined);
   }
-
-  gallerySelectorVisible.value = false;
-}
-
-function formatImageSize(size: number) {
-  if (size < 1024) return `${size} B`;
-  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KiB`;
-  return `${(size / 1024 / 1024).toFixed(2)} MiB`;
 }
 async function handleSubmit() {
   await formRef.value?.validate();
@@ -380,6 +283,7 @@ async function handleEditSubmit() {
   }
 }
 async function handleTopChange(record: AdminColumnPageItem) {
+  query.sortOrder = undefined;
   const res = await setColumnTop(record.id, record.isTop);
   if (res.success) message.success(record.isTop ? '置顶成功' : '已取消置顶');
   await loadData();
@@ -398,6 +302,7 @@ async function updateColumnSortValue(id: string, sort: number) {
   message.success('排序更新成功');
 }
 async function moveColumnUp(_record: AdminColumnPageItem, index: number) {
+  query.sortOrder = undefined;
   if (index === 0) {
     message.warning('已经是第一个了');
     return;
@@ -414,6 +319,7 @@ async function moveColumnUp(_record: AdminColumnPageItem, index: number) {
   await updateColumnSortValue(previous.id, previous.sort);
 }
 async function moveColumnDown(_record: AdminColumnPageItem, index: number) {
+  query.sortOrder = undefined;
   if (index === tableData.value.length - 1) {
     message.warning('已经是最后一个了');
     return;
@@ -430,6 +336,7 @@ async function moveColumnDown(_record: AdminColumnPageItem, index: number) {
   await updateColumnSortValue(next.id, next.sort);
 }
 async function moveColumnToFirst(record: AdminColumnPageItem, index: number) {
+  query.sortOrder = undefined;
   if (index === 0) {
     message.warning('已经是第一个了');
     return;
@@ -441,6 +348,7 @@ async function moveColumnToFirst(record: AdminColumnPageItem, index: number) {
   await loadData();
 }
 async function moveColumnToLast(record: AdminColumnPageItem, index: number) {
+  query.sortOrder = undefined;
   if (index === tableData.value.length - 1) {
     message.warning('已经是最后一个了');
     return;
@@ -652,6 +560,9 @@ onMounted(() => loadData());
               @change="() => handleTopChange(record as AdminColumnPageItem)"
             />
           </template>
+          <template v-else-if="column.key === 'createdAt'">
+            {{ formatDateTime(record.createdAt) }}
+          </template>
           <template v-else-if="column.key === 'isPublish'">
             <ASwitch
               v-model:checked="record.isPublish"
@@ -851,67 +762,11 @@ onMounted(() => loadData());
       </div>
     </AModal>
 
-    <AModal v-model:open="gallerySelectorVisible" title="从 RustFS 图库选择封面" :width="galleryModalWidth" @ok="handleGallerySelectConfirm">
-      <ASpace direction="vertical" :size="16" class="w-full">
-        <AForm layout="inline" class="gallery-filter-form">
-          <AFormItem label="桶">
-            <ASelect
-              v-model:value="galleryQuery.bucketName"
-              class="gallery-bucket-select"
-              placeholder="请选择桶"
-              :options="galleryBuckets.map(item => ({ label: item.name, value: item.name }))"
-              @change="handleGalleryBucketChange"
-            />
-          </AFormItem>
-          <AFormItem label="名称">
-            <AInput v-model:value="galleryQuery.fileName" allow-clear placeholder="搜索图片名称" @press-enter="handleGallerySearch" />
-          </AFormItem>
-          <AFormItem label="排序">
-            <ASelect v-model:value="galleryQuery.sortOrder" class="gallery-sort-select" @change="handleGallerySearch">
-              <ASelectOption value="lastModifiedDesc">时间倒序</ASelectOption>
-              <ASelectOption value="lastModifiedAsc">时间正序</ASelectOption>
-              <ASelectOption value="nameAsc">名称 A-Z</ASelectOption>
-              <ASelectOption value="nameDesc">名称 Z-A</ASelectOption>
-            </ASelect>
-          </AFormItem>
-          <AFormItem>
-            <ASpace>
-              <AButton type="primary" :loading="galleryLoading" @click="handleGallerySearch">搜索</AButton>
-              <AButton @click="handleGalleryReset">重置</AButton>
-            </ASpace>
-          </AFormItem>
-        </AForm>
-
-        <ASpin :spinning="galleryLoading">
-          <AEmpty v-if="!galleryImages.length" description="暂无图片" />
-          <div v-else class="gallery-grid">
-            <button
-              v-for="image in galleryImages"
-              :key="image.url"
-              type="button"
-              class="gallery-image-card"
-              :class="{ active: selectedGalleryImageUrl === image.url }"
-              @click="selectedGalleryImageUrl = image.url"
-            >
-              <img :src="image.url" :alt="image.fileName" />
-              <span class="gallery-image-mask">
-                <span class="gallery-image-name" :title="image.fileName">{{ image.fileName }}</span>
-                <span class="gallery-image-meta">{{ formatImageSize(image.size) }}</span>
-                <span class="gallery-image-meta">{{ image.lastModified || '-' }}</span>
-              </span>
-            </button>
-          </div>
-        </ASpin>
-
-        <div class="flex justify-end">
-          <APagination
-            v-bind="galleryPagination"
-            @change="(page, pageSize) => handleGalleryPageChange({ current: page, pageSize })"
-            @show-size-change="(page, pageSize) => handleGalleryPageChange({ current: page, pageSize })"
-          />
-        </div>
-      </ASpace>
-    </AModal>
+    <RustfsImageSelector
+      v-model:open="gallerySelectorVisible"
+      :selected-url="getGallerySelectedUrl()"
+      @select="handleGallerySelect"
+    />
 
     <AModal v-model:open="catalogModalVisible" title="编辑目录" :width="wideModalWidth" @ok="handleCatalogSubmit">
       <div class="catalog-editor">
@@ -1115,75 +970,6 @@ onMounted(() => loadData());
   margin-top: 4px;
   font-size: 12px;
   color: rgb(var(--base-text-color) / 45%);
-}
-.gallery-filter-form {
-  row-gap: 12px;
-}
-.gallery-bucket-select {
-  min-width: 180px;
-}
-.gallery-sort-select {
-  min-width: 140px;
-}
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 12px;
-  max-height: min(56vh, 520px);
-  overflow-y: auto;
-  padding: 2px 4px 4px 2px;
-}
-.gallery-image-card {
-  position: relative;
-  overflow: hidden;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  aspect-ratio: 16 / 10;
-  background: rgb(var(--base-text-color) / 5%);
-  text-align: left;
-  transition:
-    border-color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-.gallery-image-card.active {
-  border-color: rgb(var(--primary-color));
-  box-shadow: 0 8px 22px rgb(var(--primary-color) / 20%);
-}
-.gallery-image-card:hover {
-  transform: translateY(-1px);
-}
-.gallery-image-card img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-}
-.gallery-image-mask {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 18px 10px 8px;
-  color: #fff;
-  background: linear-gradient(180deg, transparent, rgb(15 23 42 / 82%));
-}
-.gallery-image-name {
-  overflow: hidden;
-  font-size: 12px;
-  font-weight: 600;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.gallery-image-meta {
-  overflow: hidden;
-  font-size: 11px;
-  opacity: 0.82;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 :global(html:not(.dark)) .delete-info {
   border: 1px solid #ffccc7;

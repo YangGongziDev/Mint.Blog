@@ -36,9 +36,10 @@ public sealed class ColumnController(
 		[FromQuery] string? title = null,
 		[FromQuery] DateOnly? startDate = null,
 		[FromQuery] DateOnly? endDate = null,
+		[FromQuery] string? sortOrder = null,
 		CancellationToken cancellationToken = default){
 		var result = await adminColumnPageListQueryService.GetAsync(
-			new GetAdminColumnPageListQuery(pageNumber, pageSize, title, startDate, endDate),
+			new GetAdminColumnPageListQuery(pageNumber, pageSize, title, startDate, endDate, sortOrder),
 			cancellationToken);
 
 		return Ok(ApiResponse<PagedResult<AdminColumnPageItemDto>>.Ok(result));

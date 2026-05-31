@@ -7,4 +7,5 @@ public sealed record ArticleListQuery(
 	long? TagId = null,
 	string? Title = null,
 	DateOnly? StartDate = null,
-	DateOnly? EndDate = null);
+	DateOnly? EndDate = null,
+	string? SortOrder = null);

@@ -125,8 +125,11 @@ public sealed class CommentRepository(ISqlSugarDbContext dbContext)
 		}
 
 		var totalCount = await commentQueryable.CountAsync();
-		var comments = await commentQueryable
-			.OrderByDescending(x => x.CreatedAt)
+		var orderedCommentQueryable = string.Equals(query.SortOrder, "timeAsc", StringComparison.OrdinalIgnoreCase)
+			? commentQueryable.OrderBy(x => x.CreatedAt)
+			: commentQueryable.OrderByDescending(x => x.CreatedAt);
+
+		var comments = await orderedCommentQueryable
 			.Skip(skip)
 			.Take(pageSize)
 			.ToListAsync();

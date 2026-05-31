@@ -5,4 +5,5 @@ public sealed record GetAdminColumnPageListQuery(
 	int PageSize = 10,
 	string? Title = null,
 	DateOnly? StartDate = null,
-	DateOnly? EndDate = null);
+	DateOnly? EndDate = null,
+	string? SortOrder = null);

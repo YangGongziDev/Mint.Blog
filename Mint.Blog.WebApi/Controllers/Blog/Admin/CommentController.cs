@@ -25,8 +25,10 @@ public sealed class CommentController(
 		[FromQuery] DateOnly? startDate = null,
 		[FromQuery] DateOnly? endDate = null,
 		[FromQuery] int? status = null,
+		[FromQuery] string? sortOrder = null,
 		CancellationToken cancellationToken = default){
-		var query = new GetAdminCommentPageListQuery(pageNumber, pageSize, routerUrl, startDate, endDate, status);
+		var query = new GetAdminCommentPageListQuery(pageNumber, pageSize, routerUrl, startDate, endDate, status,
+			sortOrder);
 		var result = await commentPageListQueryService.GetAsync(query, cancellationToken);
 		return Ok(ApiResponse<PagedResult<AdminCommentPageItemDto>>.Ok(result));
 	}

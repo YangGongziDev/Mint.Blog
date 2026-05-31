@@ -16,6 +16,8 @@ import {
   type ArticleDraftListItem
 } from '@/service/blog/admin/article';
 import { useAppStore } from '@/store/system/app';
+import type { TimeSortOrder } from '@/utils/date-time';
+import { compareDateTime, formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
 
 defineOptions({ name: 'BlogAdminArticleList' });
 
@@ -37,7 +39,8 @@ const query = reactive({
   pageSize: 20,
   title: '',
   startDate: '',
-  endDate: ''
+  endDate: '',
+  sortOrder: undefined as TimeSortOrder | undefined
 });
 const pagination = computed<TablePaginationConfig>(() => ({
   current: query.pageNumber,
@@ -73,7 +76,16 @@ const columns = computed<TableColumnsType<AdminArticleListItem>>(() => [
   { title: '封面', dataIndex: 'cover', key: 'cover', width: 180, align: 'center' },
   { title: '是否置顶', dataIndex: 'isTop', key: 'isTop', width: 100, align: 'center' },
   { title: '删除状态', dataIndex: 'isDeleted', key: 'isDeleted', width: 100, align: 'center' },
-  { title: '发布时间', dataIndex: 'createTime', key: 'createTime', width: 180, align: 'center' },
+  {
+    title: '发布时间',
+    dataIndex: 'createTime',
+    key: 'createTime',
+    width: 180,
+    align: 'center',
+    sorter: (a, b) => compareDateTime(getRawCreateTime(a), getRawCreateTime(b)),
+    sortOrder: query.sortOrder ? getAntdTimeSortOrder(query.sortOrder) : undefined,
+    sortDirections: ['descend', 'ascend']
+  },
   { title: '操作', key: 'action', width: 150, align: 'center' }
 ]);
 const tableScrollX = 1200;
@@ -90,13 +102,14 @@ async function loadData() {
     loading.value = false;
   }
 }
-function handleTableChange(page: TablePaginationConfig) {
+function handleTableChange(page: TablePaginationConfig, ...changeArgs: [unknown?, unknown?, { action?: string }?]) {
   query.pageNumber = page.current || 1;
   query.pageSize = page.pageSize || 10;
+  if (changeArgs[2]?.action === 'sort') query.sortOrder = resolveTimeSortOrder(getTableSortOrder(changeArgs[1]), query.sortOrder);
   loadData();
 }
 function handleReset() {
-  Object.assign(query, { pageNumber: 1, title: '', startDate: '', endDate: '' });
+  Object.assign(query, { pageNumber: 1, title: '', startDate: '', endDate: '', sortOrder: undefined });
   dateRange.value = undefined;
   loadData();
 }
@@ -105,6 +118,7 @@ function handleDateChange(_: unknown, dateStrings: [string, string]) {
   query.endDate = dateStrings[1];
 }
 async function handleTopChange(id: string, isTop: boolean) {
+  query.sortOrder = undefined;
   const res = await setArticleTop(id, isTop);
   if (res.success) message.success('置顶状态已更新');
   await loadData();
@@ -151,8 +165,11 @@ function isDeleteTypeDisabled(type: number) {
   if (type === 3) return !currentDeleteArticleDeleted.value;
   return false;
 }
-function getCreateTime(record: AdminArticleListItem) {
+function getRawCreateTime(record: AdminArticleListItem) {
   return record.createTime || record.createdAt || '';
+}
+function getCreateTime(record: AdminArticleListItem) {
+  return formatDateTime(getRawCreateTime(record));
 }
 function goToCreateArticle() {
   router.push({ name: 'blog-admin_article-create' });
@@ -384,7 +401,21 @@ onMounted(() => {
           </template>
         </ATableColumn>
         <ATableColumn title="分类" data-index="categoryName" key="categoryName" />
-        <ATableColumn title="更新时间" data-index="updatedAt" key="updatedAt" />
+        <ATableColumn
+          title="更新时间"
+          data-index="updatedAt"
+          key="updatedAt"
+          :sorter="
+            (a: unknown, b: unknown) =>
+              compareDateTime((a as ArticleDraftListItem).updatedAt, (b as ArticleDraftListItem).updatedAt)
+          "
+          default-sort-order="descend"
+          :sort-directions="['descend', 'ascend']"
+        >
+          <template #default="{ record }">
+            {{ formatDateTime(record.updatedAt) }}
+          </template>
+        </ATableColumn>
         <ATableColumn title="操作" key="action" :width="220">
           <template #default="{ record }">
             <ASpace>

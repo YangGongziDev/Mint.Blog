@@ -5,4 +5,5 @@ public sealed record GetAdminFriendPageListQuery(
 	int PageSize = 10,
 	string? Name = null,
 	DateOnly? StartDate = null,
-	DateOnly? EndDate = null);
+	DateOnly? EndDate = null,
+	string? SortOrder = null);

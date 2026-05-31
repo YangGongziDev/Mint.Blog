@@ -269,7 +269,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 	public async Task<PagedResult<ArticleListItemDto>> GetAsync(ArticleListQuery query,
 		CancellationToken cancellationToken = default){
 		return await GetListAsync(query.PageNumber, query.PageSize, query.CategoryId, query.TagId, query.Title,
-			query.StartDate, query.EndDate, cancellationToken);
+			query.StartDate, query.EndDate, query.SortOrder, cancellationToken);
 	}
 
 	public async Task<BlogHomeDto> GetAsync(BlogHomeQuery query, CancellationToken cancellationToken = default){
@@ -358,6 +358,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 		string? keyword,
 		DateOnly? startDate,
 		DateOnly? endDate,
+		string? sortOrder,
 		CancellationToken cancellationToken){
 		var normalizedPageNumber = pageNumber <= 0 ? 1 : pageNumber;
 		var normalizedPageSize = pageSize <= 0 ? 10 : pageSize;
@@ -408,9 +409,13 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 
 		var totalCount = await articleQueryable.CountAsync();
 
-		var articles = await articleQueryable
-			.OrderByDescending(x => x.Weight)
-			.OrderByDescending(x => x.CreatedAt)
+		var orderedArticleQueryable = sortOrder?.ToLowerInvariant() switch {
+			"timeasc" => articleQueryable.OrderBy(x => x.CreatedAt).OrderByDescending(x => x.Weight),
+			"timedesc" => articleQueryable.OrderByDescending(x => x.CreatedAt).OrderByDescending(x => x.Weight),
+			_ => articleQueryable.OrderByDescending(x => x.Weight).OrderByDescending(x => x.CreatedAt)
+		};
+
+		var articles = await orderedArticleQueryable
 			.Skip(skip)
 			.Take(normalizedPageSize)
 			.ToListAsync();

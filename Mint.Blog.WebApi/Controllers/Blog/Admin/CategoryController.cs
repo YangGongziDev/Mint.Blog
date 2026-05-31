@@ -44,9 +44,10 @@ public sealed class CategoryController(
 		[FromQuery] string? name = null,
 		[FromQuery] DateOnly? startDate = null,
 		[FromQuery] DateOnly? endDate = null,
+		[FromQuery] string? sortOrder = null,
 		CancellationToken cancellationToken = default){
 		var categories = await categoryPageListQueryService.GetAsync(
-			new CategoryPageListQuery(pageNumber, pageSize, keyword, name, startDate, endDate),
+			new CategoryPageListQuery(pageNumber, pageSize, keyword, name, startDate, endDate, sortOrder),
 			cancellationToken);
 		return Ok(ApiResponse<PagedResult<CategoryListItemDto>>.Ok(categories));
 	}

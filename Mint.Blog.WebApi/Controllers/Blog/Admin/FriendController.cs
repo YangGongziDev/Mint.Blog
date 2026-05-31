@@ -36,9 +36,10 @@ public sealed class FriendController(
 		[FromQuery] string? name = null,
 		[FromQuery] DateOnly? startDate = null,
 		[FromQuery] DateOnly? endDate = null,
+		[FromQuery] string? sortOrder = null,
 		CancellationToken cancellationToken = default){
 		var result = await adminFriendPageListQueryService.GetAsync(
-			new GetAdminFriendPageListQuery(pageNumber, pageSize, name, startDate, endDate),
+			new GetAdminFriendPageListQuery(pageNumber, pageSize, name, startDate, endDate, sortOrder),
 			cancellationToken);
 
 		return Ok(ApiResponse<PagedResult<AdminFriendPageItemDto>>.Ok(result));

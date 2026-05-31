@@ -25,6 +25,8 @@ import {
   updateCategorySort
 } from '@/service/blog/admin/category';
 import { useAppStore } from '@/store/system/app';
+import type { TimeSortOrder } from '@/utils/date-time';
+import { compareDateTime, formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
 
 defineOptions({ name: 'BlogAdminCategoryList' });
 
@@ -48,7 +50,7 @@ const formRef = ref<FormInstance>();
 const editFormRef = ref<FormInstance>();
 const form = reactive({ name: '' });
 const editForm = reactive({ id: undefined as string | undefined, name: '' });
-const query = reactive({ name: '', startDate: '', endDate: '' });
+const query = reactive({ name: '', startDate: '', endDate: '', sortOrder: undefined as TimeSortOrder | undefined });
 
 const modalWidth = computed(() => (appStore.isMobile ? '92vw' : 480));
 const deleteModalWidth = computed(() => (appStore.isMobile ? '92vw' : 600));
@@ -57,7 +59,16 @@ const columns = computed<TableColumnsType<CategoryListItem>>(() => [
   { title: '序号', key: 'index', width: 80, align: 'center' },
   { title: '分类名称', dataIndex: 'name', key: 'name', width: 180, align: 'center', ellipsis: true },
   { title: '文章数', dataIndex: 'articlesTotal', key: 'articlesTotal', width: 100, align: 'center' },
-  { title: '创建时间', dataIndex: 'createTime', key: 'createTime', width: 180, align: 'center' },
+  {
+    title: '创建时间',
+    dataIndex: 'createTime',
+    key: 'createTime',
+    width: 180,
+    align: 'center',
+    sorter: (a, b) => compareDateTime(getRawCreateTime(a), getRawCreateTime(b)),
+    sortOrder: query.sortOrder ? getAntdTimeSortOrder(query.sortOrder) : undefined,
+    sortDirections: ['descend', 'ascend']
+  },
   { title: '删除状态', key: 'isDeleted', width: 100, align: 'center' },
   { title: '操作', key: 'action', width: 220, align: 'center' }
 ]);
@@ -115,11 +126,11 @@ function isDeleteTypeDisabled(type: number) {
   if (type === 3) return !currentDeleteCategoryDeleted.value;
   return false;
 }
-function getCreateTime(record: CategoryListItem) {
+function getRawCreateTime(record: CategoryListItem) {
   return record.createTime || record.createdAt || '';
 }
-function sortCategories(items: CategoryListItem[]) {
-  return [...items].sort((a, b) => Number(b.sort || 0) - Number(a.sort || 0) || a.id.localeCompare(b.id));
+function getCreateTime(record: CategoryListItem) {
+  return formatDateTime(getRawCreateTime(record));
 }
 async function loadData() {
   loading.value = true;
@@ -129,11 +140,12 @@ async function loadData() {
       pageSize: pageSize.value,
       name: query.name || undefined,
       startDate: query.startDate || undefined,
-      endDate: query.endDate || undefined
+      endDate: query.endDate || undefined,
+      sortOrder: query.sortOrder
     });
     if (res.success) {
       const items = res.data.items ?? res.data.records ?? [];
-      tableData.value = sortCategories(items);
+      tableData.value = items;
       total.value = res.data.totalCount ?? res.data.total ?? 0;
       current.value = res.data.pageNumber;
       pageSize.value = res.data.pageSize;
@@ -147,14 +159,15 @@ function handleDateChange(_: unknown, dateStrings: [string, string]) {
   query.endDate = dateStrings[1];
 }
 function handleReset() {
-  Object.assign(query, { name: '', startDate: '', endDate: '' });
+  Object.assign(query, { name: '', startDate: '', endDate: '', sortOrder: undefined });
   dateRange.value = undefined;
   current.value = 1;
   loadData();
 }
-function handleTableChange(page: { current?: number; pageSize?: number }) {
+function handleTableChange(page: { current?: number; pageSize?: number }, ...changeArgs: [unknown?, unknown?, { action?: string }?]) {
   current.value = page.current ?? 1;
   pageSize.value = page.pageSize ?? 20;
+  if (changeArgs[2]?.action === 'sort') query.sortOrder = resolveTimeSortOrder(getTableSortOrder(changeArgs[1]), query.sortOrder);
   loadData();
 }
 function openCreateModal() {
@@ -265,6 +278,7 @@ async function updateCategorySortValue(id: string, sort: number) {
   if (!res.success) throw new Error('排序更新失败');
 }
 async function moveCategoryUp(index: number) {
+  query.sortOrder = undefined;
   if (index === 0) return;
   const currentItem = tableData.value[index];
   const prevItem = tableData.value[index - 1];
@@ -276,6 +290,7 @@ async function moveCategoryUp(index: number) {
   [tableData.value[index], tableData.value[index - 1]] = [tableData.value[index - 1], tableData.value[index]];
 }
 async function moveCategoryDown(index: number) {
+  query.sortOrder = undefined;
   if (index === tableData.value.length - 1) return;
   const currentItem = tableData.value[index];
   const nextItem = tableData.value[index + 1];
@@ -287,6 +302,7 @@ async function moveCategoryDown(index: number) {
   [tableData.value[index], tableData.value[index + 1]] = [tableData.value[index + 1], tableData.value[index]];
 }
 async function moveCategoryToFirst(record: CategoryListItem, index: number) {
+  query.sortOrder = undefined;
   if (index === 0) {
     message.warning('已经是第一个了');
     return;
@@ -298,6 +314,7 @@ async function moveCategoryToFirst(record: CategoryListItem, index: number) {
   }
 }
 async function moveCategoryToLast(record: CategoryListItem, index: number) {
+  query.sortOrder = undefined;
   if (index === tableData.value.length - 1) {
     message.warning('已经是最后一个了');
     return;
