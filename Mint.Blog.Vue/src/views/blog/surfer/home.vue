@@ -22,6 +22,8 @@ type Article = {
   summary?: string;
   cover?: string;
   createDate?: string;
+  createTime?: string;
+  createdAt?: string;
   isTop?: boolean;
   readNum?: number;
   category?: Category;
@@ -113,11 +115,45 @@ const cover = (a: Article) => ({ backgroundImage: `url(${coverUrl(a)})` });
 const views = (a: Article, i: number) => a.readNum ?? 100 + i * 37;
 const primaryTag = (a: Article) => a.tags?.[0];
 
+function isTopArticle(article: Article) {
+  return article.isTop === true || Number(article.isTop ?? 0) === 1 || String(article.isTop).toLowerCase() === 'true';
+}
+
+function getArticleTimeValue(article: Article) {
+  const rawTime = article.createDate || article.createTime || article.createdAt;
+  if (!rawTime) return 0;
+  const time = new Date(rawTime).getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
+function sortHomeArticles(list: Article[]) {
+  return [...list].sort((a, b) => {
+    const topCompare = Number(isTopArticle(b)) - Number(isTopArticle(a));
+    if (topCompare !== 0) return topCompare;
+
+    const timeCompare = getArticleTimeValue(b) - getArticleTimeValue(a);
+    if (timeCompare !== 0) return timeCompare;
+
+    return b.id - a.id;
+  });
+}
+
+function getArticleDisplayTime(article: Article) {
+  return article.createDate || article.createTime || article.createdAt;
+}
+
 function formatDate(raw?: string): string {
   if (!raw) return '未知日期';
+
+  const dateMatch = raw.match(/^(\d{4})[-/](\d{2})[-/](\d{2})/);
+  if (dateMatch) return `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
+
   const d = new Date(raw);
   if (!Number.isNaN(d.getTime())) {
-    return d.toISOString().slice(0, 10);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
   return raw;
 }
@@ -136,7 +172,7 @@ async function fetchArticles() {
   try {
     const res = await getArticlePageList<Page>({ current: page, size: size.value });
     if (res.success) {
-      articles.value = res.data || [];
+      articles.value = sortHomeArticles(res.data || []);
       total.value = res.total;
       pages.value = res.pages;
       toTop();
@@ -282,7 +318,7 @@ watch(
                         #&nbsp;{{ primaryTag(a)?.name || '无标签' }}
                       </button>
                     </ATooltip>
-                    <span class="mobile-date">{{ formatDate(a.createDate) }}</span>
+                    <span class="mobile-date">{{ formatDate(getArticleDisplayTime(a)) }}</span>
                   </div>
                   <h2
                     class="line-clamp-1 text-[18px] font-black leading-7 text-[#0d3d2d] hover:text-[#3ecf9a] dark:text-white dark:hover:text-[#539dfd] sm:text-xl md:text-2xl"
@@ -323,7 +359,7 @@ watch(
                         <span class="meta-icon meta-icon-time">
                           <CalendarOutlined />
                         </span>
-                        {{ formatDate(a.createDate) }}
+                        {{ formatDate(getArticleDisplayTime(a)) }}
                       </span>
                     </ATooltip>
                   </div>

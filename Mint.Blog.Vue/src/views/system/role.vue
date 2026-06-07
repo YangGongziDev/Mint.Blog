@@ -4,13 +4,13 @@
       <AForm ref="searchFormRef" :model="searchParams" :label-col="{ span: 6, md: 8 }">
         <ARow :gutter="[16, 16]" wrap>
           <ACol :span="24" :md="12" :lg="6">
-            <AFormItem label="username" name="userName" class="m-0">
-              <AInput v-model:value="searchParams.userName" placeholder="请输入 username" />
+            <AFormItem label="用户名" name="userName" class="m-0">
+              <AInput v-model:value="searchParams.userName" placeholder="请输入用户名" />
             </AFormItem>
           </ACol>
           <ACol :span="24" :md="12" :lg="6">
-            <AFormItem label="role" name="role" class="m-0">
-              <AInput v-model:value="searchParams.role" placeholder="请输入 role" />
+            <AFormItem label="角色" name="role" class="m-0">
+              <AInput v-model:value="searchParams.role" placeholder="请输入角色" />
             </AFormItem>
           </ACol>
           <ACol :span="24" :md="12" :lg="6" class="search-action-col">
@@ -36,7 +36,7 @@
     </ACard>
 
     <ACard
-      title="sys_user_role"
+      title="角色管理"
       :bordered="false"
       :body-style="{ flex: 1, overflow: 'hidden' }"
       class="min-h-0 flex flex-col card-wrapper sm:min-w-0 sm:flex-1 sm:overflow-hidden"
@@ -67,11 +67,11 @@
 
     <ADrawer v-model:open="drawerVisible" :title="drawerTitle" :width="360">
       <AForm ref="drawerFormRef" layout="vertical" :model="drawerModel" :rules="drawerRules">
-        <AFormItem label="username" name="userName">
-          <AInput v-model:value="drawerModel.userName" placeholder="请输入 username" />
+        <AFormItem label="用户名" name="userName">
+          <AInput v-model:value="drawerModel.userName" placeholder="请输入用户名" />
         </AFormItem>
-        <AFormItem label="role" name="role">
-          <AInput v-model:value="drawerModel.role" placeholder="请输入 role" />
+        <AFormItem label="角色" name="role">
+          <AInput v-model:value="drawerModel.role" placeholder="请输入角色" />
         </AFormItem>
       </AForm>
       <template #footer>
@@ -88,6 +88,7 @@
 import { computed, ref, watch } from 'vue';
 import { Button, Popconfirm } from 'ant-design-vue';
 import { fetchGetRoleList, fetchUpdateUserRole } from '@/service/system/role';
+import { useAuthStore } from '@/store/system/auth';
 import { useTable, useTableOperate, useTableScroll } from '@/hooks/table/use-table';
 import { useAntdForm, useFormRules } from '@/hooks/form/use-antd-form';
 import { $t } from '@/locales';
@@ -95,6 +96,18 @@ import { $t } from '@/locales';
 defineOptions({
   name: 'SystemRole'
 });
+
+const authStore = useAuthStore();
+const readonlyActionMessage = '演示账号仅允许查看，不能执行会修改后端数据的操作';
+const isDemoAccount = computed(() => {
+  const roleText = authStore.userInfo.roles.join(',').toLowerCase();
+  const userText = `${authStore.userInfo.userName},${authStore.userInfo.displayName}`.toLowerCase();
+  return /demo|演示/.test(roleText) || /demo|演示/.test(userText);
+});
+
+function warnReadonlyAction() {
+  window.$message?.warning(readonlyActionMessage);
+}
 
 const { tableWrapperRef, scrollConfig } = useTableScroll(780);
 
@@ -127,28 +140,28 @@ const {
     {
       key: 'id',
       dataIndex: 'id',
-      title: 'id',
+      title: 'ID',
       align: 'center',
       width: 180
     },
     {
       key: 'userName',
       dataIndex: 'userName',
-      title: 'username',
+      title: '用户名',
       align: 'center',
       minWidth: 160
     },
     {
       key: 'role',
       dataIndex: 'role',
-      title: 'role',
+      title: '角色',
       align: 'center',
       minWidth: 160
     },
     {
       key: 'createTime',
       dataIndex: 'createTime',
-      title: 'create_time',
+      title: '创建时间',
       align: 'center',
       width: 180
     },
@@ -186,11 +199,20 @@ const {
 } = useTableOperate(data, getData);
 
 async function handleBatchDelete() {
+  if (isDemoAccount.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   onBatchDeleted();
 }
 
-function handleDelete(id: number) {
-  console.log(id);
+function handleDelete(_id?: number) {
+  if (isDemoAccount.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   onDeleted();
 }
 
@@ -250,6 +272,11 @@ function closeDrawer() {
 }
 
 async function handleDrawerSubmit() {
+  if (isDemoAccount.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   await validateDrawer();
 
   if (operateType.value === 'edit' && editingData.value) {

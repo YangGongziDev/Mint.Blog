@@ -7,20 +7,20 @@
       <AForm ref="searchFormRef" :model="searchParams" :label-col="{ span: 6, md: 8 }">
         <ARow :gutter="[16, 16]" wrap>
           <ACol :span="24" :md="12" :lg="6">
-            <AFormItem label="username" name="userName" class="m-0">
-              <AInput v-model:value="searchParams.userName" placeholder="请输入 username" />
+            <AFormItem label="用户名" name="userName" class="m-0">
+              <AInput v-model:value="searchParams.userName" placeholder="请输入用户名" />
             </AFormItem>
           </ACol>
           <ACol :span="24" :md="12" :lg="6">
-            <AFormItem label="display_name" name="displayName" class="m-0">
-              <AInput v-model:value="searchParams.displayName" placeholder="请输入 display_name" />
+            <AFormItem label="显示名称" name="displayName" class="m-0">
+              <AInput v-model:value="searchParams.displayName" placeholder="请输入显示名称" />
             </AFormItem>
           </ACol>
           <ACol :span="24" :md="12" :lg="6">
-            <AFormItem label="is_deleted" name="isDeleted" class="m-0">
+            <AFormItem label="删除状态" name="isDeleted" class="m-0">
               <ASelect
                 v-model:value="searchParams.isDeleted"
-                placeholder="请选择 is_deleted"
+                placeholder="请选择删除状态"
                 :options="isDeletedOptions"
                 allow-clear
               />
@@ -49,7 +49,7 @@
     </ACard>
 
     <ACard
-      title="sys_user"
+      title="用户管理"
       :bordered="false"
       :body-style="{ flex: 1, overflow: 'hidden' }"
       class="min-h-0 flex flex-col card-wrapper sm:min-w-0 sm:flex-1 sm:overflow-hidden"
@@ -79,13 +79,13 @@
 
       <ADrawer v-model:open="drawerVisible" :title="drawerTitle" :width="360">
         <AForm ref="drawerFormRef" layout="vertical" :model="drawerModel" :rules="drawerRules">
-          <AFormItem label="username" name="userName">
-            <AInput v-model:value="drawerModel.userName" placeholder="请输入 username" />
+          <AFormItem label="用户名" name="userName">
+            <AInput v-model:value="drawerModel.userName" placeholder="请输入用户名" />
           </AFormItem>
-          <AFormItem label="display_name" name="displayName">
-            <AInput v-model:value="drawerModel.displayName" placeholder="请输入 display_name" />
+          <AFormItem label="显示名称" name="displayName">
+            <AInput v-model:value="drawerModel.displayName" placeholder="请输入显示名称" />
           </AFormItem>
-          <AFormItem label="is_deleted" name="isDeleted">
+          <AFormItem label="删除状态" name="isDeleted">
             <ARadioGroup v-model:value="drawerModel.isDeleted">
               <ARadio :value="0">0 - 未删除</ARadio>
               <ARadio :value="1">1 - 已删除</ARadio>
@@ -108,6 +108,7 @@ import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { Button, Popconfirm, Tag } from 'ant-design-vue';
 import { fetchGetUserList, fetchUpdateUser } from '@/service/system/user';
+import { useAuthStore } from '@/store/system/auth';
 import { useTable, useTableOperate, useTableScroll } from '@/hooks/table/use-table';
 import { useAntdForm, useFormRules } from '@/hooks/form/use-antd-form';
 import { $t } from '@/locales';
@@ -117,6 +118,17 @@ defineOptions({
 });
 
 const route = useRoute();
+const authStore = useAuthStore();
+const readonlyActionMessage = '演示账号仅允许查看，不能执行会修改后端数据的操作';
+const isDemoAccount = computed(() => {
+  const roleText = authStore.userInfo.roles.join(',').toLowerCase();
+  const userText = `${authStore.userInfo.userName},${authStore.userInfo.displayName}`.toLowerCase();
+  return /demo|演示/.test(roleText) || /demo|演示/.test(userText);
+});
+
+function warnReadonlyAction() {
+  window.$message?.warning(readonlyActionMessage);
+}
 
 const isDetailPage = computed(() => route.name === 'system_user-detail');
 
@@ -159,28 +171,28 @@ const {
     {
       key: 'id',
       dataIndex: 'id',
-      title: 'id',
+      title: 'ID',
       align: 'center',
       width: 180
     },
     {
       key: 'userName',
       dataIndex: 'userName',
-      title: 'username',
+      title: '用户名',
       align: 'center',
       minWidth: 140
     },
     {
       key: 'displayName',
       dataIndex: 'displayName',
-      title: 'display_name',
+      title: '显示名称',
       align: 'center',
       minWidth: 140
     },
     {
       key: 'isDeleted',
       dataIndex: 'isDeleted',
-      title: 'is_deleted',
+      title: '删除状态',
       align: 'center',
       width: 110,
       customRender: ({ record }) => {
@@ -191,14 +203,14 @@ const {
     {
       key: 'createTime',
       dataIndex: 'createTime',
-      title: 'create_time',
+      title: '创建时间',
       align: 'center',
       width: 180
     },
     {
       key: 'updateTime',
       dataIndex: 'updateTime',
-      title: 'update_time',
+      title: '更新时间',
       align: 'center',
       width: 180
     },
@@ -236,11 +248,20 @@ const {
 } = useTableOperate(data, getData);
 
 async function handleBatchDelete() {
+  if (isDemoAccount.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   onBatchDeleted();
 }
 
-function handleDelete(id: number) {
-  console.log(id);
+function handleDelete(_id?: number) {
+  if (isDemoAccount.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   onDeleted();
 }
 
@@ -303,6 +324,11 @@ function closeDrawer() {
 }
 
 async function handleDrawerSubmit() {
+  if (isDemoAccount.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   await validateDrawer();
 
   if (operateType.value === 'edit' && editingData.value) {

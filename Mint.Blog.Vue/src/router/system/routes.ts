@@ -57,6 +57,17 @@ export const systemRoutes: RouteRecordRaw[] = [
     }
   },
   {
+    path: 'exception/look-forward',
+    name: 'system_exception_look-forward',
+    component: () => import('@/components/system/look-forward.vue'),
+    meta: {
+      title: 'system_exception_look-forward',
+      i18nKey: 'route.system_exception_look-forward',
+      public: false,
+      hideInMenu: true
+    }
+  },
+  {
     path: 'iframe-page/:url',
     name: 'iframe-page',
     component: () => import('@/components/system/iframe-page.vue'),

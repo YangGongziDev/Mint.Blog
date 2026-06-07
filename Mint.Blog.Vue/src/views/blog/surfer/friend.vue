@@ -628,7 +628,7 @@ onMounted(() => {
             友情链接
           </h1>
           <p class="mx-auto mb-7 max-w-2xl text-sm leading-7 text-white/86 sm:text-base">
-            这里收录了一些优秀的技术博客和网站，欢迎大家互相学习交流。
+            这里收录了一些优秀的技术博客和网站，欢迎互相学习交流。
           </p>
           <div class="flex flex-wrap justify-center gap-3">
             <button
@@ -1400,7 +1400,7 @@ html.dark .friend-ripple .parallax > use {
 // 响应式设计
 @media (max-width: 768px) {
   .friend-hero-content {
-    transform: translateY(-30px);
+    transform: translateY(0);
   }
 
   .friend-ripple .waves {

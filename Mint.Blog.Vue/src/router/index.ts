@@ -1,11 +1,11 @@
 import type { App } from 'vue';
 import { type RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import { useRouteStore } from '@/store/system/route';
-import { setupRouterGuards } from './guards';
-import type { MenuModuleKey, RouteLayout } from './types';
-import { systemRoutes } from '@/router/system/routes';
 import { blogAdminRoutes } from '@/router/blog/admin/routes';
 import { blogSurferRoutes } from '@/router/blog/surfer/routes';
+import { systemRoutes } from '@/router/system/routes';
+import { setupRouterGuards } from './guards';
+import type { MenuModuleKey, RouteLayout } from './types';
 
 const { VITE_BASE_URL } = import.meta.env;
 
@@ -96,6 +96,30 @@ export const router = createRouter({
   history: createWebHistory(VITE_BASE_URL),
   routes: builtinRoutes
 });
+
+const DYNAMIC_IMPORT_RELOAD_KEY = 'mint-blog:dynamic-import-reload-at';
+
+function isDynamicImportLoadError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  return /Failed to fetch dynamically imported module|Importing a module script failed|error loading dynamically imported module/i.test(
+    message
+  );
+}
+
+function setupDynamicImportErrorReload() {
+  router.onError(error => {
+    if (!isDynamicImportLoadError(error)) return;
+
+    const lastReloadAt = Number(window.sessionStorage.getItem(DYNAMIC_IMPORT_RELOAD_KEY) || 0);
+    const now = Date.now();
+    if (now - lastReloadAt < 30_000) return;
+
+    window.sessionStorage.setItem(DYNAMIC_IMPORT_RELOAD_KEY, String(now));
+    window.location.reload();
+  });
+}
+
+setupDynamicImportErrorReload();
 
 export async function setupRouter(app: App) {
   const routeStore = useRouteStore();

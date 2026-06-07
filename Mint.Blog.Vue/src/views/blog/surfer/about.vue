@@ -20,7 +20,7 @@ const projectInfo = [
   { label: '项目仓库', value: 'https://github.com/YangMufa/Mint.Blog', link: 'https://github.com/YangMufa/Mint.Blog' },
   { label: '站点首页', value: 'https://www.yangmufa.cn', link: 'https://www.yangmufa.cn' },
   { label: '接口地址', value: 'https://www.yangmufa.cn/api/blog', link: 'https://www.yangmufa.cn/api/blog' },
-  { label: '后台环境', value: '.NET 10 / SqlSugar / PostgreSQL / MinIO / JWT' },
+  { label: '后台环境', value: '.NET 10 / SqlSugar / PostgreSQL / RustFS / JWT' },
   { label: '前端环境', value: 'Node.js 24+ / PNPM 10+ / Vite 8' }
 ];
 

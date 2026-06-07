@@ -124,7 +124,7 @@ export const blogAdminRoutes: RouteRecordRaw[] = [
     name: 'document_project',
     component: () => import('@/components/system/iframe-page.vue'),
     props: {
-      url: 'https://www.yangmufa.cn'
+      url: 'https://www.yangmufa.cn/blog/surfer/column/1'
     },
     meta: {
       title: 'document_project',
@@ -134,12 +134,57 @@ export const blogAdminRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: 'document/project-link',
+    path: 'document_project-link',
     name: 'document_project-link',
     component: () => import('@/components/system/iframe-page.vue'),
+    props: {
+      url: 'https://www.yangmufa.cn/blog/surfer/column/1'
+    },
     meta: {
       title: 'document_project-link',
       i18nKey: 'route.document_project-link',
+      public: true,
+      hideInMenu: true
+    }
+  },
+  {
+    path: 'document/dotnet',
+    name: 'document_dotnet',
+    component: () => import('@/components/system/iframe-page.vue'),
+    props: {
+      url: 'https://c.biancheng.net/csharp/'
+    },
+    meta: {
+      title: 'document_dotnet',
+      i18nKey: 'route.document_dotnet',
+      public: true,
+      hideInMenu: true
+    }
+  },
+  {
+    path: 'document/postgresql',
+    name: 'document_postgresql',
+    component: () => import('@/components/system/iframe-page.vue'),
+    props: {
+      url: 'https://neon.com/postgresql/tutorial'
+    },
+    meta: {
+      title: 'document_postgresql',
+      i18nKey: 'route.document_postgresql',
+      public: true,
+      hideInMenu: true
+    }
+  },
+  {
+    path: 'document/rustfs',
+    name: 'document_rustfs',
+    component: () => import('@/components/system/iframe-page.vue'),
+    props: {
+      url: 'https://docs.rustfs.com/installation/'
+    },
+    meta: {
+      title: 'document_rustfs',
+      i18nKey: 'route.document_rustfs',
       public: true,
       hideInMenu: true
     }
@@ -149,7 +194,7 @@ export const blogAdminRoutes: RouteRecordRaw[] = [
     name: 'document_vue',
     component: () => import('@/components/system/iframe-page.vue'),
     props: {
-      url: 'https://cn.vuejs.org/'
+      url: 'https://www.vueframework.com/docs/v3/cn/guide/introduction.html'
     },
     meta: {
       title: 'document_vue',
@@ -159,43 +204,29 @@ export const blogAdminRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: 'document/vite',
-    name: 'document_vite',
+    path: 'document/pinia',
+    name: 'document_pinia',
     component: () => import('@/components/system/iframe-page.vue'),
     props: {
-      url: 'https://cn.vitejs.dev/'
+      url: 'https://pinia.vuejs.org/zh/introduction.html'
     },
     meta: {
-      title: 'document_vite',
-      i18nKey: 'route.document_vite',
+      title: 'document_pinia',
+      i18nKey: 'route.document_pinia',
       public: true,
       hideInMenu: true
     }
   },
   {
-    path: 'document/unocss',
-    name: 'document_unocss',
+    path: 'document/tailwindcss',
+    name: 'document_tailwindcss',
     component: () => import('@/components/system/iframe-page.vue'),
     props: {
-      url: 'https://unocss.dev/'
+      url: 'https://www.tailwindcss.cn/docs/installation'
     },
     meta: {
-      title: 'document_unocss',
-      i18nKey: 'route.document_unocss',
-      public: true,
-      hideInMenu: true
-    }
-  },
-  {
-    path: 'document/naive',
-    name: 'document_naive',
-    component: () => import('@/components/system/iframe-page.vue'),
-    props: {
-      url: 'https://www.naiveui.com/zh-CN/os-theme/docs/introduction'
-    },
-    meta: {
-      title: 'document_naive',
-      i18nKey: 'route.document_naive',
+      title: 'document_tailwindcss',
+      i18nKey: 'route.document_tailwindcss',
       public: true,
       hideInMenu: true
     }

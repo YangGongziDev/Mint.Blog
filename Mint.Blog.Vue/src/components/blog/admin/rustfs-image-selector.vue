@@ -5,9 +5,9 @@ import { message } from 'ant-design-vue';
 import {
   type ManagedImageListItem,
   type ManagedImagePageQuery,
-  type MinioBucketItem,
+  type RustfsBucketItem,
   getManagedImagePageList,
-  getMinioBuckets
+  getRustfsBuckets
 } from '@/service/blog/admin/image';
 import { useAppStore } from '@/store/system/app';
 import { resolveServiceErrorMessage } from '@/utils/service-error';
@@ -35,7 +35,7 @@ const emit = defineEmits<{
 
 const appStore = useAppStore();
 const loading = ref(false);
-const buckets = ref<MinioBucketItem[]>([]);
+const buckets = ref<RustfsBucketItem[]>([]);
 const images = ref<ManagedImageListItem[]>([]);
 const total = ref(0);
 const selectedImageUrl = ref('');
@@ -79,7 +79,7 @@ function updateOpen(value: boolean) {
 }
 
 async function loadBuckets() {
-  const res = await getMinioBuckets();
+  const res = await getRustfsBuckets();
   if (!res.success) return false;
   buckets.value = res.data;
   if (!query.bucketName && res.data.length) query.bucketName = res.data[0].name;

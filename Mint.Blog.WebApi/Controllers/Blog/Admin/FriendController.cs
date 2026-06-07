@@ -68,6 +68,7 @@ public sealed class FriendController(
 	}
 
 	[HttpPatch("{friendId:long}/top")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
@@ -78,6 +79,7 @@ public sealed class FriendController(
 	}
 
 	[HttpPatch("{friendId:long}/status")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
@@ -88,6 +90,7 @@ public sealed class FriendController(
 	}
 
 	[HttpPatch("{friendId:long}/sort")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
@@ -98,6 +101,7 @@ public sealed class FriendController(
 	}
 
 	[HttpPatch("{friendId:long}/sort/first")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
@@ -109,6 +113,7 @@ public sealed class FriendController(
 	}
 
 	[HttpPatch("{friendId:long}/sort/last")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]

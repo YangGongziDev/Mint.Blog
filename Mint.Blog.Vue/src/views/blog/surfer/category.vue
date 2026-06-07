@@ -119,8 +119,12 @@ onMounted(async () => {
             </span>
           </h2>
           <div
-            class="text-sm flex flex-wrap gap-3 font-medium overflow-hidden transition-[max-height] duration-300 md:max-h-none"
-            :class="isMobileCategoryCollapsed ? 'max-h-[92px]' : 'max-h-[420px] overflow-y-auto pr-1'"
+            class="text-sm flex flex-wrap gap-3 font-medium transition-[max-height] duration-300"
+            :class="
+              isMobileCategoryCollapsed
+                ? 'max-h-[92px] overflow-y-auto overflow-x-hidden pr-1'
+                : 'max-h-[180px] overflow-y-auto overflow-x-hidden pr-1'
+            "
           >
             <button
               v-for="category in allCategories"
@@ -148,7 +152,7 @@ onMounted(async () => {
           </div>
           <button
             v-if="allCategories.length > 8"
-            class="mt-4 flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg border border-[#3ecf9a]/14 bg-[#f0faf5]/70 py-2 text-sm font-semibold text-[#15956b] transition-colors hover:bg-[#3ecf9a]/12 dark:border-[#539dfd]/18 dark:bg-[#539dfd]/8 dark:text-[#8cc8ff] dark:hover:bg-[#539dfd]/14 md:hidden"
+            class="mt-4 flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg border border-[#3ecf9a]/14 bg-[#f0faf5]/70 py-2 text-sm font-semibold text-[#15956b] transition-colors hover:bg-[#3ecf9a]/12 dark:border-[#539dfd]/18 dark:bg-[#539dfd]/8 dark:text-[#8cc8ff] dark:hover:bg-[#539dfd]/14"
             @click="isMobileCategoryCollapsed = !isMobileCategoryCollapsed"
           >
             {{ isMobileCategoryCollapsed ? `展开全部分类（${allCategories.length}）` : '收起分类' }}

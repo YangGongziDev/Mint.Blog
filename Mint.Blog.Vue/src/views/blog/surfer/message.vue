@@ -2,7 +2,7 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { message as antMessage } from 'ant-design-vue';
-import { getMessageList, publishMessage, type MessageItem } from '@/service/blog/surfer/message';
+import { type MessageItem, getMessageList, publishMessage } from '@/service/blog/surfer/message';
 
 const colorOptions = ['#3ecf9a', '#539dfd', '#f59e0b', '#ef4444', '#a855f7', '#14b8a6'];
 
@@ -119,11 +119,19 @@ watch(
       <div class="grid gap-6 lg:grid-cols-[380px_1fr]">
         <section class="rounded-3xl border border-[#3ecf9a]/25 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5">
           <h2 class="text-xl font-black text-[#0d3d2d] dark:text-white">留下足迹</h2>
-          <div class="mt-5 space-y-4">
-            <AInput v-model:value="form.nickname" placeholder="昵称" size="large" />
-            <AInput v-model:value="form.email" placeholder="邮箱，可选" size="large" />
-            <AInput v-model:value="form.website" placeholder="网站，可选" size="large" />
-            <ATextarea v-model:value="form.content" :rows="5" placeholder="想说点什么..." />
+          <div class="message-form-fields mt-5">
+            <div class="message-form-field">
+              <AInput v-model:value="form.nickname" placeholder="昵称" size="large" />
+            </div>
+            <div class="message-form-field">
+              <AInput v-model:value="form.email" placeholder="邮箱，可选" size="large" />
+            </div>
+            <div class="message-form-field">
+              <AInput v-model:value="form.website" placeholder="网站，可选" size="large" />
+            </div>
+            <div class="message-form-field">
+              <ATextarea v-model:value="form.content" :rows="5" placeholder="想说点什么..." />
+            </div>
             <div>
               <p class="mb-2 text-sm font-bold text-[#60786e] dark:text-slate-300">选择便签颜色</p>
               <div class="flex flex-wrap gap-2">
@@ -138,13 +146,7 @@ watch(
                 ></button>
               </div>
             </div>
-            <AButton
-              block
-              type="primary"
-              size="large"
-              :loading="submitting"
-              @click="submitMessage"
-            >
+            <AButton block type="primary" size="large" :loading="submitting" class="!mt-6" @click="submitMessage">
               发布留言
             </AButton>
           </div>
@@ -199,3 +201,15 @@ watch(
     </section>
   </main>
 </template>
+
+<style scoped>
+.message-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.message-form-field {
+  display: block;
+}
+</style>

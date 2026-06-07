@@ -1,39 +1,42 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import type { TableColumnsType, TablePaginationConfig } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
-import { DeleteOutlined, EditOutlined, LinkOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons-vue';
+import { DeleteOutlined, EditOutlined, LinkOutlined, ReloadOutlined } from '@ant-design/icons-vue';
 import {
   type ManagedImageListItem,
-  type MinioBucketItem,
   type ObjectMoveConflict,
-  createMinioBucket,
+  type RustfsBucketItem,
+  createRustfsBucket,
   deleteBlogImage,
   deleteBlogImages,
-  deleteMinioBucket,
+  deleteRustfsBucket,
   getManagedImagePageList,
-  getMinioBuckets,
+  getRustfsBuckets,
   moveBlogImage,
   moveBlogImages,
   moveBlogImagesPrecheck,
   renameBlogImage,
-  setMinioBucketPublic,
+  setRustfsBucketPublic,
   uploadBlogImage
 } from '@/service/blog/admin/image';
 import { useAppStore } from '@/store/system/app';
+import { useAuthStore } from '@/store/system/auth';
 import { compareDateTime, formatDateTime, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
 
 defineOptions({ name: 'BlogAdminImageManage' });
 
 const router = useRouter();
 const appStore = useAppStore();
+const authStore = useAuthStore();
 const loading = ref(false);
+const searchDebounceTimer = ref<number>();
 const tableData = ref<ManagedImageListItem[]>([]);
 const selectedRowKeys = ref<string[]>([]);
 const selectedRows = ref<ManagedImageListItem[]>([]);
-const bucketOptions = ref<MinioBucketItem[]>([]);
+const bucketOptions = ref<RustfsBucketItem[]>([]);
 const bucketLoadFailed = ref(false);
 const permissionDenied = ref(false);
 const total = ref(0);
@@ -75,6 +78,16 @@ const pagination = computed<TablePaginationConfig>(() => ({
   showTotal: (value, range) => `第 ${range[0]}-${range[1]} 条，共 ${value} 条`,
   size: appStore.isMobile ? 'small' : 'default'
 }));
+const isDemoAdmin = computed(() => {
+  const roleText = authStore.userInfo.roles.join(',').toLowerCase();
+  const userText = `${authStore.userInfo.userName},${authStore.userInfo.displayName}`.toLowerCase();
+  return /demo|演示/.test(roleText) || /demo|演示/.test(userText);
+});
+const canManageImages = computed(() => !isDemoAdmin.value);
+const readonlyActionMessage = '演示管理员仅允许查看、切换桶和查询图片，不能执行图片或桶的修改操作';
+function warnReadonlyAction() {
+  message.warning(readonlyActionMessage);
+}
 const columns = computed<TableColumnsType<ManagedImageListItem>>(() => [
   { title: '序号', key: 'index', width: 80, align: 'center' },
   { title: '桶名称', dataIndex: 'bucketName', key: 'bucketName', width: 140, align: 'center' },
@@ -132,7 +145,7 @@ function resetImageTable() {
 
 async function loadBuckets() {
   try {
-    const res = await getMinioBuckets();
+    const res = await getRustfsBuckets();
     if (res.success) {
       bucketLoadFailed.value = false;
       permissionDenied.value = false;
@@ -148,9 +161,9 @@ async function loadBuckets() {
     query.bucketName = '';
     resetImageTable();
     if (permissionDenied.value) {
-      message.warning('您没有权限访问图片管理功能，请联系管理员分配 ROLE_ADMIN 或 ROLE_SUPER 角色');
+      message.warning('您没有权限访问图片管理功能，请确认账号已登录或联系管理员分配访问权限');
     } else {
-      message.error('图片存储服务暂时不可用，请稍后重试或联系管理员检查 MinIO 配置');
+      message.error('图片存储服务暂时不可用，请稍后重试或联系管理员检查 RustFS 配置');
     }
   }
 
@@ -202,11 +215,27 @@ function handleTableChange(page: TablePaginationConfig, ...changeArgs: [unknown?
     resolveTimeSortOrder(
       getTableSortOrder(changeArgs[1]),
       query.sortOrder === 'lastModifiedAsc' ? 'timeAsc' : 'timeDesc'
-    ) === 'timeAsc' ? 'lastModifiedAsc' : 'lastModifiedDesc';
+    ) === 'timeAsc'
+      ? 'lastModifiedAsc'
+      : 'lastModifiedDesc';
   loadData();
 }
 
+function clearSearchDebounce() {
+  if (searchDebounceTimer.value === undefined) return;
+  window.clearTimeout(searchDebounceTimer.value);
+  searchDebounceTimer.value = undefined;
+}
+
+function handleImageNameInput() {
+  clearSearchDebounce();
+  searchDebounceTimer.value = window.setTimeout(() => {
+    handleSearch();
+  }, 400);
+}
+
 async function handleSearch() {
+  clearSearchDebounce();
   if (bucketLoadFailed.value) return;
   query.pageNumber = 1;
   await loadData();
@@ -240,6 +269,11 @@ function openCreateBucketModal() {
 }
 
 async function confirmCreateBucket() {
+  if (!canManageImages.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   if (!bucketForm.bucketName.trim()) {
     message.warning('请输入桶名称');
     return;
@@ -247,7 +281,7 @@ async function confirmCreateBucket() {
 
   bucketLoading.value = true;
   try {
-    const res = await createMinioBucket(bucketForm.bucketName.trim(), bucketForm.isPublic);
+    const res = await createRustfsBucket(bucketForm.bucketName.trim(), bucketForm.isPublic);
     if (res.success) {
       message.success('桶已创建');
       bucketModalVisible.value = false;
@@ -260,26 +294,37 @@ async function confirmCreateBucket() {
   }
 }
 
-async function toggleCurrentBucketPublic(checked: boolean) {
+async function toggleCurrentBucketPublic(checked: boolean | string | number) {
+  if (!canManageImages.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   if (!query.bucketName) {
     message.warning('请先选择桶');
     return;
   }
 
-  const res = await setMinioBucketPublic(query.bucketName, checked);
+  const isPublic = Boolean(checked);
+  const res = await setRustfsBucketPublic(query.bucketName, isPublic);
   if (res.success) {
-    message.success(checked ? '桶已设置为公开读取' : '桶已设置为私有');
+    message.success(isPublic ? '桶已设置为公开读取' : '桶已设置为私有');
     await loadBuckets();
   }
 }
 
 async function confirmDeleteCurrentBucket() {
+  if (!canManageImages.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   if (!query.bucketName) {
     message.warning('请先选择桶');
     return;
   }
 
-  const res = await deleteMinioBucket(query.bucketName);
+  const res = await deleteRustfsBucket(query.bucketName);
   if (res.success) {
     message.success('桶已删除');
     query.bucketName = '';
@@ -314,6 +359,11 @@ function handleManualUploadFileChange(event: Event) {
 }
 
 async function confirmUploadToBucket() {
+  if (!canManageImages.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   if (!query.bucketName) {
     message.warning('请先选择桶');
     return;
@@ -400,6 +450,11 @@ function openBatchMoveModal() {
 }
 
 async function confirmBatchDelete() {
+  if (!canManageImages.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   const imageNames = getSelectedImageNames();
   if (!imageNames.length) {
     message.warning('请选择要删除的图片');
@@ -448,6 +503,11 @@ function handleMoveCancel() {
 }
 
 async function executeBatchMove(overwriteExisting = false) {
+  if (!canManageImages.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   let imageNames = getSelectedImageNames();
   if (!imageNames.length) {
     message.warning('请选择要移动的图片');
@@ -483,6 +543,11 @@ async function executeBatchMove(overwriteExisting = false) {
 }
 
 async function handleMoveConflictSkip() {
+  if (!canManageImages.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   movePrecheckLoading.value = true;
   try {
     moveOverwriteExisting.value = false;
@@ -496,6 +561,11 @@ async function handleMoveConflictSkip() {
 }
 
 async function handleMoveConflictOverwrite() {
+  if (!canManageImages.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   movePrecheckLoading.value = true;
   try {
     moveOverwriteExisting.value = true;
@@ -509,6 +579,11 @@ async function handleMoveConflictOverwrite() {
 }
 
 async function confirmMove() {
+  if (!canManageImages.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   if (!moveTargetBucketName.value) {
     message.warning('请选择目标桶');
     return;
@@ -563,6 +638,11 @@ function handleRenameCancel() {
 }
 
 async function confirmRename() {
+  if (!canManageImages.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   if (!currentImage.value || !newImageName.value.trim()) {
     message.warning('请输入新图片名称');
     return;
@@ -582,6 +662,11 @@ async function confirmRename() {
 }
 
 async function confirmDelete(record: ManagedImageListItem) {
+  if (!canManageImages.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   try {
     const res = await deleteBlogImage(record.url || record.objectName);
     if (res.success) {
@@ -608,6 +693,10 @@ function formatSize(size: number) {
 onMounted(async () => {
   await loadBuckets();
   await loadData();
+});
+
+onBeforeUnmount(() => {
+  clearSearchDebounce();
 });
 </script>
 
@@ -637,6 +726,7 @@ onMounted(async () => {
               allow-clear
               placeholder="请输入图片名称"
               class="w-full sm:w-[220px]"
+              @update:value="handleImageNameInput"
               @press-enter="handleSearch"
             />
           </AFormItem>
@@ -648,6 +738,7 @@ onMounted(async () => {
               class="w-full sm:w-[180px]"
               popup-class-name="image-page-select-dropdown"
               :get-popup-container="getSelectPopupContainer"
+              @change="handleSearch"
             >
               <ASelectOption value="true">
                 <span class="select-option-text">已使用</span>
@@ -659,10 +750,6 @@ onMounted(async () => {
           </AFormItem>
           <AFormItem>
             <ASpace wrap>
-              <AButton type="primary" @click="handleSearch">
-                <template #icon><SearchOutlined /></template>
-                查询
-              </AButton>
               <AButton @click="handleReset">
                 <template #icon><ReloadOutlined /></template>
                 重置
@@ -705,7 +792,7 @@ onMounted(async () => {
         <div v-if="permissionDenied">
           <div class="mb-2 text-base font-semibold text-orange-500">权限不足</div>
           <div class="text-sm text-gray-500 dark:text-gray-400">
-            您当前的角色没有权限访问图片管理功能，请联系管理员分配 ROLE_ADMIN 或 ROLE_SUPER 角色。
+            您当前没有权限访问图片管理功能，请确认账号已登录或联系管理员分配访问权限。
           </div>
           <AButton class="mt-4" @click="onRetryLoadBuckets">重新加载</AButton>
         </div>

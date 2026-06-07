@@ -118,8 +118,12 @@ onMounted(async () => {
             <span class="ml-2 font-normal text-[#557468] dark:text-[#cbd5e1]">( {{ allTags.length }} )</span>
           </h2>
           <div
-            class="flex flex-wrap gap-3 overflow-hidden transition-[max-height] duration-300 md:max-h-none"
-            :class="isMobileTagCollapsed ? 'max-h-[92px]' : 'max-h-[420px] overflow-y-auto pr-1'"
+            class="flex flex-wrap gap-3 transition-[max-height] duration-300"
+            :class="
+              isMobileTagCollapsed
+                ? 'max-h-[92px] overflow-y-auto overflow-x-hidden pr-1'
+                : 'max-h-[180px] overflow-y-auto overflow-x-hidden pr-1'
+            "
           >
             <button
               v-for="tag in allTags"
@@ -132,7 +136,7 @@ onMounted(async () => {
               ]"
               @click="goTagPage(tag.id, tag.name)"
             >
-            #&nbsp;{{ tag.name }}
+              #&nbsp;{{ tag.name }}
               <span
                 class="inline-flex items-center justify-center w-5 h-5 ml-2 text-xs font-semibold rounded-full tabular-nums shrink-0"
                 :class="[
@@ -147,7 +151,7 @@ onMounted(async () => {
           </div>
           <button
             v-if="allTags.length > 8"
-            class="mt-4 flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg border border-[#3ecf9a]/14 bg-[#f0faf5]/70 py-2 text-sm font-semibold text-[#15956b] transition-colors hover:bg-[#3ecf9a]/12 dark:border-[#539dfd]/18 dark:bg-[#539dfd]/8 dark:text-[#8cc8ff] dark:hover:bg-[#539dfd]/14 md:hidden"
+            class="mt-4 flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg border border-[#3ecf9a]/14 bg-[#f0faf5]/70 py-2 text-sm font-semibold text-[#15956b] transition-colors hover:bg-[#3ecf9a]/12 dark:border-[#539dfd]/18 dark:bg-[#539dfd]/8 dark:text-[#8cc8ff] dark:hover:bg-[#539dfd]/14"
             @click="isMobileTagCollapsed = !isMobileTagCollapsed"
           >
             {{ isMobileTagCollapsed ? `展开全部标签（${allTags.length}）` : '收起标签' }}

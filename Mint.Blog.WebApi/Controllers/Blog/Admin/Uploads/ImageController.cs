@@ -16,7 +16,7 @@ namespace Mint.Blog.WebApi.Controllers.Blog.Admin.Uploads;
 ///     后台图片上传与删除接口。
 /// </summary>
 [ApiController]
-[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
+[Authorize]
 [Route("api/blog/admin/image")]
 public sealed class ImageController(
 	UploadImageCommandHandler uploadImageCommandHandler,
@@ -36,6 +36,7 @@ public sealed class ImageController(
 	}
 
 	[HttpPost("buckets")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<ApiResponse<object>>> CreateBucket([FromBody] CreateBucketRequest request,
@@ -45,6 +46,7 @@ public sealed class ImageController(
 	}
 
 	[HttpPatch("buckets/{bucketName}/public")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<ApiResponse<object>>> SetBucketPublic(string bucketName,
@@ -54,6 +56,7 @@ public sealed class ImageController(
 	}
 
 	[HttpDelete("buckets/{bucketName}")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<ApiResponse<object>>> DeleteBucket(string bucketName,
@@ -85,6 +88,7 @@ public sealed class ImageController(
 	/// <param name="request">上传表单，包含图片文件、原始文件名和可选旧图片标识。</param>
 	/// <param name="cancellationToken">请求取消令牌。</param>
 	[HttpPost("upload")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[Consumes("multipart/form-data")]
 	[ProducesResponseType(typeof(ApiResponse<UploadResult>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -107,6 +111,7 @@ public sealed class ImageController(
 	/// <param name="oldImageName">旧图片对象名或完整访问地址。</param>
 	/// <param name="cancellationToken">请求取消令牌。</param>
 	[HttpPost("delete")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
@@ -122,6 +127,7 @@ public sealed class ImageController(
 	/// <param name="oldImageNames">待删除的图片对象名或完整访问地址列表。</param>
 	/// <param name="cancellationToken">请求取消令牌。</param>
 	[HttpPost("delete-many")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
@@ -135,6 +141,7 @@ public sealed class ImageController(
 	///     重命名图片对象。
 	/// </summary>
 	[HttpPost("rename")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
@@ -148,6 +155,7 @@ public sealed class ImageController(
 	///     移动图片对象到其他桶。
 	/// </summary>
 	[HttpPost("move")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
@@ -161,6 +169,7 @@ public sealed class ImageController(
 	///     预检查批量移动图片时目标桶中的同名冲突。
 	/// </summary>
 	[HttpPost("move-many/precheck")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
@@ -174,6 +183,7 @@ public sealed class ImageController(
 	///     批量移动图片对象到其他桶。
 	/// </summary>
 	[HttpPost("move-many")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]

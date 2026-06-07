@@ -4,7 +4,7 @@ export interface UploadImageResult {
   url: string;
 }
 
-export interface MinioBucketItem {
+export interface RustfsBucketItem {
   name: string;
   isPublic: boolean;
   creationDate?: string;
@@ -45,24 +45,24 @@ export interface ManagedImagePageQuery {
   sortOrder?: 'lastModifiedDesc' | 'lastModifiedAsc' | 'nameAsc' | 'nameDesc';
 }
 
-export function getMinioBuckets() {
+export function getRustfsBuckets() {
   return axios.get('/blog/admin/image/buckets') as Promise<{
     success: boolean;
-    data: MinioBucketItem[];
+    data: RustfsBucketItem[];
   }>;
 }
 
-export function createMinioBucket(bucketName: string, isPublic: boolean) {
+export function createRustfsBucket(bucketName: string, isPublic: boolean) {
   return axios.post('/blog/admin/image/buckets', { bucketName, isPublic }) as Promise<{ success: boolean }>;
 }
 
-export function setMinioBucketPublic(bucketName: string, isPublic: boolean) {
+export function setRustfsBucketPublic(bucketName: string, isPublic: boolean) {
   return axios.patch(`/blog/admin/image/buckets/${encodeURIComponent(bucketName)}/public`, { isPublic }) as Promise<{
     success: boolean;
   }>;
 }
 
-export function deleteMinioBucket(bucketName: string) {
+export function deleteRustfsBucket(bucketName: string) {
   return axios.delete(`/blog/admin/image/buckets/${encodeURIComponent(bucketName)}`) as Promise<{ success: boolean }>;
 }
 

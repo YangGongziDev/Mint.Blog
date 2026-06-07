@@ -68,6 +68,19 @@ export const systemMenus: AppMenuRecord[] = [
     order: 4
   },
   {
+    id: 'system_exception_look-forward',
+    parentId: 'system_exception',
+    menuType: 'route',
+    routerName: 'system_exception_look-forward',
+    path: '/system/exception/look-forward',
+    tableName: 'system_exception_look-forward',
+    enabled: true,
+    menuI18nKey: 'route.system_exception_look-forward',
+    icon: 'mdi:progress-clock',
+    order: 1,
+    permission: queryPermission
+  },
+  {
     id: 'system_exception_403',
     parentId: 'system_exception',
     menuType: 'route',
@@ -77,7 +90,7 @@ export const systemMenus: AppMenuRecord[] = [
     enabled: true,
     menuI18nKey: 'route.system_exception_403',
     icon: 'ic:baseline-block',
-    order: 1,
+    order: 2,
     permission: queryPermission
   },
   {
@@ -90,7 +103,7 @@ export const systemMenus: AppMenuRecord[] = [
     enabled: true,
     menuI18nKey: 'route.system_exception_404',
     icon: 'ic:baseline-web-asset-off',
-    order: 2,
+    order: 3,
     permission: queryPermission
   },
   {
@@ -103,10 +116,9 @@ export const systemMenus: AppMenuRecord[] = [
     enabled: true,
     menuI18nKey: 'route.system_exception_500',
     icon: 'ic:baseline-wifi-off',
-    order: 3,
+    order: 4,
     permission: queryPermission
   },
-
   {
     id: 'system_about',
     parentId: null,
@@ -119,5 +131,5 @@ export const systemMenus: AppMenuRecord[] = [
     icon: 'fluent:book-information-24-regular',
     order: 5,
     permission: queryPermission
-  },
+  }
 ];

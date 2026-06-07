@@ -264,10 +264,17 @@ import {
   updateFriendSort
 } from '@/service/blog/admin/friend';
 import { useAppStore } from '@/store/system/app';
+import { useAuthStore } from '@/store/system/auth';
 import type { TimeSortOrder } from '@/utils/date-time';
 import { compareDateTime, formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
 
 const appStore = useAppStore();
+const authStore = useAuthStore();
+
+const isVisitor = computed(() => {
+  const { roles } = authStore.userInfo;
+  return roles.includes('ROLE_VISITOR') && !roles.some(role => role === 'ROLE_ADMIN' || role === 'ROLE_SUPER');
+});
 const loading = ref(false);
 const tableData = ref<AdminFriendPageItem[]>([]);
 const total = ref(0);
@@ -507,6 +514,11 @@ async function handleTopChange(record: AdminFriendPageItem) {
 }
 
 async function handleStatusChange(record: AdminFriendPageItem) {
+  if (isVisitor.value) {
+    message.warning('当前为访客账号，仅支持查看，不能修改审核状态');
+    await loadData();
+    return;
+  }
   const res = await setFriendStatus(record.id, record.status);
   if (res.success) {
     const statusText = { active: '正常', inactive: '停用', pending: '待审核' }[record.status] || record.status;

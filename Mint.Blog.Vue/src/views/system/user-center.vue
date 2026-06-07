@@ -116,12 +116,12 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
-import { useAuthStore } from '@/store/system/auth';
 import { fetchGetUserInfo } from '@/service/system/auth';
 import { fetchUpdatePassword, fetchUpdateUser } from '@/service/system/user';
+import { useAuthStore } from '@/store/system/auth';
 import { useAntdForm, useFormRules } from '@/hooks/form/use-antd-form';
-import { $t } from '@/locales';
 import avatarSrc from '@/assets/blog/surfer/author/author-yangmufa-picture.jpg';
+import { $t } from '@/locales';
 
 defineOptions({
   name: 'SystemUserCenter'
@@ -129,11 +129,21 @@ defineOptions({
 
 const authStore = useAuthStore();
 const { defaultRequiredRule, formRules, createConfirmPwdRule } = useFormRules();
-const { formRef: profileFormRef, validate: validateProfile, resetFields: resetProfileFields } = useAntdForm();
+const { formRef: profileFormRef, validate: validateProfile } = useAntdForm();
 const { formRef: passwordFormRef, validate: validatePassword, resetFields: resetPasswordFields } = useAntdForm();
 
 const profileLoading = ref(false);
 const passwordLoading = ref(false);
+const readonlyActionMessage = '演示账号仅允许查看，不能执行会修改后端数据的操作';
+const isDemoAccount = computed(() => {
+  const roleText = authStore.userInfo.roles.join(',').toLowerCase();
+  const userText = `${authStore.userInfo.userName},${authStore.userInfo.displayName}`.toLowerCase();
+  return /demo|演示/.test(roleText) || /demo|演示/.test(userText);
+});
+
+function warnReadonlyAction() {
+  window.$message?.warning(readonlyActionMessage);
+}
 
 const profileForm = reactive({
   userName: '',
@@ -168,6 +178,11 @@ async function refreshUserInfo() {
 }
 
 async function handleProfileSubmit() {
+  if (isDemoAccount.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   await validateProfile();
 
   const userId = Number(authStore.userInfo.userId);
@@ -196,6 +211,11 @@ function resetPasswordForm() {
 }
 
 async function handlePasswordSubmit() {
+  if (isDemoAccount.value) {
+    warnReadonlyAction();
+    return;
+  }
+
   await validatePassword();
 
   passwordLoading.value = true;
