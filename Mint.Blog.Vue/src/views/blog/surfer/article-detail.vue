@@ -87,7 +87,7 @@ let articleTitleTypingTimer: ReturnType<typeof setTimeout> | null = null;
 const BANNER_CACHE_NAME = 'blog-surfer-banner-images-v1';
 const BANNER_CACHE_SNAPSHOT_KEY = 'blog-surfer:cached-banner-images';
 const articleHeroStyle = computed(() => ({
-  backgroundImage: heroImage.value ? `url(${heroImage.value}), url(${bannerDefaultImg})` : `url(${bannerDefaultImg})`
+  backgroundImage: `url(${heroImage.value || bannerDefaultImg})`
 }));
 function typeArticleTitle(title?: string) {
   if (articleTitleTypingTimer) clearTimeout(articleTitleTypingTimer);

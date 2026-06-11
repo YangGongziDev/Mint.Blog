@@ -342,7 +342,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Slide :key="swiperImageKey" :src="swiperImage" :fallback-src="bannerDefaultImg" class="slide-hero">
+  <Slide :key="swiperImageKey" :src="swiperImage || bannerDefaultImg" class="slide-hero">
     <Starry />
     <Typed
       :texts="displayTexts"
