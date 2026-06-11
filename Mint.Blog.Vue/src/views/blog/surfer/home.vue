@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, onActivated, onMounted, ref, watch } from 'vue';
+import { computed, onActivated, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { CalendarOutlined, EyeOutlined, FolderOutlined } from '@ant-design/icons-vue';
 import { getArticlePageList } from '@/service/blog/surfer/article';
 import defaultCoverImg1 from '@/assets/blog/surfer/home-default-article-cover/default-article-cover-image1.jpeg';
 import defaultCoverImg2 from '@/assets/blog/surfer/home-default-article-cover/default-article-cover-image2.jpeg';
+import bannerDefaultImg from '@/assets/blog/surfer/article-banner/banner-default.jpg';
 import Slide from '@/components/blog/surfer/slide.vue';
 import SidebarRight from '@/components/blog/surfer/sidebar-right.vue';
 import Starry from '@/components/blog/surfer/starry.vue';
@@ -51,31 +52,138 @@ const homeHeroImages = Object.values(
   })
 ) as string[];
 let hasSkippedInitialActivated = false;
+let bannerPreloadStopped = false;
+let bannerPreloadTimer: ReturnType<typeof setTimeout> | null = null;
 
 // Local swiper image & typed texts (no API dependency)
 const swiperImage = ref('');
 const swiperImageKey = ref(0);
 const displayTexts = ['Mint Blog', '新鲜阅读，温柔写作', '技术·生活·思考'];
+const BANNER_CACHE_NAME = 'blog-surfer-banner-images-v1';
+const BANNER_CACHE_SNAPSHOT_KEY = 'blog-surfer:cached-banner-images';
+
+function readCachedBannerSnapshot(images: string[]) {
+  try {
+    const snapshot = JSON.parse(window.localStorage.getItem(BANNER_CACHE_SNAPSHOT_KEY) || '[]');
+    if (!Array.isArray(snapshot)) return [];
+    return snapshot.filter((image): image is string => typeof image === 'string' && images.includes(image));
+  } catch {
+    return [];
+  }
+}
+
+function writeCachedBannerSnapshot(images: string[]) {
+  window.localStorage.setItem(BANNER_CACHE_SNAPSHOT_KEY, JSON.stringify([...new Set(images)]));
+}
+
+function addCachedBannerSnapshot(image: string) {
+  if (!image || image === bannerDefaultImg) return;
+  writeCachedBannerSnapshot([...readCachedBannerSnapshot(homeHeroImages), image]);
+}
+
+const initialSwiperImage = pickRandomImage(
+  readCachedBannerSnapshot(homeHeroImages),
+  '',
+  'blog-surfer:last-home-hero-image'
+);
+
+swiperImage.value = initialSwiperImage || '';
 
 // --------------- helpers ---------------
-function pickSwiperImage() {
-  if (!homeHeroImages.length) {
-    swiperImage.value = '';
-    swiperImageKey.value += 1;
+function setSwiperImage(image: string) {
+  if (swiperImage.value === image) return;
+  swiperImage.value = image;
+  swiperImageKey.value += 1;
+}
+
+function pickRandomImage(images: string[], currentImage: string, lastImageKey: string) {
+  const lastImage = window.sessionStorage.getItem(lastImageKey);
+  const candidates = images.length > 1
+    ? images.filter(image => image !== lastImage && image !== currentImage)
+    : images;
+  const pool = candidates.length ? candidates : images.filter(image => image !== currentImage);
+  const nextPool = pool.length ? pool : images;
+
+  return nextPool[Math.floor(Math.random() * nextPool.length)];
+}
+
+async function getCachedBannerImages(images: string[]) {
+  if (!('caches' in window)) return [];
+
+  const cache = await window.caches.open(BANNER_CACHE_NAME);
+  const cachedImageMatches = await Promise.all(
+    images
+      .filter(image => image && image !== bannerDefaultImg)
+      .map(async image => ((await cache.match(image)) ? image : ''))
+  );
+
+  const cachedImages = cachedImageMatches.filter(Boolean);
+  writeCachedBannerSnapshot(cachedImages);
+
+  return cachedImages;
+}
+
+async function pickCachedSwiperImage(forceChange = false) {
+  const cachedImages = await getCachedBannerImages(homeHeroImages);
+
+  if (!cachedImages.length) return;
+
+  if (!forceChange && swiperImage.value && cachedImages.includes(swiperImage.value)) return;
+
+  const nextImage = pickRandomImage(cachedImages, swiperImage.value, 'blog-surfer:last-home-hero-image');
+  setSwiperImage(nextImage);
+  window.sessionStorage.setItem('blog-surfer:last-home-hero-image', nextImage);
+}
+
+async function cacheBannerImage(src: string) {
+  if (!('caches' in window)) return false;
+
+  try {
+    const cache = await window.caches.open(BANNER_CACHE_NAME);
+    if (await cache.match(src)) {
+      addCachedBannerSnapshot(src);
+      return true;
+    }
+
+    const response = await fetch(src, { cache: 'force-cache' });
+    if (!response.ok) return false;
+
+    await cache.put(src, response.clone());
+    addCachedBannerSnapshot(src);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function runWhenIdle(callback: () => void) {
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(callback, { timeout: 2500 });
     return;
   }
 
-  const lastImage = window.sessionStorage.getItem('blog-surfer:last-home-hero-image');
-  const candidates = homeHeroImages.length > 1
-    ? homeHeroImages.filter(image => image !== lastImage && image !== swiperImage.value)
-    : homeHeroImages;
-  const pool = candidates.length ? candidates : homeHeroImages.filter(image => image !== swiperImage.value);
-  const nextPool = pool.length ? pool : homeHeroImages;
-  const nextImage = nextPool[Math.floor(Math.random() * nextPool.length)];
+  bannerPreloadTimer = setTimeout(callback, 1500);
+}
 
-  swiperImage.value = nextImage;
-  swiperImageKey.value += 1;
-  window.sessionStorage.setItem('blog-surfer:last-home-hero-image', nextImage);
+function preloadBannerImagesInIdle(images: string[], batchSize = 2) {
+  const preloadImages = images.filter(image => image && image !== bannerDefaultImg);
+  let index = 0;
+
+  const runBatch = async () => {
+    if (bannerPreloadStopped) return;
+
+    const batch = preloadImages.slice(index, index + batchSize);
+    index += batchSize;
+    await Promise.all(batch.map(cacheBannerImage));
+
+    if (!bannerPreloadStopped && index < preloadImages.length) {
+      runWhenIdle(runBatch);
+    }
+  };
+
+  if (preloadImages.length) {
+    runWhenIdle(runBatch);
+  }
 }
 
 const info = (a: Article) => a.summary?.trim() || '这是一篇精彩的文章，点击查看详细内容...';
@@ -206,8 +314,9 @@ function goTag(id: number, name: string) {
 
 // --------------- lifecycle ---------------
 onMounted(() => {
-  pickSwiperImage();
+  pickCachedSwiperImage();
   fetchArticles();
+  preloadBannerImagesInIdle(homeHeroImages);
 });
 
 onActivated(() => {
@@ -216,7 +325,7 @@ onActivated(() => {
     return;
   }
 
-  pickSwiperImage();
+  pickCachedSwiperImage(true);
 });
 
 watch(
@@ -225,10 +334,15 @@ watch(
     fetchArticles();
   }
 );
+
+onBeforeUnmount(() => {
+  bannerPreloadStopped = true;
+  if (bannerPreloadTimer) clearTimeout(bannerPreloadTimer);
+});
 </script>
 
 <template>
-  <Slide :key="swiperImageKey" :src="swiperImage" class="slide-hero">
+  <Slide :key="swiperImageKey" :src="swiperImage" :fallback-src="bannerDefaultImg" class="slide-hero">
     <Starry />
     <Typed
       :texts="displayTexts"

@@ -14,6 +14,7 @@ import {
   RightOutlined
 } from '@ant-design/icons-vue';
 import hljs from 'highlight.js';
+import bannerDefaultImg from '@/assets/blog/surfer/article-banner/banner-default.jpg';
 import { getArticleDetail } from '@/service/blog/surfer/article';
 import { getBlogSettingsDetail } from '@/service/blog/surfer/setting';
 import { useTabStore } from '@/store/system/tab';
@@ -80,11 +81,14 @@ const hasTocHeadings = computed(() => /^#{2,4}\s+\S+/m.test(article.value.conten
 const heroImage = ref('');
 const heroImageKey = ref(0);
 let hasSkippedInitialActivated = false;
+let bannerPreloadStopped = false;
+let bannerPreloadTimer: ReturnType<typeof setTimeout> | null = null;
 let articleTitleTypingTimer: ReturnType<typeof setTimeout> | null = null;
-const articleHeroStyle = computed(() => {
-  if (!heroImage.value) return undefined;
-  return { backgroundImage: `url(${heroImage.value})` };
-});
+const BANNER_CACHE_NAME = 'blog-surfer-banner-images-v1';
+const BANNER_CACHE_SNAPSHOT_KEY = 'blog-surfer:cached-banner-images';
+const articleHeroStyle = computed(() => ({
+  backgroundImage: heroImage.value ? `url(${heroImage.value}), url(${bannerDefaultImg})` : `url(${bannerDefaultImg})`
+}));
 function typeArticleTitle(title?: string) {
   if (articleTitleTypingTimer) clearTimeout(articleTitleTypingTimer);
   articleTitleTypingTimer = null;
@@ -107,25 +111,128 @@ function typeArticleTitle(title?: string) {
   }
 }
 
-function pickHeroImage() {
-  if (!articleDetailImages.length) {
-    heroImage.value = '';
-    heroImageKey.value += 1;
+function setHeroImage(image: string) {
+  if (heroImage.value === image) return;
+  heroImage.value = image;
+  heroImageKey.value += 1;
+}
+
+function pickRandomImage(images: string[], currentImage: string, lastImageKey: string) {
+  const lastImage = window.sessionStorage.getItem(lastImageKey);
+  const candidates =
+    images.length > 1
+      ? images.filter(image => image !== lastImage && image !== currentImage)
+      : images;
+  const pool = candidates.length ? candidates : images.filter(image => image !== currentImage);
+  const nextPool = pool.length ? pool : images;
+
+  return nextPool[Math.floor(Math.random() * nextPool.length)];
+}
+
+function readCachedBannerSnapshot(images: string[]) {
+  try {
+    const snapshot = JSON.parse(window.localStorage.getItem(BANNER_CACHE_SNAPSHOT_KEY) || '[]');
+    if (!Array.isArray(snapshot)) return [];
+    return snapshot.filter((image): image is string => typeof image === 'string' && images.includes(image));
+  } catch {
+    return [];
+  }
+}
+
+function writeCachedBannerSnapshot(images: string[]) {
+  window.localStorage.setItem(BANNER_CACHE_SNAPSHOT_KEY, JSON.stringify([...new Set(images)]));
+}
+
+function addCachedBannerSnapshot(image: string) {
+  if (!image || image === bannerDefaultImg) return;
+  writeCachedBannerSnapshot([...readCachedBannerSnapshot(articleDetailImages), image]);
+}
+
+const initialHeroImage = pickRandomImage(
+  readCachedBannerSnapshot(articleDetailImages),
+  '',
+  'blog-surfer:last-article-detail-hero-image'
+);
+
+heroImage.value = initialHeroImage || '';
+
+async function getCachedBannerImages(images: string[]) {
+  if (!('caches' in window)) return [];
+
+  const cache = await window.caches.open(BANNER_CACHE_NAME);
+  const cachedImageMatches = await Promise.all(
+    images
+      .filter(image => image && image !== bannerDefaultImg)
+      .map(async image => ((await cache.match(image)) ? image : ''))
+  );
+
+  const cachedImages = cachedImageMatches.filter(Boolean);
+  writeCachedBannerSnapshot(cachedImages);
+
+  return cachedImages;
+}
+
+async function pickCachedHeroImage(forceChange = false) {
+  const cachedImages = await getCachedBannerImages(articleDetailImages);
+
+  if (!cachedImages.length) return;
+
+  if (!forceChange && heroImage.value && cachedImages.includes(heroImage.value)) return;
+
+  const nextImage = pickRandomImage(cachedImages, heroImage.value, 'blog-surfer:last-article-detail-hero-image');
+  setHeroImage(nextImage);
+  window.sessionStorage.setItem('blog-surfer:last-article-detail-hero-image', nextImage);
+}
+
+async function cacheBannerImage(src: string) {
+  if (!('caches' in window)) return false;
+
+  try {
+    const cache = await window.caches.open(BANNER_CACHE_NAME);
+    if (await cache.match(src)) {
+      addCachedBannerSnapshot(src);
+      return true;
+    }
+
+    const response = await fetch(src, { cache: 'force-cache' });
+    if (!response.ok) return false;
+
+    await cache.put(src, response.clone());
+    addCachedBannerSnapshot(src);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function runWhenIdle(callback: () => void) {
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(callback, { timeout: 2500 });
     return;
   }
 
-  const lastImage = window.sessionStorage.getItem('blog-surfer:last-article-detail-hero-image');
-  const candidates =
-    articleDetailImages.length > 1
-      ? articleDetailImages.filter(image => image !== lastImage && image !== heroImage.value)
-      : articleDetailImages;
-  const pool = candidates.length ? candidates : articleDetailImages.filter(image => image !== heroImage.value);
-  const nextPool = pool.length ? pool : articleDetailImages;
-  const nextImage = nextPool[Math.floor(Math.random() * nextPool.length)];
+  bannerPreloadTimer = setTimeout(callback, 1500);
+}
 
-  heroImage.value = nextImage;
-  heroImageKey.value += 1;
-  window.sessionStorage.setItem('blog-surfer:last-article-detail-hero-image', nextImage);
+function preloadBannerImagesInIdle(images: string[], batchSize = 2) {
+  const preloadImages = images.filter(image => image && image !== bannerDefaultImg);
+  let index = 0;
+
+  const runBatch = async () => {
+    if (bannerPreloadStopped) return;
+
+    const batch = preloadImages.slice(index, index + batchSize);
+    index += batchSize;
+    await Promise.all(batch.map(cacheBannerImage));
+
+    if (!bannerPreloadStopped && index < preloadImages.length) {
+      runWhenIdle(runBatch);
+    }
+  };
+
+  if (preloadImages.length) {
+    runWhenIdle(runBatch);
+  }
 }
 
 function escapeHtml(text: string) {
@@ -433,7 +540,7 @@ watch(
   () => route.params.id,
   id => {
     if (id) {
-      pickHeroImage();
+      pickCachedHeroImage(true);
       loadArticle(id as string);
     }
   }
@@ -445,12 +552,15 @@ onMounted(async () => {
   window.addEventListener('blog-surfer:toggle-toc', handleToggleToc);
 
   await loadBlogSettings();
-  pickHeroImage();
+  pickCachedHeroImage();
+  preloadBannerImagesInIdle(articleDetailImages);
   const articleId = route.params.id as string;
   if (articleId) loadArticle(articleId);
 });
 
 onBeforeUnmount(() => {
+  bannerPreloadStopped = true;
+  if (bannerPreloadTimer) clearTimeout(bannerPreloadTimer);
   window.removeEventListener('resize', updateIsMobile);
   window.removeEventListener('blog-surfer:toggle-toc', handleToggleToc);
   if (articleTitleTypingTimer) clearTimeout(articleTitleTypingTimer);
@@ -462,7 +572,7 @@ onActivated(() => {
     return;
   }
 
-  pickHeroImage();
+  pickCachedHeroImage();
 });
 </script>
 

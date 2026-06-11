@@ -51,7 +51,16 @@
         </div>
       </BetterScroll>
     </div>
-    <ReloadButton :loading="!appStore.reloadFlag" @click="refresh" />
+    <ATooltip :title="$t('icon.reload')" placement="bottom">
+      <AButton type="text" class="h-[36px] text-icon" @click="refresh">
+        <div class="flex items-center justify-center gap-[8px]">
+          <icon-ant-design-reload-outlined
+            class="text-icon"
+            :class="[{ 'animate-spin animate-duration-750': !appStore.reloadFlag }]"
+          />
+        </div>
+      </AButton>
+    </ATooltip>
     <FullScreen :full="appStore.fullContent" @click="appStore.toggleFullContent" />
   </DarkModeContainer>
 </template>
@@ -301,7 +310,7 @@ async function handleCloseTab(tab: App.Global.Tab) {
 }
 
 function refresh() {
-  appStore.reloadPage(500);
+  window.location.reload();
 }
 
 function removeFocus() {

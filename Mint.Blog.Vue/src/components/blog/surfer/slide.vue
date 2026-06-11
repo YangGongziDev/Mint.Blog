@@ -3,6 +3,7 @@ defineOptions({ name: 'surfer-slide' });
 
 withDefaults(defineProps<{
   src?: string;
+  fallbackSrc?: string;
   isRipple?: boolean;
 }>(), {
   isRipple: true,
@@ -15,6 +16,11 @@ withDefaults(defineProps<{
       class="slide-inner"
       style="min-height: 300px; position: relative; background: #1a1a2e; overflow: hidden;"
     >
+      <div
+        v-if="fallbackSrc"
+        style="position: absolute; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat;"
+        :style="{ backgroundImage: `url(${fallbackSrc})` }"
+      />
       <div
         v-if="src"
         style="position: absolute; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat;"

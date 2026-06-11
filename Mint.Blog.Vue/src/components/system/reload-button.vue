@@ -1,7 +1,11 @@
 <template>
-  <ButtonIcon size-class="text-icon" :tooltip-content="$t('icon.reload')">
-    <icon-ant-design-reload-outlined class="text-icon" :class="[{ 'animate-spin animate-duration-750': loading }]" />
-  </ButtonIcon>
+  <ATooltip :title="$t('icon.reload')" placement="bottom">
+    <AButton type="text" class="h-[36px] text-icon" @click="emit('click')">
+      <div class="flex items-center justify-center gap-[8px]">
+        <icon-ant-design-reload-outlined class="text-icon" :class="[{ 'animate-spin animate-duration-750': loading }]" />
+      </div>
+    </AButton>
+  </ATooltip>
 </template>
 
 <script setup lang="ts">
@@ -16,6 +20,10 @@ interface Props {
 }  
 
 defineProps<Props>();
+
+const emit = defineEmits<{
+  click: [];
+}>();
 </script>
 
 <style scoped lang="scss">
