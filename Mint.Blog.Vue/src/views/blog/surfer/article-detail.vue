@@ -14,10 +14,10 @@ import {
   RightOutlined
 } from '@ant-design/icons-vue';
 import hljs from 'highlight.js';
-import bannerDefaultImg from '@/assets/blog/surfer/article-banner/banner-default.jpg';
 import { getArticleDetail } from '@/service/blog/surfer/article';
 import { getBlogSettingsDetail } from '@/service/blog/surfer/setting';
 import { useTabStore } from '@/store/system/tab';
+import bannerDefaultImg from '@/assets/blog/surfer/article-banner/banner-default.jpg';
 import SurferComment from '@/components/blog/surfer/comment.vue';
 import Starry from '@/components/blog/surfer/starry.vue';
 import SurferToc from '@/components/blog/surfer/toc.vue';
@@ -80,15 +80,19 @@ const renderedContent = computed(() => renderMarkdown(article.value.content || '
 const hasTocHeadings = computed(() => /^#{2,4}\s+\S+/m.test(article.value.content || ''));
 const heroImage = ref('');
 const heroImageKey = ref(0);
+const heroResolved = ref(false);
 let hasSkippedInitialActivated = false;
 let bannerPreloadStopped = false;
 let bannerPreloadTimer: ReturnType<typeof setTimeout> | null = null;
 let articleTitleTypingTimer: ReturnType<typeof setTimeout> | null = null;
+let bannerPreloadStarted = false;
 const BANNER_CACHE_NAME = 'blog-surfer-banner-images-v1';
 const BANNER_CACHE_SNAPSHOT_KEY = 'blog-surfer:cached-banner-images';
-const articleHeroStyle = computed(() => ({
-  backgroundImage: `url(${heroImage.value || bannerDefaultImg})`
-}));
+const LAST_CONFIRMED_HERO_KEY = 'blog-surfer:last-confirmed-article-detail-hero-image';
+const INITIAL_HERO_RESOLVE_TIMEOUT = 450;
+const articleHeroStyle = computed(() =>
+  heroResolved.value ? { backgroundImage: `url(${heroImage.value || bannerDefaultImg})` } : {}
+);
 function typeArticleTitle(title?: string) {
   if (articleTitleTypingTimer) clearTimeout(articleTitleTypingTimer);
   articleTitleTypingTimer = null;
@@ -117,16 +121,63 @@ function setHeroImage(image: string) {
   heroImageKey.value += 1;
 }
 
+function readStoredHeroImage(images: string[], storageKey: string) {
+  const image = window.sessionStorage.getItem(storageKey);
+  return image && images.includes(image) ? image : '';
+}
+
+function writeStoredHeroImage(storageKey: string, image?: string) {
+  if (!image) {
+    window.sessionStorage.removeItem(storageKey);
+    return;
+  }
+
+  window.sessionStorage.setItem(storageKey, image);
+}
+
 function pickRandomImage(images: string[], currentImage: string, lastImageKey: string) {
   const lastImage = window.sessionStorage.getItem(lastImageKey);
-  const candidates =
-    images.length > 1
-      ? images.filter(image => image !== lastImage && image !== currentImage)
-      : images;
+  const candidates = images.length > 1 ? images.filter(image => image !== lastImage && image !== currentImage) : images;
   const pool = candidates.length ? candidates : images.filter(image => image !== currentImage);
   const nextPool = pool.length ? pool : images;
 
   return nextPool[Math.floor(Math.random() * nextPool.length)];
+}
+
+async function ensureImageReady(src: string, timeoutMs = 1200) {
+  if (!src) return false;
+
+  return new Promise<boolean>(resolve => {
+    const image = new Image();
+    let settled = false;
+    let timeoutId = 0;
+
+    const finish = (ready: boolean) => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeoutId);
+      resolve(ready);
+    };
+    timeoutId = window.setTimeout(() => finish(false), timeoutMs);
+
+    image.onload = () => {
+      if (typeof image.decode === 'function') {
+        image
+          .decode()
+          .then(() => finish(true))
+          .catch(() => finish(true));
+        return;
+      }
+
+      finish(true);
+    };
+    image.onerror = () => finish(false);
+    image.src = src;
+
+    if (image.complete) {
+      finish(image.naturalWidth > 0);
+    }
+  });
 }
 
 function readCachedBannerSnapshot(images: string[]) {
@@ -148,22 +199,17 @@ function addCachedBannerSnapshot(image: string) {
   writeCachedBannerSnapshot([...readCachedBannerSnapshot(articleDetailImages), image]);
 }
 
-const initialHeroImage = pickRandomImage(
-  readCachedBannerSnapshot(articleDetailImages),
-  '',
-  'blog-surfer:last-article-detail-hero-image'
-);
-
-heroImage.value = initialHeroImage || '';
-
-async function getCachedBannerImages(images: string[]) {
+async function getCachedBannerImages(images: string[], preferredImage = '') {
   if (!('caches' in window)) return [];
 
   const cache = await window.caches.open(BANNER_CACHE_NAME);
+  const snapshotImages = readCachedBannerSnapshot(images);
+  const orderedImages = [preferredImage, ...snapshotImages, ...images].filter(
+    (image, index, array) => image && image !== bannerDefaultImg && array.indexOf(image) === index
+  );
+
   const cachedImageMatches = await Promise.all(
-    images
-      .filter(image => image && image !== bannerDefaultImg)
-      .map(async image => ((await cache.match(image)) ? image : ''))
+    orderedImages.map(async image => ((await cache.match(image)) ? image : ''))
   );
 
   const cachedImages = cachedImageMatches.filter(Boolean);
@@ -173,15 +219,42 @@ async function getCachedBannerImages(images: string[]) {
 }
 
 async function pickCachedHeroImage(forceChange = false) {
-  const cachedImages = await getCachedBannerImages(articleDetailImages);
+  const preferredImage = forceChange ? '' : readStoredHeroImage(articleDetailImages, LAST_CONFIRMED_HERO_KEY);
+  const cachedImages = await getCachedBannerImages(articleDetailImages, preferredImage);
 
-  if (!cachedImages.length) return;
+  if (!cachedImages.length) {
+    setHeroImage('');
+    writeStoredHeroImage(LAST_CONFIRMED_HERO_KEY);
+    return;
+  }
 
   if (!forceChange && heroImage.value && cachedImages.includes(heroImage.value)) return;
 
   const nextImage = pickRandomImage(cachedImages, heroImage.value, 'blog-surfer:last-article-detail-hero-image');
+  if (!(await ensureImageReady(nextImage, 500))) {
+    setHeroImage('');
+    writeStoredHeroImage(LAST_CONFIRMED_HERO_KEY);
+    return;
+  }
+
   setHeroImage(nextImage);
+  writeStoredHeroImage(LAST_CONFIRMED_HERO_KEY, nextImage);
   window.sessionStorage.setItem('blog-surfer:last-article-detail-hero-image', nextImage);
+}
+
+async function resolveInitialHeroImage() {
+  heroResolved.value = false;
+
+  try {
+    await Promise.race([
+      pickCachedHeroImage(),
+      new Promise(resolve => {
+        window.setTimeout(resolve, INITIAL_HERO_RESOLVE_TIMEOUT);
+      })
+    ]);
+  } finally {
+    heroResolved.value = true;
+  }
 }
 
 async function cacheBannerImage(src: string) {
@@ -233,6 +306,20 @@ function preloadBannerImagesInIdle(images: string[], batchSize = 2) {
   if (preloadImages.length) {
     runWhenIdle(runBatch);
   }
+}
+
+function startBannerPreloadOnce() {
+  if (bannerPreloadStarted || bannerPreloadStopped) return;
+  bannerPreloadStarted = true;
+  preloadBannerImagesInIdle(articleDetailImages);
+}
+
+async function scheduleBannerPreloadAfterRender() {
+  await nextTick();
+
+  window.requestAnimationFrame(() => {
+    startBannerPreloadOnce();
+  });
 }
 
 function escapeHtml(text: string) {
@@ -508,54 +595,52 @@ async function loadBlogSettings() {
   }
 }
 
-function loadArticle(articleId: string | number) {
+async function loadArticle(articleId: string | number) {
   loading.value = true;
-  getArticleDetail<{ success: boolean; data: Article; errorCode?: string }>(articleId)
-    .then(res => {
-      if (!res.success && res.errorCode === '20010') {
-        articleNotFound.value = true;
-        typedArticleTitle.value = '';
-        return;
-      }
-      article.value = res.data || {};
-      typeArticleTitle(article.value.title);
-      if (article.value.title) tabStore.setTabLabel(article.value.title);
-      articleNotFound.value = false;
-
-      nextTick(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    })
-    .catch(() => {
-      article.value = {};
-      typedArticleTitle.value = '';
+  try {
+    const res = await getArticleDetail<{ success: boolean; data: Article; errorCode?: string }>(articleId);
+    if (!res.success && res.errorCode === '20010') {
       articleNotFound.value = true;
-    })
-    .finally(() => {
-      loading.value = false;
+      typedArticleTitle.value = '';
+      return;
+    }
+    article.value = res.data || {};
+    typeArticleTitle(article.value.title);
+    if (article.value.title) tabStore.setTabLabel(article.value.title);
+    articleNotFound.value = false;
+
+    nextTick(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+  } catch {
+    article.value = {};
+    typedArticleTitle.value = '';
+    articleNotFound.value = true;
+  } finally {
+    loading.value = false;
+    await scheduleBannerPreloadAfterRender();
+  }
 }
 
 watch(
   () => route.params.id,
-  id => {
+  async id => {
     if (id) {
       pickCachedHeroImage(true);
-      loadArticle(id as string);
+      await loadArticle(id as string);
     }
   }
 );
 
-onMounted(async () => {
+onMounted(() => {
   updateIsMobile();
   window.addEventListener('resize', updateIsMobile);
   window.addEventListener('blog-surfer:toggle-toc', handleToggleToc);
 
-  await loadBlogSettings();
-  pickCachedHeroImage();
-  preloadBannerImagesInIdle(articleDetailImages);
+  loadBlogSettings().catch(() => undefined);
+  resolveInitialHeroImage().catch(() => undefined);
   const articleId = route.params.id as string;
-  if (articleId) loadArticle(articleId);
+  if (articleId) loadArticle(articleId).catch(() => undefined);
 });
 
 onBeforeUnmount(() => {
@@ -583,6 +668,23 @@ onActivated(() => {
       class="article-hero relative h-[340px] overflow-hidden bg-cover bg-center sm:h-[420px] md:h-[500px]"
       :style="articleHeroStyle"
     >
+      <div v-if="!heroResolved" class="article-hero-skeleton" aria-hidden="true">
+        <div class="article-hero-skeleton-cover"></div>
+        <div class="article-hero-skeleton-body">
+          <div class="article-hero-skeleton-line article-hero-skeleton-title"></div>
+          <div class="article-hero-skeleton-meta">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="article-hero-skeleton-info">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
       <div class="absolute inset-0 bg-black/35"></div>
       <div class="article-stars absolute inset-0 overflow-hidden">
         <Starry />
@@ -815,6 +917,69 @@ onActivated(() => {
   background-color: #111827;
 }
 
+.article-hero-skeleton {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid rgb(62 207 154 / 28%);
+  background:
+    radial-gradient(circle at 6% 0%, rgb(62 207 154 / 9%), transparent 38%),
+    linear-gradient(135deg, rgb(255 255 255 / 96%), rgb(247 255 251 / 92%));
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.article-hero-skeleton-cover {
+  width: 42%;
+  min-width: 42%;
+  background: linear-gradient(135deg, rgb(62 207 154 / 13%), rgb(62 207 154 / 5%));
+  clip-path: polygon(0 0, 90% 0, 100% 100%, 0 100%);
+}
+
+.article-hero-skeleton-body {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding: 24px 32px;
+}
+
+.article-hero-skeleton-line,
+.article-hero-skeleton-meta span,
+.article-hero-skeleton-info span {
+  display: block;
+  border-radius: 999px;
+  background: rgb(62 207 154 / 12%);
+}
+
+.article-hero-skeleton-title {
+  width: min(56%, 420px);
+  height: 34px;
+}
+
+.article-hero-skeleton-meta,
+.article-hero-skeleton-info {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.article-hero-skeleton-meta span {
+  width: 78px;
+  height: 28px;
+}
+
+.article-hero-skeleton-info span {
+  width: 96px;
+  height: 18px;
+}
+
 .article-hero::before {
   position: absolute;
   inset: 0;
@@ -964,6 +1129,21 @@ html.dark .article-ripple .parallax > use {
   .article-ripple .waves {
     height: 40px;
     min-height: 40px;
+  }
+
+  .article-hero-skeleton-cover {
+    width: 34%;
+    min-width: 34%;
+  }
+
+  .article-hero-skeleton-body {
+    gap: 14px;
+    padding: 20px 18px;
+  }
+
+  .article-hero-skeleton-title {
+    width: min(72%, 280px);
+    height: 28px;
   }
 }
 

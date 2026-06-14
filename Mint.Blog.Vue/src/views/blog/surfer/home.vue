@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onActivated, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onActivated, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { CalendarOutlined, EyeOutlined, FolderOutlined } from '@ant-design/icons-vue';
 import { getArticlePageList } from '@/service/blog/surfer/article';
@@ -54,13 +54,18 @@ const homeHeroImages = Object.values(
 let hasSkippedInitialActivated = false;
 let bannerPreloadStopped = false;
 let bannerPreloadTimer: ReturnType<typeof setTimeout> | null = null;
+let bannerPreloadStarted = false;
 
 // Local swiper image & typed texts (no API dependency)
 const swiperImage = ref('');
 const swiperImageKey = ref(0);
+const bannerResolved = ref(false);
 const displayTexts = ['Mint Blog', '新鲜阅读，温柔写作', '技术·生活·思考'];
 const BANNER_CACHE_NAME = 'blog-surfer-banner-images-v1';
 const BANNER_CACHE_SNAPSHOT_KEY = 'blog-surfer:cached-banner-images';
+const LAST_CONFIRMED_BANNER_KEY = 'blog-surfer:last-confirmed-home-hero-image';
+const INITIAL_BANNER_RESOLVE_TIMEOUT = 450;
+const slideImageSrc = computed(() => (bannerResolved.value ? swiperImage.value || bannerDefaultImg : ''));
 
 function readCachedBannerSnapshot(images: string[]) {
   try {
@@ -81,13 +86,19 @@ function addCachedBannerSnapshot(image: string) {
   writeCachedBannerSnapshot([...readCachedBannerSnapshot(homeHeroImages), image]);
 }
 
-const initialSwiperImage = pickRandomImage(
-  readCachedBannerSnapshot(homeHeroImages),
-  '',
-  'blog-surfer:last-home-hero-image'
-);
+function readStoredBannerImage(images: string[], storageKey: string) {
+  const image = window.sessionStorage.getItem(storageKey);
+  return image && images.includes(image) ? image : '';
+}
 
-swiperImage.value = initialSwiperImage || '';
+function writeStoredBannerImage(storageKey: string, image?: string) {
+  if (!image) {
+    window.sessionStorage.removeItem(storageKey);
+    return;
+  }
+
+  window.sessionStorage.setItem(storageKey, image);
+}
 
 // --------------- helpers ---------------
 function setSwiperImage(image: string) {
@@ -96,25 +107,62 @@ function setSwiperImage(image: string) {
   swiperImageKey.value += 1;
 }
 
+async function ensureImageReady(src: string, timeoutMs = 1200) {
+  if (!src) return false;
+
+  return new Promise<boolean>(resolve => {
+    const image = new Image();
+    let settled = false;
+    let timeoutId = 0;
+
+    const finish = (ready: boolean) => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeoutId);
+      resolve(ready);
+    };
+    timeoutId = window.setTimeout(() => finish(false), timeoutMs);
+
+    image.onload = () => {
+      if (typeof image.decode === 'function') {
+        image
+          .decode()
+          .then(() => finish(true))
+          .catch(() => finish(true));
+        return;
+      }
+
+      finish(true);
+    };
+    image.onerror = () => finish(false);
+    image.src = src;
+
+    if (image.complete) {
+      finish(image.naturalWidth > 0);
+    }
+  });
+}
+
 function pickRandomImage(images: string[], currentImage: string, lastImageKey: string) {
   const lastImage = window.sessionStorage.getItem(lastImageKey);
-  const candidates = images.length > 1
-    ? images.filter(image => image !== lastImage && image !== currentImage)
-    : images;
+  const candidates = images.length > 1 ? images.filter(image => image !== lastImage && image !== currentImage) : images;
   const pool = candidates.length ? candidates : images.filter(image => image !== currentImage);
   const nextPool = pool.length ? pool : images;
 
   return nextPool[Math.floor(Math.random() * nextPool.length)];
 }
 
-async function getCachedBannerImages(images: string[]) {
+async function getCachedBannerImages(images: string[], preferredImage = '') {
   if (!('caches' in window)) return [];
 
   const cache = await window.caches.open(BANNER_CACHE_NAME);
+  const snapshotImages = readCachedBannerSnapshot(images);
+  const orderedImages = [preferredImage, ...snapshotImages, ...images].filter(
+    (image, index, array) => image && image !== bannerDefaultImg && array.indexOf(image) === index
+  );
+
   const cachedImageMatches = await Promise.all(
-    images
-      .filter(image => image && image !== bannerDefaultImg)
-      .map(async image => ((await cache.match(image)) ? image : ''))
+    orderedImages.map(async image => ((await cache.match(image)) ? image : ''))
   );
 
   const cachedImages = cachedImageMatches.filter(Boolean);
@@ -124,15 +172,42 @@ async function getCachedBannerImages(images: string[]) {
 }
 
 async function pickCachedSwiperImage(forceChange = false) {
-  const cachedImages = await getCachedBannerImages(homeHeroImages);
+  const preferredImage = forceChange ? '' : readStoredBannerImage(homeHeroImages, LAST_CONFIRMED_BANNER_KEY);
+  const cachedImages = await getCachedBannerImages(homeHeroImages, preferredImage);
 
-  if (!cachedImages.length) return;
+  if (!cachedImages.length) {
+    setSwiperImage('');
+    writeStoredBannerImage(LAST_CONFIRMED_BANNER_KEY);
+    return;
+  }
 
   if (!forceChange && swiperImage.value && cachedImages.includes(swiperImage.value)) return;
 
   const nextImage = pickRandomImage(cachedImages, swiperImage.value, 'blog-surfer:last-home-hero-image');
+  if (!(await ensureImageReady(nextImage, 500))) {
+    setSwiperImage('');
+    writeStoredBannerImage(LAST_CONFIRMED_BANNER_KEY);
+    return;
+  }
+
   setSwiperImage(nextImage);
+  writeStoredBannerImage(LAST_CONFIRMED_BANNER_KEY, nextImage);
   window.sessionStorage.setItem('blog-surfer:last-home-hero-image', nextImage);
+}
+
+async function resolveInitialBannerImage() {
+  bannerResolved.value = false;
+
+  try {
+    await Promise.race([
+      pickCachedSwiperImage(),
+      new Promise(resolve => {
+        window.setTimeout(resolve, INITIAL_BANNER_RESOLVE_TIMEOUT);
+      })
+    ]);
+  } finally {
+    bannerResolved.value = true;
+  }
 }
 
 async function cacheBannerImage(src: string) {
@@ -184,6 +259,20 @@ function preloadBannerImagesInIdle(images: string[], batchSize = 2) {
   if (preloadImages.length) {
     runWhenIdle(runBatch);
   }
+}
+
+function startBannerPreloadOnce() {
+  if (bannerPreloadStarted || bannerPreloadStopped) return;
+  bannerPreloadStarted = true;
+  preloadBannerImagesInIdle(homeHeroImages);
+}
+
+async function scheduleBannerPreloadAfterRender() {
+  await nextTick();
+
+  window.requestAnimationFrame(() => {
+    startBannerPreloadOnce();
+  });
 }
 
 const info = (a: Article) => a.summary?.trim() || '这是一篇精彩的文章，点击查看详细内容...';
@@ -291,6 +380,7 @@ async function fetchArticles() {
     pages.value = 0;
   } finally {
     loading.value = false;
+    await scheduleBannerPreloadAfterRender();
   }
 }
 
@@ -314,9 +404,8 @@ function goTag(id: number, name: string) {
 
 // --------------- lifecycle ---------------
 onMounted(() => {
-  pickCachedSwiperImage();
+  resolveInitialBannerImage().catch(() => undefined);
   fetchArticles();
-  preloadBannerImagesInIdle(homeHeroImages);
 });
 
 onActivated(() => {
@@ -342,7 +431,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Slide :key="swiperImageKey" :src="swiperImage || bannerDefaultImg" class="slide-hero">
+  <Slide :key="swiperImageKey" :src="slideImageSrc" class="slide-hero">
+    <div v-if="!bannerResolved" class="banner-skeleton" aria-hidden="true">
+      <div class="banner-skeleton-cover"></div>
+      <div class="banner-skeleton-body">
+        <div class="banner-skeleton-line banner-skeleton-title"></div>
+        <div class="banner-skeleton-line banner-skeleton-summary"></div>
+        <div class="banner-skeleton-line banner-skeleton-summary-short"></div>
+      </div>
+    </div>
     <Starry />
     <Typed
       :texts="displayTexts"
@@ -530,6 +627,57 @@ onBeforeUnmount(() => {
 .slide-hero {
   margin-left: -16px;
   margin-right: -16px;
+}
+
+.banner-skeleton {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid rgb(62 207 154 / 28%);
+  background:
+    radial-gradient(circle at 6% 0%, rgb(62 207 154 / 9%), transparent 38%),
+    linear-gradient(135deg, rgb(255 255 255 / 96%), rgb(247 255 251 / 92%));
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.banner-skeleton-cover {
+  width: 42%;
+  min-width: 42%;
+  background: linear-gradient(135deg, rgb(62 207 154 / 13%), rgb(62 207 154 / 5%));
+  clip-path: polygon(0 0, 90% 0, 100% 100%, 0 100%);
+}
+
+.banner-skeleton-body {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: 24px 32px;
+}
+
+.banner-skeleton-line {
+  display: block;
+  border-radius: 999px;
+  background: rgb(62 207 154 / 12%);
+}
+
+.banner-skeleton-title {
+  width: min(52%, 360px);
+  height: 34px;
+}
+
+.banner-skeleton-summary {
+  width: min(72%, 520px);
+  height: 16px;
+}
+
+.banner-skeleton-summary-short {
+  width: min(48%, 300px);
+  height: 16px;
 }
 
 .card,
