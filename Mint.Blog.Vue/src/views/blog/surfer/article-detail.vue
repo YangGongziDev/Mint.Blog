@@ -122,21 +122,34 @@ function setHeroImage(image: string) {
 }
 
 function readStoredHeroImage(images: string[], storageKey: string) {
-  const image = window.sessionStorage.getItem(storageKey);
-  return image && images.includes(image) ? image : '';
+  try {
+    const image = window.sessionStorage.getItem(storageKey);
+    return image && images.includes(image) ? image : '';
+  } catch {
+    return '';
+  }
 }
 
 function writeStoredHeroImage(storageKey: string, image?: string) {
-  if (!image) {
-    window.sessionStorage.removeItem(storageKey);
-    return;
-  }
+  try {
+    if (!image) {
+      window.sessionStorage.removeItem(storageKey);
+      return;
+    }
 
-  window.sessionStorage.setItem(storageKey, image);
+    window.sessionStorage.setItem(storageKey, image);
+  } catch {
+    // Safari private/privacy modes can reject storage access; banner selection should still work.
+  }
 }
 
 function pickRandomImage(images: string[], currentImage: string, lastImageKey: string) {
-  const lastImage = window.sessionStorage.getItem(lastImageKey);
+  let lastImage = '';
+  try {
+    lastImage = window.sessionStorage.getItem(lastImageKey) || '';
+  } catch {
+    lastImage = '';
+  }
   const candidates = images.length > 1 ? images.filter(image => image !== lastImage && image !== currentImage) : images;
   const pool = candidates.length ? candidates : images.filter(image => image !== currentImage);
   const nextPool = pool.length ? pool : images;
@@ -191,7 +204,11 @@ function readCachedBannerSnapshot(images: string[]) {
 }
 
 function writeCachedBannerSnapshot(images: string[]) {
-  window.localStorage.setItem(BANNER_CACHE_SNAPSHOT_KEY, JSON.stringify([...new Set(images)]));
+  try {
+    window.localStorage.setItem(BANNER_CACHE_SNAPSHOT_KEY, JSON.stringify([...new Set(images)]));
+  } catch {
+    // Storage may be unavailable in Safari private/privacy modes.
+  }
 }
 
 function addCachedBannerSnapshot(image: string) {
@@ -202,36 +219,51 @@ function addCachedBannerSnapshot(image: string) {
 async function getCachedBannerImages(images: string[], preferredImage = '') {
   if (!('caches' in window)) return [];
 
-  const cache = await window.caches.open(BANNER_CACHE_NAME);
-  const snapshotImages = readCachedBannerSnapshot(images);
-  const orderedImages = [preferredImage, ...snapshotImages, ...images].filter(
-    (image, index, array) => image && image !== bannerDefaultImg && array.indexOf(image) === index
-  );
+  try {
+    const cache = await window.caches.open(BANNER_CACHE_NAME);
+    const snapshotImages = readCachedBannerSnapshot(images);
+    const orderedImages = [preferredImage, ...snapshotImages, ...images].filter(
+      (image, index, array) => image && image !== bannerDefaultImg && array.indexOf(image) === index
+    );
 
-  const cachedImageMatches = await Promise.all(
-    orderedImages.map(async image => ((await cache.match(image)) ? image : ''))
-  );
+    const cachedImageMatches = await Promise.all(
+      orderedImages.map(async image => ((await cache.match(image)) ? image : ''))
+    );
 
-  const cachedImages = cachedImageMatches.filter(Boolean);
-  writeCachedBannerSnapshot(cachedImages);
+    const cachedImages = cachedImageMatches.filter(Boolean);
+    writeCachedBannerSnapshot(cachedImages);
 
-  return cachedImages;
+    return cachedImages;
+  } catch {
+    return [];
+  }
+}
+
+async function getCachedBannerImagesWithTimeout(images: string[], preferredImage = '', timeoutMs = 300) {
+  return Promise.race<string[]>([
+    getCachedBannerImages(images, preferredImage),
+    new Promise(resolve => {
+      window.setTimeout(() => resolve([]), timeoutMs);
+    })
+  ]);
 }
 
 async function pickCachedHeroImage(forceChange = false) {
   const preferredImage = forceChange ? '' : readStoredHeroImage(articleDetailImages, LAST_CONFIRMED_HERO_KEY);
-  const cachedImages = await getCachedBannerImages(articleDetailImages, preferredImage);
+  const cachedImages = await getCachedBannerImagesWithTimeout(articleDetailImages, preferredImage);
+  const bundledImages = articleDetailImages.filter(image => image && image !== bannerDefaultImg);
+  const availableImages = cachedImages.length ? cachedImages : bundledImages;
 
-  if (!cachedImages.length) {
+  if (!availableImages.length) {
     setHeroImage('');
     writeStoredHeroImage(LAST_CONFIRMED_HERO_KEY);
     return;
   }
 
-  if (!forceChange && heroImage.value && cachedImages.includes(heroImage.value)) return;
+  if (!forceChange && heroImage.value && availableImages.includes(heroImage.value)) return;
 
-  const nextImage = pickRandomImage(cachedImages, heroImage.value, 'blog-surfer:last-article-detail-hero-image');
-  if (!(await ensureImageReady(nextImage, 500))) {
+  const nextImage = pickRandomImage(availableImages, heroImage.value, 'blog-surfer:last-article-detail-hero-image');
+  if (cachedImages.length && !(await ensureImageReady(nextImage, 500))) {
     setHeroImage('');
     writeStoredHeroImage(LAST_CONFIRMED_HERO_KEY);
     return;
@@ -239,7 +271,11 @@ async function pickCachedHeroImage(forceChange = false) {
 
   setHeroImage(nextImage);
   writeStoredHeroImage(LAST_CONFIRMED_HERO_KEY, nextImage);
-  window.sessionStorage.setItem('blog-surfer:last-article-detail-hero-image', nextImage);
+  try {
+    window.sessionStorage.setItem('blog-surfer:last-article-detail-hero-image', nextImage);
+  } catch {
+    // Storage may be unavailable in Safari private/privacy modes.
+  }
 }
 
 async function resolveInitialHeroImage() {
