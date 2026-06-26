@@ -39,7 +39,7 @@ export function getTabByRoute(route: App.Global.TabRoute) {
   const { title, i18nKey, fixedIndexInTab } = meta;
   const menuDisplay = getMenuDisplayByRoute(routeNameFromRoute(route), activeMenuFromRoute(route));
   const routeDisplay = getRouteDisplay(route);
-  const label = menuDisplay?.label || (i18nKey ? $t(i18nKey) : title) || '无标题';
+  const label = (i18nKey ? $t(i18nKey) : title) || menuDisplay?.label || '无标题';
 
   const tab: App.Global.Tab = {
     id: getTabIdByRoute(route),
@@ -50,7 +50,7 @@ export function getTabByRoute(route: App.Global.TabRoute) {
     fixedIndex: fixedIndexInTab,
     icon: menuDisplay?.icon || routeDisplay.icon,
     localIcon: routeDisplay.localIcon,
-    i18nKey: menuDisplay?.menuI18nKey || i18nKey
+    i18nKey
   };
 
   return tab;
@@ -137,13 +137,19 @@ export function extractTabsByAllRoutes(router: Router, tabs: App.Global.Tab[]) {
     .filter(tab => routeMap.has(tab.routeKey))
     .map(tab => {
       const route = routeMap.get(tab.routeKey)!;
-      const menuDisplay = getMenuDisplayByRoute(String(tab.routeKey), (route.meta?.activeMenu as string | null) || null);
+      const menuDisplay = getMenuDisplayByRoute(
+        String(tab.routeKey),
+        (route.meta?.activeMenu as string | null) || null
+      );
+
+      const routeI18nKey = route.meta?.i18nKey;
+      const routeLabel = routeI18nKey ? $t(routeI18nKey) : route.meta?.title;
 
       return {
         ...tab,
-        label: tab.newLabel || tab.oldLabel || menuDisplay?.label || tab.label,
+        label: tab.newLabel || tab.oldLabel || routeLabel || menuDisplay?.label || tab.label,
         icon: menuDisplay?.icon || tab.icon,
-        i18nKey: menuDisplay?.menuI18nKey || tab.i18nKey
+        i18nKey: routeI18nKey || tab.i18nKey
       };
     });
 }
@@ -166,23 +172,22 @@ function updateTabsLabel(tabs: App.Global.Tab[]) {
 export function updateTabByI18nKey(tab: App.Global.Tab) {
   const menuDisplay = getMenuDisplayByRoute(String(tab.routeKey), null);
   const { i18nKey } = tab;
-  const nextI18nKey = menuDisplay?.menuI18nKey || i18nKey;
 
-  if (!nextI18nKey) {
+  if (!i18nKey) {
     return {
       ...tab,
       icon: menuDisplay?.icon || tab.icon
     };
   }
 
-  const nextLabel = $t(nextI18nKey);
+  const nextLabel = $t(i18nKey);
 
   return {
     ...tab,
     oldLabel: tab.newLabel ? nextLabel : undefined,
     label: nextLabel,
     icon: menuDisplay?.icon || tab.icon,
-    i18nKey: nextI18nKey
+    i18nKey
   };
 }
 

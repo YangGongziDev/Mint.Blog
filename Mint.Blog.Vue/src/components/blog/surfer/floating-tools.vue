@@ -27,7 +27,7 @@ const DRAG_RESET_DELAY = 120;
 
 const route = useRoute();
 const floatingRef = ref<HTMLElement>();
-const isExpanded = ref(false);
+const isExpanded = ref(true);
 const isDragging = ref(false);
 const isPointerDown = ref(false);
 const isTocAvailable = ref(false);

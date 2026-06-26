@@ -22,6 +22,8 @@ public sealed partial class ArticleDraftService(
 	ITagRepository tagRepository,
 	IObjectStorageService objectStorageService,
 	IUnitOfWork unitOfWork) : IArticleDraftService {
+	private const int SummaryMaxLength = 160;
+
 	public async Task<PagedResult<ArticleDraftListItemDto>> GetListAsync(int pageNumber, int pageSize,
 		CancellationToken cancellationToken = default){
 		EnsureTables();
@@ -147,9 +149,18 @@ public sealed partial class ArticleDraftService(
 	public async Task<long> PublishAsync(long draftId, CancellationToken cancellationToken = default){
 		var draft = await GetByIdAsync(draftId, cancellationToken);
 		Guard.Against(draft is null, ErrorCodes.ArticleDraftNotFound, "Article draft does not exist.");
-		Guard.Against(string.IsNullOrWhiteSpace(draft!.Title), ErrorCodes.ArticleTitleInvalid, "Article title is required.");
-		Guard.Against(string.IsNullOrWhiteSpace(draft.Summary), ErrorCodes.ArticleSummaryInvalid, "Article summary is required.");
-		Guard.Against(string.IsNullOrWhiteSpace(draft.Content), ErrorCodes.ArticleContentInvalid, "Article content is required.");
+
+		var title = Normalize(draft!.Title);
+		var summary = Normalize(draft.Summary);
+		var content = Normalize(draft.Content);
+		var cover = Normalize(draft.Cover);
+
+		Guard.Against(string.IsNullOrWhiteSpace(title), ErrorCodes.ArticleTitleInvalid, "Article title is required.");
+		Guard.Against(string.IsNullOrWhiteSpace(summary), ErrorCodes.ArticleSummaryInvalid, "Article summary is required.");
+		Guard.Against(summary.Length > SummaryMaxLength, ErrorCodes.ArticleSummaryInvalid,
+			$"Article summary cannot exceed {SummaryMaxLength} characters.");
+		Guard.Against(string.IsNullOrWhiteSpace(content), ErrorCodes.ArticleContentInvalid, "Article content is required.");
+		Guard.Against(string.IsNullOrWhiteSpace(cover), ErrorCodes.ArticleCoverInvalid, "Article cover is required.");
 		Guard.Against(!draft.CategoryId.HasValue, ErrorCodes.CategoryNotFound, "Category does not exist.");
 		Guard.Against(draft.TagIds.Count == 0, ErrorCodes.TagNotFound, "One or more tags do not exist.");
 
@@ -167,8 +178,7 @@ public sealed partial class ArticleDraftService(
 			var oldArticleImages = GetArticleImages(article!);
 			var draftImages = GetDraftImages(draft);
 			var imagesRemovedFromArticle = oldArticleImages.Except(draftImages, StringComparer.OrdinalIgnoreCase).ToArray();
-			article!.Update(draft.Title.Trim(), draft.Summary.Trim(), draft.Content.Trim(), draft.Cover.Trim(),
-				draft.CategoryId!.Value, existingTagIds);
+			article!.Update(title, summary, content, cover, draft.CategoryId!.Value, existingTagIds);
 			await unitOfWork.BeginTransactionAsync(cancellationToken);
 			try {
 				await articleRepository.UpdateAsync(article, cancellationToken);
@@ -178,15 +188,15 @@ public sealed partial class ArticleDraftService(
 				await unitOfWork.RollbackAsync(cancellationToken);
 				throw;
 			}
-			await CleanUnusedImagesAsync(imagesRemovedFromArticle, cancellationToken);
+			await CleanUnusedImagesAfterPublishAsync(imagesRemovedFromArticle, articleId, draftId, cancellationToken);
 			return articleId;
 		}
 
 		var newArticle = Mint.Blog.Domain.Blog.Article.Entities.Article.Create(
-			draft.Title.Trim(),
-			draft.Summary.Trim(),
-			draft.Content.Trim(),
-			draft.Cover.Trim(),
+			title,
+			summary,
+			content,
+			cover,
 			draft.CategoryId!.Value,
 			existingTagIds);
 
@@ -323,6 +333,22 @@ public sealed partial class ArticleDraftService(
 		}
 	}
 
+	private async Task CleanUnusedImagesAfterPublishAsync(IReadOnlyCollection<string> images, long publishedArticleId,
+		long publishedDraftId, CancellationToken cancellationToken = default){
+		if (images.Count == 0) return;
+
+		var removable = new List<string>();
+		foreach (var image in ToImageSet(images)) {
+			if (!await IsImageUsedAfterPublishAsync(image, publishedArticleId, publishedDraftId)) removable.Add(image);
+		}
+
+		try {
+			await objectStorageService.DeleteManyAsync(removable, cancellationToken);
+		} catch {
+			// 图片清理失败不应回滚已发布的文章；后续保存、删除或人工清理可再次处理。
+		}
+	}
+
 	private async Task<IReadOnlyCollection<string>> GetRemovableImagesAsync(ArticleDraftDto draft,
 		CancellationToken cancellationToken){
 		var draftImages = ExtractImages(draft.Content).Append(draft.Cover).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct()
@@ -364,6 +390,42 @@ public sealed partial class ArticleDraftService(
 
 		var draftContentUsed = await dbContext.Client.Queryable<ArticleDraftContentDataModel>()
 			.Where(x => x.Content.Contains(image))
+			.AnyAsync();
+		if (draftContentUsed) return true;
+
+		var columnCoverUsed = await dbContext.Client.Queryable<ColumnDataModel>()
+			.Where(x => x.Cover == image)
+			.AnyAsync();
+		if (columnCoverUsed) return true;
+
+		var settingUsed = await dbContext.Client.Queryable<BlogSettingDataModel>()
+			.Where(x => x.Logo == image || x.Avatar == image)
+			.AnyAsync();
+		if (settingUsed) return true;
+
+		return await dbContext.Client.Queryable<FriendDataModel>()
+			.Where(x => x.Avatar == image)
+			.AnyAsync();
+	}
+
+	private async Task<bool> IsImageUsedAfterPublishAsync(string image, long publishedArticleId, long publishedDraftId){
+		var articleCoverUsed = await dbContext.Client.Queryable<ArticleDataModel>()
+			.Where(x => x.Id != publishedArticleId && x.Cover == image)
+			.AnyAsync();
+		if (articleCoverUsed) return true;
+
+		var articleContentUsed = await dbContext.Client.Queryable<ArticleContentDataModel>()
+			.Where(x => x.ArticleId != publishedArticleId && x.Content.Contains(image))
+			.AnyAsync();
+		if (articleContentUsed) return true;
+
+		var draftCoverUsed = await dbContext.Client.Queryable<ArticleDraftDataModel>()
+			.Where(x => x.Id != publishedDraftId && x.Cover == image)
+			.AnyAsync();
+		if (draftCoverUsed) return true;
+
+		var draftContentUsed = await dbContext.Client.Queryable<ArticleDraftContentDataModel>()
+			.Where(x => x.DraftId != publishedDraftId && x.Content.Contains(image))
 			.AnyAsync();
 		if (draftContentUsed) return true;
 

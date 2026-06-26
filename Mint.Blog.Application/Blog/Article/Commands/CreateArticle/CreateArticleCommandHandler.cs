@@ -11,13 +11,24 @@ public sealed class CreateArticleCommandHandler(
 	ICategoryRepository categoryRepository,
 	ITagRepository tagRepository,
 	IUnitOfWork unitOfWork) {
+	private const int SummaryMaxLength = 160;
+
 	public async Task<long> HandleAsync(CreateArticleCommand command, CancellationToken cancellationToken = default){
-		Guard.Against(string.IsNullOrWhiteSpace(command.Title), ErrorCodes.ArticleTitleInvalid,
+		var title = Normalize(command.Title);
+		var summary = Normalize(command.Summary);
+		var content = Normalize(command.Content);
+		var cover = Normalize(command.Cover);
+
+		Guard.Against(string.IsNullOrWhiteSpace(title), ErrorCodes.ArticleTitleInvalid,
 			"Article title is required.");
-		Guard.Against(string.IsNullOrWhiteSpace(command.Summary), ErrorCodes.ArticleSummaryInvalid,
+		Guard.Against(string.IsNullOrWhiteSpace(summary), ErrorCodes.ArticleSummaryInvalid,
 			"Article summary is required.");
-		Guard.Against(string.IsNullOrWhiteSpace(command.Content), ErrorCodes.ArticleContentInvalid,
+		Guard.Against(summary.Length > SummaryMaxLength, ErrorCodes.ArticleSummaryInvalid,
+			$"Article summary cannot exceed {SummaryMaxLength} characters.");
+		Guard.Against(string.IsNullOrWhiteSpace(content), ErrorCodes.ArticleContentInvalid,
 			"Article content is required.");
+		Guard.Against(string.IsNullOrWhiteSpace(cover), ErrorCodes.ArticleCoverInvalid,
+			"Article cover is required.");
 
 		var categoryExists = await categoryRepository.ExistsAsync(command.CategoryId, cancellationToken);
 		Guard.Against(!categoryExists, ErrorCodes.CategoryNotFound, "Category does not exist.");
@@ -27,10 +38,10 @@ public sealed class CreateArticleCommandHandler(
 			"One or more tags do not exist.");
 
 		var article = ArticleEntity.Create(
-			command.Title.Trim(),
-			command.Summary.Trim(),
-			command.Content.Trim(),
-			command.Cover.Trim(),
+			title,
+			summary,
+			content,
+			cover,
 			command.CategoryId,
 			existingTagIds);
 
@@ -45,4 +56,6 @@ public sealed class CreateArticleCommandHandler(
 			throw;
 		}
 	}
+
+	private static string Normalize(string? value) => value?.Trim() ?? string.Empty;
 }

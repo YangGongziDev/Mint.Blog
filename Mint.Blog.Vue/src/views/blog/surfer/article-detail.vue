@@ -55,6 +55,8 @@ const blogSettings = ref<BlogSettings>({});
 const loading = ref(true);
 const articleNotFound = ref(false);
 const articleContentRef = ref<HTMLElement | null>(null);
+const previewImageSrc = ref('');
+const previewImageAlt = ref('');
 const desktopTocVisible = ref(true);
 const mobileTocVisible = ref(false);
 const mobileTocRenderKey = ref(0);
@@ -497,7 +499,82 @@ function renderCodeBlock(code: string, language: string) {
   return `<div class="code-block-wrapper"><div class="code-block-header"><div class="code-block-dots"><span></span><span></span><span></span></div>${langLabel}<button class="code-copy-btn" onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { this.innerHTML = '<svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2.5\\'><polyline points=\\'20 6 9 17 4 12\\'/></svg>'; setTimeout(() => { this.innerHTML = '<svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2\\'><rect x=\\'9\\' y=\\'9\\' width=\\'13\\' height=\\'13\\' rx=\\'2\\' ry=\\'2\\'/><path d=\\'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1\\'/></svg>'; }, 2000); })" data-code="${escapeHtml(code)}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div><pre data-language="${escapeHtml(normalizedLanguage)}"><code class="hljs language-${escapeHtml(normalizedLanguage)}">${escapedCode}</code></pre></div>`;
 }
 
+function splitMarkdownTableRow(row: string) {
+  const normalized = row.trim().replace(/^\|/, '').replace(/\|$/, '');
+  return normalized.split('|').map(cell => cell.trim());
+}
+
+function isMarkdownTableRow(line: string) {
+  const cells = splitMarkdownTableRow(line);
+  return line.includes('|') && cells.length >= 2;
+}
+
+function isMarkdownTableSeparator(line: string) {
+  const cells = splitMarkdownTableRow(line);
+  return cells.length > 0 && cells.every(cell => /^:?-+:?$/.test(cell.replace(/\s+/g, '')));
+}
+
+function getTableAlignments(separatorLine: string) {
+  return splitMarkdownTableRow(separatorLine).map(cell => {
+    const normalized = cell.replace(/\s+/g, '');
+    if (normalized.startsWith(':') && normalized.endsWith(':')) return 'center';
+    if (normalized.endsWith(':')) return 'right';
+    return 'left';
+  });
+}
+
+function renderTable(headerLine: string, separatorLine: string, rowLines: string[]) {
+  const headers = splitMarkdownTableRow(headerLine);
+  const alignments = getTableAlignments(separatorLine);
+  const alignStyle = (index: number) => ` style="text-align: ${alignments[index] || 'left'}"`;
+  const thead = `<thead><tr>${headers
+    .map((cell, index) => `<th${alignStyle(index)}>${renderInlineMarkdown(cell)}</th>`)
+    .join('')}</tr></thead>`;
+  const tbody = rowLines.length
+    ? `<tbody>${rowLines
+        .map(row => {
+          const cells = splitMarkdownTableRow(row);
+          return `<tr>${headers
+            .map((_, index) => `<td${alignStyle(index)}>${renderInlineMarkdown(cells[index] || '')}</td>`)
+            .join('')}</tr>`;
+        })
+        .join('')}</tbody>`
+    : '';
+
+  return `<div class="markdown-table-wrapper"><table>${thead}${tbody}</table></div>`;
+}
+
+type MarkdownTableBlock = {
+  html: string;
+  endIndex: number;
+};
+
+function parseMarkdownTable(lines: string[], startIndex: number): MarkdownTableBlock | null {
+  const headerLine = lines[startIndex]?.trim() || '';
+  const separatorLine = lines[startIndex + 1]?.trim() || '';
+
+  if (!isMarkdownTableRow(headerLine) || !isMarkdownTableSeparator(separatorLine)) return null;
+
+  const rowLines: string[] = [];
+  let rowIndex = startIndex + 2;
+
+  while (rowIndex < lines.length && isMarkdownTableRow((lines[rowIndex] || '').trim())) {
+    rowLines.push((lines[rowIndex] || '').trim());
+    rowIndex += 1;
+  }
+
+  return {
+    html: renderTable(headerLine, separatorLine, rowLines),
+    endIndex: rowIndex - 1
+  };
+}
+
+function isStandaloneStrongLine(line: string) {
+  return /^(\*\*[^*]+\*\*|__[^_]+__)$/.test(line.trim());
+}
+
 function renderMarkdown(markdown: string) {
+  const hardBreakMark = '\uE000';
   const lines = markdown.replace(/\r\n/g, '\n').split('\n');
   const html: string[] = [];
   let paragraph: string[] = [];
@@ -509,7 +586,7 @@ function renderMarkdown(markdown: string) {
 
   const flushParagraph = () => {
     if (!paragraph.length) return;
-    html.push(`<p>${renderInlineMarkdown(paragraph.join(' '))}</p>`);
+    html.push(`<p>${renderInlineMarkdown(paragraph.join(' ')).replaceAll(hardBreakMark, '<br />')}</p>`);
     paragraph = [];
   };
 
@@ -520,7 +597,9 @@ function renderMarkdown(markdown: string) {
     listType = null;
   };
 
-  for (const line of lines) {
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index] || '';
+    const hasHardBreak = / {2,}$/.test(line);
     const trimmed = line.trim();
 
     if (trimmed.startsWith('```')) {
@@ -544,8 +623,14 @@ function renderMarkdown(markdown: string) {
       const headingMatch = trimmed.match(/^(#{1,6})\s+(.+)$/);
       const unorderedMatch = trimmed.match(/^[-*+]\s+(.+)$/);
       const orderedMatch = trimmed.match(/^\d+\.\s+(.+)$/);
+      const tableBlock = parseMarkdownTable(lines, index);
 
-      if (headingMatch) {
+      if (tableBlock) {
+        flushParagraph();
+        flushList();
+        html.push(tableBlock.html);
+        index = tableBlock.endIndex;
+      } else if (headingMatch) {
         flushParagraph();
         flushList();
         const level = headingMatch[1].length;
@@ -568,8 +653,12 @@ function renderMarkdown(markdown: string) {
         if (listType && listType !== 'ol') flushList();
         listType = 'ol';
         listItems.push(`<li>${renderInlineMarkdown(orderedMatch[1])}</li>`);
+      } else if (isStandaloneStrongLine(trimmed)) {
+        flushParagraph();
+        flushList();
+        html.push(`<p>${renderInlineMarkdown(trimmed)}</p>`);
       } else {
-        paragraph.push(trimmed);
+        paragraph.push(hasHardBreak ? `${trimmed}${hardBreakMark}` : trimmed);
       }
     }
   }
@@ -614,6 +703,29 @@ function handleToggleToc() {
   }
 }
 
+function openArticleImagePreview(image: HTMLImageElement) {
+  if (!image.currentSrc && !image.src) return;
+  previewImageSrc.value = image.currentSrc || image.src;
+  previewImageAlt.value = image.alt || '文章图片预览';
+}
+
+function closeArticleImagePreview() {
+  previewImageSrc.value = '';
+  previewImageAlt.value = '';
+}
+
+function handleArticleContentClick(event: MouseEvent) {
+  const target = event.target;
+  if (!(target instanceof HTMLImageElement)) return;
+
+  event.preventDefault();
+  openArticleImagePreview(target);
+}
+
+function handleImagePreviewKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') closeArticleImagePreview();
+}
+
 function goTagArticleListPage(tagId: number, tagName: string) {
   router.push({ path: '/blog/surfer/tag', query: { id: String(tagId), name: tagName } });
 }
@@ -633,6 +745,7 @@ async function loadBlogSettings() {
 
 async function loadArticle(articleId: string | number) {
   loading.value = true;
+  closeArticleImagePreview();
   try {
     const res = await getArticleDetail<{ success: boolean; data: Article; errorCode?: string }>(articleId);
     if (!res.success && res.errorCode === '20010') {
@@ -671,6 +784,7 @@ watch(
 onMounted(() => {
   updateIsMobile();
   window.addEventListener('resize', updateIsMobile);
+  window.addEventListener('keydown', handleImagePreviewKeydown);
   window.addEventListener('blog-surfer:toggle-toc', handleToggleToc);
 
   loadBlogSettings().catch(() => undefined);
@@ -683,6 +797,7 @@ onBeforeUnmount(() => {
   bannerPreloadStopped = true;
   if (bannerPreloadTimer) clearTimeout(bannerPreloadTimer);
   window.removeEventListener('resize', updateIsMobile);
+  window.removeEventListener('keydown', handleImagePreviewKeydown);
   window.removeEventListener('blog-surfer:toggle-toc', handleToggleToc);
   if (articleTitleTypingTimer) clearTimeout(articleTitleTypingTimer);
 });
@@ -760,8 +875,10 @@ onActivated(() => {
               :key="article.title"
               class="article-typing-title mb-5 text-3xl font-bold leading-tight text-white sm:mb-8 sm:text-4xl md:text-5xl"
             >
-              <span class="article-typed-title-text">{{ typedArticleTitle }}</span><!--
-              --><span class="article-title-cursor">|</span>
+              <span class="article-typed-title-text">{{ typedArticleTitle }}</span>
+              <!--
+              -->
+              <span class="article-title-cursor">|</span>
             </h1>
 
             <div
@@ -844,18 +961,19 @@ onActivated(() => {
       </svg>
     </div>
 
-    <main class="mx-auto max-w-screen-2xl px-4 md:px-6 py-4">
+    <main class="mx-auto max-w-screen-2xl px-1 py-1 md:px-6">
       <ARow :gutter="[28, 28]">
         <ACol :xs="24" :md="desktopTocVisible && hasTocHeadings ? 18 : 24" class="min-h-0">
           <div v-if="!loading && !articleNotFound && article.content" class="mb-3">
             <div
-              class="rounded-lg border border-[#3ecf9a]/14 bg-white/84 p-5 mb-3 dark:border-[#334155] dark:bg-[#2c333e]/72"
+              class="rounded-lg border border-[#3ecf9a]/14 bg-white/84 p-2 mb-3 dark:border-[#334155] dark:bg-[#2c333e]/72"
             >
               <article>
                 <div>
                   <div
                     ref="articleContentRef"
                     class="mt-5 leading-relaxed article-content"
+                    @click="handleArticleContentClick"
                     v-html="renderedContent"
                   ></div>
                 </div>
@@ -929,6 +1047,25 @@ onActivated(() => {
         </ACol>
       </ARow>
     </main>
+
+    <div
+      v-if="previewImageSrc"
+      class="article-image-preview"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="previewImageAlt"
+      @click.self="closeArticleImagePreview"
+    >
+      <button
+        class="article-image-preview-close"
+        type="button"
+        aria-label="关闭图片预览"
+        @click="closeArticleImagePreview"
+      >
+        ×
+      </button>
+      <img :src="previewImageSrc" :alt="previewImageAlt" class="article-image-preview-img" />
+    </div>
 
     <ADrawer
       v-model:open="mobileTocVisible"
@@ -1461,6 +1598,7 @@ html.dark .article-ripple .parallax > use {
   border: 1px solid var(--ct-img-border);
   border-radius: 18px;
   box-shadow: 0 16px 48px var(--ct-img-shadow);
+  cursor: zoom-in;
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease;
@@ -1469,6 +1607,63 @@ html.dark .article-ripple .parallax > use {
 :deep(.article-content img:hover) {
   transform: translateY(-2px);
   box-shadow: 0 22px 64px var(--ct-img-shadow-hover);
+}
+
+.article-image-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 30000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  background: rgb(0 0 0 / 86%);
+  backdrop-filter: blur(10px);
+}
+
+.article-image-preview-img {
+  max-width: min(96vw, 1280px);
+  max-height: 92vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 50%);
+}
+
+.article-image-preview-close {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 1;
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 12%);
+  color: #fff;
+  cursor: pointer;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.article-image-preview-close:hover {
+  background: rgb(255 255 255 / 22%);
+}
+
+@media (max-width: 767px) {
+  .article-image-preview {
+    padding: max(12px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  }
+
+  .article-image-preview-img {
+    max-width: 100%;
+    max-height: 88vh;
+    border-radius: 8px;
+  }
 }
 
 :deep(.article-content code:not(pre code)) {
@@ -1551,15 +1746,19 @@ html.dark .article-ripple .parallax > use {
   font-weight: 700;
 }
 
-:deep(.article-content table) {
-  display: block;
+:deep(.article-content .markdown-table-wrapper) {
   width: 100%;
   margin: 1.5rem 0;
   overflow-x: auto;
-  border-collapse: separate;
-  border-spacing: 0;
   border: 1px solid var(--ct-table-border);
   border-radius: 14px;
+}
+
+:deep(.article-content table) {
+  width: 100%;
+  min-width: max-content;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 :deep(.article-content th),
@@ -1569,6 +1768,15 @@ html.dark .article-ripple .parallax > use {
   border-bottom: 1px solid var(--ct-td-border);
   text-align: left;
   white-space: nowrap;
+}
+
+:deep(.article-content th:last-child),
+:deep(.article-content td:last-child) {
+  border-right: 0;
+}
+
+:deep(.article-content tbody tr:last-child td) {
+  border-bottom: 0;
 }
 
 :deep(.article-content th) {

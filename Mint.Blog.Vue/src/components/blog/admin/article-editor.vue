@@ -4,7 +4,8 @@ import { useRoute, useRouter } from 'vue-router';
 import type { FormInstance, FormProps, SelectProps } from 'ant-design-vue';
 import { Modal, message } from 'ant-design-vue';
 import { PictureOutlined, PlusOutlined } from '@ant-design/icons-vue';
-import { MdEditor } from 'md-editor-v3';
+import { MdEditor, config as mdEditorConfig } from 'md-editor-v3';
+import type { CodeMirrorExtension } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import {
   type ArticleDraftDetail,
@@ -24,6 +25,22 @@ import { deleteBlogImages, uploadBlogImage } from '@/service/blog/admin/image';
 import { useAppStore } from '@/store/system/app';
 import { resolveServiceErrorMessage } from '@/utils/service-error';
 import RustfsImageSelector from './rustfs-image-selector.vue';
+
+mdEditorConfig({
+  codeMirrorExtensions(extensions: CodeMirrorExtension[]) {
+    return extensions.map(extension => {
+      if (extension.type !== 'linkShortener') return extension;
+
+      return {
+        ...extension,
+        options: {
+          ...extension.options,
+          maxLength: Number.MAX_SAFE_INTEGER
+        }
+      };
+    });
+  }
+});
 
 const ARTICLE_DRAFT_PREFIX = 'mint-blog-article-draft:';
 
@@ -129,7 +146,10 @@ const rules: FormProps['rules'] = {
   title: [{ required: true, message: '请输入文章标题', trigger: 'blur' }],
   content: [{ required: true, message: '请输入文章内容', trigger: 'change' }],
   cover: [{ required: true, message: '请上传或选择封面', trigger: 'change' }],
-  summary: [{ required: true, message: '请输入文章摘要', trigger: 'blur' }],
+  summary: [
+    { required: true, message: '请输入文章摘要', trigger: 'blur' },
+    { max: 160, message: '文章摘要不能超过160个字符', trigger: 'blur' }
+  ],
   categoryId: [{ required: true, message: '请选择分类', trigger: 'change' }],
   tagIds: [{ required: true, type: 'array', min: 1, message: '请选择标签', trigger: 'change' }]
 };
@@ -235,6 +255,30 @@ function replaceAllText(value: string, replacements: Map<string, string>) {
   return result;
 }
 
+function getImageFileExtension(file: File) {
+  const fileNameExtension = file.name.match(/\.[^./\\]+$/)?.[0];
+  if (fileNameExtension) return fileNameExtension.toLowerCase();
+
+  const typeExtensionMap: Record<string, string> = {
+    'image/jpeg': '.jpg',
+    'image/png': '.png',
+    'image/gif': '.gif',
+    'image/webp': '.webp',
+    'image/svg+xml': '.svg'
+  };
+
+  return typeExtensionMap[file.type] || '.png';
+}
+
+function createUniqueImageFileName(file: File) {
+  const extension = getImageFileExtension(file);
+  const rawBaseName = file.name.replace(/\.[^./\\]+$/, '').trim() || 'image';
+  const safeBaseName = rawBaseName.replace(/[^\p{L}\p{N}_-]+/gu, '-').replace(/^-+|-+$/g, '') || 'image';
+  const uniqueId = crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+
+  return `${safeBaseName}-${uniqueId}${extension}`;
+}
+
 async function uploadLocalContentImages() {
   const localUrls = new Set(extractImages(formModel.content).filter(isLocalImageUrl));
   if (isLocalImageUrl(formModel.cover)) localUrls.add(formModel.cover);
@@ -252,7 +296,7 @@ async function uploadLocalContentImages() {
     uploadEntries.map(async ({ localUrl, file }) => {
       const res = await uploadBlogImage({
         newImageFile: file,
-        newImageOriginalName: file.name
+        newImageOriginalName: createUniqueImageFileName(file)
       });
       processingState.uploadDone += 1;
       return { localUrl, res };
@@ -384,7 +428,7 @@ async function uploadPendingCover() {
 
   const res = await uploadBlogImage({
     newImageFile: pendingCoverImage.value,
-    newImageOriginalName: pendingCoverImage.value.name,
+    newImageOriginalName: createUniqueImageFileName(pendingCoverImage.value),
     oldImageName: originalCoverUrl.value
   });
 
@@ -719,7 +763,7 @@ onBeforeUnmount(() => {
             :rows="3"
             allow-clear
             show-count
-            :maxlength="200"
+            :maxlength="160"
             placeholder="请输入文章摘要"
           />
         </AFormItem>

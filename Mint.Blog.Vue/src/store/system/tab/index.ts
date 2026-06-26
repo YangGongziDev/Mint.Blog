@@ -1,10 +1,10 @@
 import { computed, ref } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { defineStore } from 'pinia';
-import type { MenuModuleKey, RouteKey } from '@/router/types';
 import { router } from '@/router';
 import { useRouterPush } from '@/hooks/routing/use-router-push';
 import { localStg } from '@/utils/storage';
+import type { MenuModuleKey, RouteKey } from '@/router/types';
 import { SetupStoreId } from '@/enum';
 import { useThemeStore } from '../theme';
 import {
@@ -42,7 +42,8 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
   const writeTabStorage = (module: TabModule, nextTabs: App.Global.Tab[]) => {
     window.localStorage.setItem(tabStorageKey(module), JSON.stringify(nextTabs));
   };
-  const getTabModuleByPath = (path = router.currentRoute.value.path): TabModule => router.resolve(path).meta.menuModule || 'frontdesk';
+  const getTabModuleByPath = (path = router.currentRoute.value.path): TabModule =>
+    router.resolve(path).meta.menuModule || 'frontdesk';
   const isTabInModule = (tab: App.Global.Tab, module: TabModule) => getTabModuleByPath(tab.routePath) === module;
   const homeRouteByModule: Record<TabModule, RouteKey> = {
     backstage: 'blog-admin_home',
@@ -73,9 +74,7 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
 
     if (!themeStore.tab.cache || !storageTabs) return [];
 
-    return updateTabsByI18nKey(
-      extractTabsByAllRoutes(router, storageTabs).filter(tab => isTabInModule(tab, module))
-    );
+    return updateTabsByI18nKey(extractTabsByAllRoutes(router, storageTabs).filter(tab => isTabInModule(tab, module)));
   }
 
   /** Get all tabs */
@@ -157,11 +156,10 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
       return;
     }
 
-    const activeTab = tabVisitOrder.value
-      .map(id => updatedTabs.find(t => t.id === id))
-      .find(t => t !== undefined)
-      || updatedTabs.at(-1)
-      || homeTab.value;
+    const activeTab =
+      tabVisitOrder.value.map(id => updatedTabs.find(t => t.id === id)).find(t => t !== undefined) ||
+      updatedTabs.at(-1) ||
+      homeTab.value;
 
     if (activeTab) {
       await switchRouteByTab(activeTab);
@@ -209,11 +207,10 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
       return;
     }
 
-    const activeTab = tabVisitOrder.value
-      .map(id => updatedTabs.find(t => t.id === id))
-      .find(t => t !== undefined)
-      || updatedTabs[updatedTabs.length - 1]
-      || homeTab.value;
+    const activeTab =
+      tabVisitOrder.value.map(id => updatedTabs.find(t => t.id === id)).find(t => t !== undefined) ||
+      updatedTabs[updatedTabs.length - 1] ||
+      homeTab.value;
 
     await switchRouteByTab(activeTab);
     update();

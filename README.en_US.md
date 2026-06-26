@@ -15,15 +15,10 @@
 [![github stars](https://img.shields.io/github/stars/YangMufa/Mint.Blog)](https://github.com/YangMufa/Mint.Blog)
 [![github forks](https://img.shields.io/github/forks/YangMufa/Mint.Blog)](https://github.com/YangMufa/Mint.Blog)
 [![gitee stars](https://gitee.com/YangMufa/Mint.Blog/badge/star.svg)](https://gitee.com/YangMufa/Mint.Blog)
-[![gitcode star](https://gitcode.com/YangMufa/Mint.Blog/star/badge.svg)](https://gitcode.com/YangMufa/Mint.Blog)
-
-<a href="https://hellogithub.com/repository/1298f27d5fe54959a16cf9686516ddb3" target="_blank">
-  <img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=1298f27d5fe54959a16cf9686516ddb3&claim_uid=IiDXWmP4TEntjbV" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" />
-</a>
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=YangMufa/Date)](https://star-history.com/#YangMufa/Mint.Blog&Date)
+[![Star History Chart](https://api.star-history.com/chart?repos=YangMufa/Mint.Blog&type=date&legend=top-left)](https://www.star-history.com/?type=date&repos=YangMufa%2FMint.Blog)
 
 > [!NOTE]
 > If you find `Mint.Blog` helpful or simply enjoy the project, please give it a ⭐️ on GitHub or Gitee. Your support is the driving force behind continuous improvements and new features. Thank you for your support!

@@ -358,6 +358,30 @@ function handleManualUploadFileChange(event: Event) {
   (event.target as HTMLInputElement).value = '';
 }
 
+function getImageFileExtension(file: File) {
+  const fileNameExtension = file.name.match(/\.[^./\\]+$/)?.[0];
+  if (fileNameExtension) return fileNameExtension.toLowerCase();
+
+  const typeExtensionMap: Record<string, string> = {
+    'image/jpeg': '.jpg',
+    'image/png': '.png',
+    'image/gif': '.gif',
+    'image/webp': '.webp',
+    'image/svg+xml': '.svg'
+  };
+
+  return typeExtensionMap[file.type] || '.png';
+}
+
+function createUniqueImageFileName(file: File) {
+  const extension = getImageFileExtension(file);
+  const rawBaseName = file.name.replace(/\.[^./\\]+$/, '').trim() || 'image';
+  const safeBaseName = rawBaseName.replace(/[^\p{L}\p{N}_-]+/gu, '-').replace(/^-+|-+$/g, '') || 'image';
+  const uniqueId = crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+
+  return `${safeBaseName}-${uniqueId}${extension}`;
+}
+
 async function confirmUploadToBucket() {
   if (!canManageImages.value) {
     warnReadonlyAction();
@@ -379,7 +403,7 @@ async function confirmUploadToBucket() {
       uploadFiles.value.map(file =>
         uploadBlogImage({
           newImageFile: file,
-          newImageOriginalName: file.name,
+          newImageOriginalName: createUniqueImageFileName(file),
           bucketName: query.bucketName
         })
       )
@@ -828,10 +852,12 @@ onBeforeUnmount(() => {
           </template>
           <template v-else-if="column.key === 'url'">
             <div class="url-cell">
-              <ATypographyLink class="line-clamp-2 break-all" @click="openImageUrl(record.url)">
-                {{ record.url }}
-              </ATypographyLink>
-              <AButton size="small" type="link" @click="copyUrl(record.url)">
+              <ATooltip :title="record.url" placement="topLeft">
+                <ATypographyLink class="url-text" @click="openImageUrl(record.url)">
+                  {{ record.url }}
+                </ATypographyLink>
+              </ATooltip>
+              <AButton size="small" type="link" class="url-copy-button" @click="copyUrl(record.url)">
                 <template #icon><LinkOutlined /></template>
                 复制
               </AButton>
@@ -1124,6 +1150,26 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.url-cell :deep(.ant-tooltip-open),
+.url-text {
+  display: -webkit-box;
+  max-width: 260px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  text-align: left;
+}
+
+.url-copy-button {
+  flex-shrink: 0;
 }
 
 .reference-cell,

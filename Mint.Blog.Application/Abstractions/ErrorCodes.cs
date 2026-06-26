@@ -31,6 +31,7 @@ public static class ErrorCodes {
 	public const string ArticleTitleInvalid = "article_title_invalid";
 	public const string ArticleSummaryInvalid = "article_summary_invalid";
 	public const string ArticleContentInvalid = "article_content_invalid";
+	public const string ArticleCoverInvalid = "article_cover_invalid";
 	public const string ArticleSearchKeywordInvalid = "article_search_keyword_invalid";
 	public const string FileUploadInvalid = "file_upload_invalid";
 	public const string ColumnNotFound = "column_not_found";
