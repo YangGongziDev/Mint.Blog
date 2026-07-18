@@ -16,6 +16,7 @@ import { getArticleDetail } from '@/service/blog/surfer/article';
 import { getBlogSettingsDetail } from '@/service/blog/surfer/setting';
 import { getColumnArticlePreNext, getColumnCatalogs } from '@/service/blog/surfer/column';
 import { useTabStore } from '@/store/system/tab';
+import { formatDateTime } from '@/utils/date-time';
 import SurferComment from '@/components/blog/surfer/comment.vue';
 import SurferToc from '@/components/blog/surfer/toc.vue';
 
@@ -51,7 +52,7 @@ const blogSettings = ref<BlogSettings>({});
 const preNext = ref<PreNext | null>(null);
 const catalogs = ref<ColumnCatalog[]>([]);
 const activeKeys = ref<(string | number)[]>([]);
-const catalogsVisible = ref(true);
+const catalogsVisible = ref(window.innerWidth >= 768);
 const desktopTocVisible = ref(true);
 const mobileTocVisible = ref(false);
 const mobileTocRenderKey = ref(0);
@@ -70,7 +71,7 @@ const copyrightDeclaration = computed(() => {
   return `© ${year} 保留所有权利，转载请注明出处和原文链接。`;
 });
 const renderedContent = computed(() => renderMarkdown(article.value.content || ''));
-const hasTocHeadings = computed(() => /^#{2,4}\s+\S+/m.test(article.value.content || ''));
+const hasTocHeadings = computed(() => /^#{1,6}\s+\S+/m.test(article.value.content || ''));
 
 function escapeHtml(text: string) {
   return text
@@ -180,6 +181,78 @@ function renderCodeBlock(code: string, language: string) {
   return `<div class="code-block-wrapper"><div class="code-block-header"><div class="code-block-dots"><span></span><span></span><span></span></div>${langLabel}<button class="code-copy-btn" onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { this.innerHTML = '<svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2.5\\'><polyline points=\\'20 6 9 17 4 12\\'/></svg>'; setTimeout(() => { this.innerHTML = '<svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2\\'><rect x=\\'9\\' y=\\'9\\' width=\\'13\\' height=\\'13\\' rx=\\'2\\' ry=\\'2\\'/><path d=\\'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1\\'/></svg>'; }, 2000); })" data-code="${escapeHtml(code)}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div><pre data-language="${escapeHtml(normalizedLanguage)}"><code class="hljs language-${escapeHtml(normalizedLanguage)}">${escapedCode}</code></pre></div>`;
 }
 
+function splitMarkdownTableRow(row: string) {
+  const normalized = row.trim().replace(/^\|/, '').replace(/\|$/, '');
+  return normalized.split('|').map(cell => cell.trim());
+}
+
+function isMarkdownTableRow(line: string) {
+  const cells = splitMarkdownTableRow(line);
+  return line.includes('|') && cells.length >= 2;
+}
+
+function isMarkdownTableSeparator(line: string) {
+  const cells = splitMarkdownTableRow(line);
+  return cells.length > 0 && cells.every(cell => /^:?-+:?$/.test(cell.replace(/\s+/g, '')));
+}
+
+function getTableAlignments(separatorLine: string) {
+  return splitMarkdownTableRow(separatorLine).map(cell => {
+    const normalized = cell.replace(/\s+/g, '');
+    if (normalized.startsWith(':') && normalized.endsWith(':')) return 'center';
+    if (normalized.endsWith(':')) return 'right';
+    return 'left';
+  });
+}
+
+function renderTable(headerLine: string, separatorLine: string, rowLines: string[]) {
+  const headers = splitMarkdownTableRow(headerLine);
+  const alignments = getTableAlignments(separatorLine);
+  const alignStyle = (index: number) => ` style="text-align: ${alignments[index] || 'left'}"`;
+  const thead = `<thead><tr>${headers
+    .map((cell, index) => `<th${alignStyle(index)}>${renderInlineMarkdown(cell)}</th>`)
+    .join('')}</tr></thead>`;
+  const tbody = rowLines.length
+    ? `<tbody>${rowLines
+        .map(row => {
+          const cells = splitMarkdownTableRow(row);
+          return `<tr>${headers
+            .map((_, index) => `<td${alignStyle(index)}>${renderInlineMarkdown(cells[index] || '')}</td>`)
+            .join('')}</tr>`;
+        })
+        .join('')}</tbody>`
+    : '';
+
+  return `<div class="markdown-table-wrapper"><table>${thead}${tbody}</table></div>`;
+}
+
+type MarkdownTableBlock = {
+  html: string;
+  endIndex: number;
+};
+
+function parseMarkdownTable(lines: string[], startIndex: number): MarkdownTableBlock | null {
+  const headerLine = lines[startIndex]?.trim() || '';
+  const separatorLine = lines[startIndex + 1]?.trim() || '';
+
+  if (!isMarkdownTableRow(headerLine) || !isMarkdownTableSeparator(separatorLine)) return null;
+
+  const rowLines: string[] = [];
+  let rowIndex = startIndex + 2;
+  while (rowIndex < lines.length && isMarkdownTableRow((lines[rowIndex] || '').trim())) {
+    rowLines.push((lines[rowIndex] || '').trim());
+    rowIndex += 1;
+  }
+
+  return { html: renderTable(headerLine, separatorLine, rowLines), endIndex: rowIndex - 1 };
+}
+
+function getMarkdownIndentLevel(line: string) {
+  const leadingWhitespace = line.match(/^\s*/)?.[0] || '';
+  const spaces = leadingWhitespace.replace(/\t/g, '    ').length;
+  return Math.floor(spaces / 2);
+}
+
 function renderMarkdown(markdown: string) {
   const lines = markdown.replace(/\r\n/g, '\n').split('\n');
   const html: string[] = [];
@@ -203,7 +276,8 @@ function renderMarkdown(markdown: string) {
     listType = null;
   };
 
-  for (const line of lines) {
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index] || '';
     const trimmed = line.trim();
 
     if (trimmed.startsWith('```')) {
@@ -227,8 +301,14 @@ function renderMarkdown(markdown: string) {
       const headingMatch = trimmed.match(/^(#{1,6})\s+(.+)$/);
       const unorderedMatch = trimmed.match(/^[-*+]\s+(.+)$/);
       const orderedMatch = trimmed.match(/^\d+\.\s+(.+)$/);
+      const tableBlock = parseMarkdownTable(lines, index);
 
-      if (headingMatch) {
+      if (tableBlock) {
+        flushParagraph();
+        flushList();
+        html.push(tableBlock.html);
+        index = tableBlock.endIndex;
+      } else if (headingMatch) {
         flushParagraph();
         flushList();
         const level = headingMatch[1].length;
@@ -245,12 +325,14 @@ function renderMarkdown(markdown: string) {
         flushParagraph();
         if (listType && listType !== 'ul') flushList();
         listType = 'ul';
-        listItems.push(`<li>${renderInlineMarkdown(unorderedMatch[1])}</li>`);
+        const indent = getMarkdownIndentLevel(line);
+        listItems.push(`<li style="margin-left: ${indent * 1.5}rem">${renderInlineMarkdown(unorderedMatch[1])}</li>`);
       } else if (orderedMatch) {
         flushParagraph();
         if (listType && listType !== 'ol') flushList();
         listType = 'ol';
-        listItems.push(`<li>${renderInlineMarkdown(orderedMatch[1])}</li>`);
+        const indent = getMarkdownIndentLevel(line);
+        listItems.push(`<li style="margin-left: ${indent * 1.5}rem">${renderInlineMarkdown(orderedMatch[1])}</li>`);
       } else {
         paragraph.push(trimmed);
       }
@@ -261,7 +343,17 @@ function renderMarkdown(markdown: string) {
   flushParagraph();
   flushList();
 
-  return html.join('\n');
+  let headingLevel = 0;
+  return html
+    .map(block => {
+      const headingMatch = block.match(/^<h([1-6])>/);
+      if (headingMatch) headingLevel = Number(headingMatch[1]);
+
+      if (!headingLevel) return block;
+      const indent = Math.max(0, headingLevel - 1) * 1.5;
+      return `<div class="markdown-section-content" style="margin-left: ${indent}rem">${block}</div>`;
+    })
+    .join('\n');
 }
 
 function updateIsMobile() {
@@ -282,6 +374,7 @@ function handleToggleToc() {
       mobileTocRenderKey.value += 1;
       nextTick(() => {
         window.dispatchEvent(new Event('resize'));
+        window.dispatchEvent(new CustomEvent('blog-surfer:toc-opened'));
       });
     }
 
@@ -298,7 +391,17 @@ function handleToggleToc() {
 }
 
 function getFirstCatalogArticleId(items: ColumnCatalog[]) {
-  return items.flatMap(item => item.children || []).find(child => child.articleId > 0)?.articleId;
+  return items.flatMap(item => item.children || []).find(child => Number(child.articleId) > 0)?.articleId;
+}
+
+function expandCurrentCatalog(items = catalogs.value, articleId: string | number | null | undefined = route.query.articleId as string) {
+  const currentArticleId = Number(articleId);
+  if (!currentArticleId) return;
+
+  const parentCatalog = items.find(c =>
+    c.children?.some(child => Number(child.articleId) === currentArticleId)
+  );
+  activeKeys.value = parentCatalog ? [parentCatalog.id] : [];
 }
 
 function openFirstCatalogArticle(items = catalogs.value) {
@@ -331,7 +434,10 @@ function loadArticle(articleId: string | number) {
       }
       shouldFallbackToFirstArticle.value = false;
       article.value = res.data || {};
-      if (article.value.title) tabStore.setTabLabel(article.value.title);
+      if (article.value.title) {
+        tabStore.setTabLabel(article.value.title);
+        document.title = `${article.value.title} - ${import.meta.env.VITE_APP_TITLE}`;
+      }
 
       nextTick(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -352,12 +458,8 @@ function loadCatalogs() {
         const list = res.data || [];
         catalogs.value = list;
         const currentArticleId = Number(route.query.articleId) || getFirstCatalogArticleId(list);
-        if (currentArticleId) {
-          const parentCatalog = list.find(c => c.children?.some(child => child.articleId === currentArticleId));
-          activeKeys.value = parentCatalog ? [parentCatalog.id] : [];
-        } else {
-          activeKeys.value = [];
-        }
+        if (currentArticleId) expandCurrentCatalog(list, currentArticleId);
+        else activeKeys.value = [];
 
         if (!route.query.articleId || shouldFallbackToFirstArticle.value) openFirstCatalogArticle(list);
       }
@@ -388,6 +490,11 @@ function goColumnArticle(articleId: number) {
 
 function toggleCatalogs() {
   catalogsVisible.value = !catalogsVisible.value;
+
+  if (catalogsVisible.value) {
+    expandCurrentCatalog();
+  }
+
   setTimeout(() => window.dispatchEvent(new Event('resize')), 300);
 }
 
@@ -395,6 +502,7 @@ watch(
   () => route.query.articleId,
   id => {
     if (id) {
+      expandCurrentCatalog(catalogs.value, id as string);
       loadArticle(id as string);
       loadPreNext(id as string);
     }
@@ -403,6 +511,7 @@ watch(
 
 onMounted(async () => {
   updateIsMobile();
+  if (isMobile.value) catalogsVisible.value = false;
   window.addEventListener('resize', updateIsMobile);
   window.addEventListener('blog-surfer:toggle-toc', handleToggleToc);
 
@@ -424,12 +533,8 @@ onBeforeUnmount(() => {
 <template>
   <div class="flex">
     <aside
-      class="column-sidebar fixed bottom-0 z-[90] overflow-y-auto border-r border-[#3ecf9a]/14 bg-white p-4 transition-all duration-300 dark:border-[#334155] dark:bg-[#2c333e]"
-      :class="[
-        catalogsVisible
-          ? 'left-0 w-[280px] sm:w-[280px]'
-          : '-left-[280px] sm:left-[-280px] w-[280px] p-0 sm:p-0'
-      ]"
+      v-if="catalogsVisible"
+      class="column-sidebar fixed bottom-0 z-[90] overflow-y-auto border-r border-[#3ecf9a]/14 bg-white p-4 dark:border-[#334155] dark:bg-[#2c333e]"
     >
       <div class="pt-6" :class="[catalogsVisible ? 'block' : 'hidden']">
         <h3 class="mb-3 text-sm font-bold text-[#0d3d2d] dark:text-white">目录</h3>
@@ -467,8 +572,8 @@ onBeforeUnmount(() => {
     </aside>
 
     <button
-      class="column-sidebar-toggle fixed z-[91] flex h-8 w-8 items-center justify-center rounded-full border border-[#3ecf9a]/14 bg-white/92 text-sm text-[#557468] shadow-sm transition-all duration-300 hover:text-[#3ecf9a] dark:bg-[#2c333e]/92 dark:text-[#cbd5e1] dark:border-[#334155]"
-      :class="[catalogsVisible ? 'left-[264px]' : 'left-4']"
+      class="column-sidebar-toggle fixed z-[91] flex h-8 w-8 items-center justify-center rounded-full border border-[#3ecf9a]/14 bg-white/92 text-sm text-[#557468] shadow-sm hover:text-[#3ecf9a] dark:bg-[#2c333e]/92 dark:text-[#cbd5e1] dark:border-[#334155]"
+      :class="[catalogsVisible ? 'column-sidebar-toggle-open' : 'left-4']"
       @click="toggleCatalogs"
     >
       {{ catalogsVisible ? '◀' : '▶' }}
@@ -481,8 +586,8 @@ onBeforeUnmount(() => {
     />
 
     <main
-      class="w-full px-4 md:px-6 py-4 transition-all duration-300"
-      :class="[catalogsVisible ? 'sm:ml-[280px] max-w-screen-2xl' : 'mx-auto max-w-screen-2xl']"
+      class="w-full px-4 md:px-6 py-4"
+      :class="[catalogsVisible ? 'sm:ml-[320px] max-w-screen-2xl' : 'mx-auto max-w-screen-2xl']"
     >
       <div class="grid grid-cols-1 gap-7 lg:grid-cols-4">
         <div
@@ -514,7 +619,7 @@ onBeforeUnmount(() => {
               <div class="mb-5 flex flex-wrap items-center gap-3 text-xs text-[#557468] dark:text-[#cbd5e1]">
                 <span class="flex items-center">
                   <CalendarOutlined class="mr-1 w-3.5 h-3.5" />
-                  发布时间&nbsp;{{ article.createTime }}
+                  发布时间&nbsp;{{ formatDateTime(article.createTime) }}
                 </span>
                 <span class="flex items-center">
                   <EyeOutlined class="mr-1 w-3.5 h-3.5" />
@@ -535,7 +640,7 @@ onBeforeUnmount(() => {
               </article>
 
               <div class="flex items-center text-sm mt-5 mb-5 text-[#557468] dark:text-[#cbd5e1]">
-                最后编辑于 {{ article.updateTime }}
+                最后编辑于 {{ formatDateTime(article.updateTime) }}
               </div>
 
               <div class="mt-6 mb-6">
@@ -604,7 +709,10 @@ onBeforeUnmount(() => {
           </template>
         </div>
 
-        <div v-show="desktopTocVisible && hasTocHeadings" class="col-span-1 mt-6 hidden md:block">
+        <div
+          v-if="!isMobile && desktopTocVisible && hasTocHeadings"
+          class="col-span-1 mt-6 hidden md:block"
+        >
           <SurferToc :key="route.query.articleId as string" :header-offset="150" />
         </div>
       </div>
@@ -631,12 +739,18 @@ onBeforeUnmount(() => {
 <style scoped>
 .column-sidebar {
   top: calc(var(--soy-header-height) + var(--soy-tab-height));
+  left: 0;
+  width: min(86vw, 320px);
   scrollbar-width: thin;
   scrollbar-color: rgb(62 207 154 / 20%) transparent;
 }
 
 .column-sidebar-toggle {
   top: calc(var(--soy-header-height) + var(--soy-tab-height) + 4px);
+}
+
+.column-sidebar-toggle-open {
+  left: calc(min(86vw, 320px) - 16px);
 }
 
 :deep(.article-content) {
@@ -787,6 +901,11 @@ onBeforeUnmount(() => {
 :deep(.article-content a:hover) {
   color: var(--ct-link-hover); border-bottom-color: transparent;
   background: var(--ct-bg-code);
+}
+
+:deep(.markdown-section-content) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 96px;
 }
 
 :deep(.article-content blockquote) {

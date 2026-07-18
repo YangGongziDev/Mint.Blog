@@ -50,6 +50,7 @@ using Mint.Blog.Application.Blog.Friend.EventHandlers;
 using Mint.Blog.Application.Blog.Friend.Queries.GetAdminFriendPageList;
 using Mint.Blog.Application.Blog.Friend.Queries.GetFriendDetail;
 using Mint.Blog.Application.Blog.Friend.Queries.GetFriendList;
+using Mint.Blog.Application.Blog.Gallery;
 using Mint.Blog.Application.Blog.Message.Commands.PublishMessage;
 using Mint.Blog.Application.Blog.Message.Queries.GetMessageList;
 using Mint.Blog.Application.Blog.Statistics.Commands.TrackArticleRead;
@@ -121,6 +122,7 @@ using Mint.Blog.Infrastructure.Blog.Category.Repositories;
 using Mint.Blog.Infrastructure.Blog.Tag.Repositories;
 using Mint.Blog.Infrastructure.Blog.Comment.Repositories;
 using Mint.Blog.Infrastructure.Blog.Friend.Repositories;
+using Mint.Blog.Infrastructure.Blog.Gallery.Repositories;
 using Mint.Blog.Infrastructure.Blog.Message.Repositories;
 using Mint.Blog.Infrastructure.Blog.Setting.Repositories;
 using Mint.Blog.Infrastructure.Blog.Column.Repositories;
@@ -195,6 +197,9 @@ public static class ServiceCollectionExtensions {
 		services.AddScoped<IUserRefreshTokenRepository, UserRefreshTokenRepository>();
 		services.AddScoped<IColumnRepository, ColumnRepository>();
 		services.AddScoped<IMessageRepository, MessageRepository>();
+		services.AddScoped<GalleryRepository>();
+		services.AddScoped<IGalleryQueryService>(provider => provider.GetRequiredService<GalleryRepository>());
+		services.AddScoped<IGalleryCommandService>(provider => provider.GetRequiredService<GalleryRepository>());
 
 		services.AddScoped<IGetArticleDetailQueryService, ArticleRepository>();
 		services.AddScoped<IGetArticleListQueryService, ArticleRepository>();

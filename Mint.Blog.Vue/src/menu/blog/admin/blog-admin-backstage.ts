@@ -119,6 +119,19 @@ export const blogAdminMenus: AppMenuRecord[] = [
     permission: queryPermission
   },
   {
+    id: 'blog_admin_gallery',
+    parentId: 'blog_admin',
+    menuType: 'route',
+    routerName: 'blog-admin_gallery',
+    path: '/blog/admin/gallery',
+    tableName: 'blog-admin_gallery',
+    enabled: true,
+    menuI18nKey: 'route.blog-admin_gallery',
+    icon: 'mdi:view-gallery-outline',
+    order: 9,
+    permission: queryPermission
+  },
+  {
     id: 'blog_admin_blog_settings',
     parentId: 'blog_admin',
     menuType: 'route',
@@ -128,7 +141,7 @@ export const blogAdminMenus: AppMenuRecord[] = [
     enabled: true,
     menuI18nKey: 'route.blog-admin_blog-settings',
     icon: 'mdi:cog-outline',
-    order: 9,
+    order: 10,
     permission: queryPermission
   },
 ];

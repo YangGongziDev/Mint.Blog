@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { message as antMessage } from 'ant-design-vue';
 import { type MessageItem, getMessageList, publishMessage } from '@/service/blog/surfer/message';
@@ -8,6 +8,9 @@ const colorOptions = ['#3ecf9a', '#539dfd', '#f59e0b', '#ef4444', '#a855f7', '#1
 
 const loading = ref(false);
 const submitting = ref(false);
+const formPanelRef = ref<HTMLElement | null>(null);
+const matchedPanelHeight = ref<number>();
+let formPanelObserver: ResizeObserver | null = null;
 const route = useRoute();
 const router = useRouter();
 const messages = ref<MessageItem[]>([]);
@@ -93,8 +96,27 @@ async function submitMessage() {
   }
 }
 
+function syncPanelHeight() {
+  if (!formPanelRef.value || window.innerWidth < 1024) {
+    matchedPanelHeight.value = undefined;
+    return;
+  }
+  matchedPanelHeight.value = formPanelRef.value.offsetHeight;
+}
+
 onMounted(() => {
   loadMessages();
+  syncPanelHeight();
+  if (formPanelRef.value) {
+    formPanelObserver = new ResizeObserver(() => syncPanelHeight());
+    formPanelObserver.observe(formPanelRef.value);
+  }
+  window.addEventListener('resize', syncPanelHeight);
+});
+
+onUnmounted(() => {
+  formPanelObserver?.disconnect();
+  window.removeEventListener('resize', syncPanelHeight);
 });
 
 watch(
@@ -116,8 +138,8 @@ watch(
         </p>
       </div>
 
-      <div class="grid gap-6 lg:grid-cols-[380px_1fr]">
-        <section class="rounded-3xl border border-[#3ecf9a]/25 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5">
+      <div class="message-board-grid grid gap-6 lg:grid-cols-[380px_1fr]">
+        <section ref="formPanelRef" class="message-form-panel rounded-3xl border border-[#3ecf9a]/25 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5">
           <h2 class="text-xl font-black text-[#0d3d2d] dark:text-white">留下足迹</h2>
           <div class="message-form-fields mt-5">
             <div class="message-form-field">
@@ -152,42 +174,47 @@ watch(
           </div>
         </section>
 
-        <section class="rounded-3xl border border-[#3ecf9a]/25 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5">
-          <div class="mb-5 flex items-center justify-between gap-3">
+        <section
+          class="message-list-panel rounded-3xl border border-[#3ecf9a]/25 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5"
+          :style="matchedPanelHeight ? { height: `${matchedPanelHeight}px` } : undefined"
+        >
+          <div class="message-list-header mb-5 flex shrink-0 items-center justify-between gap-3">
             <h2 class="text-xl font-black text-[#0d3d2d] dark:text-white">最新留言</h2>
             <span class="rounded-full bg-[#3ecf9a]/10 px-3 py-1 text-xs font-bold text-[#3ecf9a]">
               共 {{ totalCount }} 条
             </span>
           </div>
 
-          <ASpin :spinning="loading">
-            <div v-if="messages.length" class="grid gap-4 md:grid-cols-2">
-              <article
-                v-for="item in messages"
-                :key="item.id"
-                class="rounded-3xl border border-black/5 p-5 shadow-sm dark:border-white/10"
-                :style="{ background: `${item.color || '#3ecf9a'}18` }"
-              >
-                <div class="flex items-center justify-between gap-3">
-                  <h3 class="line-clamp-1 font-black text-[#0d3d2d] dark:text-white">{{ item.nickname }}</h3>
-                  <time class="shrink-0 text-xs text-[#60786e] dark:text-slate-400">{{ formatDate(item.createdAt) }}</time>
-                </div>
-                <p class="mt-3 whitespace-pre-wrap text-sm leading-7 text-[#40584d] dark:text-slate-200">{{ item.content }}</p>
-                <a
-                  v-if="item.website"
-                  class="mt-4 inline-flex text-xs font-bold text-[#3ecf9a]"
-                  :href="item.website"
-                  target="_blank"
-                  rel="noopener noreferrer"
+          <div class="message-list-scroll">
+            <ASpin :spinning="loading">
+              <div v-if="messages.length" class="grid gap-4 md:grid-cols-2">
+                <article
+                  v-for="item in messages"
+                  :key="item.id"
+                  class="rounded-3xl border border-black/5 p-5 shadow-sm dark:border-white/10"
+                  :style="{ background: `${item.color || '#3ecf9a'}18` }"
                 >
-                  访问主页
-                </a>
-              </article>
-            </div>
-            <AEmpty v-else description="暂无留言，来发布第一条吧" />
-          </ASpin>
+                  <div class="flex items-center justify-between gap-3">
+                    <h3 class="line-clamp-1 font-black text-[#0d3d2d] dark:text-white">{{ item.nickname }}</h3>
+                    <time class="shrink-0 text-xs text-[#60786e] dark:text-slate-400">{{ formatDate(item.createdAt) }}</time>
+                  </div>
+                  <p class="mt-3 whitespace-pre-wrap text-sm leading-7 text-[#40584d] dark:text-slate-200">{{ item.content }}</p>
+                  <a
+                    v-if="item.website"
+                    class="mt-4 inline-flex text-xs font-bold text-[#3ecf9a]"
+                    :href="item.website"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    访问主页
+                  </a>
+                </article>
+              </div>
+              <AEmpty v-else description="暂无留言，来发布第一条吧" />
+            </ASpin>
+          </div>
 
-          <div v-if="totalCount > pageSize" class="mt-6 flex justify-center">
+          <div v-if="totalCount > pageSize" class="message-list-footer mt-6 flex shrink-0 justify-center">
             <APagination
               :current="pageNumber"
               :page-size="pageSize"
@@ -202,7 +229,35 @@ watch(
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+.message-list-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.message-list-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(62 207 154 / 45%) transparent;
+}
+
+.message-list-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.message-list-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgb(62 207 154 / 45%);
+}
+
+.message-list-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .message-form-fields {
   display: flex;
   flex-direction: column;
@@ -211,5 +266,13 @@ watch(
 
 .message-form-field {
   display: block;
+}
+
+:global(.dark) .message-list-scroll {
+  scrollbar-color: rgb(83 157 253 / 45%) transparent;
+}
+
+:global(.dark) .message-list-scroll::-webkit-scrollbar-thumb {
+  background: rgb(83 157 253 / 45%);
 }
 </style>

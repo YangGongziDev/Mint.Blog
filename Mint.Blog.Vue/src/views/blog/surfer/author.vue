@@ -134,6 +134,15 @@ function openContact(type: ContactType) {
             </a>
           </div>
         </section>
+        <section class="panel skill-panel">
+          <div class="section-title">
+            <span></span>
+            <h2>技能关键词</h2>
+          </div>
+          <div class="skill-list">
+            <span v-for="skill in skills" :key="skill">{{ skill }}</span>
+          </div>
+        </section>
       </ACol>
       <ACol :xs="24" :lg="8">
         <section class="panel sticky-panel">
@@ -151,16 +160,6 @@ function openContact(type: ContactType) {
         </section>
       </ACol>
     </ARow>
-
-    <section class="panel skill-panel">
-      <div class="section-title">
-        <span></span>
-        <h2>技能关键词</h2>
-      </div>
-      <div class="skill-list">
-        <span v-for="skill in skills" :key="skill">{{ skill }}</span>
-      </div>
-    </section>
 
     <AModal v-model:open="modalOpen" centered :footer="null" title="" width="300px">
       <img class="modal-image" :src="modalImage" alt="联系二维码" />
@@ -426,6 +425,7 @@ h1 span {
 }
 .skill-panel {
   margin-top: 28px;
+  max-width: 100%;
 }
 .modal-image {
   display: block;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { UnorderedListOutlined } from '@ant-design/icons-vue';
 
 defineOptions({
@@ -48,7 +48,8 @@ let savedTocWidth = 0;
 let lastAutoScrolledIndex = -1;
 let lastTop = -1;
 let lastMaxHeight = -1;
-let activeLockTimer: ReturnType<typeof window.setTimeout> | null = null;
+let activeLockTimer: number | null = null;
+let scrollFrame: number | null = null;
 let lockedActiveHeadingIndex: number | null = null;
 
 function findScrollContainer(startEl: HTMLElement | null): HTMLElement | typeof window {
@@ -80,39 +81,40 @@ function calcOffsetTop(el: HTMLElement): number {
 }
 
 function initTocData(container: Element): void {
-  const levels = ['h2', 'h3', 'h4'];
-  const headings = container.querySelectorAll(levels.join(', '));
-
+  const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
   const titlesArr: TitleItem[] = [];
+  const stack: TitleItem[] = [];
   let index = 1;
 
   headings.forEach(heading => {
     const htmlHeading = heading as HTMLElement;
     const headingLevel = Number.parseInt(htmlHeading.tagName.substring(1), 10);
-    const headingText = htmlHeading.textContent || '';
-    const offsetTop = calcOffsetTop(htmlHeading);
+    const item: TitleItem = { index, level: headingLevel, text: htmlHeading.textContent || '', offsetTop: calcOffsetTop(htmlHeading), children: [] };
 
-    if (headingLevel === 2) {
-      titlesArr.push({ index, level: headingLevel, text: headingText, offsetTop, children: [] });
-    } else if (headingLevel === 3) {
-      const parentH2 = titlesArr[titlesArr.length - 1];
-      if (parentH2 && parentH2.children) {
-        parentH2.children.push({ index, level: headingLevel, text: headingText, offsetTop, children: [] });
-      }
-    } else if (headingLevel === 4) {
-      const lastH2 = titlesArr[titlesArr.length - 1];
-      if (lastH2 && lastH2.children && lastH2.children.length > 0) {
-        const lastH3 = lastH2.children[lastH2.children.length - 1];
-        if (lastH3 && lastH3.children) {
-          lastH3.children.push({ index, level: headingLevel, text: headingText, offsetTop });
-        }
-      }
+    while (stack.length > 0 && stack[stack.length - 1].level >= headingLevel) stack.pop();
+    if (stack.length > 0) {
+      stack[stack.length - 1].children?.push(item);
+    } else {
+      titlesArr.push(item);
     }
+    stack.push(item);
     index += 1;
   });
 
   titles.value = titlesArr;
 }
+
+const flatTitles = computed(() => {
+  const result: Array<TitleItem & { indent: number }> = [];
+  const flatten = (items: TitleItem[], indent: number) => {
+    items.forEach(item => {
+      result.push({ ...item, indent });
+      if (item.children?.length) flatten(item.children, indent + 1);
+    });
+  };
+  flatten(titles.value, 0);
+  return result;
+});
 
 function getTocNaturalTop(): number {
   if (!tocCardRef.value) return 0;
@@ -127,32 +129,37 @@ function onResize() {
   handleScroll();
 }
 
+function findActiveHeadingIndex(activeOffsetY: number): number {
+  const currentTitles = flatTitles.value;
+  let low = 0;
+  let high = currentTitles.length - 1;
+  let matchedIndex = -1;
+
+  while (low <= high) {
+    const middle = Math.floor((low + high) / 2);
+    if (activeOffsetY >= currentTitles[middle].offsetTop) {
+      matchedIndex = currentTitles[middle].index;
+      low = middle + 1;
+    } else {
+      high = middle - 1;
+    }
+  }
+
+  return matchedIndex;
+}
+
+function requestScrollUpdate(): void {
+  if (scrollFrame !== null) return;
+  scrollFrame = window.requestAnimationFrame(() => {
+    scrollFrame = null;
+    handleScroll();
+  });
+}
+
 function handleScroll(): void {
   const scrollY = getScrollY();
   const activeOffsetY = scrollY + 24;
-
-  let matchedIndex = -1;
-  titles.value.forEach(title => {
-    if (activeOffsetY >= title.offsetTop) {
-      matchedIndex = title.index;
-    }
-    const children = title.children;
-    if (children && children.length > 0) {
-      children.forEach(child => {
-        if (activeOffsetY >= child.offsetTop) {
-          matchedIndex = child.index;
-        }
-        const grandChildren = child.children;
-        if (grandChildren && grandChildren.length > 0) {
-          grandChildren.forEach(gc => {
-            if (activeOffsetY >= gc.offsetTop) {
-              matchedIndex = gc.index;
-            }
-          });
-        }
-      });
-    }
-  });
+  const matchedIndex = findActiveHeadingIndex(activeOffsetY);
   if (lockedActiveHeadingIndex !== null) {
     activeHeadingIndex.value = lockedActiveHeadingIndex;
   } else {
@@ -247,26 +254,32 @@ function getFooterRect(): number | null {
   return null;
 }
 
+function handleTocOpened() {
+  nextTick(() => {
+    requestAnimationFrame(() => {
+      handleScroll();
+      scrollTocToActive();
+    });
+  });
+}
+
 function scrollTocToActive() {
   nextTick(() => {
     if (!tocCardRef.value) return;
-    const wrapper = tocCardRef.value.querySelector('.toc-wrapper') as HTMLElement | null;
-    if (!wrapper) return;
-
-    const activeEl = wrapper.querySelector('.active') as HTMLElement | null;
+    const activeEl = tocCardRef.value.querySelector('.active') as HTMLElement | null;
     if (!activeEl) return;
 
-    const padding = 12;
-    const activeTop = activeEl.offsetTop;
-    const activeBottom = activeTop + activeEl.offsetHeight;
-    const visibleTop = wrapper.scrollTop;
-    const visibleBottom = visibleTop + wrapper.clientHeight;
+    const tocWrapper = tocCardRef.value.querySelector('.toc-wrapper') as HTMLElement | null;
+    const drawerBody = tocCardRef.value.closest('.ant-drawer-body') as HTMLElement | null;
+    const scrollContainer =
+      tocWrapper && tocWrapper.scrollHeight > tocWrapper.clientHeight ? tocWrapper : drawerBody;
 
-    if (activeBottom > visibleBottom - padding) {
-      wrapper.scrollTo({ top: activeBottom - wrapper.clientHeight + padding, behavior: 'smooth' });
-    } else if (activeTop < visibleTop + padding) {
-      wrapper.scrollTo({ top: Math.max(0, activeTop - padding), behavior: 'smooth' });
-    }
+    if (!scrollContainer) return;
+
+    const containerRect = scrollContainer.getBoundingClientRect();
+    const activeRect = activeEl.getBoundingClientRect();
+    const targetTop = scrollContainer.scrollTop + activeRect.top - containerRect.top - scrollContainer.clientHeight / 2;
+    scrollContainer.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
   });
 }
 
@@ -309,7 +322,7 @@ function scrollToView(offsetTop: number, index: number): void {
     const container = document.querySelector(props.contentSelector);
     if (container) {
       initTocData(container);
-      const headings = container.querySelectorAll('h2, h3, h4');
+      const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
       let targetOffset = offsetTop;
       headings.forEach(h => {
         const t = calcOffsetTop(h as HTMLElement);
@@ -342,7 +355,7 @@ function startToc(container: Element) {
   });
 
   if (!scrollBound) {
-    scroller.addEventListener('scroll', handleScroll);
+    scroller.addEventListener('scroll', requestScrollUpdate, { passive: true });
     window.addEventListener('resize', onResize);
     scrollBound = true;
   }
@@ -387,20 +400,26 @@ function tryInitToc(): boolean {
 }
 
 onMounted(() => {
-  tryInitToc();
+  window.addEventListener('blog-surfer:toc-opened', handleTocOpened);
+  if (tryInitToc()) return;
 
   bodyObserver = new MutationObserver(() => {
-    tryInitToc();
+    if (tryInitToc()) {
+      bodyObserver?.disconnect();
+      bodyObserver = null;
+    }
   });
   bodyObserver.observe(document.body, { childList: true, subtree: true });
 });
 
 onBeforeUnmount(() => {
+  window.removeEventListener('blog-surfer:toc-opened', handleTocOpened);
   if (scrollBound) {
-    scroller.removeEventListener('scroll', handleScroll);
+    scroller.removeEventListener('scroll', requestScrollUpdate);
     window.removeEventListener('resize', onResize);
     scrollBound = false;
   }
+  if (scrollFrame !== null) window.cancelAnimationFrame(scrollFrame);
   bodyObserver?.disconnect();
   contentObserver?.disconnect();
   if (activeLockTimer) window.clearTimeout(activeLockTimer);
@@ -420,48 +439,15 @@ onBeforeUnmount(() => {
       </h2>
       <div class="toc-wrapper cursor-pointer">
         <ul class="toc-list">
-          <li v-for="h2 in titles" :key="h2.index">
+          <li v-for="title in flatTitles" :key="title.index">
             <span
-              class="block py-1.5 hover:text-[#3ecf9a] transition-colors cursor-pointer"
-              :class="[
-                h2.index === activeHeadingIndex
-                  ? 'active toc-h2-active text-[#3ecf9a] border-s-2 border-[#3ecf9a] font-bold pl-3 text-base'
-                  : 'text-[#0d3d2d] dark:text-white font-bold pl-3.5 text-base'
-              ]"
-              @click="scrollToView(h2.offsetTop, h2.index)"
+              class="block cursor-pointer py-1 hover:text-[#3ecf9a] transition-colors"
+              :class="title.index === activeHeadingIndex ? 'active text-[#3ecf9a] border-s-2 border-[#3ecf9a] ps-2 font-bold' : 'text-[#557468] dark:text-[#cbd5e1]'"
+              :style="{ marginLeft: `${title.indent * 1.25}rem`, fontSize: `${Math.max(0.7, 1 - title.indent * 0.08)}rem` }"
+              @click="scrollToView(title.offsetTop, title.index)"
             >
-              {{ h2.text }}
+              {{ title.text }}
             </span>
-            <ul v-if="h2.children && h2.children.length > 0" class="mt-1">
-              <li v-for="h3 in h2.children" :key="h3.index">
-                <span
-                  class="block py-1 hover:text-[#3ecf9a] transition-colors cursor-pointer"
-                  :class="[
-                    h3.index === activeHeadingIndex
-                      ? 'active toc-h3-active text-[#3ecf9a] border-s-2 border-[#3ecf9a] font-semibold pl-7 text-sm'
-                      : 'text-[#557468] dark:text-[#cbd5e1] font-normal pl-8 text-sm'
-                  ]"
-                  @click="scrollToView(h3.offsetTop, h3.index)"
-                >
-                  {{ h3.text }}
-                </span>
-                <ul v-if="h3.children && h3.children.length > 0" class="mt-0.5">
-                  <li v-for="h4 in h3.children" :key="h4.index">
-                    <span
-                      class="block py-0.5 hover:text-[#3ecf9a] transition-colors cursor-pointer"
-                      :class="[
-                        h4.index === activeHeadingIndex
-                          ? 'active toc-h4-active text-[#3ecf9a] border-s-2 border-[#3ecf9a] font-medium pl-12 text-[11px]'
-                          : 'text-[#6b8074] dark:text-[#8aab99] font-normal pl-[50px] text-[11px]'
-                      ]"
-                      @click="scrollToView(h4.offsetTop, h4.index)"
-                    >
-                      · {{ h4.text }}
-                    </span>
-                  </li>
-                </ul>
-              </li>
-            </ul>
           </li>
         </ul>
       </div>

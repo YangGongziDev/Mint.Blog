@@ -3,6 +3,7 @@ using Mint.Blog.Infrastructure.Blog.Article.Drafts;
 using Mint.Blog.Infrastructure.Blog.Article.Persistence;
 using Mint.Blog.Infrastructure.Blog.Column.Persistence;
 using Mint.Blog.Infrastructure.Blog.Friend.Persistence;
+using Mint.Blog.Infrastructure.Blog.Gallery.Persistence;
 using Mint.Blog.Infrastructure.Blog.Persistence.SqlSugar;
 using Mint.Blog.Infrastructure.Blog.Setting.Persistence;
 
@@ -42,6 +43,11 @@ public sealed class ImageUsageService(ISqlSugarDbContext dbContext) : IImageUsag
 			.Where(x => x.Logo == image || x.Avatar == image)
 			.AnyAsync();
 		if (settingUsed) return true;
+
+		var galleryUsed = await dbContext.Client.Queryable<GalleryImageDataModel>()
+			.Where(x => x.Url == image)
+			.AnyAsync();
+		if (galleryUsed) return true;
 
 		return await dbContext.Client.Queryable<FriendDataModel>()
 			.Where(x => x.Avatar == image)

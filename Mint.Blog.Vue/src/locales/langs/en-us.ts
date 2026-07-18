@@ -168,6 +168,7 @@ const local: App.I18n.Schema = {
     'blog-admin_column': 'Column Manage',
     'blog-admin_article': 'Article Manage',
     'blog-admin_image': 'Image Manage',
+    'blog-admin_gallery': 'Gallery Manage',
     'blog-admin_article-create': 'Write Article',
     'blog-admin_article-edit': 'Edit Article',
     admin_blog: 'Blog Manage',

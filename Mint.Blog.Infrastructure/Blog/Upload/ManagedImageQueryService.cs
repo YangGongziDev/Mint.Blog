@@ -9,6 +9,7 @@ using Mint.Blog.Infrastructure.Blog.Article.Drafts;
 using Mint.Blog.Infrastructure.Blog.Article.Persistence;
 using Mint.Blog.Infrastructure.Blog.Column.Persistence;
 using Mint.Blog.Infrastructure.Blog.Friend.Persistence;
+using Mint.Blog.Infrastructure.Blog.Gallery.Persistence;
 using Mint.Blog.Infrastructure.Blog.Persistence.SqlSugar;
 using Mint.Blog.Infrastructure.Blog.Setting.Persistence;
 using Mint.Blog.Infrastructure.Options;
@@ -136,6 +137,13 @@ public sealed class ManagedImageQueryService(
 				AddReference(references, "blog-avatar", "-2", $"作者头像：{setting.Name}", "/blog/admin/blog/settings");
 			}
 		}
+
+		var galleryImages = await dbContext.Client.Queryable<GalleryImageDataModel>()
+			.Where(x => x.Url == imageUrl)
+			.Select(x => new { x.Id, x.Name })
+			.ToListAsync();
+		foreach (var galleryImage in galleryImages)
+			AddReference(references, $"gallery-image:{galleryImage.Id}", $"gallery-image-{galleryImage.Id}", $"画廊图片：{galleryImage.Name}", "/blog/admin/gallery");
 
 		var friendAvatars = await dbContext.Client.Queryable<FriendDataModel>()
 			.Where(x => x.Avatar == imageUrl)

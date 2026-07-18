@@ -35,7 +35,7 @@ const position = ref<FloatingPosition>({ x: 0, y: 0 });
 const pointerStart = ref({ x: 0, y: 0 });
 const dragStart = ref<FloatingPosition>({ x: 0, y: 0 });
 const movedDistance = ref(0);
-let resetDraggingTimer: ReturnType<typeof window.setTimeout> | null = null;
+let resetDraggingTimer: ReturnType<typeof setTimeout> | null = null;
 let tocObserver: MutationObserver | null = null;
 
 const actionItems = computed<FloatingActionItem[]>(() => [
@@ -126,7 +126,7 @@ function getScrollRoot() {
 
 function updateTocAvailability() {
   const articleContentEl = document.querySelector('.article-content');
-  isTocAvailable.value = Boolean(articleContentEl?.querySelector('h2, h3, h4'));
+  isTocAvailable.value = Boolean(articleContentEl?.querySelector('h1, h2, h3, h4, h5, h6'));
 }
 
 function setupTocObserver() {
@@ -144,22 +144,53 @@ function toggleToc() {
   }
 
   window.dispatchEvent(new CustomEvent('blog-surfer:toggle-toc'));
+  nextTick(() => window.dispatchEvent(new CustomEvent('blog-surfer:toc-opened')));
 }
 
-async function shareCurrentPage() {
-  const shareData = {
-    title: document.title,
-    text: document.title,
-    url: window.location.href
-  };
+function getMetaContent(selector: string) {
+  return document.querySelector<HTMLMetaElement>(selector)?.content?.trim() || '';
+}
 
-  if (navigator.share) {
-    await navigator.share(shareData);
+async function copyShareUrl(url: string) {
+  if (navigator.clipboard?.writeText && window.isSecureContext) {
+    await navigator.clipboard.writeText(url);
     return;
   }
 
-  await navigator.clipboard.writeText(shareData.url);
-  message.success('链接已复制，快去分享吧');
+  const textarea = document.createElement('textarea');
+  textarea.value = url;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand('copy');
+  textarea.remove();
+  if (!copied) throw new Error('复制失败');
+}
+
+async function shareCurrentPage() {
+  const title = getMetaContent('meta[property="og:title"]') || document.title;
+  const description = getMetaContent('meta[property="og:description"]') || title;
+  const shareData = { title, text: description, url: window.location.href };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      return;
+    }
+
+    await copyShareUrl(shareData.url);
+    message.success('链接已复制，快去分享吧');
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') return;
+
+    try {
+      await copyShareUrl(shareData.url);
+      message.success('链接已复制，快去分享吧');
+    } catch {
+      message.error('分享失败，请手动复制浏览器地址');
+    }
+  }
 }
 
 function returnTop() {
@@ -235,7 +266,7 @@ function onPointerUp(event: PointerEvent) {
   if (isDragging.value) {
     savePosition();
     if (resetDraggingTimer) window.clearTimeout(resetDraggingTimer);
-    resetDraggingTimer = window.setTimeout(() => {
+    resetDraggingTimer = setTimeout(() => {
       isDragging.value = false;
     }, DRAG_RESET_DELAY);
     return;

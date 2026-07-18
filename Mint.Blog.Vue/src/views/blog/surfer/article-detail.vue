@@ -17,6 +17,7 @@ import hljs from 'highlight.js';
 import { getArticleDetail } from '@/service/blog/surfer/article';
 import { getBlogSettingsDetail } from '@/service/blog/surfer/setting';
 import { useTabStore } from '@/store/system/tab';
+import { formatDateTime } from '@/utils/date-time';
 import bannerDefaultImg from '@/assets/blog/surfer/article-banner/banner-default.jpg';
 import SurferComment from '@/components/blog/surfer/comment.vue';
 import Starry from '@/components/blog/surfer/starry.vue';
@@ -79,7 +80,7 @@ const copyrightDeclaration = computed(() => {
   return `© ${year} 保留所有权利，转载请注明出处和原文链接。`;
 });
 const renderedContent = computed(() => renderMarkdown(article.value.content || ''));
-const hasTocHeadings = computed(() => /^#{2,4}\s+\S+/m.test(article.value.content || ''));
+const hasTocHeadings = computed(() => /^#{1,6}\s+\S+/m.test(article.value.content || ''));
 const heroImage = ref('');
 const heroImageKey = ref(0);
 const heroResolved = ref(false);
@@ -573,6 +574,12 @@ function isStandaloneStrongLine(line: string) {
   return /^(\*\*[^*]+\*\*|__[^_]+__)$/.test(line.trim());
 }
 
+function getMarkdownIndentLevel(line: string) {
+  const leadingWhitespace = line.match(/^\s*/)?.[0] || '';
+  const spaces = leadingWhitespace.replace(/\t/g, '    ').length;
+  return Math.floor(spaces / 2);
+}
+
 function renderMarkdown(markdown: string) {
   const hardBreakMark = '\uE000';
   const lines = markdown.replace(/\r\n/g, '\n').split('\n');
@@ -647,12 +654,14 @@ function renderMarkdown(markdown: string) {
         flushParagraph();
         if (listType && listType !== 'ul') flushList();
         listType = 'ul';
-        listItems.push(`<li>${renderInlineMarkdown(unorderedMatch[1])}</li>`);
+        const indent = getMarkdownIndentLevel(line);
+        listItems.push(`<li style="margin-left: ${indent * 1.5}rem">${renderInlineMarkdown(unorderedMatch[1])}</li>`);
       } else if (orderedMatch) {
         flushParagraph();
         if (listType && listType !== 'ol') flushList();
         listType = 'ol';
-        listItems.push(`<li>${renderInlineMarkdown(orderedMatch[1])}</li>`);
+        const indent = getMarkdownIndentLevel(line);
+        listItems.push(`<li style="margin-left: ${indent * 1.5}rem">${renderInlineMarkdown(orderedMatch[1])}</li>`);
       } else if (isStandaloneStrongLine(trimmed)) {
         flushParagraph();
         flushList();
@@ -667,7 +676,17 @@ function renderMarkdown(markdown: string) {
   flushParagraph();
   flushList();
 
-  return html.join('\n');
+  let headingLevel = 0;
+  return html
+    .map(block => {
+      const headingMatch = block.match(/^<h([1-6])>/);
+      if (headingMatch) headingLevel = Number(headingMatch[1]);
+
+      if (!headingLevel) return block;
+      const indent = Math.max(0, headingLevel - 1) * 1.5;
+      return `<div class="markdown-section-content" style="margin-left: ${indent}rem">${block}</div>`;
+    })
+    .join('\n');
 }
 
 function updateIsMobile() {
@@ -688,6 +707,7 @@ function handleToggleToc() {
       mobileTocRenderKey.value += 1;
       nextTick(() => {
         window.dispatchEvent(new Event('resize'));
+        window.dispatchEvent(new CustomEvent('blog-surfer:toc-opened'));
       });
     }
 
@@ -755,7 +775,10 @@ async function loadArticle(articleId: string | number) {
     }
     article.value = res.data || {};
     typeArticleTitle(article.value.title);
-    if (article.value.title) tabStore.setTabLabel(article.value.title);
+    if (article.value.title) {
+      tabStore.setTabLabel(article.value.title);
+      document.title = `${article.value.title} - ${import.meta.env.VITE_APP_TITLE}`;
+    }
     articleNotFound.value = false;
 
     nextTick(() => {
@@ -980,7 +1003,7 @@ onActivated(() => {
 
                 <div class="flex items-center text-sm mt-5 mb-5 text-[#557468] dark:text-[#cbd5e1]">
                   <EditOutlined class="icon inline-block w-4 h-4 mr-1" />
-                  最后编辑于 {{ article.updateTime }}
+                  最后编辑于 {{ formatDateTime(article.updateTime) }}
                 </div>
 
                 <div class="mt-6 mb-6">

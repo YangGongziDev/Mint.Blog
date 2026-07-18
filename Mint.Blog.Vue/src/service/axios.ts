@@ -115,9 +115,6 @@ export function getServiceBaseURL(env: Env.ViteEnv) {
 
 const axiosInstance = axios.create({
   baseURL: getServiceBaseURL(import.meta.env),
-  headers: {
-    apifoxToken: 'XL299LiMEDZ0H5h3A29PxwQXdMJqWyY2'
-  },
   timeout: 30000
 });
 

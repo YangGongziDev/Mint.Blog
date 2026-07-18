@@ -3933,3 +3933,69 @@ CREATE INDEX "idx_username" ON "public"."sys_user_role" USING btree (
 -- Primary Key structure for table sys_user_role
 -- ----------------------------
 ALTER TABLE "public"."sys_user_role" ADD CONSTRAINT "sys_user_role_pkey" PRIMARY KEY ("id");
+
+
+
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS public.blog_gallery_category (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description VARCHAR(500) NOT NULL DEFAULT '',
+  sort INTEGER NOT NULL DEFAULT 0,
+  enabled BOOLEAN NOT NULL DEFAULT TRUE,
+  create_time TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  update_time TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+COMMENT ON TABLE public.blog_gallery_category IS '博客画廊分类表';
+COMMENT ON COLUMN public.blog_gallery_category.id IS '画廊分类主键ID';
+COMMENT ON COLUMN public.blog_gallery_category.name IS '分类名称';
+COMMENT ON COLUMN public.blog_gallery_category.description IS '分类描述';
+COMMENT ON COLUMN public.blog_gallery_category.sort IS '排序值，数值越大越靠前';
+COMMENT ON COLUMN public.blog_gallery_category.enabled IS '是否启用，true启用，false停用';
+COMMENT ON COLUMN public.blog_gallery_category.create_time IS '创建时间';
+COMMENT ON COLUMN public.blog_gallery_category.update_time IS '更新时间';
+
+CREATE TABLE IF NOT EXISTS public.blog_gallery_image (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(160) NOT NULL,
+  category_id BIGINT NOT NULL REFERENCES public.blog_gallery_category(id),
+  resolution VARCHAR(50) NOT NULL DEFAULT '',
+  ratio VARCHAR(50) NOT NULL DEFAULT '',
+  image_time DATE NULL,
+  url TEXT NOT NULL,
+  source_type VARCHAR(20) NOT NULL DEFAULT 'local',
+  bucket_name VARCHAR(120) NOT NULL DEFAULT '',
+  object_name VARCHAR(500) NOT NULL DEFAULT '',
+  file_name VARCHAR(260) NOT NULL DEFAULT '',
+  sort INTEGER NOT NULL DEFAULT 0,
+  enabled BOOLEAN NOT NULL DEFAULT TRUE,
+  create_time TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  update_time TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+COMMENT ON TABLE public.blog_gallery_image IS '博客画廊图片表';
+COMMENT ON COLUMN public.blog_gallery_image.id IS '画廊图片主键ID';
+COMMENT ON COLUMN public.blog_gallery_image.name IS '图片名称';
+COMMENT ON COLUMN public.blog_gallery_image.category_id IS '所属画廊分类ID，关联blog_gallery_category.id';
+COMMENT ON COLUMN public.blog_gallery_image.resolution IS '图片分辨率，例如4K、1920x1080';
+COMMENT ON COLUMN public.blog_gallery_image.ratio IS '图片比例，例如16:9、4:3、9:16';
+COMMENT ON COLUMN public.blog_gallery_image.image_time IS '图片时间或拍摄/收集日期';
+COMMENT ON COLUMN public.blog_gallery_image.url IS '图片访问链接，本地上传时由对象存储自动生成，外部引用时为第三方图片链接';
+COMMENT ON COLUMN public.blog_gallery_image.source_type IS '图片来源类型，local表示本地上传，external表示外部引用';
+COMMENT ON COLUMN public.blog_gallery_image.bucket_name IS '本地上传图片所在对象存储桶名称，外部引用时为空';
+COMMENT ON COLUMN public.blog_gallery_image.object_name IS '本地上传图片在对象存储中的对象名称，外部引用时为空';
+COMMENT ON COLUMN public.blog_gallery_image.file_name IS '原始文件名或显示文件名';
+COMMENT ON COLUMN public.blog_gallery_image.sort IS '排序值，数值越大越靠前';
+COMMENT ON COLUMN public.blog_gallery_image.enabled IS '是否启用，true启用，false停用';
+COMMENT ON COLUMN public.blog_gallery_image.create_time IS '创建时间';
+COMMENT ON COLUMN public.blog_gallery_image.update_time IS '更新时间';
+
+CREATE INDEX IF NOT EXISTS idx_blog_gallery_image_category_id ON public.blog_gallery_image(category_id);
+CREATE INDEX IF NOT EXISTS idx_blog_gallery_category_sort ON public.blog_gallery_category(sort DESC, create_time DESC);
+CREATE INDEX IF NOT EXISTS idx_blog_gallery_image_sort ON public.blog_gallery_image(sort DESC, create_time DESC);
+

@@ -168,6 +168,7 @@ const local: App.I18n.Schema = {
     'blog-admin_column': '专栏管理',
     'blog-admin_article': '文章管理',
     'blog-admin_image': '图片管理',
+    'blog-admin_gallery': '画廊管理',
     'blog-admin_article-create': '写文章',
     'blog-admin_article-edit': '编辑文章',
     admin_blog: '博客管理',

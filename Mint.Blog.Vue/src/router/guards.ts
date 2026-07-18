@@ -1,11 +1,11 @@
 import type { LocationQueryRaw, RouteLocationNormalized, RouteLocationRaw, Router } from 'vue-router';
 import { useTitle } from '@vueuse/core';
-import { $t } from '@/locales';
-import type { RouteKey } from '@/router/types';
 import { useAuthStore } from '@/store/system/auth';
 import { useRouteStore } from '@/store/system/route';
 import { useThemeStore } from '@/store/system/theme';
 import { localStg } from '@/utils/storage';
+import { $t } from '@/locales';
+import type { RouteKey } from '@/router/types';
 
 export function setupRouterGuards(router: Router) {
   createProgressGuard(router);
@@ -28,7 +28,9 @@ function createProgressGuard(router: Router) {
 function createDocumentTitleGuard(router: Router) {
   router.afterEach(to => {
     const { i18nKey, title } = to.meta;
-    const documentTitle = i18nKey ? $t(i18nKey) : title;
+    const routeTitle = i18nKey ? $t(i18nKey) : title;
+    const appTitle = import.meta.env.VITE_APP_TITLE;
+    const documentTitle = routeTitle ? `${routeTitle} - ${appTitle}` : appTitle;
 
     useTitle(documentTitle);
   });

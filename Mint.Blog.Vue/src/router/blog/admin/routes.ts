@@ -86,6 +86,16 @@ export const blogAdminRoutes: RouteRecordRaw[] = [
     }
   },
   {
+    path: 'gallery',
+    name: 'blog-admin_gallery',
+    component: () => import('@/views/blog/admin/gallery.vue'),
+    meta: {
+      title: 'blog-admin_gallery',
+      i18nKey: 'route.blog-admin_gallery',
+      public: true
+    }
+  },
+  {
     path: 'article',
     name: 'blog-admin_article',
     component: () => import('@/views/blog/admin/article.vue'),

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { BookOutlined } from '@ant-design/icons-vue';
+import { BookOutlined, ReadOutlined } from '@ant-design/icons-vue';
 import { getColumnList } from '@/service/blog/surfer/column';
 import SurferSidebar from '@/components/blog/surfer/sidebar-right.vue';
 
@@ -22,6 +22,7 @@ type Api<T> = { success: boolean; data: T };
 const router = useRouter();
 const columns = ref<ColumnItem[]>([]);
 const loading = ref(true);
+const failedCoverIds = ref<Set<number>>(new Set());
 
 const byColumn = (list: ColumnItem[]) =>
   [...list].sort((a, b) => {
@@ -38,6 +39,14 @@ function goColumnDetail(id: number) {
   router.push({ path: `/blog/surfer/column/${id}` });
 }
 
+function markCoverFailed(id: number) {
+  failedCoverIds.value = new Set([...failedCoverIds.value, id]);
+}
+
+function shouldShowCover(column: ColumnItem) {
+  return Boolean(column.cover) && !failedCoverIds.value.has(column.id);
+}
+
 onMounted(async () => {
   try {
     const res = await getColumnList<Api<ColumnItem[]>>();
@@ -51,73 +60,41 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="mx-auto max-w-screen-2xl px-4 md:px-6 py-4">
+  <main class="column-page mx-auto max-w-screen-2xl px-4 py-4 md:px-6">
     <div class="grid grid-cols-1 gap-7 lg:grid-cols-4">
       <div class="col-span-1 mt-0 mb-1 lg:mt-10 lg:col-span-3 lg:mb-3">
-        <div
-          class="w-full p-5 pb-7 mb-3 rounded-lg border border-[#3ecf9a]/14 bg-white/84 dark:border-[#334155] dark:bg-[#2c333e]/72"
-        >
-          <h2 class="flex items-center mb-5 font-bold text-[#0d3d2d] dark:text-white">
-            <BookOutlined class="w-5 h-5 mr-2 text-[#3ecf9a]" />
-            专栏
-            <span v-if="columns.length" class="ml-2 font-normal text-[#557468] dark:text-[#cbd5e1]">
-              ( {{ columns.length }} )
-            </span>
-          </h2>
-
-          <div v-if="loading" class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            <div
-              v-for="i in 6"
-              :key="i"
-              class="animate-pulse rounded-xl border border-[#3ecf9a]/14 bg-white/72 p-0 dark:bg-[#232931]/72 dark:border-[#334155]"
-            >
-              <div class="h-36 w-full rounded-t-xl bg-[#3ecf9a]/8 dark:bg-white/5"></div>
-              <div class="p-5 space-y-3">
-                <div class="h-5 w-3/4 rounded bg-gray-200 dark:bg-white/5"></div>
-                <div class="h-4 w-full rounded bg-gray-200 dark:bg-white/5"></div>
-                <div class="h-4 w-2/3 rounded bg-gray-200 dark:bg-white/5"></div>
+        <div class="column-content">
+          <div v-if="loading" class="column-grid">
+            <article v-for="i in 6" :key="i" class="column-card skeleton-card">
+              <div class="column-cover skeleton-cover"></div>
+              <div class="column-info">
+                <div class="skeleton-line title"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
               </div>
-            </div>
+            </article>
           </div>
 
-          <div v-else-if="!columns.length" class="flex flex-col items-center justify-center py-16">
-            <div class="text-6xl font-black text-[#3ecf9a]/20">📚</div>
-            <p class="mt-4 text-[#557468] dark:text-[#cbd5e1]">暂无专栏</p>
+          <div v-else-if="!columns.length" class="empty-box">
+            <div>📚</div>
+            <p>暂无专栏</p>
           </div>
 
-          <div v-else class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            <div
-              v-for="column in columns"
-              :key="column.id"
-              class="group relative cursor-pointer rounded-xl border border-[#3ecf9a]/14 bg-white/72 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-[#3ecf9a]/40 dark:bg-[#232931]/72 dark:border-[#334155]"
-              @click="goColumnDetail(column.id)"
-            >
-              <img
-                v-if="column.cover"
-                class="h-36 w-full rounded-t-xl object-cover transition-transform duration-300 group-hover:scale-105"
-                :src="column.cover"
-              />
-              <div
-                v-else
-                class="flex h-36 w-full items-center justify-center rounded-t-xl bg-[#3ecf9a]/8 text-4xl text-[#3ecf9a]/30 font-black"
-              >
-                {{ column.title?.charAt(0) }}
+          <div v-else class="column-grid">
+            <article v-for="column in columns" :key="column.id" class="column-card" @click="goColumnDetail(column.id)">
+              <div class="column-cover">
+                <img v-if="shouldShowCover(column)" :src="column.cover || ''" alt="" loading="lazy" @error="markCoverFailed(column.id)" />
+                <div v-else class="cover-placeholder"><BookOutlined /></div>
+                <span v-if="column.isTop" class="top-badge">置顶</span>
+                <div class="card-actions">
+                  <button type="button"><ReadOutlined /> 查看专栏</button>
+                </div>
               </div>
-              <div class="p-5">
-                <h3 class="mb-2 text-lg font-bold text-[#0d3d2d] dark:text-white line-clamp-1">
-                  {{ column.title }}
-                </h3>
-                <p class="text-sm leading-relaxed text-[#60786e] dark:text-[#cbd5e1] line-clamp-2">
-                  {{ column.summary || '暂无简介' }}
-                </p>
+              <div class="column-info">
+                <h3>{{ column.title }}</h3>
+                <p>{{ column.summary || '暂无简介' }}</p>
               </div>
-              <div
-                v-if="column.isTop"
-                class="absolute right-2 top-2 rounded-full bg-gradient-to-r from-[#ff6b6b] to-[#ef4444] px-3 py-1 text-xs font-black text-white shadow-md"
-              >
-                置顶
-              </div>
-            </div>
+            </article>
           </div>
         </div>
       </div>
@@ -128,3 +105,238 @@ onMounted(async () => {
     </div>
   </main>
 </template>
+
+<style scoped lang="scss">
+.column-page {
+  color: #0d3d2d;
+}
+
+.column-content {
+  width: 100%;
+}
+
+h3,
+p {
+  margin: 0;
+}
+
+.column-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.column-card {
+  overflow: hidden;
+  border: 1px solid rgb(15 61 45 / 8%);
+  border-radius: 24px;
+  background: #fff;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 36px rgb(15 23 42 / 10%);
+  }
+}
+
+.column-cover {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: rgb(62 207 154 / 8%);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+  }
+}
+
+.column-card:hover .column-cover img {
+  transform: scale(1.06);
+}
+
+.cover-placeholder {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: rgb(62 207 154 / 42%);
+  font-size: 46px;
+  font-weight: 950;
+}
+
+.top-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff6b6b, #ef4444);
+  padding: 5px 11px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 950;
+  box-shadow: 0 10px 20px rgb(239 68 68 / 24%);
+}
+
+.card-actions {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(15 23 42 / 48%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff;
+    padding: 9px 14px;
+    color: #0d3d2d;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+}
+
+.column-card:hover .card-actions {
+  opacity: 1;
+}
+
+.column-info {
+  padding: 15px;
+
+  h3 {
+    color: #0d3d2d;
+    font-size: 16px;
+    font-weight: 950;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  p {
+    display: -webkit-box;
+    min-height: 44px;
+    margin-top: 9px;
+    overflow: hidden;
+    color: #60786e;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.7;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+
+.empty-box {
+  display: flex;
+  min-height: 300px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  div {
+    color: rgb(62 207 154 / 20%);
+    font-size: 64px;
+    font-weight: 950;
+  }
+
+  p {
+    margin-top: 14px;
+    color: #60786e;
+    font-size: 14px;
+    font-weight: 800;
+  }
+}
+
+.skeleton-card {
+  cursor: default;
+
+  &:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.skeleton-cover,
+.skeleton-line {
+  position: relative;
+  overflow: hidden;
+  background: rgb(62 207 154 / 8%);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 55%), transparent);
+    animation: shimmer 1.2s infinite;
+  }
+}
+
+.skeleton-line {
+  height: 14px;
+  margin-top: 12px;
+  border-radius: 999px;
+
+  &.title {
+    width: 72%;
+    height: 18px;
+    margin-top: 0;
+  }
+
+  &.short {
+    width: 58%;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+:global(.dark) .toolbar h2,
+:global(.dark) .column-info h3 {
+  color: #f8fafc;
+}
+
+:global(.dark) .toolbar p,
+:global(.dark) .column-info p,
+:global(.dark) .empty-box p {
+  color: #cbd5e1;
+}
+
+:global(.dark) .column-card {
+  border-color: rgb(51 65 85 / 78%);
+  background: rgb(30 41 59 / 58%);
+}
+
+:global(.dark) .skeleton-cover,
+:global(.dark) .skeleton-line {
+  background: rgb(255 255 255 / 6%);
+}
+
+@media (max-width: 1200px) {
+  .column-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .column-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
