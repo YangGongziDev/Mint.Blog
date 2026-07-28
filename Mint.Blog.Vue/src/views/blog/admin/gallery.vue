@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import type { TableColumnsType, UploadChangeParam, UploadProps } from 'ant-design-vue';
 import { Modal, message } from 'ant-design-vue';
 import {
@@ -42,6 +42,7 @@ const bucketOptions = ref<RustfsBucketItem[]>([]);
 const defaultBucketName = ref(localStorage.getItem('blog-gallery-default-bucket') || '');
 const uploadFileList = ref<UploadProps['fileList']>([]);
 const selectedLocalFile = ref<File | null>(null);
+let externalMetadataTimer: ReturnType<typeof setTimeout> | null = null;
 const categoryForm = reactive({ name: '', description: '', sort: 0, enabled: true });
 const imageForm = reactive({
   sourceType: 'local' as 'local' | 'external',
@@ -326,6 +327,38 @@ function handleSourceTypeChange() {
   imageForm.url = '';
   uploadFileList.value = [];
   selectedLocalFile.value = null;
+  if (imageForm.sourceType === 'external' && !imageForm.time) {
+    imageForm.time = new Date().toLocaleDateString('en-CA');
+  }
+}
+
+function scheduleExternalImageMetadata() {
+  if (externalMetadataTimer) clearTimeout(externalMetadataTimer);
+  externalMetadataTimer = setTimeout(fillExternalImageMetadata, 500);
+}
+
+async function fillExternalImageMetadata() {
+  if (externalMetadataTimer) clearTimeout(externalMetadataTimer);
+  externalMetadataTimer = null;
+  const url = imageForm.url.trim();
+  if (!/^https?:\/\/.+/i.test(url)) return;
+
+  if (!imageForm.name) {
+    try {
+      const fileName = decodeURIComponent(new URL(url).pathname.split('/').pop() || '');
+      imageForm.name = fileName.replace(/\.[^.]+$/, '') || new URL(url).hostname;
+    } catch {
+      // 链接格式由保存时统一验证
+    }
+  }
+
+  const image = new Image();
+  image.onload = () => {
+    imageForm.resolution = `${image.naturalWidth}x${image.naturalHeight}`;
+    imageForm.ratio = formatRatio(`${image.naturalWidth}:${image.naturalHeight}`);
+  };
+  image.onerror = () => message.warning('无法读取外部图片信息，请手动填写名称、分辨率和比例');
+  image.src = url;
 }
 
 function shouldCleanupOldLocalImage(oldImage: GalleryImageItem | null, newUrl: string) {
@@ -507,6 +540,10 @@ function confirmDeleteImage(record: GalleryImageItem) {
 onMounted(() => {
   loadBuckets();
   loadData();
+});
+
+onBeforeUnmount(() => {
+  if (externalMetadataTimer) clearTimeout(externalMetadataTimer);
 });
 </script>
 
@@ -719,7 +756,7 @@ onMounted(() => {
           <div v-if="imageForm.url" class="generated-url">链接已生成：{{ imageForm.url }}</div>
         </AFormItem>
         <AFormItem v-else label="图片链接" required>
-          <AInput v-model:value="imageForm.url" placeholder="请输入外部图片链接" />
+          <AInput v-model:value="imageForm.url" placeholder="请输入外部图片链接" @input="scheduleExternalImageMetadata" @blur="fillExternalImageMetadata" @press-enter="fillExternalImageMetadata" />
         </AFormItem>
         <AFormItem label="分类" required>
           <ASelect v-model:value="imageForm.categoryId" placeholder="请选择分类">

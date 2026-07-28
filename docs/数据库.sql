@@ -347,7 +347,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 本项目 1.0 版本已部署到云服务器上，可点击下面链接进行访问，查看实际效果：
 >
-> 演示地址：[https://www.yangmufa.cn](https://www.yangmufa.cn)
+> 演示地址：[https://www.yanggongzi.dev](https://www.yanggongzi.dev)
 >
 > 后台登录演示账号:
 > 
@@ -359,23 +359,23 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 知识星球是个私密学习圈子，我会在星球内部，出**一系列从 0 到 1 的实战项目，贴合真实的企业级项目开发规范，使用主流的企业技术栈，全程手写后端 + 前端完整代码，通过专栏的形式，把每个功能点的开发的步骤，手摸手，通过丰富的图片 + 文字，保姆级教学（PS: 同时按小节进度提供代码，不至于一上来代码量太多，不知道从哪入手）**。
 
 
-![](https://img.yangmufa.cn/ibp/169361945065538)
+![](https://img.yanggongzi.dev/ibp/169361945065538)
 
-目前，我已经给自己的网站：[练习生基地](https://www.yangmufa.cn/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
+目前，我已经给自己的网站：[练习生基地](https://www.yanggongzi.dev/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
 
-![](https://img.yangmufa.cn/ibp/169733756405612)
+![](https://img.yanggongzi.dev/ibp/169733756405612)
 
-![](https://img.yangmufa.cn/ibp/169733761293187)
+![](https://img.yanggongzi.dev/ibp/169733761293187)
 
-![](https://img.yangmufa.cn/ibp/169733762195775)
+![](https://img.yanggongzi.dev/ibp/169733762195775)
 
 另外，在跟随小节内容上手的过程中，若遇到问题，可在星球内发起 *1v1 提问，鲲鲲亲自解答*。
 
-!["星球内提问"](https://img.yangmufa.cn/ibp/169396126861858 "星球内提问")
+!["星球内提问"](https://img.yanggongzi.dev/ibp/169396126861858 "星球内提问")
 
 星球说不清楚的，项目进度因为某一块搞不定的，微信发我源码，帮忙看问题出在哪：
 
-![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yangmufa.cn/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
+![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yanggongzi.dev/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
 
 
 陪伴式写项目，到最终部署到云服务器上，能够通过域名来访问，完成项目上线。
@@ -386,7 +386,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 脑瓜子一转，想到之前好多读者问我博客的事情，今年 4 月份的时候，又有读者微信问我: *你的博客有没有开源，感觉还挺好看，也想学习、部署一个。*
 
-![](https://img.yangmufa.cn/ibp/169355366112215)
+![](https://img.yanggongzi.dev/ibp/169355366112215)
 
 于是乎，花了点时间整了第一个实战项目 —— **前后端分离的博客 ibp**。
 
@@ -399,7 +399,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 目前 1.0 版本已经部署到了阿里云服务器上，可点击下面链接进行访问，查看实际效果：
 
-[https://www.yangmufa.cn](https://www.yangmufa.cn "https://www.yangmufa.cn")
+[https://www.yanggongzi.dev](https://www.yanggongzi.dev "https://www.yanggongzi.dev")
 
 管理后台登录账号/密码:
 
@@ -412,11 +412,11 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 💡 TIP : 以下*只是 1.0 版本的功能，后续鲲鲲将添加更多功能进去, 比如图库管理、知识库、在线人数统计、SSR（服务端渲染） 等等*，能够想到的高逼格功能，咱都整上，附带超详细的实战图文笔记 ...
 
-![ibp 功能模块一览](https://img.yangmufa.cn/ibp/169560157482464 "ibp 功能模块一览")
+![ibp 功能模块一览](https://img.yanggongzi.dev/ibp/169560157482464 "ibp 功能模块一览")
 
 ### ✏️ 技术栈
 
-![ibp 技术栈一览](https://img.yangmufa.cn/ibp/169560181378937 "ibp 技术栈一览")
+![ibp 技术栈一览](https://img.yanggongzi.dev/ibp/169560181378937 "ibp 技术栈一览")
 
 ## 🎉 专栏目标
 
@@ -446,138 +446,138 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 💡 TIP : 如下目录不代表最终内容，只会更多，目前只是把已完成的部分详细的罗列了出来，其中大部分功能正在开发中，所属具体小节的标题也会陆续更新进来。
 
-- 一、[项目介绍](https://www.yangmufa.cn/column/10000.html)
+- 一、[项目介绍](https://www.yanggongzi.dev/column/10000.html)
 - 二、开发环境搭建
-  - [2.1 【后端】环境安装&工具准备](https://www.yangmufa.cn/column/10003.html)
-  - [2.2 【前端】开发环境&工具安装](https://www.yangmufa.cn/column/10004.html)
+  - [2.1 【后端】环境安装&工具准备](https://www.yanggongzi.dev/column/10003.html)
+  - [2.2 【前端】开发环境&工具安装](https://www.yanggongzi.dev/column/10004.html)
 
 - 三、Spring Boot 后端工程搭建
-  - [3.1 搭建 Spring Boot 多模块工程](https://www.yangmufa.cn/column/10005.html)
-  - [3.2 Spring Boot 多环境配置](https://www.yangmufa.cn/column/10006.html)
-  - [3.3 配置 Lombok](https://www.yangmufa.cn/column/10007.html)
-  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yangmufa.cn/column/10008.html)
-  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yangmufa.cn/column/10009.html)
-  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yangmufa.cn/column/10010.html)
-  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yangmufa.cn/column/10011.html)
-  - [3.8 Spring Boot 自定义响应工具类](https://www.yangmufa.cn/column/10012.html)
-  - [3.9 Spring Boot 实现全局异常管理](https://www.yangmufa.cn/column/10013.html)
-  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yangmufa.cn/column/10014.html)
-  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yangmufa.cn/column/10015.html)
-  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yangmufa.cn/column/10016.html)
-  - [3.13 小结](https://www.yangmufa.cn/column/10017.html)
+  - [3.1 搭建 Spring Boot 多模块工程](https://www.yanggongzi.dev/column/10005.html)
+  - [3.2 Spring Boot 多环境配置](https://www.yanggongzi.dev/column/10006.html)
+  - [3.3 配置 Lombok](https://www.yanggongzi.dev/column/10007.html)
+  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yanggongzi.dev/column/10008.html)
+  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yanggongzi.dev/column/10009.html)
+  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yanggongzi.dev/column/10010.html)
+  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yanggongzi.dev/column/10011.html)
+  - [3.8 Spring Boot 自定义响应工具类](https://www.yanggongzi.dev/column/10012.html)
+  - [3.9 Spring Boot 实现全局异常管理](https://www.yanggongzi.dev/column/10013.html)
+  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yanggongzi.dev/column/10014.html)
+  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yanggongzi.dev/column/10015.html)
+  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yanggongzi.dev/column/10016.html)
+  - [3.13 小结](https://www.yanggongzi.dev/column/10017.html)
 
 - 四、使用 Vue 3 + Vite 4 搭建前端工程
-  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yangmufa.cn/column/10018.html)
-  - [4.2 安装 VSCode 开发工具](https://www.yangmufa.cn/column/10019.html)
-  - [4.3 添加 vue-router 路由管理器](https://www.yangmufa.cn/column/10020.html)
-  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yangmufa.cn/column/10021.html)
-  - [4.5 整合 Tailwind CSS](https://www.yangmufa.cn/column/10022.html)
-  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yangmufa.cn/column/10023.html)
-  - [4.7 整合饿了么 Element Plus 组件库](https://www.yangmufa.cn/column/10024.html)
+  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yanggongzi.dev/column/10018.html)
+  - [4.2 安装 VSCode 开发工具](https://www.yanggongzi.dev/column/10019.html)
+  - [4.3 添加 vue-router 路由管理器](https://www.yanggongzi.dev/column/10020.html)
+  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yanggongzi.dev/column/10021.html)
+  - [4.5 整合 Tailwind CSS](https://www.yanggongzi.dev/column/10022.html)
+  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yanggongzi.dev/column/10023.html)
+  - [4.7 整合饿了么 Element Plus 组件库](https://www.yanggongzi.dev/column/10024.html)
 
 - 五、登录模块开发
-  - [5.1 登录页设计：支持响应式布局](https://www.yangmufa.cn/column/10025.html)
-  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yangmufa.cn/column/10026.html)
-  - [5.3 整合 Mybatis Plus](https://www.yangmufa.cn/column/10027.html)
-  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yangmufa.cn/column/10028.html)
-  - [5.5 整合 Spring Security](https://www.yangmufa.cn/column/10029.html)
-  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yangmufa.cn/column/10030.html)
-  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yangmufa.cn/column/10031.html)
-  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yangmufa.cn/column/10032.html)
-  - [5.9 登录页表单验证](https://www.yangmufa.cn/column/10033.html)
-  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yangmufa.cn/column/10034.html)
-  - [5.11 存储 Token 到 Cookie 中](https://www.yangmufa.cn/column/10035.html)
-  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yangmufa.cn/column/10036.html)
-  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yangmufa.cn/column/10037.html)
-  - [5.14 实现页面顶部加载 Loading 效果](https://www.yangmufa.cn/column/10038.html)
-  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yangmufa.cn/column/10040.html)
-  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yangmufa.cn/column/10089.html)
+  - [5.1 登录页设计：支持响应式布局](https://www.yanggongzi.dev/column/10025.html)
+  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yanggongzi.dev/column/10026.html)
+  - [5.3 整合 Mybatis Plus](https://www.yanggongzi.dev/column/10027.html)
+  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yanggongzi.dev/column/10028.html)
+  - [5.5 整合 Spring Security](https://www.yanggongzi.dev/column/10029.html)
+  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yanggongzi.dev/column/10030.html)
+  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yanggongzi.dev/column/10031.html)
+  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yanggongzi.dev/column/10032.html)
+  - [5.9 登录页表单验证](https://www.yanggongzi.dev/column/10033.html)
+  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yanggongzi.dev/column/10034.html)
+  - [5.11 存储 Token 到 Cookie 中](https://www.yanggongzi.dev/column/10035.html)
+  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yanggongzi.dev/column/10036.html)
+  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yanggongzi.dev/column/10037.html)
+  - [5.14 实现页面顶部加载 Loading 效果](https://www.yanggongzi.dev/column/10038.html)
+  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yanggongzi.dev/column/10040.html)
+  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yanggongzi.dev/column/10089.html)
   
   
   
 
 - 六、Element Plus 手搭 Admin 管理后台骨架
-  - [6.1 搭建管理后台基本布局](https://www.yangmufa.cn/column/10039.html)
-  - [6.2 后台公共 Header 头：样式布局](https://www.yangmufa.cn/column/10041.html)
-  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yangmufa.cn/column/10042.html)
-  - [6.4 整合全局状态管理库 Pinia](https://www.yangmufa.cn/column/10043.html)
-  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yangmufa.cn/column/10044.html)
-  - [6.6 支持全屏展示、页面点击刷新](https://www.yangmufa.cn/column/10045.html)
-  - [6.7 标签导航栏组件实现：样式布局](https://www.yangmufa.cn/column/10046.html)
-  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yangmufa.cn/column/10047.html)
-  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yangmufa.cn/column/10048.html)
-  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yangmufa.cn/column/10049.html)
-  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yangmufa.cn/column/10050.html)
-  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yangmufa.cn/column/10051.html)
-  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yangmufa.cn/column/10052.html)
-  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yangmufa.cn/column/10053.html)
-  - [6.15 修改用户密码接口开发](https://www.yangmufa.cn/column/10054.html)
-  - [6.16 获取当前登录用户信息接口开发](https://www.yangmufa.cn/column/10055.html)
-  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yangmufa.cn/column/10056.html)
-  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yangmufa.cn/column/10057.html)
-  - [6.19 用户修改密码、退出登录功能开发](https://www.yangmufa.cn/column/10058.html)
-  - [6.20 小结](https://www.yangmufa.cn/column/10059.html)
+  - [6.1 搭建管理后台基本布局](https://www.yanggongzi.dev/column/10039.html)
+  - [6.2 后台公共 Header 头：样式布局](https://www.yanggongzi.dev/column/10041.html)
+  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yanggongzi.dev/column/10042.html)
+  - [6.4 整合全局状态管理库 Pinia](https://www.yanggongzi.dev/column/10043.html)
+  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yanggongzi.dev/column/10044.html)
+  - [6.6 支持全屏展示、页面点击刷新](https://www.yanggongzi.dev/column/10045.html)
+  - [6.7 标签导航栏组件实现：样式布局](https://www.yanggongzi.dev/column/10046.html)
+  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yanggongzi.dev/column/10047.html)
+  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yanggongzi.dev/column/10048.html)
+  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yanggongzi.dev/column/10049.html)
+  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yanggongzi.dev/column/10050.html)
+  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yanggongzi.dev/column/10051.html)
+  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yanggongzi.dev/column/10052.html)
+  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yanggongzi.dev/column/10053.html)
+  - [6.15 修改用户密码接口开发](https://www.yanggongzi.dev/column/10054.html)
+  - [6.16 获取当前登录用户信息接口开发](https://www.yanggongzi.dev/column/10055.html)
+  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yanggongzi.dev/column/10056.html)
+  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yanggongzi.dev/column/10057.html)
+  - [6.19 用户修改密码、退出登录功能开发](https://www.yanggongzi.dev/column/10058.html)
+  - [6.20 小结](https://www.yanggongzi.dev/column/10059.html)
 
   
 
   
 - 七、管理后台：文章分类模块开发
-  - [7.1 分类模块接口分析](https://www.yangmufa.cn/column/10060.html)
-  - [7.2 文章分类：新增接口开发](https://www.yangmufa.cn/column/10061.html)
-  - [7.3 文章分类：分页接口开发](https://www.yangmufa.cn/column/10062.html)
-  - [7.4 文章分类：删除接口开发](https://www.yangmufa.cn/column/10063.html)
-  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yangmufa.cn/column/10064.html)
-  - [7.6 后台分类管理页面：样式布局](https://www.yangmufa.cn/column/10065.html)
-  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yangmufa.cn/column/10066.html)
-  - [7.8 文章分类：分页列表数据动态渲染](https://www.yangmufa.cn/column/10067.html)
-  - [7.9 文章分类：新增功能开发](https://www.yangmufa.cn/column/10068.html)
-  - [7.10 文章分类：删除功能开发](https://www.yangmufa.cn/column/10069.html)
-  - [7.11 通用表单对话框组件封装](https://www.yangmufa.cn/column/10070.html)
-  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yangmufa.cn/column/10071.html)
+  - [7.1 分类模块接口分析](https://www.yanggongzi.dev/column/10060.html)
+  - [7.2 文章分类：新增接口开发](https://www.yanggongzi.dev/column/10061.html)
+  - [7.3 文章分类：分页接口开发](https://www.yanggongzi.dev/column/10062.html)
+  - [7.4 文章分类：删除接口开发](https://www.yanggongzi.dev/column/10063.html)
+  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yanggongzi.dev/column/10064.html)
+  - [7.6 后台分类管理页面：样式布局](https://www.yanggongzi.dev/column/10065.html)
+  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yanggongzi.dev/column/10066.html)
+  - [7.8 文章分类：分页列表数据动态渲染](https://www.yanggongzi.dev/column/10067.html)
+  - [7.9 文章分类：新增功能开发](https://www.yanggongzi.dev/column/10068.html)
+  - [7.10 文章分类：删除功能开发](https://www.yanggongzi.dev/column/10069.html)
+  - [7.11 通用表单对话框组件封装](https://www.yanggongzi.dev/column/10070.html)
+  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yanggongzi.dev/column/10071.html)
   
 
 
 - 八、管理后台：标签模块开发
-  - [8.1 标签模块接口分析【视频讲解】](https://www.yangmufa.cn/column/10072.html)
-  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10073.html)
-  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yangmufa.cn/column/10074.html)
-  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10075.html)
-  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yangmufa.cn/column/10076.html)
-  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yangmufa.cn/column/10077.html)
-  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yangmufa.cn/column/10078.html)
+  - [8.1 标签模块接口分析【视频讲解】](https://www.yanggongzi.dev/column/10072.html)
+  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yanggongzi.dev/column/10073.html)
+  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yanggongzi.dev/column/10074.html)
+  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yanggongzi.dev/column/10075.html)
+  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yanggongzi.dev/column/10076.html)
+  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yanggongzi.dev/column/10077.html)
+  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yanggongzi.dev/column/10078.html)
   
   
   
 - 九、管理后台：博客设置模块开发
-  - [9.1 博客设置模块功能分析、表设计](https://www.yangmufa.cn/column/10079.html)
-  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yangmufa.cn/column/10080.html)
-  - [9.3 文件上传接口开发](https://www.yangmufa.cn/column/10081.html)
-  - [9.4 博客设置: 更新接口开发](https://www.yangmufa.cn/column/10082.html)
-  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yangmufa.cn/column/10083.html)
-  - [9.6 博客设置：获取详情接口开发](https://www.yangmufa.cn/column/10084.html)
-  - [9.7 博客设置页面：样式布局](https://www.yangmufa.cn/column/10085.html)
-  - [9.8 管理后台：滚动样式优化](https://www.yangmufa.cn/column/10086.html)
-  - [9.9 博客设置页：数据渲染、图片上传](https://www.yangmufa.cn/column/10087.html)
-  - [9.10 博客设置页：更新设置](https://www.yangmufa.cn/column/10088.html)
+  - [9.1 博客设置模块功能分析、表设计](https://www.yanggongzi.dev/column/10079.html)
+  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yanggongzi.dev/column/10080.html)
+  - [9.3 文件上传接口开发](https://www.yanggongzi.dev/column/10081.html)
+  - [9.4 博客设置: 更新接口开发](https://www.yanggongzi.dev/column/10082.html)
+  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yanggongzi.dev/column/10083.html)
+  - [9.6 博客设置：获取详情接口开发](https://www.yanggongzi.dev/column/10084.html)
+  - [9.7 博客设置页面：样式布局](https://www.yanggongzi.dev/column/10085.html)
+  - [9.8 管理后台：滚动样式优化](https://www.yanggongzi.dev/column/10086.html)
+  - [9.9 博客设置页：数据渲染、图片上传](https://www.yanggongzi.dev/column/10087.html)
+  - [9.10 博客设置页：更新设置](https://www.yanggongzi.dev/column/10088.html)
   
 
 
 
 - 十、管理后台：文章模块开发
-  - [10.1 文章管理模块功能分析、表设计](https://www.yangmufa.cn/column/10090.html)
-  - [10.2 文章管理：文章发布接口开发（1）](https://www.yangmufa.cn/column/10091.html)
-  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yangmufa.cn/column/10092.html)
-  - [10.4 文章管理：文章删除接口开发](https://www.yangmufa.cn/column/10093.html)
-  - [10.5 文章管理：分页接口开发](https://www.yangmufa.cn/column/10094.html)
-  - [10.6 文章管理：获取文章详情接口开发](https://www.yangmufa.cn/column/10095.html)
-  - [10.7 文章管理：文章更新接口开发](https://www.yangmufa.cn/column/10096.html)
-  - [10.8 文章管理：分页列表开发](https://www.yangmufa.cn/column/10097.html)
-  - [10.9 文章管理页：删除文章开发](https://www.yangmufa.cn/column/10098.html)
-  - [10.10 文章管理页：写文章对话框样式布局](https://www.yangmufa.cn/column/10099.html)
-  - [10.11 文章管理页：文章发布功能开发](https://www.yangmufa.cn/column/10100.html)
-  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yangmufa.cn/column/10101.html)
-  - [10.13 文章管理页：文章编辑功能开发](https://www.yangmufa.cn/column/10102.html)
-  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yangmufa.cn/column/10103.html)
+  - [10.1 文章管理模块功能分析、表设计](https://www.yanggongzi.dev/column/10090.html)
+  - [10.2 文章管理：文章发布接口开发（1）](https://www.yanggongzi.dev/column/10091.html)
+  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yanggongzi.dev/column/10092.html)
+  - [10.4 文章管理：文章删除接口开发](https://www.yanggongzi.dev/column/10093.html)
+  - [10.5 文章管理：分页接口开发](https://www.yanggongzi.dev/column/10094.html)
+  - [10.6 文章管理：获取文章详情接口开发](https://www.yanggongzi.dev/column/10095.html)
+  - [10.7 文章管理：文章更新接口开发](https://www.yanggongzi.dev/column/10096.html)
+  - [10.8 文章管理：分页列表开发](https://www.yanggongzi.dev/column/10097.html)
+  - [10.9 文章管理页：删除文章开发](https://www.yanggongzi.dev/column/10098.html)
+  - [10.10 文章管理页：写文章对话框样式布局](https://www.yanggongzi.dev/column/10099.html)
+  - [10.11 文章管理页：文章发布功能开发](https://www.yanggongzi.dev/column/10100.html)
+  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yanggongzi.dev/column/10101.html)
+  - [10.13 文章管理页：文章编辑功能开发](https://www.yanggongzi.dev/column/10102.html)
+  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yanggongzi.dev/column/10103.html)
   
   
   
@@ -585,41 +585,41 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
   
 
 - 十一、博客前台：首页开发
-   - [11.1 前台首页、归档页接口分析](https://www.yangmufa.cn/column/10104.html)
-   - [11.2 前台首页：文章分页接口开发](https://www.yangmufa.cn/column/10105.html)
-   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yangmufa.cn/column/10106.html)
-   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yangmufa.cn/column/10107.html)
-   - [11.5 前台 Header 头组件封装](https://www.yangmufa.cn/column/10108.html)   
-   - [11.6 首页样式布局设计（1）](https://www.yangmufa.cn/column/10109.html)
-   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yangmufa.cn/column/10110.html)
-   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yangmufa.cn/column/10111.html)
-   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yangmufa.cn/column/10112.html)
-   - [11.10 首页文章分页数据渲染](https://www.yangmufa.cn/column/10113.html)
-   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yangmufa.cn/column/10114.html)
-   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yangmufa.cn/column/10115.html)
-   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yangmufa.cn/column/10116.html)
+   - [11.1 前台首页、归档页接口分析](https://www.yanggongzi.dev/column/10104.html)
+   - [11.2 前台首页：文章分页接口开发](https://www.yanggongzi.dev/column/10105.html)
+   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yanggongzi.dev/column/10106.html)
+   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yanggongzi.dev/column/10107.html)
+   - [11.5 前台 Header 头组件封装](https://www.yanggongzi.dev/column/10108.html)   
+   - [11.6 首页样式布局设计（1）](https://www.yanggongzi.dev/column/10109.html)
+   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yanggongzi.dev/column/10110.html)
+   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yanggongzi.dev/column/10111.html)
+   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yanggongzi.dev/column/10112.html)
+   - [11.10 首页文章分页数据渲染](https://www.yanggongzi.dev/column/10113.html)
+   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yanggongzi.dev/column/10114.html)
+   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yanggongzi.dev/column/10115.html)
+   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yanggongzi.dev/column/10116.html)
    
    
 
 - 十二、博客前台：归档列表页、分类列表页、标签列表页开发
-   - [12.1 归档页、分类列表页接口分析](https://www.yangmufa.cn/column/10117.html)
-   - [12.2 文章归档分页接口开发](https://www.yangmufa.cn/column/10118.html)
-   - [12.3 前台归档页：样式布局设计](https://www.yangmufa.cn/column/10119.html)
-   - [12.4 前台归档页：分页列表功能开发](https://www.yangmufa.cn/column/10120.html)
-   - [12.5 前台分类页开发](https://www.yangmufa.cn/column/10121.html)
-   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10122.html)
-   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yangmufa.cn/column/10123.html)
-   - [12.8 分类-文章列表页开发](https://www.yangmufa.cn/column/10124.html)
-   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yangmufa.cn/column/10125.html)
-   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10130.html)
-   - [12.11 标签-文章列表页开发](https://www.yangmufa.cn/column/10131.html)
+   - [12.1 归档页、分类列表页接口分析](https://www.yanggongzi.dev/column/10117.html)
+   - [12.2 文章归档分页接口开发](https://www.yanggongzi.dev/column/10118.html)
+   - [12.3 前台归档页：样式布局设计](https://www.yanggongzi.dev/column/10119.html)
+   - [12.4 前台归档页：分页列表功能开发](https://www.yanggongzi.dev/column/10120.html)
+   - [12.5 前台分类页开发](https://www.yanggongzi.dev/column/10121.html)
+   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yanggongzi.dev/column/10122.html)
+   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yanggongzi.dev/column/10123.html)
+   - [12.8 分类-文章列表页开发](https://www.yanggongzi.dev/column/10124.html)
+   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yanggongzi.dev/column/10125.html)
+   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yanggongzi.dev/column/10130.html)
+   - [12.11 标签-文章列表页开发](https://www.yanggongzi.dev/column/10131.html)
 
 
 - 十三、博客前台：文章详情页开发
-   - [13.1 文章详情页接口分析](https://www.yangmufa.cn/column/10126.html)
-   - [13.2 后端封装 Markdown 装换工具类](https://www.yangmufa.cn/column/10127.html)
-   - [13.3 获取文章详情接口开发](https://www.yangmufa.cn/column/10128.html)
-   - [13.4 文章详情页：样式布局设计](https://www.yangmufa.cn/column/10129.html)
+   - [13.1 文章详情页接口分析](https://www.yanggongzi.dev/column/10126.html)
+   - [13.2 后端封装 Markdown 装换工具类](https://www.yanggongzi.dev/column/10127.html)
+   - [13.3 获取文章详情接口开发](https://www.yanggongzi.dev/column/10128.html)
+   - [13.4 文章详情页：样式布局设计](https://www.yanggongzi.dev/column/10129.html)
 
    - *努力爆肝中，每天更新两小节, 按目前的更新速度，1.0 版本差不多还剩1个半月更新完毕...*
 - 十四、管理后台：仪表盘模块开发
@@ -651,7 +651,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 <div class="flex items-center justify-center text-lg text-red-500 font-bold mb-2">扫描下方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👇👇</div>
 
-!["领取优惠券加入，更划算"](https://img.yangmufa.cn/ibp/169355760680941 "领取优惠券加入，更划算")
+!["领取优惠券加入，更划算"](https://img.yanggongzi.dev/ibp/169355760680941 "领取优惠券加入，更划算")
 
 <div class="flex items-center justify-center text-lg text-red-500 font-bold">扫描上方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👆👆</div>
 
@@ -666,7 +666,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 对专栏感兴趣的小伙伴，也可以加鲲鲲私人微信来咨询，扫描下方二维码即可，记得备注【*咨询*】哟：
 
-![扫描二维码，添加鲲鲲私人微信](https://img.yangmufa.cn/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")
+![扫描二维码，添加鲲鲲私人微信](https://img.yanggongzi.dev/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")
 
 
 
@@ -706,7 +706,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 本项目 1.0 版本已部署到云服务器上，可点击下面链接进行访问，查看实际效果：
 >
-> 演示地址：[https://www.yangmufa.cn](https://www.yangmufa.cn)
+> 演示地址：[https://www.yanggongzi.dev](https://www.yanggongzi.dev)
 >
 > 后台登录演示账号:
 > 
@@ -718,23 +718,23 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 知识星球是个私密学习圈子，我会在星球内部，出**一系列从 0 到 1 的实战项目，贴合真实的企业级项目开发规范，使用主流的企业技术栈，全程手写后端 + 前端完整代码，通过专栏的形式，把每个功能点的开发的步骤，手摸手，通过丰富的图片 + 文字，保姆级教学（PS: 同时按小节进度提供代码，不至于一上来代码量太多，不知道从哪入手）**。
 
 
-![](https://img.yangmufa.cn/ibp/169361945065538)
+![](https://img.yanggongzi.dev/ibp/169361945065538)
 
-目前，我已经给自己的网站：[练习生基地](https://www.yangmufa.cn/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
+目前，我已经给自己的网站：[练习生基地](https://www.yanggongzi.dev/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
 
-![](https://img.yangmufa.cn/ibp/169733756405612)
+![](https://img.yanggongzi.dev/ibp/169733756405612)
 
-![](https://img.yangmufa.cn/ibp/169733761293187)
+![](https://img.yanggongzi.dev/ibp/169733761293187)
 
-![](https://img.yangmufa.cn/ibp/169733762195775)
+![](https://img.yanggongzi.dev/ibp/169733762195775)
 
 另外，在跟随小节内容上手的过程中，若遇到问题，可在星球内发起 *1v1 提问，鲲鲲亲自解答*。
 
-!["星球内提问"](https://img.yangmufa.cn/ibp/169396126861858 "星球内提问")
+!["星球内提问"](https://img.yanggongzi.dev/ibp/169396126861858 "星球内提问")
 
 星球说不清楚的，项目进度因为某一块搞不定的，微信发我源码，帮忙看问题出在哪：
 
-![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yangmufa.cn/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
+![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yanggongzi.dev/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
 
 
 陪伴式写项目，到最终部署到云服务器上，能够通过域名来访问，完成项目上线。
@@ -745,7 +745,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 脑瓜子一转，想到之前好多读者问我博客的事情，今年 4 月份的时候，又有读者微信问我: *你的博客有没有开源，感觉还挺好看，也想学习、部署一个。*
 
-![](https://img.yangmufa.cn/ibp/169355366112215)
+![](https://img.yanggongzi.dev/ibp/169355366112215)
 
 于是乎，花了点时间整了第一个实战项目 —— **前后端分离的博客 ibp**。
 
@@ -758,7 +758,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 目前 1.0 版本已经部署到了阿里云服务器上，可点击下面链接进行访问，查看实际效果：
 
-[https://www.yangmufa.cn](https://www.yangmufa.cn "https://www.yangmufa.cn")
+[https://www.yanggongzi.dev](https://www.yanggongzi.dev "https://www.yanggongzi.dev")
 
 管理后台登录账号/密码:
 
@@ -771,11 +771,11 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 💡 TIP : 以下*只是 1.0 版本的功能，后续鲲鲲将添加更多功能进去, 比如图库管理、知识库、在线人数统计、SSR（服务端渲染） 等等*，能够想到的高逼格功能，咱都整上，附带超详细的实战图文笔记 ...
 
-![ibp 功能模块一览](https://img.yangmufa.cn/ibp/169560157482464 "ibp 功能模块一览")
+![ibp 功能模块一览](https://img.yanggongzi.dev/ibp/169560157482464 "ibp 功能模块一览")
 
 ### ✏️ 技术栈
 
-![ibp 技术栈一览](https://img.yangmufa.cn/ibp/169560181378937 "ibp 技术栈一览")
+![ibp 技术栈一览](https://img.yanggongzi.dev/ibp/169560181378937 "ibp 技术栈一览")
 
 ## 🎉 专栏目标
 
@@ -805,138 +805,138 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 💡 TIP : 如下目录不代表最终内容，只会更多，目前只是把已完成的部分详细的罗列了出来，其中大部分功能正在开发中，所属具体小节的标题也会陆续更新进来。
 
-- 一、[项目介绍](https://www.yangmufa.cn/column/10000.html)
+- 一、[项目介绍](https://www.yanggongzi.dev/column/10000.html)
 - 二、开发环境搭建
-  - [2.1 【后端】环境安装&工具准备](https://www.yangmufa.cn/column/10003.html)
-  - [2.2 【前端】开发环境&工具安装](https://www.yangmufa.cn/column/10004.html)
+  - [2.1 【后端】环境安装&工具准备](https://www.yanggongzi.dev/column/10003.html)
+  - [2.2 【前端】开发环境&工具安装](https://www.yanggongzi.dev/column/10004.html)
 
 - 三、Spring Boot 后端工程搭建
-  - [3.1 搭建 Spring Boot 多模块工程](https://www.yangmufa.cn/column/10005.html)
-  - [3.2 Spring Boot 多环境配置](https://www.yangmufa.cn/column/10006.html)
-  - [3.3 配置 Lombok](https://www.yangmufa.cn/column/10007.html)
-  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yangmufa.cn/column/10008.html)
-  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yangmufa.cn/column/10009.html)
-  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yangmufa.cn/column/10010.html)
-  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yangmufa.cn/column/10011.html)
-  - [3.8 Spring Boot 自定义响应工具类](https://www.yangmufa.cn/column/10012.html)
-  - [3.9 Spring Boot 实现全局异常管理](https://www.yangmufa.cn/column/10013.html)
-  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yangmufa.cn/column/10014.html)
-  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yangmufa.cn/column/10015.html)
-  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yangmufa.cn/column/10016.html)
-  - [3.13 小结](https://www.yangmufa.cn/column/10017.html)
+  - [3.1 搭建 Spring Boot 多模块工程](https://www.yanggongzi.dev/column/10005.html)
+  - [3.2 Spring Boot 多环境配置](https://www.yanggongzi.dev/column/10006.html)
+  - [3.3 配置 Lombok](https://www.yanggongzi.dev/column/10007.html)
+  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yanggongzi.dev/column/10008.html)
+  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yanggongzi.dev/column/10009.html)
+  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yanggongzi.dev/column/10010.html)
+  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yanggongzi.dev/column/10011.html)
+  - [3.8 Spring Boot 自定义响应工具类](https://www.yanggongzi.dev/column/10012.html)
+  - [3.9 Spring Boot 实现全局异常管理](https://www.yanggongzi.dev/column/10013.html)
+  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yanggongzi.dev/column/10014.html)
+  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yanggongzi.dev/column/10015.html)
+  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yanggongzi.dev/column/10016.html)
+  - [3.13 小结](https://www.yanggongzi.dev/column/10017.html)
 
 - 四、使用 Vue 3 + Vite 4 搭建前端工程
-  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yangmufa.cn/column/10018.html)
-  - [4.2 安装 VSCode 开发工具](https://www.yangmufa.cn/column/10019.html)
-  - [4.3 添加 vue-router 路由管理器](https://www.yangmufa.cn/column/10020.html)
-  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yangmufa.cn/column/10021.html)
-  - [4.5 整合 Tailwind CSS](https://www.yangmufa.cn/column/10022.html)
-  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yangmufa.cn/column/10023.html)
-  - [4.7 整合饿了么 Element Plus 组件库](https://www.yangmufa.cn/column/10024.html)
+  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yanggongzi.dev/column/10018.html)
+  - [4.2 安装 VSCode 开发工具](https://www.yanggongzi.dev/column/10019.html)
+  - [4.3 添加 vue-router 路由管理器](https://www.yanggongzi.dev/column/10020.html)
+  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yanggongzi.dev/column/10021.html)
+  - [4.5 整合 Tailwind CSS](https://www.yanggongzi.dev/column/10022.html)
+  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yanggongzi.dev/column/10023.html)
+  - [4.7 整合饿了么 Element Plus 组件库](https://www.yanggongzi.dev/column/10024.html)
 
 - 五、登录模块开发
-  - [5.1 登录页设计：支持响应式布局](https://www.yangmufa.cn/column/10025.html)
-  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yangmufa.cn/column/10026.html)
-  - [5.3 整合 Mybatis Plus](https://www.yangmufa.cn/column/10027.html)
-  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yangmufa.cn/column/10028.html)
-  - [5.5 整合 Spring Security](https://www.yangmufa.cn/column/10029.html)
-  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yangmufa.cn/column/10030.html)
-  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yangmufa.cn/column/10031.html)
-  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yangmufa.cn/column/10032.html)
-  - [5.9 登录页表单验证](https://www.yangmufa.cn/column/10033.html)
-  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yangmufa.cn/column/10034.html)
-  - [5.11 存储 Token 到 Cookie 中](https://www.yangmufa.cn/column/10035.html)
-  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yangmufa.cn/column/10036.html)
-  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yangmufa.cn/column/10037.html)
-  - [5.14 实现页面顶部加载 Loading 效果](https://www.yangmufa.cn/column/10038.html)
-  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yangmufa.cn/column/10040.html)
-  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yangmufa.cn/column/10089.html)
+  - [5.1 登录页设计：支持响应式布局](https://www.yanggongzi.dev/column/10025.html)
+  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yanggongzi.dev/column/10026.html)
+  - [5.3 整合 Mybatis Plus](https://www.yanggongzi.dev/column/10027.html)
+  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yanggongzi.dev/column/10028.html)
+  - [5.5 整合 Spring Security](https://www.yanggongzi.dev/column/10029.html)
+  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yanggongzi.dev/column/10030.html)
+  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yanggongzi.dev/column/10031.html)
+  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yanggongzi.dev/column/10032.html)
+  - [5.9 登录页表单验证](https://www.yanggongzi.dev/column/10033.html)
+  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yanggongzi.dev/column/10034.html)
+  - [5.11 存储 Token 到 Cookie 中](https://www.yanggongzi.dev/column/10035.html)
+  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yanggongzi.dev/column/10036.html)
+  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yanggongzi.dev/column/10037.html)
+  - [5.14 实现页面顶部加载 Loading 效果](https://www.yanggongzi.dev/column/10038.html)
+  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yanggongzi.dev/column/10040.html)
+  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yanggongzi.dev/column/10089.html)
   
   
   
 
 - 六、Element Plus 手搭 Admin 管理后台骨架
-  - [6.1 搭建管理后台基本布局](https://www.yangmufa.cn/column/10039.html)
-  - [6.2 后台公共 Header 头：样式布局](https://www.yangmufa.cn/column/10041.html)
-  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yangmufa.cn/column/10042.html)
-  - [6.4 整合全局状态管理库 Pinia](https://www.yangmufa.cn/column/10043.html)
-  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yangmufa.cn/column/10044.html)
-  - [6.6 支持全屏展示、页面点击刷新](https://www.yangmufa.cn/column/10045.html)
-  - [6.7 标签导航栏组件实现：样式布局](https://www.yangmufa.cn/column/10046.html)
-  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yangmufa.cn/column/10047.html)
-  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yangmufa.cn/column/10048.html)
-  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yangmufa.cn/column/10049.html)
-  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yangmufa.cn/column/10050.html)
-  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yangmufa.cn/column/10051.html)
-  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yangmufa.cn/column/10052.html)
-  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yangmufa.cn/column/10053.html)
-  - [6.15 修改用户密码接口开发](https://www.yangmufa.cn/column/10054.html)
-  - [6.16 获取当前登录用户信息接口开发](https://www.yangmufa.cn/column/10055.html)
-  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yangmufa.cn/column/10056.html)
-  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yangmufa.cn/column/10057.html)
-  - [6.19 用户修改密码、退出登录功能开发](https://www.yangmufa.cn/column/10058.html)
-  - [6.20 小结](https://www.yangmufa.cn/column/10059.html)
+  - [6.1 搭建管理后台基本布局](https://www.yanggongzi.dev/column/10039.html)
+  - [6.2 后台公共 Header 头：样式布局](https://www.yanggongzi.dev/column/10041.html)
+  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yanggongzi.dev/column/10042.html)
+  - [6.4 整合全局状态管理库 Pinia](https://www.yanggongzi.dev/column/10043.html)
+  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yanggongzi.dev/column/10044.html)
+  - [6.6 支持全屏展示、页面点击刷新](https://www.yanggongzi.dev/column/10045.html)
+  - [6.7 标签导航栏组件实现：样式布局](https://www.yanggongzi.dev/column/10046.html)
+  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yanggongzi.dev/column/10047.html)
+  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yanggongzi.dev/column/10048.html)
+  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yanggongzi.dev/column/10049.html)
+  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yanggongzi.dev/column/10050.html)
+  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yanggongzi.dev/column/10051.html)
+  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yanggongzi.dev/column/10052.html)
+  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yanggongzi.dev/column/10053.html)
+  - [6.15 修改用户密码接口开发](https://www.yanggongzi.dev/column/10054.html)
+  - [6.16 获取当前登录用户信息接口开发](https://www.yanggongzi.dev/column/10055.html)
+  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yanggongzi.dev/column/10056.html)
+  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yanggongzi.dev/column/10057.html)
+  - [6.19 用户修改密码、退出登录功能开发](https://www.yanggongzi.dev/column/10058.html)
+  - [6.20 小结](https://www.yanggongzi.dev/column/10059.html)
 
   
 
   
 - 七、管理后台：文章分类模块开发
-  - [7.1 分类模块接口分析](https://www.yangmufa.cn/column/10060.html)
-  - [7.2 文章分类：新增接口开发](https://www.yangmufa.cn/column/10061.html)
-  - [7.3 文章分类：分页接口开发](https://www.yangmufa.cn/column/10062.html)
-  - [7.4 文章分类：删除接口开发](https://www.yangmufa.cn/column/10063.html)
-  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yangmufa.cn/column/10064.html)
-  - [7.6 后台分类管理页面：样式布局](https://www.yangmufa.cn/column/10065.html)
-  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yangmufa.cn/column/10066.html)
-  - [7.8 文章分类：分页列表数据动态渲染](https://www.yangmufa.cn/column/10067.html)
-  - [7.9 文章分类：新增功能开发](https://www.yangmufa.cn/column/10068.html)
-  - [7.10 文章分类：删除功能开发](https://www.yangmufa.cn/column/10069.html)
-  - [7.11 通用表单对话框组件封装](https://www.yangmufa.cn/column/10070.html)
-  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yangmufa.cn/column/10071.html)
+  - [7.1 分类模块接口分析](https://www.yanggongzi.dev/column/10060.html)
+  - [7.2 文章分类：新增接口开发](https://www.yanggongzi.dev/column/10061.html)
+  - [7.3 文章分类：分页接口开发](https://www.yanggongzi.dev/column/10062.html)
+  - [7.4 文章分类：删除接口开发](https://www.yanggongzi.dev/column/10063.html)
+  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yanggongzi.dev/column/10064.html)
+  - [7.6 后台分类管理页面：样式布局](https://www.yanggongzi.dev/column/10065.html)
+  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yanggongzi.dev/column/10066.html)
+  - [7.8 文章分类：分页列表数据动态渲染](https://www.yanggongzi.dev/column/10067.html)
+  - [7.9 文章分类：新增功能开发](https://www.yanggongzi.dev/column/10068.html)
+  - [7.10 文章分类：删除功能开发](https://www.yanggongzi.dev/column/10069.html)
+  - [7.11 通用表单对话框组件封装](https://www.yanggongzi.dev/column/10070.html)
+  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yanggongzi.dev/column/10071.html)
   
 
 
 - 八、管理后台：标签模块开发
-  - [8.1 标签模块接口分析【视频讲解】](https://www.yangmufa.cn/column/10072.html)
-  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10073.html)
-  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yangmufa.cn/column/10074.html)
-  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10075.html)
-  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yangmufa.cn/column/10076.html)
-  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yangmufa.cn/column/10077.html)
-  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yangmufa.cn/column/10078.html)
+  - [8.1 标签模块接口分析【视频讲解】](https://www.yanggongzi.dev/column/10072.html)
+  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yanggongzi.dev/column/10073.html)
+  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yanggongzi.dev/column/10074.html)
+  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yanggongzi.dev/column/10075.html)
+  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yanggongzi.dev/column/10076.html)
+  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yanggongzi.dev/column/10077.html)
+  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yanggongzi.dev/column/10078.html)
   
   
   
 - 九、管理后台：博客设置模块开发
-  - [9.1 博客设置模块功能分析、表设计](https://www.yangmufa.cn/column/10079.html)
-  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yangmufa.cn/column/10080.html)
-  - [9.3 文件上传接口开发](https://www.yangmufa.cn/column/10081.html)
-  - [9.4 博客设置: 更新接口开发](https://www.yangmufa.cn/column/10082.html)
-  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yangmufa.cn/column/10083.html)
-  - [9.6 博客设置：获取详情接口开发](https://www.yangmufa.cn/column/10084.html)
-  - [9.7 博客设置页面：样式布局](https://www.yangmufa.cn/column/10085.html)
-  - [9.8 管理后台：滚动样式优化](https://www.yangmufa.cn/column/10086.html)
-  - [9.9 博客设置页：数据渲染、图片上传](https://www.yangmufa.cn/column/10087.html)
-  - [9.10 博客设置页：更新设置](https://www.yangmufa.cn/column/10088.html)
+  - [9.1 博客设置模块功能分析、表设计](https://www.yanggongzi.dev/column/10079.html)
+  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yanggongzi.dev/column/10080.html)
+  - [9.3 文件上传接口开发](https://www.yanggongzi.dev/column/10081.html)
+  - [9.4 博客设置: 更新接口开发](https://www.yanggongzi.dev/column/10082.html)
+  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yanggongzi.dev/column/10083.html)
+  - [9.6 博客设置：获取详情接口开发](https://www.yanggongzi.dev/column/10084.html)
+  - [9.7 博客设置页面：样式布局](https://www.yanggongzi.dev/column/10085.html)
+  - [9.8 管理后台：滚动样式优化](https://www.yanggongzi.dev/column/10086.html)
+  - [9.9 博客设置页：数据渲染、图片上传](https://www.yanggongzi.dev/column/10087.html)
+  - [9.10 博客设置页：更新设置](https://www.yanggongzi.dev/column/10088.html)
   
 
 
 
 - 十、管理后台：文章模块开发
-  - [10.1 文章管理模块功能分析、表设计](https://www.yangmufa.cn/column/10090.html)
-  - [10.2 文章管理：文章发布接口开发（1）](https://www.yangmufa.cn/column/10091.html)
-  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yangmufa.cn/column/10092.html)
-  - [10.4 文章管理：文章删除接口开发](https://www.yangmufa.cn/column/10093.html)
-  - [10.5 文章管理：分页接口开发](https://www.yangmufa.cn/column/10094.html)
-  - [10.6 文章管理：获取文章详情接口开发](https://www.yangmufa.cn/column/10095.html)
-  - [10.7 文章管理：文章更新接口开发](https://www.yangmufa.cn/column/10096.html)
-  - [10.8 文章管理：分页列表开发](https://www.yangmufa.cn/column/10097.html)
-  - [10.9 文章管理页：删除文章开发](https://www.yangmufa.cn/column/10098.html)
-  - [10.10 文章管理页：写文章对话框样式布局](https://www.yangmufa.cn/column/10099.html)
-  - [10.11 文章管理页：文章发布功能开发](https://www.yangmufa.cn/column/10100.html)
-  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yangmufa.cn/column/10101.html)
-  - [10.13 文章管理页：文章编辑功能开发](https://www.yangmufa.cn/column/10102.html)
-  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yangmufa.cn/column/10103.html)
+  - [10.1 文章管理模块功能分析、表设计](https://www.yanggongzi.dev/column/10090.html)
+  - [10.2 文章管理：文章发布接口开发（1）](https://www.yanggongzi.dev/column/10091.html)
+  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yanggongzi.dev/column/10092.html)
+  - [10.4 文章管理：文章删除接口开发](https://www.yanggongzi.dev/column/10093.html)
+  - [10.5 文章管理：分页接口开发](https://www.yanggongzi.dev/column/10094.html)
+  - [10.6 文章管理：获取文章详情接口开发](https://www.yanggongzi.dev/column/10095.html)
+  - [10.7 文章管理：文章更新接口开发](https://www.yanggongzi.dev/column/10096.html)
+  - [10.8 文章管理：分页列表开发](https://www.yanggongzi.dev/column/10097.html)
+  - [10.9 文章管理页：删除文章开发](https://www.yanggongzi.dev/column/10098.html)
+  - [10.10 文章管理页：写文章对话框样式布局](https://www.yanggongzi.dev/column/10099.html)
+  - [10.11 文章管理页：文章发布功能开发](https://www.yanggongzi.dev/column/10100.html)
+  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yanggongzi.dev/column/10101.html)
+  - [10.13 文章管理页：文章编辑功能开发](https://www.yanggongzi.dev/column/10102.html)
+  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yanggongzi.dev/column/10103.html)
   
   
   
@@ -944,41 +944,41 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
   
 
 - 十一、博客前台：首页开发
-   - [11.1 前台首页、归档页接口分析](https://www.yangmufa.cn/column/10104.html)
-   - [11.2 前台首页：文章分页接口开发](https://www.yangmufa.cn/column/10105.html)
-   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yangmufa.cn/column/10106.html)
-   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yangmufa.cn/column/10107.html)
-   - [11.5 前台 Header 头组件封装](https://www.yangmufa.cn/column/10108.html)   
-   - [11.6 首页样式布局设计（1）](https://www.yangmufa.cn/column/10109.html)
-   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yangmufa.cn/column/10110.html)
-   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yangmufa.cn/column/10111.html)
-   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yangmufa.cn/column/10112.html)
-   - [11.10 首页文章分页数据渲染](https://www.yangmufa.cn/column/10113.html)
-   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yangmufa.cn/column/10114.html)
-   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yangmufa.cn/column/10115.html)
-   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yangmufa.cn/column/10116.html)
+   - [11.1 前台首页、归档页接口分析](https://www.yanggongzi.dev/column/10104.html)
+   - [11.2 前台首页：文章分页接口开发](https://www.yanggongzi.dev/column/10105.html)
+   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yanggongzi.dev/column/10106.html)
+   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yanggongzi.dev/column/10107.html)
+   - [11.5 前台 Header 头组件封装](https://www.yanggongzi.dev/column/10108.html)   
+   - [11.6 首页样式布局设计（1）](https://www.yanggongzi.dev/column/10109.html)
+   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yanggongzi.dev/column/10110.html)
+   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yanggongzi.dev/column/10111.html)
+   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yanggongzi.dev/column/10112.html)
+   - [11.10 首页文章分页数据渲染](https://www.yanggongzi.dev/column/10113.html)
+   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yanggongzi.dev/column/10114.html)
+   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yanggongzi.dev/column/10115.html)
+   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yanggongzi.dev/column/10116.html)
    
    
 
 - 十二、博客前台：归档列表页、分类列表页、标签列表页开发
-   - [12.1 归档页、分类列表页接口分析](https://www.yangmufa.cn/column/10117.html)
-   - [12.2 文章归档分页接口开发](https://www.yangmufa.cn/column/10118.html)
-   - [12.3 前台归档页：样式布局设计](https://www.yangmufa.cn/column/10119.html)
-   - [12.4 前台归档页：分页列表功能开发](https://www.yangmufa.cn/column/10120.html)
-   - [12.5 前台分类页开发](https://www.yangmufa.cn/column/10121.html)
-   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10122.html)
-   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yangmufa.cn/column/10123.html)
-   - [12.8 分类-文章列表页开发](https://www.yangmufa.cn/column/10124.html)
-   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yangmufa.cn/column/10125.html)
-   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10130.html)
-   - [12.11 标签-文章列表页开发](https://www.yangmufa.cn/column/10131.html)
+   - [12.1 归档页、分类列表页接口分析](https://www.yanggongzi.dev/column/10117.html)
+   - [12.2 文章归档分页接口开发](https://www.yanggongzi.dev/column/10118.html)
+   - [12.3 前台归档页：样式布局设计](https://www.yanggongzi.dev/column/10119.html)
+   - [12.4 前台归档页：分页列表功能开发](https://www.yanggongzi.dev/column/10120.html)
+   - [12.5 前台分类页开发](https://www.yanggongzi.dev/column/10121.html)
+   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yanggongzi.dev/column/10122.html)
+   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yanggongzi.dev/column/10123.html)
+   - [12.8 分类-文章列表页开发](https://www.yanggongzi.dev/column/10124.html)
+   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yanggongzi.dev/column/10125.html)
+   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yanggongzi.dev/column/10130.html)
+   - [12.11 标签-文章列表页开发](https://www.yanggongzi.dev/column/10131.html)
 
 
 - 十三、博客前台：文章详情页开发
-   - [13.1 文章详情页接口分析](https://www.yangmufa.cn/column/10126.html)
-   - [13.2 后端封装 Markdown 装换工具类](https://www.yangmufa.cn/column/10127.html)
-   - [13.3 获取文章详情接口开发](https://www.yangmufa.cn/column/10128.html)
-   - [13.4 文章详情页：样式布局设计](https://www.yangmufa.cn/column/10129.html)
+   - [13.1 文章详情页接口分析](https://www.yanggongzi.dev/column/10126.html)
+   - [13.2 后端封装 Markdown 装换工具类](https://www.yanggongzi.dev/column/10127.html)
+   - [13.3 获取文章详情接口开发](https://www.yanggongzi.dev/column/10128.html)
+   - [13.4 文章详情页：样式布局设计](https://www.yanggongzi.dev/column/10129.html)
 
    - *努力爆肝中，每天更新两小节, 按目前的更新速度，1.0 版本差不多还剩1个半月更新完毕...*
 - 十四、管理后台：仪表盘模块开发
@@ -1010,7 +1010,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 <div class="flex items-center justify-center text-lg text-red-500 font-bold mb-2">扫描下方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👇👇</div>
 
-!["领取优惠券加入，更划算"](https://img.yangmufa.cn/ibp/169355760680941 "领取优惠券加入，更划算")
+!["领取优惠券加入，更划算"](https://img.yanggongzi.dev/ibp/169355760680941 "领取优惠券加入，更划算")
 
 <div class="flex items-center justify-center text-lg text-red-500 font-bold">扫描上方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👆👆</div>
 
@@ -1025,7 +1025,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 对专栏感兴趣的小伙伴，也可以加鲲鲲私人微信来咨询，扫描下方二维码即可，记得备注【*咨询*】哟：
 
-![扫描二维码，添加鲲鲲私人微信](https://img.yangmufa.cn/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")');
+![扫描二维码，添加鲲鲲私人微信](https://img.yanggongzi.dev/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")');
 INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (31, 31, '![](https://tse1-mm.cn.bing.net/th/id/OIP-C.4Kn7tCYsT05EL_jfHw7u-AHaEC?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3)');
 INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (32, 32, '![](http://127.0.0.1:9000/roc-blog/aebb844982d14ec5a4b98fae7160017f.jpg)');
 INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (8, 8, '![](http://127.0.0.1:9000/roc-blog/d1ca5dfe1229438e8183a![](http://127.0.0.1:9000/blog-article/4d22df609b114052ba6a89491a579a7f.jpg)
@@ -1060,7 +1060,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 本项目 1.0 版本已部署到云服务器上，可点击下面链接进行访问，查看实际效果：
 >
-> 演示地址：[https://www.yangmufa.cn](https://www.yangmufa.cn)
+> 演示地址：[https://www.yanggongzi.dev](https://www.yanggongzi.dev)
 >
 > 后台登录演示账号:
 > 
@@ -1072,23 +1072,23 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 知识星球是个私密学习圈子，我会在星球内部，出**一系列从 0 到 1 的实战项目，贴合真实的企业级项目开发规范，使用主流的企业技术栈，全程手写后端 + 前端完整代码，通过专栏的形式，把每个功能点的开发的步骤，手摸手，通过丰富的图片 + 文字，保姆级教学（PS: 同时按小节进度提供代码，不至于一上来代码量太多，不知道从哪入手）**。
 
 
-![](https://img.yangmufa.cn/ibp/169361945065538)
+![](https://img.yanggongzi.dev/ibp/169361945065538)
 
-目前，我已经给自己的网站：[练习生基地](https://www.yangmufa.cn/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
+目前，我已经给自己的网站：[练习生基地](https://www.yanggongzi.dev/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
 
-![](https://img.yangmufa.cn/ibp/169733756405612)
+![](https://img.yanggongzi.dev/ibp/169733756405612)
 
-![](https://img.yangmufa.cn/ibp/169733761293187)
+![](https://img.yanggongzi.dev/ibp/169733761293187)
 
-![](https://img.yangmufa.cn/ibp/169733762195775)
+![](https://img.yanggongzi.dev/ibp/169733762195775)
 
 另外，在跟随小节内容上手的过程中，若遇到问题，可在星球内发起 *1v1 提问，鲲鲲亲自解答*。
 
-!["星球内提问"](https://img.yangmufa.cn/ibp/169396126861858 "星球内提问")
+!["星球内提问"](https://img.yanggongzi.dev/ibp/169396126861858 "星球内提问")
 
 星球说不清楚的，项目进度因为某一块搞不定的，微信发我源码，帮忙看问题出在哪：
 
-![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yangmufa.cn/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
+![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yanggongzi.dev/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
 
 
 陪伴式写项目，到最终部署到云服务器上，能够通过域名来访问，完成项目上线。
@@ -1099,7 +1099,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 脑瓜子一转，想到之前好多读者问我博客的事情，今年 4 月份的时候，又有读者微信问我: *你的博客有没有开源，感觉还挺好看，也想学习、部署一个。*
 
-![](https://img.yangmufa.cn/ibp/169355366112215)
+![](https://img.yanggongzi.dev/ibp/169355366112215)
 
 于是乎，花了点时间整了第一个实战项目 —— **前后端分离的博客 ibp**。
 
@@ -1112,7 +1112,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 目前 1.0 版本已经部署到了阿里云服务器上，可点击下面链接进行访问，查看实际效果：
 
-[https://www.yangmufa.cn](https://www.yangmufa.cn "https://www.yangmufa.cn")
+[https://www.yanggongzi.dev](https://www.yanggongzi.dev "https://www.yanggongzi.dev")
 
 管理后台登录账号/密码:
 
@@ -1125,11 +1125,11 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 💡 TIP : 以下*只是 1.0 版本的功能，后续鲲鲲将添加更多功能进去, 比如图库管理、知识库、在线人数统计、SSR（服务端渲染） 等等*，能够想到的高逼格功能，咱都整上，附带超详细的实战图文笔记 ...
 
-![ibp 功能模块一览](https://img.yangmufa.cn/ibp/169560157482464 "ibp 功能模块一览")
+![ibp 功能模块一览](https://img.yanggongzi.dev/ibp/169560157482464 "ibp 功能模块一览")
 
 ## ✏️ 技术栈
 
-![ibp 技术栈一览](https://img.yangmufa.cn/ibp/169560181378937 "ibp 技术栈一览")
+![ibp 技术栈一览](https://img.yanggongzi.dev/ibp/169560181378937 "ibp 技术栈一览")
 
 ## 🎉 专栏目标
 
@@ -1159,138 +1159,138 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 💡 TIP : 如下目录不代表最终内容，只会更多，目前只是把已完成的部分详细的罗列了出来，其中大部分功能正在开发中，所属具体小节的标题也会陆续更新进来。
 
-- 一、[项目介绍](https://www.yangmufa.cn/column/10000.html)
+- 一、[项目介绍](https://www.yanggongzi.dev/column/10000.html)
 - 二、开发环境搭建
-  - [2.1 【后端】环境安装&工具准备](https://www.yangmufa.cn/column/10003.html)
-  - [2.2 【前端】开发环境&工具安装](https://www.yangmufa.cn/column/10004.html)
+  - [2.1 【后端】环境安装&工具准备](https://www.yanggongzi.dev/column/10003.html)
+  - [2.2 【前端】开发环境&工具安装](https://www.yanggongzi.dev/column/10004.html)
 
 - 三、Spring Boot 后端工程搭建
-  - [3.1 搭建 Spring Boot 多模块工程](https://www.yangmufa.cn/column/10005.html)
-  - [3.2 Spring Boot 多环境配置](https://www.yangmufa.cn/column/10006.html)
-  - [3.3 配置 Lombok](https://www.yangmufa.cn/column/10007.html)
-  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yangmufa.cn/column/10008.html)
-  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yangmufa.cn/column/10009.html)
-  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yangmufa.cn/column/10010.html)
-  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yangmufa.cn/column/10011.html)
-  - [3.8 Spring Boot 自定义响应工具类](https://www.yangmufa.cn/column/10012.html)
-  - [3.9 Spring Boot 实现全局异常管理](https://www.yangmufa.cn/column/10013.html)
-  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yangmufa.cn/column/10014.html)
-  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yangmufa.cn/column/10015.html)
-  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yangmufa.cn/column/10016.html)
-  - [3.13 小结](https://www.yangmufa.cn/column/10017.html)
+  - [3.1 搭建 Spring Boot 多模块工程](https://www.yanggongzi.dev/column/10005.html)
+  - [3.2 Spring Boot 多环境配置](https://www.yanggongzi.dev/column/10006.html)
+  - [3.3 配置 Lombok](https://www.yanggongzi.dev/column/10007.html)
+  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yanggongzi.dev/column/10008.html)
+  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yanggongzi.dev/column/10009.html)
+  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yanggongzi.dev/column/10010.html)
+  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yanggongzi.dev/column/10011.html)
+  - [3.8 Spring Boot 自定义响应工具类](https://www.yanggongzi.dev/column/10012.html)
+  - [3.9 Spring Boot 实现全局异常管理](https://www.yanggongzi.dev/column/10013.html)
+  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yanggongzi.dev/column/10014.html)
+  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yanggongzi.dev/column/10015.html)
+  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yanggongzi.dev/column/10016.html)
+  - [3.13 小结](https://www.yanggongzi.dev/column/10017.html)
 
 - 四、使用 Vue 3 + Vite 4 搭建前端工程
-  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yangmufa.cn/column/10018.html)
-  - [4.2 安装 VSCode 开发工具](https://www.yangmufa.cn/column/10019.html)
-  - [4.3 添加 vue-router 路由管理器](https://www.yangmufa.cn/column/10020.html)
-  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yangmufa.cn/column/10021.html)
-  - [4.5 整合 Tailwind CSS](https://www.yangmufa.cn/column/10022.html)
-  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yangmufa.cn/column/10023.html)
-  - [4.7 整合饿了么 Element Plus 组件库](https://www.yangmufa.cn/column/10024.html)
+  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yanggongzi.dev/column/10018.html)
+  - [4.2 安装 VSCode 开发工具](https://www.yanggongzi.dev/column/10019.html)
+  - [4.3 添加 vue-router 路由管理器](https://www.yanggongzi.dev/column/10020.html)
+  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yanggongzi.dev/column/10021.html)
+  - [4.5 整合 Tailwind CSS](https://www.yanggongzi.dev/column/10022.html)
+  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yanggongzi.dev/column/10023.html)
+  - [4.7 整合饿了么 Element Plus 组件库](https://www.yanggongzi.dev/column/10024.html)
 
 - 五、登录模块开发
-  - [5.1 登录页设计：支持响应式布局](https://www.yangmufa.cn/column/10025.html)
-  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yangmufa.cn/column/10026.html)
-  - [5.3 整合 Mybatis Plus](https://www.yangmufa.cn/column/10027.html)
-  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yangmufa.cn/column/10028.html)
-  - [5.5 整合 Spring Security](https://www.yangmufa.cn/column/10029.html)
-  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yangmufa.cn/column/10030.html)
-  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yangmufa.cn/column/10031.html)
-  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yangmufa.cn/column/10032.html)
-  - [5.9 登录页表单验证](https://www.yangmufa.cn/column/10033.html)
-  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yangmufa.cn/column/10034.html)
-  - [5.11 存储 Token 到 Cookie 中](https://www.yangmufa.cn/column/10035.html)
-  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yangmufa.cn/column/10036.html)
-  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yangmufa.cn/column/10037.html)
-  - [5.14 实现页面顶部加载 Loading 效果](https://www.yangmufa.cn/column/10038.html)
-  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yangmufa.cn/column/10040.html)
-  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yangmufa.cn/column/10089.html)
+  - [5.1 登录页设计：支持响应式布局](https://www.yanggongzi.dev/column/10025.html)
+  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yanggongzi.dev/column/10026.html)
+  - [5.3 整合 Mybatis Plus](https://www.yanggongzi.dev/column/10027.html)
+  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yanggongzi.dev/column/10028.html)
+  - [5.5 整合 Spring Security](https://www.yanggongzi.dev/column/10029.html)
+  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yanggongzi.dev/column/10030.html)
+  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yanggongzi.dev/column/10031.html)
+  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yanggongzi.dev/column/10032.html)
+  - [5.9 登录页表单验证](https://www.yanggongzi.dev/column/10033.html)
+  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yanggongzi.dev/column/10034.html)
+  - [5.11 存储 Token 到 Cookie 中](https://www.yanggongzi.dev/column/10035.html)
+  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yanggongzi.dev/column/10036.html)
+  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yanggongzi.dev/column/10037.html)
+  - [5.14 实现页面顶部加载 Loading 效果](https://www.yanggongzi.dev/column/10038.html)
+  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yanggongzi.dev/column/10040.html)
+  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yanggongzi.dev/column/10089.html)
   
   
   
 
 - 六、Element Plus 手搭 Admin 管理后台骨架
-  - [6.1 搭建管理后台基本布局](https://www.yangmufa.cn/column/10039.html)
-  - [6.2 后台公共 Header 头：样式布局](https://www.yangmufa.cn/column/10041.html)
-  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yangmufa.cn/column/10042.html)
-  - [6.4 整合全局状态管理库 Pinia](https://www.yangmufa.cn/column/10043.html)
-  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yangmufa.cn/column/10044.html)
-  - [6.6 支持全屏展示、页面点击刷新](https://www.yangmufa.cn/column/10045.html)
-  - [6.7 标签导航栏组件实现：样式布局](https://www.yangmufa.cn/column/10046.html)
-  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yangmufa.cn/column/10047.html)
-  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yangmufa.cn/column/10048.html)
-  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yangmufa.cn/column/10049.html)
-  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yangmufa.cn/column/10050.html)
-  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yangmufa.cn/column/10051.html)
-  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yangmufa.cn/column/10052.html)
-  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yangmufa.cn/column/10053.html)
-  - [6.15 修改用户密码接口开发](https://www.yangmufa.cn/column/10054.html)
-  - [6.16 获取当前登录用户信息接口开发](https://www.yangmufa.cn/column/10055.html)
-  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yangmufa.cn/column/10056.html)
-  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yangmufa.cn/column/10057.html)
-  - [6.19 用户修改密码、退出登录功能开发](https://www.yangmufa.cn/column/10058.html)
-  - [6.20 小结](https://www.yangmufa.cn/column/10059.html)
+  - [6.1 搭建管理后台基本布局](https://www.yanggongzi.dev/column/10039.html)
+  - [6.2 后台公共 Header 头：样式布局](https://www.yanggongzi.dev/column/10041.html)
+  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yanggongzi.dev/column/10042.html)
+  - [6.4 整合全局状态管理库 Pinia](https://www.yanggongzi.dev/column/10043.html)
+  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yanggongzi.dev/column/10044.html)
+  - [6.6 支持全屏展示、页面点击刷新](https://www.yanggongzi.dev/column/10045.html)
+  - [6.7 标签导航栏组件实现：样式布局](https://www.yanggongzi.dev/column/10046.html)
+  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yanggongzi.dev/column/10047.html)
+  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yanggongzi.dev/column/10048.html)
+  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yanggongzi.dev/column/10049.html)
+  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yanggongzi.dev/column/10050.html)
+  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yanggongzi.dev/column/10051.html)
+  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yanggongzi.dev/column/10052.html)
+  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yanggongzi.dev/column/10053.html)
+  - [6.15 修改用户密码接口开发](https://www.yanggongzi.dev/column/10054.html)
+  - [6.16 获取当前登录用户信息接口开发](https://www.yanggongzi.dev/column/10055.html)
+  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yanggongzi.dev/column/10056.html)
+  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yanggongzi.dev/column/10057.html)
+  - [6.19 用户修改密码、退出登录功能开发](https://www.yanggongzi.dev/column/10058.html)
+  - [6.20 小结](https://www.yanggongzi.dev/column/10059.html)
 
   
 
   
 - 七、管理后台：文章分类模块开发
-  - [7.1 分类模块接口分析](https://www.yangmufa.cn/column/10060.html)
-  - [7.2 文章分类：新增接口开发](https://www.yangmufa.cn/column/10061.html)
-  - [7.3 文章分类：分页接口开发](https://www.yangmufa.cn/column/10062.html)
-  - [7.4 文章分类：删除接口开发](https://www.yangmufa.cn/column/10063.html)
-  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yangmufa.cn/column/10064.html)
-  - [7.6 后台分类管理页面：样式布局](https://www.yangmufa.cn/column/10065.html)
-  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yangmufa.cn/column/10066.html)
-  - [7.8 文章分类：分页列表数据动态渲染](https://www.yangmufa.cn/column/10067.html)
-  - [7.9 文章分类：新增功能开发](https://www.yangmufa.cn/column/10068.html)
-  - [7.10 文章分类：删除功能开发](https://www.yangmufa.cn/column/10069.html)
-  - [7.11 通用表单对话框组件封装](https://www.yangmufa.cn/column/10070.html)
-  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yangmufa.cn/column/10071.html)
+  - [7.1 分类模块接口分析](https://www.yanggongzi.dev/column/10060.html)
+  - [7.2 文章分类：新增接口开发](https://www.yanggongzi.dev/column/10061.html)
+  - [7.3 文章分类：分页接口开发](https://www.yanggongzi.dev/column/10062.html)
+  - [7.4 文章分类：删除接口开发](https://www.yanggongzi.dev/column/10063.html)
+  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yanggongzi.dev/column/10064.html)
+  - [7.6 后台分类管理页面：样式布局](https://www.yanggongzi.dev/column/10065.html)
+  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yanggongzi.dev/column/10066.html)
+  - [7.8 文章分类：分页列表数据动态渲染](https://www.yanggongzi.dev/column/10067.html)
+  - [7.9 文章分类：新增功能开发](https://www.yanggongzi.dev/column/10068.html)
+  - [7.10 文章分类：删除功能开发](https://www.yanggongzi.dev/column/10069.html)
+  - [7.11 通用表单对话框组件封装](https://www.yanggongzi.dev/column/10070.html)
+  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yanggongzi.dev/column/10071.html)
   
 
 
 - 八、管理后台：标签模块开发
-  - [8.1 标签模块接口分析【视频讲解】](https://www.yangmufa.cn/column/10072.html)
-  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10073.html)
-  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yangmufa.cn/column/10074.html)
-  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10075.html)
-  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yangmufa.cn/column/10076.html)
-  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yangmufa.cn/column/10077.html)
-  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yangmufa.cn/column/10078.html)
+  - [8.1 标签模块接口分析【视频讲解】](https://www.yanggongzi.dev/column/10072.html)
+  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yanggongzi.dev/column/10073.html)
+  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yanggongzi.dev/column/10074.html)
+  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yanggongzi.dev/column/10075.html)
+  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yanggongzi.dev/column/10076.html)
+  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yanggongzi.dev/column/10077.html)
+  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yanggongzi.dev/column/10078.html)
   
   
   
 - 九、管理后台：博客设置模块开发
-  - [9.1 博客设置模块功能分析、表设计](https://www.yangmufa.cn/column/10079.html)
-  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yangmufa.cn/column/10080.html)
-  - [9.3 文件上传接口开发](https://www.yangmufa.cn/column/10081.html)
-  - [9.4 博客设置: 更新接口开发](https://www.yangmufa.cn/column/10082.html)
-  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yangmufa.cn/column/10083.html)
-  - [9.6 博客设置：获取详情接口开发](https://www.yangmufa.cn/column/10084.html)
-  - [9.7 博客设置页面：样式布局](https://www.yangmufa.cn/column/10085.html)
-  - [9.8 管理后台：滚动样式优化](https://www.yangmufa.cn/column/10086.html)
-  - [9.9 博客设置页：数据渲染、图片上传](https://www.yangmufa.cn/column/10087.html)
-  - [9.10 博客设置页：更新设置](https://www.yangmufa.cn/column/10088.html)
+  - [9.1 博客设置模块功能分析、表设计](https://www.yanggongzi.dev/column/10079.html)
+  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yanggongzi.dev/column/10080.html)
+  - [9.3 文件上传接口开发](https://www.yanggongzi.dev/column/10081.html)
+  - [9.4 博客设置: 更新接口开发](https://www.yanggongzi.dev/column/10082.html)
+  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yanggongzi.dev/column/10083.html)
+  - [9.6 博客设置：获取详情接口开发](https://www.yanggongzi.dev/column/10084.html)
+  - [9.7 博客设置页面：样式布局](https://www.yanggongzi.dev/column/10085.html)
+  - [9.8 管理后台：滚动样式优化](https://www.yanggongzi.dev/column/10086.html)
+  - [9.9 博客设置页：数据渲染、图片上传](https://www.yanggongzi.dev/column/10087.html)
+  - [9.10 博客设置页：更新设置](https://www.yanggongzi.dev/column/10088.html)
   
 
 
 
 - 十、管理后台：文章模块开发
-  - [10.1 文章管理模块功能分析、表设计](https://www.yangmufa.cn/column/10090.html)
-  - [10.2 文章管理：文章发布接口开发（1）](https://www.yangmufa.cn/column/10091.html)
-  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yangmufa.cn/column/10092.html)
-  - [10.4 文章管理：文章删除接口开发](https://www.yangmufa.cn/column/10093.html)
-  - [10.5 文章管理：分页接口开发](https://www.yangmufa.cn/column/10094.html)
-  - [10.6 文章管理：获取文章详情接口开发](https://www.yangmufa.cn/column/10095.html)
-  - [10.7 文章管理：文章更新接口开发](https://www.yangmufa.cn/column/10096.html)
-  - [10.8 文章管理：分页列表开发](https://www.yangmufa.cn/column/10097.html)
-  - [10.9 文章管理页：删除文章开发](https://www.yangmufa.cn/column/10098.html)
-  - [10.10 文章管理页：写文章对话框样式布局](https://www.yangmufa.cn/column/10099.html)
-  - [10.11 文章管理页：文章发布功能开发](https://www.yangmufa.cn/column/10100.html)
-  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yangmufa.cn/column/10101.html)
-  - [10.13 文章管理页：文章编辑功能开发](https://www.yangmufa.cn/column/10102.html)
-  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yangmufa.cn/column/10103.html)
+  - [10.1 文章管理模块功能分析、表设计](https://www.yanggongzi.dev/column/10090.html)
+  - [10.2 文章管理：文章发布接口开发（1）](https://www.yanggongzi.dev/column/10091.html)
+  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yanggongzi.dev/column/10092.html)
+  - [10.4 文章管理：文章删除接口开发](https://www.yanggongzi.dev/column/10093.html)
+  - [10.5 文章管理：分页接口开发](https://www.yanggongzi.dev/column/10094.html)
+  - [10.6 文章管理：获取文章详情接口开发](https://www.yanggongzi.dev/column/10095.html)
+  - [10.7 文章管理：文章更新接口开发](https://www.yanggongzi.dev/column/10096.html)
+  - [10.8 文章管理：分页列表开发](https://www.yanggongzi.dev/column/10097.html)
+  - [10.9 文章管理页：删除文章开发](https://www.yanggongzi.dev/column/10098.html)
+  - [10.10 文章管理页：写文章对话框样式布局](https://www.yanggongzi.dev/column/10099.html)
+  - [10.11 文章管理页：文章发布功能开发](https://www.yanggongzi.dev/column/10100.html)
+  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yanggongzi.dev/column/10101.html)
+  - [10.13 文章管理页：文章编辑功能开发](https://www.yanggongzi.dev/column/10102.html)
+  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yanggongzi.dev/column/10103.html)
   
   
   
@@ -1298,41 +1298,41 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
   
 
 - 十一、博客前台：首页开发
-   - [11.1 前台首页、归档页接口分析](https://www.yangmufa.cn/column/10104.html)
-   - [11.2 前台首页：文章分页接口开发](https://www.yangmufa.cn/column/10105.html)
-   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yangmufa.cn/column/10106.html)
-   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yangmufa.cn/column/10107.html)
-   - [11.5 前台 Header 头组件封装](https://www.yangmufa.cn/column/10108.html)   
-   - [11.6 首页样式布局设计（1）](https://www.yangmufa.cn/column/10109.html)
-   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yangmufa.cn/column/10110.html)
-   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yangmufa.cn/column/10111.html)
-   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yangmufa.cn/column/10112.html)
-   - [11.10 首页文章分页数据渲染](https://www.yangmufa.cn/column/10113.html)
-   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yangmufa.cn/column/10114.html)
-   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yangmufa.cn/column/10115.html)
-   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yangmufa.cn/column/10116.html)
+   - [11.1 前台首页、归档页接口分析](https://www.yanggongzi.dev/column/10104.html)
+   - [11.2 前台首页：文章分页接口开发](https://www.yanggongzi.dev/column/10105.html)
+   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yanggongzi.dev/column/10106.html)
+   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yanggongzi.dev/column/10107.html)
+   - [11.5 前台 Header 头组件封装](https://www.yanggongzi.dev/column/10108.html)   
+   - [11.6 首页样式布局设计（1）](https://www.yanggongzi.dev/column/10109.html)
+   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yanggongzi.dev/column/10110.html)
+   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yanggongzi.dev/column/10111.html)
+   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yanggongzi.dev/column/10112.html)
+   - [11.10 首页文章分页数据渲染](https://www.yanggongzi.dev/column/10113.html)
+   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yanggongzi.dev/column/10114.html)
+   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yanggongzi.dev/column/10115.html)
+   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yanggongzi.dev/column/10116.html)
    
    
 
 - 十二、博客前台：归档列表页、分类列表页、标签列表页开发
-   - [12.1 归档页、分类列表页接口分析](https://www.yangmufa.cn/column/10117.html)
-   - [12.2 文章归档分页接口开发](https://www.yangmufa.cn/column/10118.html)
-   - [12.3 前台归档页：样式布局设计](https://www.yangmufa.cn/column/10119.html)
-   - [12.4 前台归档页：分页列表功能开发](https://www.yangmufa.cn/column/10120.html)
-   - [12.5 前台分类页开发](https://www.yangmufa.cn/column/10121.html)
-   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10122.html)
-   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yangmufa.cn/column/10123.html)
-   - [12.8 分类-文章列表页开发](https://www.yangmufa.cn/column/10124.html)
-   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yangmufa.cn/column/10125.html)
-   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10130.html)
-   - [12.11 标签-文章列表页开发](https://www.yangmufa.cn/column/10131.html)
+   - [12.1 归档页、分类列表页接口分析](https://www.yanggongzi.dev/column/10117.html)
+   - [12.2 文章归档分页接口开发](https://www.yanggongzi.dev/column/10118.html)
+   - [12.3 前台归档页：样式布局设计](https://www.yanggongzi.dev/column/10119.html)
+   - [12.4 前台归档页：分页列表功能开发](https://www.yanggongzi.dev/column/10120.html)
+   - [12.5 前台分类页开发](https://www.yanggongzi.dev/column/10121.html)
+   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yanggongzi.dev/column/10122.html)
+   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yanggongzi.dev/column/10123.html)
+   - [12.8 分类-文章列表页开发](https://www.yanggongzi.dev/column/10124.html)
+   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yanggongzi.dev/column/10125.html)
+   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yanggongzi.dev/column/10130.html)
+   - [12.11 标签-文章列表页开发](https://www.yanggongzi.dev/column/10131.html)
 
 
 - 十三、博客前台：文章详情页开发
-   - [13.1 文章详情页接口分析](https://www.yangmufa.cn/column/10126.html)
-   - [13.2 后端封装 Markdown 装换工具类](https://www.yangmufa.cn/column/10127.html)
-   - [13.3 获取文章详情接口开发](https://www.yangmufa.cn/column/10128.html)
-   - [13.4 文章详情页：样式布局设计](https://www.yangmufa.cn/column/10129.html)
+   - [13.1 文章详情页接口分析](https://www.yanggongzi.dev/column/10126.html)
+   - [13.2 后端封装 Markdown 装换工具类](https://www.yanggongzi.dev/column/10127.html)
+   - [13.3 获取文章详情接口开发](https://www.yanggongzi.dev/column/10128.html)
+   - [13.4 文章详情页：样式布局设计](https://www.yanggongzi.dev/column/10129.html)
 
    - *努力爆肝中，每天更新两小节, 按目前的更新速度，1.0 版本差不多还剩1个半月更新完毕...*
 - 十四、管理后台：仪表盘模块开发
@@ -1364,7 +1364,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 <div class="flex items-center justify-center text-lg text-red-500 font-bold mb-2">扫描下方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👇👇</div>
 
-!["领取优惠券加入，更划算"](https://img.yangmufa.cn/ibp/169355760680941 "领取优惠券加入，更划算")
+!["领取优惠券加入，更划算"](https://img.yanggongzi.dev/ibp/169355760680941 "领取优惠券加入，更划算")
 
 <div class="flex items-center justify-center text-lg text-red-500 font-bold">扫描上方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👆👆</div>
 
@@ -1379,7 +1379,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 对专栏感兴趣的小伙伴，也可以加鲲鲲私人微信来咨询，扫描下方二维码即可，记得备注【*咨询*】哟：
 
-![扫描二维码，添加鲲鲲私人微信](https://img.yangmufa.cn/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")');
+![扫描二维码，添加鲲鲲私人微信](https://img.yanggongzi.dev/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")');
 INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (10, 10, '请输入内容天天电饭锅第三个发的
 图片1![](http://127.0.0.1:9000/roc-blog/12f87fef76564ba9acde1c0fec4cf7d5.png)
 图片2![](http://127.0.0.1:9000/roc-blog/8566fcf578434e07a7e55521456047f.jpg)');
@@ -1413,7 +1413,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 本项目 1.0 版本已部署到云服务器上，可点击下面链接进行访问，查看实际效果：
 >
-> 演示地址：[https://www.yangmufa.cn](https://www.yangmufa.cn)
+> 演示地址：[https://www.yanggongzi.dev](https://www.yanggongzi.dev)
 >
 > 后台登录演示账号:
 > 
@@ -1425,23 +1425,23 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 知识星球是个私密学习圈子，我会在星球内部，出**一系列从 0 到 1 的实战项目，贴合真实的企业级项目开发规范，使用主流的企业技术栈，全程手写后端 + 前端完整代码，通过专栏的形式，把每个功能点的开发的步骤，手摸手，通过丰富的图片 + 文字，保姆级教学（PS: 同时按小节进度提供代码，不至于一上来代码量太多，不知道从哪入手）**。
 
 
-![](https://img.yangmufa.cn/ibp/169361945065538)
+![](https://img.yanggongzi.dev/ibp/169361945065538)
 
-目前，我已经给自己的网站：[练习生基地](https://www.yangmufa.cn/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
+目前，我已经给自己的网站：[练习生基地](https://www.yanggongzi.dev/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
 
-![](https://img.yangmufa.cn/ibp/169733756405612)
+![](https://img.yanggongzi.dev/ibp/169733756405612)
 
-![](https://img.yangmufa.cn/ibp/169733761293187)
+![](https://img.yanggongzi.dev/ibp/169733761293187)
 
-![](https://img.yangmufa.cn/ibp/169733762195775)
+![](https://img.yanggongzi.dev/ibp/169733762195775)
 
 另外，在跟随小节内容上手的过程中，若遇到问题，可在星球内发起 *1v1 提问，鲲鲲亲自解答*。
 
-!["星球内提问"](https://img.yangmufa.cn/ibp/169396126861858 "星球内提问")
+!["星球内提问"](https://img.yanggongzi.dev/ibp/169396126861858 "星球内提问")
 
 星球说不清楚的，项目进度因为某一块搞不定的，微信发我源码，帮忙看问题出在哪：
 
-![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yangmufa.cn/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
+![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yanggongzi.dev/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
 
 
 陪伴式写项目，到最终部署到云服务器上，能够通过域名来访问，完成项目上线。
@@ -1452,7 +1452,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 脑瓜子一转，想到之前好多读者问我博客的事情，今年 4 月份的时候，又有读者微信问我: *你的博客有没有开源，感觉还挺好看，也想学习、部署一个。*
 
-![](https://img.yangmufa.cn/ibp/169355366112215)
+![](https://img.yanggongzi.dev/ibp/169355366112215)
 
 于是乎，花了点时间整了第一个实战项目 —— **前后端分离的博客 ibp**。
 
@@ -1465,7 +1465,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 目前 1.0 版本已经部署到了阿里云服务器上，可点击下面链接进行访问，查看实际效果：
 
-[https://www.yangmufa.cn](https://www.yangmufa.cn "https://www.yangmufa.cn")
+[https://www.yanggongzi.dev](https://www.yanggongzi.dev "https://www.yanggongzi.dev")
 
 管理后台登录账号/密码:
 
@@ -1478,11 +1478,11 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 💡 TIP : 以下*只是 1.0 版本的功能，后续鲲鲲将添加更多功能进去, 比如图库管理、知识库、在线人数统计、SSR（服务端渲染） 等等*，能够想到的高逼格功能，咱都整上，附带超详细的实战图文笔记 ...
 
-![ibp 功能模块一览](https://img.yangmufa.cn/ibp/169560157482464 "ibp 功能模块一览")
+![ibp 功能模块一览](https://img.yanggongzi.dev/ibp/169560157482464 "ibp 功能模块一览")
 
 ### ✏️ 技术栈
 
-![ibp 技术栈一览](https://img.yangmufa.cn/ibp/169560181378937 "ibp 技术栈一览")
+![ibp 技术栈一览](https://img.yanggongzi.dev/ibp/169560181378937 "ibp 技术栈一览")
 
 ## 🎉 专栏目标
 
@@ -1512,138 +1512,138 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 💡 TIP : 如下目录不代表最终内容，只会更多，目前只是把已完成的部分详细的罗列了出来，其中大部分功能正在开发中，所属具体小节的标题也会陆续更新进来。
 
-- 一、[项目介绍](https://www.yangmufa.cn/column/10000.html)
+- 一、[项目介绍](https://www.yanggongzi.dev/column/10000.html)
 - 二、开发环境搭建
-  - [2.1 【后端】环境安装&工具准备](https://www.yangmufa.cn/column/10003.html)
-  - [2.2 【前端】开发环境&工具安装](https://www.yangmufa.cn/column/10004.html)
+  - [2.1 【后端】环境安装&工具准备](https://www.yanggongzi.dev/column/10003.html)
+  - [2.2 【前端】开发环境&工具安装](https://www.yanggongzi.dev/column/10004.html)
 
 - 三、Spring Boot 后端工程搭建
-  - [3.1 搭建 Spring Boot 多模块工程](https://www.yangmufa.cn/column/10005.html)
-  - [3.2 Spring Boot 多环境配置](https://www.yangmufa.cn/column/10006.html)
-  - [3.3 配置 Lombok](https://www.yangmufa.cn/column/10007.html)
-  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yangmufa.cn/column/10008.html)
-  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yangmufa.cn/column/10009.html)
-  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yangmufa.cn/column/10010.html)
-  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yangmufa.cn/column/10011.html)
-  - [3.8 Spring Boot 自定义响应工具类](https://www.yangmufa.cn/column/10012.html)
-  - [3.9 Spring Boot 实现全局异常管理](https://www.yangmufa.cn/column/10013.html)
-  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yangmufa.cn/column/10014.html)
-  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yangmufa.cn/column/10015.html)
-  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yangmufa.cn/column/10016.html)
-  - [3.13 小结](https://www.yangmufa.cn/column/10017.html)
+  - [3.1 搭建 Spring Boot 多模块工程](https://www.yanggongzi.dev/column/10005.html)
+  - [3.2 Spring Boot 多环境配置](https://www.yanggongzi.dev/column/10006.html)
+  - [3.3 配置 Lombok](https://www.yanggongzi.dev/column/10007.html)
+  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yanggongzi.dev/column/10008.html)
+  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yanggongzi.dev/column/10009.html)
+  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yanggongzi.dev/column/10010.html)
+  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yanggongzi.dev/column/10011.html)
+  - [3.8 Spring Boot 自定义响应工具类](https://www.yanggongzi.dev/column/10012.html)
+  - [3.9 Spring Boot 实现全局异常管理](https://www.yanggongzi.dev/column/10013.html)
+  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yanggongzi.dev/column/10014.html)
+  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yanggongzi.dev/column/10015.html)
+  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yanggongzi.dev/column/10016.html)
+  - [3.13 小结](https://www.yanggongzi.dev/column/10017.html)
 
 - 四、使用 Vue 3 + Vite 4 搭建前端工程
-  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yangmufa.cn/column/10018.html)
-  - [4.2 安装 VSCode 开发工具](https://www.yangmufa.cn/column/10019.html)
-  - [4.3 添加 vue-router 路由管理器](https://www.yangmufa.cn/column/10020.html)
-  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yangmufa.cn/column/10021.html)
-  - [4.5 整合 Tailwind CSS](https://www.yangmufa.cn/column/10022.html)
-  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yangmufa.cn/column/10023.html)
-  - [4.7 整合饿了么 Element Plus 组件库](https://www.yangmufa.cn/column/10024.html)
+  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yanggongzi.dev/column/10018.html)
+  - [4.2 安装 VSCode 开发工具](https://www.yanggongzi.dev/column/10019.html)
+  - [4.3 添加 vue-router 路由管理器](https://www.yanggongzi.dev/column/10020.html)
+  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yanggongzi.dev/column/10021.html)
+  - [4.5 整合 Tailwind CSS](https://www.yanggongzi.dev/column/10022.html)
+  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yanggongzi.dev/column/10023.html)
+  - [4.7 整合饿了么 Element Plus 组件库](https://www.yanggongzi.dev/column/10024.html)
 
 - 五、登录模块开发
-  - [5.1 登录页设计：支持响应式布局](https://www.yangmufa.cn/column/10025.html)
-  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yangmufa.cn/column/10026.html)
-  - [5.3 整合 Mybatis Plus](https://www.yangmufa.cn/column/10027.html)
-  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yangmufa.cn/column/10028.html)
-  - [5.5 整合 Spring Security](https://www.yangmufa.cn/column/10029.html)
-  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yangmufa.cn/column/10030.html)
-  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yangmufa.cn/column/10031.html)
-  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yangmufa.cn/column/10032.html)
-  - [5.9 登录页表单验证](https://www.yangmufa.cn/column/10033.html)
-  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yangmufa.cn/column/10034.html)
-  - [5.11 存储 Token 到 Cookie 中](https://www.yangmufa.cn/column/10035.html)
-  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yangmufa.cn/column/10036.html)
-  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yangmufa.cn/column/10037.html)
-  - [5.14 实现页面顶部加载 Loading 效果](https://www.yangmufa.cn/column/10038.html)
-  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yangmufa.cn/column/10040.html)
-  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yangmufa.cn/column/10089.html)
+  - [5.1 登录页设计：支持响应式布局](https://www.yanggongzi.dev/column/10025.html)
+  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yanggongzi.dev/column/10026.html)
+  - [5.3 整合 Mybatis Plus](https://www.yanggongzi.dev/column/10027.html)
+  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yanggongzi.dev/column/10028.html)
+  - [5.5 整合 Spring Security](https://www.yanggongzi.dev/column/10029.html)
+  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yanggongzi.dev/column/10030.html)
+  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yanggongzi.dev/column/10031.html)
+  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yanggongzi.dev/column/10032.html)
+  - [5.9 登录页表单验证](https://www.yanggongzi.dev/column/10033.html)
+  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yanggongzi.dev/column/10034.html)
+  - [5.11 存储 Token 到 Cookie 中](https://www.yanggongzi.dev/column/10035.html)
+  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yanggongzi.dev/column/10036.html)
+  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yanggongzi.dev/column/10037.html)
+  - [5.14 实现页面顶部加载 Loading 效果](https://www.yanggongzi.dev/column/10038.html)
+  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yanggongzi.dev/column/10040.html)
+  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yanggongzi.dev/column/10089.html)
   
   
   
 
 - 六、Element Plus 手搭 Admin 管理后台骨架
-  - [6.1 搭建管理后台基本布局](https://www.yangmufa.cn/column/10039.html)
-  - [6.2 后台公共 Header 头：样式布局](https://www.yangmufa.cn/column/10041.html)
-  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yangmufa.cn/column/10042.html)
-  - [6.4 整合全局状态管理库 Pinia](https://www.yangmufa.cn/column/10043.html)
-  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yangmufa.cn/column/10044.html)
-  - [6.6 支持全屏展示、页面点击刷新](https://www.yangmufa.cn/column/10045.html)
-  - [6.7 标签导航栏组件实现：样式布局](https://www.yangmufa.cn/column/10046.html)
-  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yangmufa.cn/column/10047.html)
-  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yangmufa.cn/column/10048.html)
-  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yangmufa.cn/column/10049.html)
-  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yangmufa.cn/column/10050.html)
-  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yangmufa.cn/column/10051.html)
-  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yangmufa.cn/column/10052.html)
-  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yangmufa.cn/column/10053.html)
-  - [6.15 修改用户密码接口开发](https://www.yangmufa.cn/column/10054.html)
-  - [6.16 获取当前登录用户信息接口开发](https://www.yangmufa.cn/column/10055.html)
-  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yangmufa.cn/column/10056.html)
-  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yangmufa.cn/column/10057.html)
-  - [6.19 用户修改密码、退出登录功能开发](https://www.yangmufa.cn/column/10058.html)
-  - [6.20 小结](https://www.yangmufa.cn/column/10059.html)
+  - [6.1 搭建管理后台基本布局](https://www.yanggongzi.dev/column/10039.html)
+  - [6.2 后台公共 Header 头：样式布局](https://www.yanggongzi.dev/column/10041.html)
+  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yanggongzi.dev/column/10042.html)
+  - [6.4 整合全局状态管理库 Pinia](https://www.yanggongzi.dev/column/10043.html)
+  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yanggongzi.dev/column/10044.html)
+  - [6.6 支持全屏展示、页面点击刷新](https://www.yanggongzi.dev/column/10045.html)
+  - [6.7 标签导航栏组件实现：样式布局](https://www.yanggongzi.dev/column/10046.html)
+  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yanggongzi.dev/column/10047.html)
+  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yanggongzi.dev/column/10048.html)
+  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yanggongzi.dev/column/10049.html)
+  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yanggongzi.dev/column/10050.html)
+  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yanggongzi.dev/column/10051.html)
+  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yanggongzi.dev/column/10052.html)
+  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yanggongzi.dev/column/10053.html)
+  - [6.15 修改用户密码接口开发](https://www.yanggongzi.dev/column/10054.html)
+  - [6.16 获取当前登录用户信息接口开发](https://www.yanggongzi.dev/column/10055.html)
+  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yanggongzi.dev/column/10056.html)
+  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yanggongzi.dev/column/10057.html)
+  - [6.19 用户修改密码、退出登录功能开发](https://www.yanggongzi.dev/column/10058.html)
+  - [6.20 小结](https://www.yanggongzi.dev/column/10059.html)
 
   
 
   
 - 七、管理后台：文章分类模块开发
-  - [7.1 分类模块接口分析](https://www.yangmufa.cn/column/10060.html)
-  - [7.2 文章分类：新增接口开发](https://www.yangmufa.cn/column/10061.html)
-  - [7.3 文章分类：分页接口开发](https://www.yangmufa.cn/column/10062.html)
-  - [7.4 文章分类：删除接口开发](https://www.yangmufa.cn/column/10063.html)
-  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yangmufa.cn/column/10064.html)
-  - [7.6 后台分类管理页面：样式布局](https://www.yangmufa.cn/column/10065.html)
-  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yangmufa.cn/column/10066.html)
-  - [7.8 文章分类：分页列表数据动态渲染](https://www.yangmufa.cn/column/10067.html)
-  - [7.9 文章分类：新增功能开发](https://www.yangmufa.cn/column/10068.html)
-  - [7.10 文章分类：删除功能开发](https://www.yangmufa.cn/column/10069.html)
-  - [7.11 通用表单对话框组件封装](https://www.yangmufa.cn/column/10070.html)
-  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yangmufa.cn/column/10071.html)
+  - [7.1 分类模块接口分析](https://www.yanggongzi.dev/column/10060.html)
+  - [7.2 文章分类：新增接口开发](https://www.yanggongzi.dev/column/10061.html)
+  - [7.3 文章分类：分页接口开发](https://www.yanggongzi.dev/column/10062.html)
+  - [7.4 文章分类：删除接口开发](https://www.yanggongzi.dev/column/10063.html)
+  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yanggongzi.dev/column/10064.html)
+  - [7.6 后台分类管理页面：样式布局](https://www.yanggongzi.dev/column/10065.html)
+  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yanggongzi.dev/column/10066.html)
+  - [7.8 文章分类：分页列表数据动态渲染](https://www.yanggongzi.dev/column/10067.html)
+  - [7.9 文章分类：新增功能开发](https://www.yanggongzi.dev/column/10068.html)
+  - [7.10 文章分类：删除功能开发](https://www.yanggongzi.dev/column/10069.html)
+  - [7.11 通用表单对话框组件封装](https://www.yanggongzi.dev/column/10070.html)
+  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yanggongzi.dev/column/10071.html)
   
 
 
 - 八、管理后台：标签模块开发
-  - [8.1 标签模块接口分析【视频讲解】](https://www.yangmufa.cn/column/10072.html)
-  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10073.html)
-  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yangmufa.cn/column/10074.html)
-  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10075.html)
-  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yangmufa.cn/column/10076.html)
-  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yangmufa.cn/column/10077.html)
-  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yangmufa.cn/column/10078.html)
+  - [8.1 标签模块接口分析【视频讲解】](https://www.yanggongzi.dev/column/10072.html)
+  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yanggongzi.dev/column/10073.html)
+  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yanggongzi.dev/column/10074.html)
+  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yanggongzi.dev/column/10075.html)
+  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yanggongzi.dev/column/10076.html)
+  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yanggongzi.dev/column/10077.html)
+  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yanggongzi.dev/column/10078.html)
   
   
   
 - 九、管理后台：博客设置模块开发
-  - [9.1 博客设置模块功能分析、表设计](https://www.yangmufa.cn/column/10079.html)
-  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yangmufa.cn/column/10080.html)
-  - [9.3 文件上传接口开发](https://www.yangmufa.cn/column/10081.html)
-  - [9.4 博客设置: 更新接口开发](https://www.yangmufa.cn/column/10082.html)
-  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yangmufa.cn/column/10083.html)
-  - [9.6 博客设置：获取详情接口开发](https://www.yangmufa.cn/column/10084.html)
-  - [9.7 博客设置页面：样式布局](https://www.yangmufa.cn/column/10085.html)
-  - [9.8 管理后台：滚动样式优化](https://www.yangmufa.cn/column/10086.html)
-  - [9.9 博客设置页：数据渲染、图片上传](https://www.yangmufa.cn/column/10087.html)
-  - [9.10 博客设置页：更新设置](https://www.yangmufa.cn/column/10088.html)
+  - [9.1 博客设置模块功能分析、表设计](https://www.yanggongzi.dev/column/10079.html)
+  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yanggongzi.dev/column/10080.html)
+  - [9.3 文件上传接口开发](https://www.yanggongzi.dev/column/10081.html)
+  - [9.4 博客设置: 更新接口开发](https://www.yanggongzi.dev/column/10082.html)
+  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yanggongzi.dev/column/10083.html)
+  - [9.6 博客设置：获取详情接口开发](https://www.yanggongzi.dev/column/10084.html)
+  - [9.7 博客设置页面：样式布局](https://www.yanggongzi.dev/column/10085.html)
+  - [9.8 管理后台：滚动样式优化](https://www.yanggongzi.dev/column/10086.html)
+  - [9.9 博客设置页：数据渲染、图片上传](https://www.yanggongzi.dev/column/10087.html)
+  - [9.10 博客设置页：更新设置](https://www.yanggongzi.dev/column/10088.html)
   
 
 
 
 - 十、管理后台：文章模块开发
-  - [10.1 文章管理模块功能分析、表设计](https://www.yangmufa.cn/column/10090.html)
-  - [10.2 文章管理：文章发布接口开发（1）](https://www.yangmufa.cn/column/10091.html)
-  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yangmufa.cn/column/10092.html)
-  - [10.4 文章管理：文章删除接口开发](https://www.yangmufa.cn/column/10093.html)
-  - [10.5 文章管理：分页接口开发](https://www.yangmufa.cn/column/10094.html)
-  - [10.6 文章管理：获取文章详情接口开发](https://www.yangmufa.cn/column/10095.html)
-  - [10.7 文章管理：文章更新接口开发](https://www.yangmufa.cn/column/10096.html)
-  - [10.8 文章管理：分页列表开发](https://www.yangmufa.cn/column/10097.html)
-  - [10.9 文章管理页：删除文章开发](https://www.yangmufa.cn/column/10098.html)
-  - [10.10 文章管理页：写文章对话框样式布局](https://www.yangmufa.cn/column/10099.html)
-  - [10.11 文章管理页：文章发布功能开发](https://www.yangmufa.cn/column/10100.html)
-  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yangmufa.cn/column/10101.html)
-  - [10.13 文章管理页：文章编辑功能开发](https://www.yangmufa.cn/column/10102.html)
-  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yangmufa.cn/column/10103.html)
+  - [10.1 文章管理模块功能分析、表设计](https://www.yanggongzi.dev/column/10090.html)
+  - [10.2 文章管理：文章发布接口开发（1）](https://www.yanggongzi.dev/column/10091.html)
+  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yanggongzi.dev/column/10092.html)
+  - [10.4 文章管理：文章删除接口开发](https://www.yanggongzi.dev/column/10093.html)
+  - [10.5 文章管理：分页接口开发](https://www.yanggongzi.dev/column/10094.html)
+  - [10.6 文章管理：获取文章详情接口开发](https://www.yanggongzi.dev/column/10095.html)
+  - [10.7 文章管理：文章更新接口开发](https://www.yanggongzi.dev/column/10096.html)
+  - [10.8 文章管理：分页列表开发](https://www.yanggongzi.dev/column/10097.html)
+  - [10.9 文章管理页：删除文章开发](https://www.yanggongzi.dev/column/10098.html)
+  - [10.10 文章管理页：写文章对话框样式布局](https://www.yanggongzi.dev/column/10099.html)
+  - [10.11 文章管理页：文章发布功能开发](https://www.yanggongzi.dev/column/10100.html)
+  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yanggongzi.dev/column/10101.html)
+  - [10.13 文章管理页：文章编辑功能开发](https://www.yanggongzi.dev/column/10102.html)
+  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yanggongzi.dev/column/10103.html)
   
   
   
@@ -1651,41 +1651,41 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
   
 
 - 十一、博客前台：首页开发
-   - [11.1 前台首页、归档页接口分析](https://www.yangmufa.cn/column/10104.html)
-   - [11.2 前台首页：文章分页接口开发](https://www.yangmufa.cn/column/10105.html)
-   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yangmufa.cn/column/10106.html)
-   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yangmufa.cn/column/10107.html)
-   - [11.5 前台 Header 头组件封装](https://www.yangmufa.cn/column/10108.html)   
-   - [11.6 首页样式布局设计（1）](https://www.yangmufa.cn/column/10109.html)
-   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yangmufa.cn/column/10110.html)
-   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yangmufa.cn/column/10111.html)
-   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yangmufa.cn/column/10112.html)
-   - [11.10 首页文章分页数据渲染](https://www.yangmufa.cn/column/10113.html)
-   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yangmufa.cn/column/10114.html)
-   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yangmufa.cn/column/10115.html)
-   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yangmufa.cn/column/10116.html)
+   - [11.1 前台首页、归档页接口分析](https://www.yanggongzi.dev/column/10104.html)
+   - [11.2 前台首页：文章分页接口开发](https://www.yanggongzi.dev/column/10105.html)
+   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yanggongzi.dev/column/10106.html)
+   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yanggongzi.dev/column/10107.html)
+   - [11.5 前台 Header 头组件封装](https://www.yanggongzi.dev/column/10108.html)   
+   - [11.6 首页样式布局设计（1）](https://www.yanggongzi.dev/column/10109.html)
+   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yanggongzi.dev/column/10110.html)
+   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yanggongzi.dev/column/10111.html)
+   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yanggongzi.dev/column/10112.html)
+   - [11.10 首页文章分页数据渲染](https://www.yanggongzi.dev/column/10113.html)
+   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yanggongzi.dev/column/10114.html)
+   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yanggongzi.dev/column/10115.html)
+   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yanggongzi.dev/column/10116.html)
    
    
 
 - 十二、博客前台：归档列表页、分类列表页、标签列表页开发
-   - [12.1 归档页、分类列表页接口分析](https://www.yangmufa.cn/column/10117.html)
-   - [12.2 文章归档分页接口开发](https://www.yangmufa.cn/column/10118.html)
-   - [12.3 前台归档页：样式布局设计](https://www.yangmufa.cn/column/10119.html)
-   - [12.4 前台归档页：分页列表功能开发](https://www.yangmufa.cn/column/10120.html)
-   - [12.5 前台分类页开发](https://www.yangmufa.cn/column/10121.html)
-   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10122.html)
-   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yangmufa.cn/column/10123.html)
-   - [12.8 分类-文章列表页开发](https://www.yangmufa.cn/column/10124.html)
-   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yangmufa.cn/column/10125.html)
-   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10130.html)
-   - [12.11 标签-文章列表页开发](https://www.yangmufa.cn/column/10131.html)
+   - [12.1 归档页、分类列表页接口分析](https://www.yanggongzi.dev/column/10117.html)
+   - [12.2 文章归档分页接口开发](https://www.yanggongzi.dev/column/10118.html)
+   - [12.3 前台归档页：样式布局设计](https://www.yanggongzi.dev/column/10119.html)
+   - [12.4 前台归档页：分页列表功能开发](https://www.yanggongzi.dev/column/10120.html)
+   - [12.5 前台分类页开发](https://www.yanggongzi.dev/column/10121.html)
+   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yanggongzi.dev/column/10122.html)
+   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yanggongzi.dev/column/10123.html)
+   - [12.8 分类-文章列表页开发](https://www.yanggongzi.dev/column/10124.html)
+   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yanggongzi.dev/column/10125.html)
+   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yanggongzi.dev/column/10130.html)
+   - [12.11 标签-文章列表页开发](https://www.yanggongzi.dev/column/10131.html)
 
 
 - 十三、博客前台：文章详情页开发
-   - [13.1 文章详情页接口分析](https://www.yangmufa.cn/column/10126.html)
-   - [13.2 后端封装 Markdown 装换工具类](https://www.yangmufa.cn/column/10127.html)
-   - [13.3 获取文章详情接口开发](https://www.yangmufa.cn/column/10128.html)
-   - [13.4 文章详情页：样式布局设计](https://www.yangmufa.cn/column/10129.html)
+   - [13.1 文章详情页接口分析](https://www.yanggongzi.dev/column/10126.html)
+   - [13.2 后端封装 Markdown 装换工具类](https://www.yanggongzi.dev/column/10127.html)
+   - [13.3 获取文章详情接口开发](https://www.yanggongzi.dev/column/10128.html)
+   - [13.4 文章详情页：样式布局设计](https://www.yanggongzi.dev/column/10129.html)
 
    - *努力爆肝中，每天更新两小节, 按目前的更新速度，1.0 版本差不多还剩1个半月更新完毕...*
 - 十四、管理后台：仪表盘模块开发
@@ -1717,7 +1717,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 <div class="flex items-center justify-center text-lg text-red-500 font-bold mb-2">扫描下方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👇👇</div>
 
-!["领取优惠券加入，更划算"](https://img.yangmufa.cn/ibp/169355760680941 "领取优惠券加入，更划算")
+!["领取优惠券加入，更划算"](https://img.yanggongzi.dev/ibp/169355760680941 "领取优惠券加入，更划算")
 
 <div class="flex items-center justify-center text-lg text-red-500 font-bold">扫描上方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👆👆</div>
 
@@ -1732,7 +1732,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 对专栏感兴趣的小伙伴，也可以加鲲鲲私人微信来咨询，扫描下方二维码即可，记得备注【*咨询*】哟：
 
-![扫描二维码，添加鲲鲲私人微信](https://img.yangmufa.cn/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")
+![扫描二维码，添加鲲鲲私人微信](https://img.yanggongzi.dev/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")
 
 
 
@@ -1772,7 +1772,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 本项目 1.0 版本已部署到云服务器上，可点击下面链接进行访问，查看实际效果：
 >
-> 演示地址：[https://www.yangmufa.cn](https://www.yangmufa.cn)
+> 演示地址：[https://www.yanggongzi.dev](https://www.yanggongzi.dev)
 >
 > 后台登录演示账号:
 > 
@@ -1784,23 +1784,23 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 知识星球是个私密学习圈子，我会在星球内部，出**一系列从 0 到 1 的实战项目，贴合真实的企业级项目开发规范，使用主流的企业技术栈，全程手写后端 + 前端完整代码，通过专栏的形式，把每个功能点的开发的步骤，手摸手，通过丰富的图片 + 文字，保姆级教学（PS: 同时按小节进度提供代码，不至于一上来代码量太多，不知道从哪入手）**。
 
 
-![](https://img.yangmufa.cn/ibp/169361945065538)
+![](https://img.yanggongzi.dev/ibp/169361945065538)
 
-目前，我已经给自己的网站：[练习生基地](https://www.yangmufa.cn/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
+目前，我已经给自己的网站：[练习生基地](https://www.yanggongzi.dev/column "练习生基地") 新开发了专栏模块，可以让小伙伴们只需跟着实战专栏，按照章节顺序教学来，上手敲，即可搞定每个功能点的开发，成体系地完成一个独立项目。*目前加入的小伙伴，都给出了超高评价，以下了截取了部分好评*：
 
-![](https://img.yangmufa.cn/ibp/169733756405612)
+![](https://img.yanggongzi.dev/ibp/169733756405612)
 
-![](https://img.yangmufa.cn/ibp/169733761293187)
+![](https://img.yanggongzi.dev/ibp/169733761293187)
 
-![](https://img.yangmufa.cn/ibp/169733762195775)
+![](https://img.yanggongzi.dev/ibp/169733762195775)
 
 另外，在跟随小节内容上手的过程中，若遇到问题，可在星球内发起 *1v1 提问，鲲鲲亲自解答*。
 
-!["星球内提问"](https://img.yangmufa.cn/ibp/169396126861858 "星球内提问")
+!["星球内提问"](https://img.yanggongzi.dev/ibp/169396126861858 "星球内提问")
 
 星球说不清楚的，项目进度因为某一块搞不定的，微信发我源码，帮忙看问题出在哪：
 
-![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yangmufa.cn/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
+![搞不定的，微信发我源码，帮忙看问题出在哪](https://img.yanggongzi.dev/ibp/169406285385964 "搞不定的，微信发我源码，帮忙看问题出在哪")
 
 
 陪伴式写项目，到最终部署到云服务器上，能够通过域名来访问，完成项目上线。
@@ -1811,7 +1811,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 脑瓜子一转，想到之前好多读者问我博客的事情，今年 4 月份的时候，又有读者微信问我: *你的博客有没有开源，感觉还挺好看，也想学习、部署一个。*
 
-![](https://img.yangmufa.cn/ibp/169355366112215)
+![](https://img.yanggongzi.dev/ibp/169355366112215)
 
 于是乎，花了点时间整了第一个实战项目 —— **前后端分离的博客 ibp**。
 
@@ -1824,7 +1824,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 目前 1.0 版本已经部署到了阿里云服务器上，可点击下面链接进行访问，查看实际效果：
 
-[https://www.yangmufa.cn](https://www.yangmufa.cn "https://www.yangmufa.cn")
+[https://www.yanggongzi.dev](https://www.yanggongzi.dev "https://www.yanggongzi.dev")
 
 管理后台登录账号/密码:
 
@@ -1837,11 +1837,11 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 💡 TIP : 以下*只是 1.0 版本的功能，后续鲲鲲将添加更多功能进去, 比如图库管理、知识库、在线人数统计、SSR（服务端渲染） 等等*，能够想到的高逼格功能，咱都整上，附带超详细的实战图文笔记 ...
 
-![ibp 功能模块一览](https://img.yangmufa.cn/ibp/169560157482464 "ibp 功能模块一览")
+![ibp 功能模块一览](https://img.yanggongzi.dev/ibp/169560157482464 "ibp 功能模块一览")
 
 ### ✏️ 技术栈
 
-![ibp 技术栈一览](https://img.yangmufa.cn/ibp/169560181378937 "ibp 技术栈一览")
+![ibp 技术栈一览](https://img.yanggongzi.dev/ibp/169560181378937 "ibp 技术栈一览")
 
 ## 🎉 专栏目标
 
@@ -1871,138 +1871,138 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 > 💡 TIP : 如下目录不代表最终内容，只会更多，目前只是把已完成的部分详细的罗列了出来，其中大部分功能正在开发中，所属具体小节的标题也会陆续更新进来。
 
-- 一、[项目介绍](https://www.yangmufa.cn/column/10000.html)
+- 一、[项目介绍](https://www.yanggongzi.dev/column/10000.html)
 - 二、开发环境搭建
-  - [2.1 【后端】环境安装&工具准备](https://www.yangmufa.cn/column/10003.html)
-  - [2.2 【前端】开发环境&工具安装](https://www.yangmufa.cn/column/10004.html)
+  - [2.1 【后端】环境安装&工具准备](https://www.yanggongzi.dev/column/10003.html)
+  - [2.2 【前端】开发环境&工具安装](https://www.yanggongzi.dev/column/10004.html)
 
 - 三、Spring Boot 后端工程搭建
-  - [3.1 搭建 Spring Boot 多模块工程](https://www.yangmufa.cn/column/10005.html)
-  - [3.2 Spring Boot 多环境配置](https://www.yangmufa.cn/column/10006.html)
-  - [3.3 配置 Lombok](https://www.yangmufa.cn/column/10007.html)
-  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yangmufa.cn/column/10008.html)
-  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yangmufa.cn/column/10009.html)
-  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yangmufa.cn/column/10010.html)
-  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yangmufa.cn/column/10011.html)
-  - [3.8 Spring Boot 自定义响应工具类](https://www.yangmufa.cn/column/10012.html)
-  - [3.9 Spring Boot 实现全局异常管理](https://www.yangmufa.cn/column/10013.html)
-  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yangmufa.cn/column/10014.html)
-  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yangmufa.cn/column/10015.html)
-  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yangmufa.cn/column/10016.html)
-  - [3.13 小结](https://www.yangmufa.cn/column/10017.html)
+  - [3.1 搭建 Spring Boot 多模块工程](https://www.yanggongzi.dev/column/10005.html)
+  - [3.2 Spring Boot 多环境配置](https://www.yanggongzi.dev/column/10006.html)
+  - [3.3 配置 Lombok](https://www.yanggongzi.dev/column/10007.html)
+  - [3.4 Spring Boot 整合 Lockback 日志](https://www.yanggongzi.dev/column/10008.html)
+  - [3.5 Spring Boot 自定义注解，实现 API 请求日志切面](https://www.yanggongzi.dev/column/10009.html)
+  - [3.6 Spring Boot 通过 MDC 实现日志跟踪](https://www.yanggongzi.dev/column/10010.html)
+  - [3.7 Spring Boot 实现优雅的参数校验](https://www.yanggongzi.dev/column/10011.html)
+  - [3.8 Spring Boot 自定义响应工具类](https://www.yanggongzi.dev/column/10012.html)
+  - [3.9 Spring Boot 实现全局异常管理](https://www.yanggongzi.dev/column/10013.html)
+  - [3.10 全局异常处理器+参数校验（最佳实践）](https://www.yanggongzi.dev/column/10014.html)
+  - [3.11 整合 Knife4j：提升接口调试效率](https://www.yanggongzi.dev/column/10015.html)
+  - [3.12 自定义 Jackson 序列化、反序列化，支持 Java 8 日期新特性](https://www.yanggongzi.dev/column/10016.html)
+  - [3.13 小结](https://www.yanggongzi.dev/column/10017.html)
 
 - 四、使用 Vue 3 + Vite 4 搭建前端工程
-  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yangmufa.cn/column/10018.html)
-  - [4.2 安装 VSCode 开发工具](https://www.yangmufa.cn/column/10019.html)
-  - [4.3 添加 vue-router 路由管理器](https://www.yangmufa.cn/column/10020.html)
-  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yangmufa.cn/column/10021.html)
-  - [4.5 整合 Tailwind CSS](https://www.yangmufa.cn/column/10022.html)
-  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yangmufa.cn/column/10023.html)
-  - [4.7 整合饿了么 Element Plus 组件库](https://www.yangmufa.cn/column/10024.html)
+  - [4.1 Vue 3 环境安装& ibp 项目搭建](https://www.yanggongzi.dev/column/10018.html)
+  - [4.2 安装 VSCode 开发工具](https://www.yanggongzi.dev/column/10019.html)
+  - [4.3 添加 vue-router 路由管理器](https://www.yanggongzi.dev/column/10020.html)
+  - [4.4 Vite 配置路径别名：更方便的引用文件](https://www.yanggongzi.dev/column/10021.html)
+  - [4.5 整合 Tailwind CSS](https://www.yanggongzi.dev/column/10022.html)
+  - [4.6 整合 Tailwind CSS 组件库：Flowbite](https://www.yanggongzi.dev/column/10023.html)
+  - [4.7 整合饿了么 Element Plus 组件库](https://www.yanggongzi.dev/column/10024.html)
 
 - 五、登录模块开发
-  - [5.1 登录页设计：支持响应式布局](https://www.yangmufa.cn/column/10025.html)
-  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yangmufa.cn/column/10026.html)
-  - [5.3 整合 Mybatis Plus](https://www.yangmufa.cn/column/10027.html)
-  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yangmufa.cn/column/10028.html)
-  - [5.5 整合 Spring Security](https://www.yangmufa.cn/column/10029.html)
-  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yangmufa.cn/column/10030.html)
-  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yangmufa.cn/column/10031.html)
-  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yangmufa.cn/column/10032.html)
-  - [5.9 登录页表单验证](https://www.yangmufa.cn/column/10033.html)
-  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yangmufa.cn/column/10034.html)
-  - [5.11 存储 Token 到 Cookie 中](https://www.yangmufa.cn/column/10035.html)
-  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yangmufa.cn/column/10036.html)
-  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yangmufa.cn/column/10037.html)
-  - [5.14 实现页面顶部加载 Loading 效果](https://www.yangmufa.cn/column/10038.html)
-  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yangmufa.cn/column/10040.html)
-  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yangmufa.cn/column/10089.html)
+  - [5.1 登录页设计：支持响应式布局](https://www.yanggongzi.dev/column/10025.html)
+  - [5.2 登录页加点盐：通过 Animate.css 添加动画](https://www.yanggongzi.dev/column/10026.html)
+  - [5.3 整合 Mybatis Plus](https://www.yanggongzi.dev/column/10027.html)
+  - [5.4 p6spy 组件打印完整的 SQL 语句、执行耗时](https://www.yanggongzi.dev/column/10028.html)
+  - [5.5 整合 Spring Security](https://www.yanggongzi.dev/column/10029.html)
+  - [5.6 Spring Security 整合 JWT ：实现身份认证](https://www.yanggongzi.dev/column/10030.html)
+  - [5.7 Spring Security 整合 JWT ：实现接口鉴权](https://www.yanggongzi.dev/column/10031.html)
+  - [5.8 Vue 整合 Axios 实现登录功能](https://www.yanggongzi.dev/column/10032.html)
+  - [5.9 登录页表单验证](https://www.yanggongzi.dev/column/10033.html)
+  - [5.10 登录消息提示、回车键监听、按钮加载 Loading](https://www.yanggongzi.dev/column/10034.html)
+  - [5.11 存储 Token 到 Cookie 中](https://www.yanggongzi.dev/column/10035.html)
+  - [5.12 Axios 添加请求拦截器、响应拦截器](https://www.yanggongzi.dev/column/10036.html)
+  - [5.13 全局路由拦截：实现页面标题动态设置、后台路由跳转的登录判断](https://www.yanggongzi.dev/column/10037.html)
+  - [5.14 实现页面顶部加载 Loading 效果](https://www.yanggongzi.dev/column/10038.html)
+  - [5.15 重复登录问题优化、密码框可显示密码](https://www.yanggongzi.dev/column/10040.html)
+  - [5.16 角色鉴权：添加演示账号，仅支持查询操作](https://www.yanggongzi.dev/column/10089.html)
   
   
   
 
 - 六、Element Plus 手搭 Admin 管理后台骨架
-  - [6.1 搭建管理后台基本布局](https://www.yangmufa.cn/column/10039.html)
-  - [6.2 后台公共 Header 头：样式布局](https://www.yangmufa.cn/column/10041.html)
-  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yangmufa.cn/column/10042.html)
-  - [6.4 整合全局状态管理库 Pinia](https://www.yangmufa.cn/column/10043.html)
-  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yangmufa.cn/column/10044.html)
-  - [6.6 支持全屏展示、页面点击刷新](https://www.yangmufa.cn/column/10045.html)
-  - [6.7 标签导航栏组件实现：样式布局](https://www.yangmufa.cn/column/10046.html)
-  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yangmufa.cn/column/10047.html)
-  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yangmufa.cn/column/10048.html)
-  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yangmufa.cn/column/10049.html)
-  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yangmufa.cn/column/10050.html)
-  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yangmufa.cn/column/10051.html)
-  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yangmufa.cn/column/10052.html)
-  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yangmufa.cn/column/10053.html)
-  - [6.15 修改用户密码接口开发](https://www.yangmufa.cn/column/10054.html)
-  - [6.16 获取当前登录用户信息接口开发](https://www.yangmufa.cn/column/10055.html)
-  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yangmufa.cn/column/10056.html)
-  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yangmufa.cn/column/10057.html)
-  - [6.19 用户修改密码、退出登录功能开发](https://www.yangmufa.cn/column/10058.html)
-  - [6.20 小结](https://www.yangmufa.cn/column/10059.html)
+  - [6.1 搭建管理后台基本布局](https://www.yanggongzi.dev/column/10039.html)
+  - [6.2 后台公共 Header 头：样式布局](https://www.yanggongzi.dev/column/10041.html)
+  - [6.3 后台公共左侧 Menu 菜单栏：样式布局](https://www.yanggongzi.dev/column/10042.html)
+  - [6.4 整合全局状态管理库 Pinia](https://www.yanggongzi.dev/column/10043.html)
+  - [6.5 左边菜单栏点击收缩、展开功能实现](https://www.yanggongzi.dev/column/10044.html)
+  - [6.6 支持全屏展示、页面点击刷新](https://www.yanggongzi.dev/column/10045.html)
+  - [6.7 标签导航栏组件实现：样式布局](https://www.yanggongzi.dev/column/10046.html)
+  - [6.8 标签导航栏组件实现：路由同步 (1)](https://www.yanggongzi.dev/column/10047.html)
+  - [6.9 标签导航栏组件实现：路由同步 (2)](https://www.yanggongzi.dev/column/10048.html)
+  - [6.10 标签导航栏组件实现：标签页关闭](https://www.yanggongzi.dev/column/10049.html)
+  - [6.11 标签导航栏组件实现：关闭其他、全部标签页](https://www.yanggongzi.dev/column/10050.html)
+  - [6.12 后台公共 Footer 页脚：样式布局](https://www.yanggongzi.dev/column/10051.html)
+  - [6.13 使用 KeepAlive 缓存组件，提高页面切换性能和响应速度](https://www.yanggongzi.dev/column/10052.html)
+  - [6.14 使用 Transition 组件添加全局过渡动画](https://www.yanggongzi.dev/column/10053.html)
+  - [6.15 修改用户密码接口开发](https://www.yanggongzi.dev/column/10054.html)
+  - [6.16 获取当前登录用户信息接口开发](https://www.yanggongzi.dev/column/10055.html)
+  - [6.17 Pinia 存储用户信息，动态显示登录用户名](https://www.yanggongzi.dev/column/10056.html)
+  - [6.18 使用 pinia-persist 插件实现 Pinia 数据持久化](https://www.yanggongzi.dev/column/10057.html)
+  - [6.19 用户修改密码、退出登录功能开发](https://www.yanggongzi.dev/column/10058.html)
+  - [6.20 小结](https://www.yanggongzi.dev/column/10059.html)
 
   
 
   
 - 七、管理后台：文章分类模块开发
-  - [7.1 分类模块接口分析](https://www.yangmufa.cn/column/10060.html)
-  - [7.2 文章分类：新增接口开发](https://www.yangmufa.cn/column/10061.html)
-  - [7.3 文章分类：分页接口开发](https://www.yangmufa.cn/column/10062.html)
-  - [7.4 文章分类：删除接口开发](https://www.yangmufa.cn/column/10063.html)
-  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yangmufa.cn/column/10064.html)
-  - [7.6 后台分类管理页面：样式布局](https://www.yangmufa.cn/column/10065.html)
-  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yangmufa.cn/column/10066.html)
-  - [7.8 文章分类：分页列表数据动态渲染](https://www.yangmufa.cn/column/10067.html)
-  - [7.9 文章分类：新增功能开发](https://www.yangmufa.cn/column/10068.html)
-  - [7.10 文章分类：删除功能开发](https://www.yangmufa.cn/column/10069.html)
-  - [7.11 通用表单对话框组件封装](https://www.yangmufa.cn/column/10070.html)
-  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yangmufa.cn/column/10071.html)
+  - [7.1 分类模块接口分析](https://www.yanggongzi.dev/column/10060.html)
+  - [7.2 文章分类：新增接口开发](https://www.yanggongzi.dev/column/10061.html)
+  - [7.3 文章分类：分页接口开发](https://www.yanggongzi.dev/column/10062.html)
+  - [7.4 文章分类：删除接口开发](https://www.yanggongzi.dev/column/10063.html)
+  - [7.5 文章发布：分类 Select 下拉列表接口开发](https://www.yanggongzi.dev/column/10064.html)
+  - [7.6 后台分类管理页面：样式布局](https://www.yanggongzi.dev/column/10065.html)
+  - [7.7 Config Provider 全局配置: 实现组件中文化](https://www.yanggongzi.dev/column/10066.html)
+  - [7.8 文章分类：分页列表数据动态渲染](https://www.yanggongzi.dev/column/10067.html)
+  - [7.9 文章分类：新增功能开发](https://www.yanggongzi.dev/column/10068.html)
+  - [7.10 文章分类：删除功能开发](https://www.yanggongzi.dev/column/10069.html)
+  - [7.11 通用表单对话框组件封装](https://www.yanggongzi.dev/column/10070.html)
+  - [7.12 添加 Table 组件加载 Loading 、表单对话框提交按钮 Loading 动画](https://www.yanggongzi.dev/column/10071.html)
   
 
 
 - 八、管理后台：标签模块开发
-  - [8.1 标签模块接口分析【视频讲解】](https://www.yangmufa.cn/column/10072.html)
-  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10073.html)
-  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yangmufa.cn/column/10074.html)
-  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yangmufa.cn/column/10075.html)
-  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yangmufa.cn/column/10076.html)
-  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yangmufa.cn/column/10077.html)
-  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yangmufa.cn/column/10078.html)
+  - [8.1 标签模块接口分析【视频讲解】](https://www.yanggongzi.dev/column/10072.html)
+  - [8.2 标签管理：新增标签接口开发【视频讲解】](https://www.yanggongzi.dev/column/10073.html)
+  - [8.3 标签管理：标签分页接口开发【视频讲解】](https://www.yanggongzi.dev/column/10074.html)
+  - [8.4 标签管理：删除标签接口开发【视频讲解】](https://www.yanggongzi.dev/column/10075.html)
+  - [8.5 标签关键词模糊查询 select 列表接口开发【视频讲解】](https://www.yanggongzi.dev/column/10076.html)
+  - [8.6 标签管理页面开发：分页列表【视频讲解】](https://www.yanggongzi.dev/column/10077.html)
+  - [8.7 标签管理页面开发：新增&删除标签功能【视频讲解】](https://www.yanggongzi.dev/column/10078.html)
   
   
   
 - 九、管理后台：博客设置模块开发
-  - [9.1 博客设置模块功能分析、表设计](https://www.yangmufa.cn/column/10079.html)
-  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yangmufa.cn/column/10080.html)
-  - [9.3 文件上传接口开发](https://www.yangmufa.cn/column/10081.html)
-  - [9.4 博客设置: 更新接口开发](https://www.yangmufa.cn/column/10082.html)
-  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yangmufa.cn/column/10083.html)
-  - [9.6 博客设置：获取详情接口开发](https://www.yangmufa.cn/column/10084.html)
-  - [9.7 博客设置页面：样式布局](https://www.yangmufa.cn/column/10085.html)
-  - [9.8 管理后台：滚动样式优化](https://www.yangmufa.cn/column/10086.html)
-  - [9.9 博客设置页：数据渲染、图片上传](https://www.yangmufa.cn/column/10087.html)
-  - [9.10 博客设置页：更新设置](https://www.yangmufa.cn/column/10088.html)
+  - [9.1 博客设置模块功能分析、表设计](https://www.yanggongzi.dev/column/10079.html)
+  - [9.2 Docker 本地安装 Minio 对象存储](https://www.yanggongzi.dev/column/10080.html)
+  - [9.3 文件上传接口开发](https://www.yanggongzi.dev/column/10081.html)
+  - [9.4 博客设置: 更新接口开发](https://www.yanggongzi.dev/column/10082.html)
+  - [9.5 整合 Mapstruct : 简化属性映射](https://www.yanggongzi.dev/column/10083.html)
+  - [9.6 博客设置：获取详情接口开发](https://www.yanggongzi.dev/column/10084.html)
+  - [9.7 博客设置页面：样式布局](https://www.yanggongzi.dev/column/10085.html)
+  - [9.8 管理后台：滚动样式优化](https://www.yanggongzi.dev/column/10086.html)
+  - [9.9 博客设置页：数据渲染、图片上传](https://www.yanggongzi.dev/column/10087.html)
+  - [9.10 博客设置页：更新设置](https://www.yanggongzi.dev/column/10088.html)
   
 
 
 
 - 十、管理后台：文章模块开发
-  - [10.1 文章管理模块功能分析、表设计](https://www.yangmufa.cn/column/10090.html)
-  - [10.2 文章管理：文章发布接口开发（1）](https://www.yangmufa.cn/column/10091.html)
-  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yangmufa.cn/column/10092.html)
-  - [10.4 文章管理：文章删除接口开发](https://www.yangmufa.cn/column/10093.html)
-  - [10.5 文章管理：分页接口开发](https://www.yangmufa.cn/column/10094.html)
-  - [10.6 文章管理：获取文章详情接口开发](https://www.yangmufa.cn/column/10095.html)
-  - [10.7 文章管理：文章更新接口开发](https://www.yangmufa.cn/column/10096.html)
-  - [10.8 文章管理：分页列表开发](https://www.yangmufa.cn/column/10097.html)
-  - [10.9 文章管理页：删除文章开发](https://www.yangmufa.cn/column/10098.html)
-  - [10.10 文章管理页：写文章对话框样式布局](https://www.yangmufa.cn/column/10099.html)
-  - [10.11 文章管理页：文章发布功能开发](https://www.yangmufa.cn/column/10100.html)
-  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yangmufa.cn/column/10101.html)
-  - [10.13 文章管理页：文章编辑功能开发](https://www.yangmufa.cn/column/10102.html)
-  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yangmufa.cn/column/10103.html)
+  - [10.1 文章管理模块功能分析、表设计](https://www.yanggongzi.dev/column/10090.html)
+  - [10.2 文章管理：文章发布接口开发（1）](https://www.yanggongzi.dev/column/10091.html)
+  - [10.3 文章管理：文章发布接口开发（2）—— SQL 注入器实现批量插入](https://www.yanggongzi.dev/column/10092.html)
+  - [10.4 文章管理：文章删除接口开发](https://www.yanggongzi.dev/column/10093.html)
+  - [10.5 文章管理：分页接口开发](https://www.yanggongzi.dev/column/10094.html)
+  - [10.6 文章管理：获取文章详情接口开发](https://www.yanggongzi.dev/column/10095.html)
+  - [10.7 文章管理：文章更新接口开发](https://www.yanggongzi.dev/column/10096.html)
+  - [10.8 文章管理：分页列表开发](https://www.yanggongzi.dev/column/10097.html)
+  - [10.9 文章管理页：删除文章开发](https://www.yanggongzi.dev/column/10098.html)
+  - [10.10 文章管理页：写文章对话框样式布局](https://www.yanggongzi.dev/column/10099.html)
+  - [10.11 文章管理页：文章发布功能开发](https://www.yanggongzi.dev/column/10100.html)
+  - [10.12 文章管理：获取所有标签 Select 列表接口开发](https://www.yanggongzi.dev/column/10101.html)
+  - [10.13 文章管理页：文章编辑功能开发](https://www.yanggongzi.dev/column/10102.html)
+  - [10.14 Bug 修复：分类、标签删除接口添加是否关联文章校验; 前端 token 过期问题 fixed](https://www.yanggongzi.dev/column/10103.html)
   
   
   
@@ -2010,41 +2010,41 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
   
 
 - 十一、博客前台：首页开发
-   - [11.1 前台首页、归档页接口分析](https://www.yangmufa.cn/column/10104.html)
-   - [11.2 前台首页：文章分页接口开发](https://www.yangmufa.cn/column/10105.html)
-   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yangmufa.cn/column/10106.html)
-   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yangmufa.cn/column/10107.html)
-   - [11.5 前台 Header 头组件封装](https://www.yangmufa.cn/column/10108.html)   
-   - [11.6 首页样式布局设计（1）](https://www.yangmufa.cn/column/10109.html)
-   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yangmufa.cn/column/10110.html)
-   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yangmufa.cn/column/10111.html)
-   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yangmufa.cn/column/10112.html)
-   - [11.10 首页文章分页数据渲染](https://www.yangmufa.cn/column/10113.html)
-   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yangmufa.cn/column/10114.html)
-   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yangmufa.cn/column/10115.html)
-   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yangmufa.cn/column/10116.html)
+   - [11.1 前台首页、归档页接口分析](https://www.yanggongzi.dev/column/10104.html)
+   - [11.2 前台首页：文章分页接口开发](https://www.yanggongzi.dev/column/10105.html)
+   - [11.3 公共侧边栏：获取分类、标签列表接口开发](https://www.yanggongzi.dev/column/10106.html)
+   - [11.4 公共部分：获取博客设置信息接口开发](https://www.yanggongzi.dev/column/10107.html)
+   - [11.5 前台 Header 头组件封装](https://www.yanggongzi.dev/column/10108.html)   
+   - [11.6 首页样式布局设计（1）](https://www.yanggongzi.dev/column/10109.html)
+   - [11.7 首页样式布局设计（2） —— 侧边栏博主信息卡片](https://www.yanggongzi.dev/column/10110.html)
+   - [11.8 首页样式布局设计（3） —— 侧边栏分类、标签卡片](https://www.yanggongzi.dev/column/10111.html)
+   - [11.9 首页样式布局设计（4） —— Footer 组件封装](https://www.yanggongzi.dev/column/10112.html)
+   - [11.10 首页文章分页数据渲染](https://www.yanggongzi.dev/column/10113.html)
+   - [11.11 公共右边栏：博主信息卡片组件封装](https://www.yanggongzi.dev/column/10114.html)
+   - [11.12 公共右边栏：分类、标签卡片组件封装](https://www.yanggongzi.dev/column/10115.html)
+   - [11.13 公共 Header 头：跳转后台、退出登录功能开发](https://www.yanggongzi.dev/column/10116.html)
    
    
 
 - 十二、博客前台：归档列表页、分类列表页、标签列表页开发
-   - [12.1 归档页、分类列表页接口分析](https://www.yangmufa.cn/column/10117.html)
-   - [12.2 文章归档分页接口开发](https://www.yangmufa.cn/column/10118.html)
-   - [12.3 前台归档页：样式布局设计](https://www.yangmufa.cn/column/10119.html)
-   - [12.4 前台归档页：分页列表功能开发](https://www.yangmufa.cn/column/10120.html)
-   - [12.5 前台分类页开发](https://www.yangmufa.cn/column/10121.html)
-   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10122.html)
-   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yangmufa.cn/column/10123.html)
-   - [12.8 分类-文章列表页开发](https://www.yangmufa.cn/column/10124.html)
-   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yangmufa.cn/column/10125.html)
-   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yangmufa.cn/column/10130.html)
-   - [12.11 标签-文章列表页开发](https://www.yangmufa.cn/column/10131.html)
+   - [12.1 归档页、分类列表页接口分析](https://www.yanggongzi.dev/column/10117.html)
+   - [12.2 文章归档分页接口开发](https://www.yanggongzi.dev/column/10118.html)
+   - [12.3 前台归档页：样式布局设计](https://www.yanggongzi.dev/column/10119.html)
+   - [12.4 前台归档页：分页列表功能开发](https://www.yanggongzi.dev/column/10120.html)
+   - [12.5 前台分类页开发](https://www.yanggongzi.dev/column/10121.html)
+   - [12.6 获取某个分类下的文章列表——分页接口开发](https://www.yanggongzi.dev/column/10122.html)
+   - [12.7 前台分类-文章列表页: 样式布局开发](https://www.yanggongzi.dev/column/10123.html)
+   - [12.8 分类-文章列表页开发](https://www.yanggongzi.dev/column/10124.html)
+   - [12.9 前台标签列表页：样式布局&功能开发](https://www.yanggongzi.dev/column/10125.html)
+   - [12.10 获取某个标签下的文章列表——分页接口开发](https://www.yanggongzi.dev/column/10130.html)
+   - [12.11 标签-文章列表页开发](https://www.yanggongzi.dev/column/10131.html)
 
 
 - 十三、博客前台：文章详情页开发
-   - [13.1 文章详情页接口分析](https://www.yangmufa.cn/column/10126.html)
-   - [13.2 后端封装 Markdown 装换工具类](https://www.yangmufa.cn/column/10127.html)
-   - [13.3 获取文章详情接口开发](https://www.yangmufa.cn/column/10128.html)
-   - [13.4 文章详情页：样式布局设计](https://www.yangmufa.cn/column/10129.html)
+   - [13.1 文章详情页接口分析](https://www.yanggongzi.dev/column/10126.html)
+   - [13.2 后端封装 Markdown 装换工具类](https://www.yanggongzi.dev/column/10127.html)
+   - [13.3 获取文章详情接口开发](https://www.yanggongzi.dev/column/10128.html)
+   - [13.4 文章详情页：样式布局设计](https://www.yanggongzi.dev/column/10129.html)
 
    - *努力爆肝中，每天更新两小节, 按目前的更新速度，1.0 版本差不多还剩1个半月更新完毕...*
 - 十四、管理后台：仪表盘模块开发
@@ -2076,7 +2076,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 <div class="flex items-center justify-center text-lg text-red-500 font-bold mb-2">扫描下方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👇👇</div>
 
-!["领取优惠券加入，更划算"](https://img.yangmufa.cn/ibp/169355760680941 "领取优惠券加入，更划算")
+!["领取优惠券加入，更划算"](https://img.yanggongzi.dev/ibp/169355760680941 "领取优惠券加入，更划算")
 
 <div class="flex items-center justify-center text-lg text-red-500 font-bold">扫描上方二维码加入, 星球支持 3 天无理由退款，可以先进去看看合不合适👆👆</div>
 
@@ -2091,7 +2091,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 对专栏感兴趣的小伙伴，也可以加鲲鲲私人微信来咨询，扫描下方二维码即可，记得备注【*咨询*】哟：
 
-![扫描二维码，添加鲲鲲私人微信](https://img.yangmufa.cn/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")');
+![扫描二维码，添加鲲鲲私人微信](https://img.yanggongzi.dev/ibp/169536889316499 "扫描二维码，添加鲲鲲私人微信")');
 INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALUES (2056031402964684800, 2056031402947907584, '发发发
 ![](http://127.0.0.1:9000/blog/5158cb66f1e34b249017ed3deab83b.webp)
 圣斗士
@@ -3093,8 +3093,8 @@ INSERT INTO "public"."blog_comment" ("id", "content", "avatar", "nickname", "mai
 INSERT INTO "public"."blog_comment" ("id", "content", "avatar", "nickname", "mail", "website", "router_url", "create_time", "update_time", "is_deleted", "reply_comment_id", "parent_comment_id", "reason", "status") VALUES (11, '呜呜呜呜呜呜', NULL, '', '', NULL, '', '2025-09-14 15:55:01.317563', '2025-09-14 15:55:01.317563', 0, NULL, NULL, '', 1);
 INSERT INTO "public"."blog_comment" ("id", "content", "avatar", "nickname", "mail", "website", "router_url", "create_time", "update_time", "is_deleted", "reply_comment_id", "parent_comment_id", "reason", "status") VALUES (13, '呜呜呜呜呜呜呜', NULL, '', '', NULL, '', '2025-09-14 15:55:07.928365', '2025-09-14 15:55:07.928365', 0, NULL, NULL, '', 1);
 INSERT INTO "public"."blog_comment" ("id", "content", "avatar", "nickname", "mail", "website", "router_url", "create_time", "update_time", "is_deleted", "reply_comment_id", "parent_comment_id", "reason", "status") VALUES (7, '放大发的发对对对大发', '', '我问问三四十岁', 'ya三十岁gnmufa@qq.com', '我对对对问问', '/surfer/article/1', '2025-09-14 23:54:16.525481', '2025-10-06 15:26:55.102678', 0, NULL, NULL, '', 2);
-INSERT INTO "public"."blog_comment" ("id", "content", "avatar", "nickname", "mail", "website", "router_url", "create_time", "update_time", "is_deleted", "reply_comment_id", "parent_comment_id", "reason", "status") VALUES (15, '对对对对对', '', '你猜', 'yangmufa@163.com', '你猜', '/surfer/articles/28', '2026-04-26 19:04:26.997428', '2026-04-26 19:04:26.998016', 0, NULL, NULL, '', 2);
-INSERT INTO "public"."blog_comment" ("id", "content", "avatar", "nickname", "mail", "website", "router_url", "create_time", "update_time", "is_deleted", "reply_comment_id", "parent_comment_id", "reason", "status") VALUES (16, '😱👌😂😃😱😭😵', '', '你猜', 'yangmufa@163.com', '你猜', '/surfer/articles/28', '2026-04-26 19:05:15.569971', '2026-04-26 19:05:15.570115', 0, NULL, NULL, '', 2);
+INSERT INTO "public"."blog_comment" ("id", "content", "avatar", "nickname", "mail", "website", "router_url", "create_time", "update_time", "is_deleted", "reply_comment_id", "parent_comment_id", "reason", "status") VALUES (15, '对对对对对', '', '你猜', 'yanggongzi@163.com', '你猜', '/surfer/articles/28', '2026-04-26 19:04:26.997428', '2026-04-26 19:04:26.998016', 0, NULL, NULL, '', 2);
+INSERT INTO "public"."blog_comment" ("id", "content", "avatar", "nickname", "mail", "website", "router_url", "create_time", "update_time", "is_deleted", "reply_comment_id", "parent_comment_id", "reason", "status") VALUES (16, '😱👌😂😃😱😭😵', '', '你猜', 'yanggongzi@163.com', '你猜', '/surfer/articles/28', '2026-04-26 19:05:15.569971', '2026-04-26 19:05:15.570115', 0, NULL, NULL, '', 2);
 INSERT INTO "public"."blog_comment" ("id", "content", "avatar", "nickname", "mail", "website", "router_url", "create_time", "update_time", "is_deleted", "reply_comment_id", "parent_comment_id", "reason", "status") VALUES (17, '😂', '', '快乐小狗', '123@qq.com', '', '/surfer/wiki/3', '2026-04-29 23:14:00.233568', '2026-04-29 23:14:00.233707', 0, NULL, NULL, '', 2);
 INSERT INTO "public"."blog_comment" ("id", "content", "avatar", "nickname", "mail", "website", "router_url", "create_time", "update_time", "is_deleted", "reply_comment_id", "parent_comment_id", "reason", "status") VALUES (18, '时间打开方式', '', '痛苦小狗', '123@qq.com', '', '/surfer/wiki/3', '2026-04-29 23:14:22.513093', '2026-04-29 23:14:22.514797', 0, 17, 17, '', 2);
 INSERT INTO "public"."blog_comment" ("id", "content", "avatar", "nickname", "mail", "website", "router_url", "create_time", "update_time", "is_deleted", "reply_comment_id", "parent_comment_id", "reason", "status") VALUES (19, '试试顶顶顶顶', '', '忧郁小狗', '123@qq.com', '', '/surfer/wiki/3', '2026-04-29 23:14:34.770037', '2026-04-29 23:14:34.770458', 0, 18, 17, '', 2);
@@ -3158,7 +3158,7 @@ INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar"
 INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES (4, '呃呃呃', '三十岁', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'active', '2025-10-20 16:27:45', 'tools', 't', '', 8, 0, '2026-05-14 07:58:09.400276');
 INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES (6, 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'active', '2025-10-20 16:31:05', 'navigation', 'f', '', 2, 0, '2026-05-14 07:58:16.825029');
 INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES (7, '我问问', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'active', '2025-10-20 16:31:25', 'aggregate', 'f', '', 1, 0, '2026-05-14 07:58:56.543593');
-INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES (5, '对对对', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'https://img.yangmufa.cn/roc-blog/8c492941ce294ff597feb51f4fd8ff92.jpg', 'active', '2025-10-20 16:28:07', 'tools', 'f', '', 5, 0, '2026-05-14 07:59:43.885175');
+INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES (5, '对对对', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'https://img.yanggongzi.dev/roc-blog/8c492941ce294ff597feb51f4fd8ff92.jpg', 'active', '2025-10-20 16:28:07', 'tools', 'f', '', 5, 0, '2026-05-14 07:59:43.885175');
 INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES (8, '阶段7友链测试 1777917169', '阶段7自动化友链申请验证', 'https://example.com/phase7-1777917169', 'https://example.com/avatar.png', 'pending', '2026-05-04 17:52:50', '阶段7测试', 'f', 'friend-phase7-1777917169@example.com', 0, 0, '2026-05-13 16:39:24.435354');
 COMMIT;
 
@@ -3246,7 +3246,7 @@ COMMENT ON TABLE "public"."blog_settings" IS '博客设置表';
 BEGIN;
 INSERT INTO "public"."blog_settings" ("id", "logo", "name", "author", "introduction", "copyright_declaration", "avatar", "github_homepage", "csdn_homepage", "gitee_homepage", "zhihu_homepage", "mail", "is_comment_sensi_word_open", "is_comment_examine_open", "is_auto_theme", "douyin_homepage") VALUES (1, 'http://127.0.0.1:9000/blog-article/logo_1780037348776_600.webp', 'Mint.Blog', '程序员-杨工子', '大家好,我是练习编程两年半的"程序员-杨工子",喜欢CV、Tab、Agent。', '本文为 程序员-杨工子 原创文章，遵循 CC BY 4.0 版权协议，转载请附上原文出处和链接。
 如您认为本文内容侵犯了您的合法权益，请通过以下方式提供书面证明材料，我将在核实后24小时内处理。
-📧 联系邮箱：yangmufa@163.com', 'http://127.0.0.1:9000/blog-article/avatar_1780037348841_640.jpg', 'https://github.com/YangMufa', 'https://blog.csdn.net/YangMufa', 'https://gitee.com/YangMufa', 'https://www.zhihu.com/people/YangMufa', 'yangmufa@163.com', 't', 'f', 't', 'https://v.douyin.com/8r27sSQYrz0');
+📧 联系邮箱：yanggongzi@163.com', 'http://127.0.0.1:9000/blog-article/avatar_1780037348841_640.jpg', 'https://github.com/YangGongziDev', 'https://blog.csdn.net/YangMufa', 'https://gitee.com/YangGongziDev', 'https://www.zhihu.com/people/YangMufa', 'yanggongzi@163.com', 't', 'f', 't', 'https://v.douyin.com/8r27sSQYrz0');
 COMMIT;
 
 -- ----------------------------

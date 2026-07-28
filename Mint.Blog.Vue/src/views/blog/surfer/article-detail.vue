@@ -92,7 +92,7 @@ let bannerPreloadStarted = false;
 const BANNER_CACHE_NAME = 'blog-surfer-banner-images-v1';
 const BANNER_CACHE_SNAPSHOT_KEY = 'blog-surfer:cached-banner-images';
 const LAST_CONFIRMED_HERO_KEY = 'blog-surfer:last-confirmed-article-detail-hero-image';
-const INITIAL_HERO_RESOLVE_TIMEOUT = 450;
+const INITIAL_HERO_RESOLVE_TIMEOUT = 1500;
 const articleHeroStyle = computed(() =>
   heroResolved.value ? { backgroundImage: `url(${heroImage.value || bannerDefaultImg})` } : {}
 );
@@ -242,10 +242,10 @@ async function getCachedBannerImages(images: string[], preferredImage = '') {
   }
 }
 
-async function getCachedBannerImagesWithTimeout(images: string[], preferredImage = '', timeoutMs = 300) {
-  return Promise.race<string[]>([
+async function getCachedBannerImagesWithTimeout(images: string[], preferredImage = '', timeoutMs = 1000): Promise<string[]> {
+  return Promise.race([
     getCachedBannerImages(images, preferredImage),
-    new Promise(resolve => {
+    new Promise<string[]>(resolve => {
       window.setTimeout(() => resolve([]), timeoutMs);
     })
   ]);
@@ -935,7 +935,7 @@ onActivated(() => {
               <ATooltip title="发布时间">
                 <div class="flex items-center">
                   <span class="hero-meta-icon bg-[#ea3b24]"><CalendarOutlined /></span>
-                  {{ article.createTime }}
+                  {{ formatDateTime(article.createTime) }}
                 </div>
               </ATooltip>
               <ATooltip title="阅读人次">

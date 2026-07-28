@@ -6,8 +6,8 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: 'YangMufaAvatar'
-});  
+  name: 'YangGongziAvatar'
+});
 </script>
 
 <style scoped lang="scss">

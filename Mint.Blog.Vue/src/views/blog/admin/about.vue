@@ -17,9 +17,9 @@ const projectInfo = [
   { label: '作者', value: '程序员-杨工子' },
   { label: '开源协议', value: 'GPL-3.0 license' },
   { label: '项目定位', value: '个人博客 / 内容管理 / 知识整理' },
-  { label: '项目仓库', value: 'https://github.com/YangMufa/Mint.Blog', link: 'https://github.com/YangMufa/Mint.Blog' },
-  { label: '站点首页', value: 'https://www.yangmufa.cn', link: 'https://www.yangmufa.cn' },
-  { label: '接口地址', value: 'https://www.yangmufa.cn/api/blog', link: 'https://www.yangmufa.cn/api/blog' },
+  { label: '项目仓库', value: 'https://github.com/YangGongziDev/Mint.Blog', link: 'https://github.com/YangGongziDev/Mint.Blog' },
+  { label: '站点首页', value: 'https://www.yanggongzi.dev', link: 'https://www.yanggongzi.dev' },
+  { label: '接口地址', value: 'https://www.yanggongzi.dev/api/blog', link: 'https://www.yanggongzi.dev/api/blog' },
   { label: '后台环境', value: '.NET 10 / SqlSugar / PostgreSQL / RustFS / JWT' },
   { label: '前端环境', value: 'Node.js 24+ / PNPM 10+ / Vite 8' }
 ];

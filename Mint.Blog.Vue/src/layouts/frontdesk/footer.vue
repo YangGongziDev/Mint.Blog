@@ -19,7 +19,7 @@
         <img :src="authorAvatar" alt="作者头像" class="footer-logo" @error="handleLogoError" />
           <span>
             © {{ new Date().getFullYear() }}
-            <a href="https://www.yangmufa.cn/blog/surfer/me" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.yanggongzi.dev/blog/surfer/me" target="_blank" rel="noopener noreferrer">
               程序员-杨工子
             </a>
             All Rights Reserved.
@@ -29,16 +29,16 @@
           <img :src="blogLogo" alt="博客LOGO" class="footer-logo" @error="handleLogoError" />
           <span>
             基于开源项目
-            <a href="https://github.com/YangMufa/Mint.Blog" target="_blank" rel="noopener noreferrer">
+            <a href="https://gitee.com/YangGongziDev/Mint.Blog" target="_blank" rel="noopener noreferrer">
               Mint.Blog
             </a>
             构建
           </span>
         </div>
-        <div class="footer-icp">
+        <div v-if="false" class="footer-icp">
           <img src="@/assets/blog/surfer/footer/gonan.png" alt="备案图标" class="footer-icp-icon" />
           <a href="https://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer">
-            黔ICP备19007557号
+            沪ICP备2021016234号
           </a>
         </div>
       </div>

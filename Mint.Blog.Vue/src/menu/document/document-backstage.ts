@@ -33,7 +33,7 @@ export const documentMenus: AppMenuRecord[] = [
     parentId: 'blog_admin_document',
     menuType: 'external',
     routerName: 'document_project-link',
-    path: 'https://www.yangmufa.cn/blog/surfer/column/1',
+    path: 'https://www.yanggongzi.dev/blog/surfer/column/1',
     tableName: 'admin_document_project_link',
     enabled: true,
     menuI18nKey: 'route.document_project-link',

@@ -325,11 +325,11 @@ const local: App.I18n.Schema = {
       projectNews: {
         title: 'Project News',
         moreNews: 'More News',
-        desc1: 'YangMufa created the open source project mint-admin on May 28, 2026!',
+        desc1: 'YangGongzi created the open source project mint-admin on May 28, 2026!',
         desc2: 'Yanbowe submitted a bug to mint-admin, the multi-tab bar will not adapt.',
-        desc3: 'YangMufa is ready to do sufficient preparation for the release of mint-admin!',
-        desc4: 'YangMufa is busy writing project documentation for mint-admin!',
-        desc5: 'YangMufa just wrote some of the workbench pages casually, and it was enough to see!'
+        desc3: 'YangGongzi is ready to do sufficient preparation for the release of mint-admin!',
+        desc4: 'YangGongzi is busy writing project documentation for mint-admin!',
+        desc5: 'YangGongzi just wrote some of the workbench pages casually, and it was enough to see!'
       },
       creativity: 'Creativity'
     },

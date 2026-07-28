@@ -64,9 +64,9 @@ function pickFriendHeroImage() {
 // 网站信息数据对象
 const siteInfo = ref({
   name: '程序员-杨工子',
-  icon: 'https://img.yangmufa.cn/blog-system/author-avatar.jpg',
+  icon: 'https://img.yanggongzi.dev/blog-system/author-avatar.jpg',
   category: '技术类',
-  url: 'https://www.yangmufa.cn',
+  url: 'https://www.yanggongzi.dev',
   description: '我是程序员-杨工子；练习编程两年半，C#.Net全栈工程师、MintBlog(薄荷博客)作者。'
 });
 

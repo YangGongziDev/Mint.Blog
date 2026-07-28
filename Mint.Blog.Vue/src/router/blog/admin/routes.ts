@@ -134,7 +134,7 @@ export const blogAdminRoutes: RouteRecordRaw[] = [
     name: 'document_project',
     component: () => import('@/components/system/iframe-page.vue'),
     props: {
-      url: 'https://www.yangmufa.cn/blog/surfer/column/1'
+      url: 'https://www.yanggongzi.dev/blog/surfer/column/1'
     },
     meta: {
       title: 'document_project',
@@ -148,7 +148,7 @@ export const blogAdminRoutes: RouteRecordRaw[] = [
     name: 'document_project-link',
     component: () => import('@/components/system/iframe-page.vue'),
     props: {
-      url: 'https://www.yangmufa.cn/blog/surfer/column/1'
+      url: 'https://www.yanggongzi.dev/blog/surfer/column/1'
     },
     meta: {
       title: 'document_project-link',

@@ -1,24 +1,24 @@
 <div align="center">
   <img src="./Mint.Blog.Vue/public/favicon.svg" width="160" />
   <h1>Mint.Blog V2</h1>
-  <h2>作者：<a href="https://www.yangmufa.cn/surfer/my">程序员-杨工子</a></h2>
+  <h2>作者：<a href="https://www.yanggongzi.dev/surfer/my">程序员-杨工子</a></h2>
   <span>中文 | <a href="./README.en_US.md">English</a></span>
 </div>
 
 ---
 <h4>原 RocBlog (鲲鹏博客) 已更名为 Mint.Blog V1</h4>
-<h4>代码并入 Mint.Blog 仓库<a href="https://github.com/YangMufa/Mint.Blog/tree/mint-blog-v1-java"> mint-blog-v1-java</a> 分支</h4>
+<h4>代码并入 Mint.Blog 仓库<a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java"> mint-blog-v1-java</a> 分支</h4>
 
 ---
 
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
-[![github stars](https://img.shields.io/github/stars/YangMufa/Mint.Blog)](https://github.com/YangMufa/Mint.Blog)
-[![github forks](https://img.shields.io/github/forks/YangMufa/Mint.Blog)](https://github.com/YangMufa/Mint.Blog)
-[![gitee stars](https://gitee.com/YangMufa/Mint.Blog/badge/star.svg)](https://gitee.com/YangMufa/Mint.Blog)
+[![github stars](https://img.shields.io/github/stars/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)
+[![github forks](https://img.shields.io/github/forks/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)
+[![gitee stars](https://gitee.com/YangGongziDev/Mint.Blog/badge/star.svg)](https://gitee.com/YangGongziDev/Mint.Blog)
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/chart?repos=YangMufa/Mint.Blog&type=date&legend=top-left)](https://www.star-history.com/?type=date&repos=YangMufa%2FMint.Blog)
+[![Star History Chart](https://api.star-history.com/chart?repos=YangGongziDev/Mint.Blog&type=date&legend=top-left)](https://www.star-history.com/?type=date&repos=YangGongziDev%2FMint.Blog)
 
 
 > [!NOTE]
@@ -39,7 +39,7 @@
 
 ## 简介
 
-[`Mint.Blog`](https://github.com/YangMufa/Mint.Blog)
+[`Mint.Blog`](https://github.com/YangGongziDev/Mint.Blog)
 是一款简洁优雅的博客模板；它以前沿技术栈构建；结构清晰、易于上手；旨在让你用更少的学习成本快速投入业务开发；核心功能包括主题配置、常用页面组件、路由与权限方案及国际化支持，真正实现开箱即用；同时，它也是学习最新技术栈的绝佳实践。
 
 ## 特性
@@ -55,25 +55,26 @@
 
 ## 文档
 
-- [https://www.yangmufa.cn/blog/surfer/column/1](https://www.yangmufa.cn/blog/surfer/column/1)
+- [https://www.yanggongzi.dev/blog/surfer/column/1](https://www.yanggongzi.dev/blog/surfer/column/1)
 
 ## 示例图片
 ### 移动端  
-![](https://img.yangmufa.cn/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_%E8%8F%9C%E5%8D%95.png)
-![](https://img.yangmufa.cn/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_%E9%A6%96%E9%A1%B5.png)
-![](https://img.yangmufa.cn/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_%E6%96%87%E7%AB%A0%E8%AF%A6%E6%83%85.png)
+![](https://img.yanggongzi.dev/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_%E8%8F%9C%E5%8D%95.png)
+![](https://img.yanggongzi.dev/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_%E9%A6%96%E9%A1%B5.png)
+![](https://img.yanggongzi.dev/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_%E6%96%87%E7%AB%A0%E8%AF%A6%E6%83%85.png)
 ### PC端  
-![](https://img.yangmufa.cn/blog-system/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84.png)
-![](https://img.yangmufa.cn/blog-system/PC_%E7%9C%8B%E6%9D%BF.png)
-![](https://img.yangmufa.cn/blog-system/PC_%E9%A6%96%E9%A1%B5.png)
-![](https://img.yangmufa.cn/blog-system/PC_%E6%96%87%E7%AB%A0_Banner.png)
-![](https://img.yangmufa.cn/blog-system/PC_%E6%96%87%E7%AB%A0_%E8%AF%A6%E6%83%85.png)
-![](https://img.yangmufa.cn/blog-system/PC_%E6%96%87%E7%AB%A0_%E5%BA%95%E9%83%A8.png)
-![](https://img.yangmufa.cn/blog-system/PC_%E4%B8%93%E6%A0%8F.png)
-![](https://img.yangmufa.cn/blog-system/PC_%E6%96%87%E7%AB%A0_%E5%88%86%E7%B1%BB.png)
-![](https://img.yangmufa.cn/blog-system/PC_%E6%96%87%E7%AB%A0%E7%AE%A1%E7%90%86.png)
-![](https://img.yangmufa.cn/blog-system/PC_%E5%9B%BE%E7%89%87%E7%AE%A1%E7%90%86.png)
-![](https://img.yangmufa.cn/blog-system/PC_%E4%B8%93%E6%A0%8F%E7%AE%A1%E7%90%86.png)
+![](https://img.yanggongzi.dev/blog-system/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84.png)
+![](https://img.yanggongzi.dev/blog-system/PC_%E7%9C%8B%E6%9D%BF.png)
+![](https://img.yanggongzi.dev/blog-system/PC_%E9%A6%96%E9%A1%B5.png)
+![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0_Banner.png)
+![](https://img.yanggongzi.dev/blog-system/gallery-b233ef9d-0871-4041-b8f4-a0fde6dd5f1a.png)
+![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0_%E8%AF%A6%E6%83%85.png)
+![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0_%E5%BA%95%E9%83%A8.png)
+![](https://img.yanggongzi.dev/blog-system/PC_%E4%B8%93%E6%A0%8F.png)
+![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0_%E5%88%86%E7%B1%BB.png)
+![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0%E7%AE%A1%E7%90%86.png)
+![](https://img.yanggongzi.dev/blog-system/PC_%E5%9B%BE%E7%89%87%E7%AE%A1%E7%90%86.png)
+![](https://img.yanggongzi.dev/blog-system/PC_%E4%B8%93%E6%A0%8F%E7%AE%A1%E7%90%86.png)
 
 ## 使用
 
@@ -89,9 +90,9 @@
 
 ```bash
 # github
-git clone https://github.com/YangMufa/Mint.Blog.git
+git clone https://github.com/YangGongziDev/Mint.Blog.git
 # gitee
-git clone https://gitee.com/YangMufa/Mint.Blog.git
+git clone https://gitee.com/YangGongziDev/Mint.Blog.git
 ```
 
 **安装依赖**
@@ -114,12 +115,12 @@ pnpm run build
 
 ## 周边生态
 
-- [Mint.Admin](https://github.com/YangMufa/Mint.Admin)：基于Mint.Blog V2 重新构建的.Net DDD 中后台快速开发框架。
+- [Mint.Admin](https://github.com/YangGongziDev/Mint.Admin)：基于Mint.Blog V2 重新构建的.Net DDD 中后台快速开发框架。
 
 
 ## 如何贡献
 
-我们热烈欢迎并感谢所有形式的贡献。如果您有任何想法或建议，欢迎通过提交 [pull requests](https://github.com/YangMufa/Mint.Blog/pulls) 或创建 GitHub [issue](https://github.com/YangMufa/Mint.Blog/issues/new) 来分享。
+我们热烈欢迎并感谢所有形式的贡献。如果您有任何想法或建议，欢迎通过提交 [pull requests](https://github.com/YangGongziDev/Mint.Blog/pulls) 或创建 GitHub [issue](https://github.com/YangGongziDev/Mint.Blog/issues/new) 来分享。
 
 ## Git 提交规范
 
@@ -138,8 +139,8 @@ pnpm run build
 
 感谢以下贡献者的贡献。如果您想为本项目做出贡献，请参考 [如何贡献](#如何贡献)。
 
-<a href="https://github.com/YangMufa/Mint.Blog/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=YangMufa/Mint.Blog" />
+<a href="https://github.com/YangGongziDev/Mint.Blog/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=YangGongziDev/Mint.Blog" />
 </a>
 
 ## 声明

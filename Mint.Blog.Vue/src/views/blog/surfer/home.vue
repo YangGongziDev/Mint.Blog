@@ -64,7 +64,7 @@ const displayTexts = ['Mint Blog', '新鲜阅读，温柔写作', '技术·生�
 const BANNER_CACHE_NAME = 'blog-surfer-banner-images-v1';
 const BANNER_CACHE_SNAPSHOT_KEY = 'blog-surfer:cached-banner-images';
 const LAST_CONFIRMED_BANNER_KEY = 'blog-surfer:last-confirmed-home-hero-image';
-const INITIAL_BANNER_RESOLVE_TIMEOUT = 450;
+const INITIAL_BANNER_RESOLVE_TIMEOUT = 1500;
 const slideImageSrc = computed(() => (bannerResolved.value ? swiperImage.value || bannerDefaultImg : ''));
 
 function readCachedBannerSnapshot(images: string[]) {
@@ -192,7 +192,7 @@ async function getCachedBannerImages(images: string[], preferredImage = '') {
   }
 }
 
-async function getCachedBannerImagesWithTimeout(images: string[], preferredImage = '', timeoutMs = 300) {
+async function getCachedBannerImagesWithTimeout(images: string[], preferredImage = '', timeoutMs = 1000) {
   return Promise.race<string[]>([
     getCachedBannerImages(images, preferredImage),
     new Promise(resolve => {

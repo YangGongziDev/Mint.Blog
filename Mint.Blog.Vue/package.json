@@ -5,16 +5,16 @@
   "description": "A concise and elegant blog template, based on Vue3,Vite8,TypeScript6,AntDesign4 and TailwindCSS4.",
   "author": {
     "name": "程序员·杨工子",
-    "email": "yangmufa@163.com",
-    "url": "https://github.com/YangMufa"
+    "email": "yanggongzi@163.com",
+    "url": "https://github.com/YangGongziDev"
   },
   "license": "MIT",
-  "homepage": "https://www.yangmufa.cn",
+  "homepage": "https://www.yanggongzi.dev",
   "repository": {
-    "url": "https://github.com/YangMufa/Mint.Blog.git"
+    "url": "https://github.com/YangGongziDev/Mint.Blog.git"
   },
   "bugs": {
-    "url": "https://github.com/YangMufa/Mint.Blog/issues"
+    "url": "https://github.com/YangGongziDev/Mint.Blog/issues"
   },
   "keywords": [
     "Mint.Blog",

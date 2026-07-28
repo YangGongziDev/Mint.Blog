@@ -40,7 +40,7 @@ const showcases: Showcase[] = [
     title: 'MintBlogV2',
     desc: '基于 .Net10 + Vue3 的个人博客。',
     img: siteProjectIcon1,
-    link: 'https://www.yangmufa.cn'
+    link: 'https://www.yanggongzi.dev'
   },
 ];
 const skills = ['.Net', 'PostgreSQL', 'Vue3', 'TypeScript', 'Ant Design Vue', 'SCSS', 'Vite', 'RESTful API'];
@@ -74,8 +74,8 @@ function openContact(type: ContactType) {
         <div class="contact-list">
           <APopover trigger="click">
             <template #content>
-              <AButton type="link" href="https://github.com/DevCaikun">Github</AButton>
-              <AButton type="link" href="https://gitee.com/DevCaikun">Gitee</AButton>
+              <AButton type="link" href="https://github.com/YangGongziDev">Github</AButton>
+              <AButton type="link" href="https://gitee.com/YangGongziDev">Gitee</AButton>
             </template>
             <button class="contact-btn">
               <GithubOutlined />
@@ -83,7 +83,7 @@ function openContact(type: ContactType) {
             </button>
           </APopover>
           <APopover title="网易邮箱" trigger="click">
-            <template #content><AButton type="link" href="https://mail.163.com">yangmufa@163.com</AButton></template>
+            <template #content><AButton type="link" href="https://mail.163.com">yanggongzi@163.com</AButton></template>
             <button class="contact-btn">
               <MailOutlined />
               Mail

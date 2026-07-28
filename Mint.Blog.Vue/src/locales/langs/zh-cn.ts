@@ -1,6 +1,6 @@
 const local: App.I18n.Schema = {
   system: {
-    title: '薄荷博客V2',
+    title: '杨工子',
     updateTitle: '系统更新',
     updateContent: '发现新版本，是否立即刷新页面？',
     updateConfirm: '立即刷新',
@@ -235,7 +235,7 @@ const local: App.I18n.Schema = {
     'blog-surfer_more': '更多',
     'blog-surfer_equipment': '设备',
     'blog-surfer_moments': '说说',
-    'blog-surfer_gallery': '墙纸'
+    'blog-surfer_gallery': '画廊'
   },
   page: {
     login: {
@@ -325,11 +325,11 @@ const local: App.I18n.Schema = {
       projectNews: {
         title: '项目动态',
         moreNews: '更多动态',
-        desc1: 'YangMufa 在2026年6月6日创建了开源项目 mint-admin!',
+        desc1: 'YangGongzi 在2026年6月6日创建了开源项目 mint-admin!',
         desc2: 'Yanbowe 向 mint-admin 提交了一个bug，多标签栏不会自适应。',
-        desc3: 'YangMufa 准备为 mint-admin 的发布做充分的准备工作!',
-        desc4: 'YangMufa 正在忙于为mint-admin写项目说明文档！',
-        desc5: 'YangMufa 刚才把工作台页面随便写了一些，凑合能看了！'
+        desc3: 'YangGongzi 准备为 mint-admin 的发布做充分的准备工作!',
+        desc4: 'YangGongzi 正在忙于为mint-admin写项目说明文档！',
+        desc5: 'YangGongzi 刚才把工作台页面随便写了一些，凑合能看了！'
       },
       creativity: '创意'
     },
