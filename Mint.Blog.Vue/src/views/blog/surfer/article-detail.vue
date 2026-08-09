@@ -17,10 +17,11 @@ import hljs from 'highlight.js';
 import { getArticleDetail } from '@/service/blog/surfer/article';
 import { getBlogSettingsDetail } from '@/service/blog/surfer/setting';
 import { useTabStore } from '@/store/system/tab';
+import { useBannerImage } from '@/hooks/blog/use-banner-image';
 import { formatDateTime } from '@/utils/date-time';
 import bannerDefaultImg from '@/assets/blog/surfer/article-banner/banner-default.jpg';
 import SurferComment from '@/components/blog/surfer/comment.vue';
-import Starry from '@/components/blog/surfer/starry.vue';
+import Slide from '@/components/blog/surfer/slide.vue';
 import SurferToc from '@/components/blog/surfer/toc.vue';
 
 defineOptions({ name: 'SurferArticleDetailPage' });
@@ -81,21 +82,21 @@ const copyrightDeclaration = computed(() => {
 });
 const renderedContent = computed(() => renderMarkdown(article.value.content || ''));
 const hasTocHeadings = computed(() => /^#{1,6}\s+\S+/m.test(article.value.content || ''));
-const heroImage = ref('');
-const heroImageKey = ref(0);
-const heroResolved = ref(false);
+const {
+  imageKey: heroImageKey,
+  resolved: heroResolved,
+  imageSrc: articleHeroImageSrc,
+  resolveInitialImage: resolveInitialHeroImage,
+  pickImage: pickHeroImage,
+  schedulePreloadAfterRender: scheduleBannerPreloadAfterRender,
+  stopPreload: stopBannerPreload
+} = useBannerImage({
+  images: articleDetailImages,
+  fallbackImage: bannerDefaultImg,
+  storageNamespace: 'blog-surfer:article-detail-hero'
+});
 let hasSkippedInitialActivated = false;
-let bannerPreloadStopped = false;
-let bannerPreloadTimer: ReturnType<typeof setTimeout> | null = null;
 let articleTitleTypingTimer: ReturnType<typeof setTimeout> | null = null;
-let bannerPreloadStarted = false;
-const BANNER_CACHE_NAME = 'blog-surfer-banner-images-v1';
-const BANNER_CACHE_SNAPSHOT_KEY = 'blog-surfer:cached-banner-images';
-const LAST_CONFIRMED_HERO_KEY = 'blog-surfer:last-confirmed-article-detail-hero-image';
-const INITIAL_HERO_RESOLVE_TIMEOUT = 1500;
-const articleHeroStyle = computed(() =>
-  heroResolved.value ? { backgroundImage: `url(${heroImage.value || bannerDefaultImg})` } : {}
-);
 function typeArticleTitle(title?: string) {
   if (articleTitleTypingTimer) clearTimeout(articleTitleTypingTimer);
   articleTitleTypingTimer = null;
@@ -116,249 +117,6 @@ function typeArticleTitle(title?: string) {
   if (chars.length) {
     articleTitleTypingTimer = setTimeout(tick, 80);
   }
-}
-
-function setHeroImage(image: string) {
-  if (heroImage.value === image) return;
-  heroImage.value = image;
-  heroImageKey.value += 1;
-}
-
-function readStoredHeroImage(images: string[], storageKey: string) {
-  try {
-    const image = window.sessionStorage.getItem(storageKey);
-    return image && images.includes(image) ? image : '';
-  } catch {
-    return '';
-  }
-}
-
-function writeStoredHeroImage(storageKey: string, image?: string) {
-  try {
-    if (!image) {
-      window.sessionStorage.removeItem(storageKey);
-      return;
-    }
-
-    window.sessionStorage.setItem(storageKey, image);
-  } catch {
-    // Safari private/privacy modes can reject storage access; banner selection should still work.
-  }
-}
-
-function pickRandomImage(images: string[], currentImage: string, lastImageKey: string) {
-  let lastImage = '';
-  try {
-    lastImage = window.sessionStorage.getItem(lastImageKey) || '';
-  } catch {
-    lastImage = '';
-  }
-  const candidates = images.length > 1 ? images.filter(image => image !== lastImage && image !== currentImage) : images;
-  const pool = candidates.length ? candidates : images.filter(image => image !== currentImage);
-  const nextPool = pool.length ? pool : images;
-
-  return nextPool[Math.floor(Math.random() * nextPool.length)];
-}
-
-async function ensureImageReady(src: string, timeoutMs = 1200) {
-  if (!src) return false;
-
-  return new Promise<boolean>(resolve => {
-    const image = new Image();
-    let settled = false;
-    let timeoutId = 0;
-
-    const finish = (ready: boolean) => {
-      if (settled) return;
-      settled = true;
-      window.clearTimeout(timeoutId);
-      resolve(ready);
-    };
-    timeoutId = window.setTimeout(() => finish(false), timeoutMs);
-
-    image.onload = () => {
-      if (typeof image.decode === 'function') {
-        image
-          .decode()
-          .then(() => finish(true))
-          .catch(() => finish(true));
-        return;
-      }
-
-      finish(true);
-    };
-    image.onerror = () => finish(false);
-    image.src = src;
-
-    if (image.complete) {
-      finish(image.naturalWidth > 0);
-    }
-  });
-}
-
-function readCachedBannerSnapshot(images: string[]) {
-  try {
-    const snapshot = JSON.parse(window.localStorage.getItem(BANNER_CACHE_SNAPSHOT_KEY) || '[]');
-    if (!Array.isArray(snapshot)) return [];
-    return snapshot.filter((image): image is string => typeof image === 'string' && images.includes(image));
-  } catch {
-    return [];
-  }
-}
-
-function writeCachedBannerSnapshot(images: string[]) {
-  try {
-    window.localStorage.setItem(BANNER_CACHE_SNAPSHOT_KEY, JSON.stringify([...new Set(images)]));
-  } catch {
-    // Storage may be unavailable in Safari private/privacy modes.
-  }
-}
-
-function addCachedBannerSnapshot(image: string) {
-  if (!image || image === bannerDefaultImg) return;
-  writeCachedBannerSnapshot([...readCachedBannerSnapshot(articleDetailImages), image]);
-}
-
-async function getCachedBannerImages(images: string[], preferredImage = '') {
-  if (!('caches' in window)) return [];
-
-  try {
-    const cache = await window.caches.open(BANNER_CACHE_NAME);
-    const snapshotImages = readCachedBannerSnapshot(images);
-    const orderedImages = [preferredImage, ...snapshotImages, ...images].filter(
-      (image, index, array) => image && image !== bannerDefaultImg && array.indexOf(image) === index
-    );
-
-    const cachedImageMatches = await Promise.all(
-      orderedImages.map(async image => ((await cache.match(image)) ? image : ''))
-    );
-
-    const cachedImages = cachedImageMatches.filter(Boolean);
-    writeCachedBannerSnapshot(cachedImages);
-
-    return cachedImages;
-  } catch {
-    return [];
-  }
-}
-
-async function getCachedBannerImagesWithTimeout(images: string[], preferredImage = '', timeoutMs = 1000): Promise<string[]> {
-  return Promise.race([
-    getCachedBannerImages(images, preferredImage),
-    new Promise<string[]>(resolve => {
-      window.setTimeout(() => resolve([]), timeoutMs);
-    })
-  ]);
-}
-
-async function pickCachedHeroImage(forceChange = false) {
-  const preferredImage = forceChange ? '' : readStoredHeroImage(articleDetailImages, LAST_CONFIRMED_HERO_KEY);
-  const cachedImages = await getCachedBannerImagesWithTimeout(articleDetailImages, preferredImage);
-  const bundledImages = articleDetailImages.filter(image => image && image !== bannerDefaultImg);
-  const availableImages = cachedImages.length ? cachedImages : bundledImages;
-
-  if (!availableImages.length) {
-    setHeroImage('');
-    writeStoredHeroImage(LAST_CONFIRMED_HERO_KEY);
-    return;
-  }
-
-  if (!forceChange && heroImage.value && availableImages.includes(heroImage.value)) return;
-
-  const nextImage = pickRandomImage(availableImages, heroImage.value, 'blog-surfer:last-article-detail-hero-image');
-  if (cachedImages.length && !(await ensureImageReady(nextImage, 500))) {
-    setHeroImage('');
-    writeStoredHeroImage(LAST_CONFIRMED_HERO_KEY);
-    return;
-  }
-
-  setHeroImage(nextImage);
-  writeStoredHeroImage(LAST_CONFIRMED_HERO_KEY, nextImage);
-  try {
-    window.sessionStorage.setItem('blog-surfer:last-article-detail-hero-image', nextImage);
-  } catch {
-    // Storage may be unavailable in Safari private/privacy modes.
-  }
-}
-
-async function resolveInitialHeroImage() {
-  heroResolved.value = false;
-
-  try {
-    await Promise.race([
-      pickCachedHeroImage(),
-      new Promise(resolve => {
-        window.setTimeout(resolve, INITIAL_HERO_RESOLVE_TIMEOUT);
-      })
-    ]);
-  } finally {
-    heroResolved.value = true;
-  }
-}
-
-async function cacheBannerImage(src: string) {
-  if (!('caches' in window)) return false;
-
-  try {
-    const cache = await window.caches.open(BANNER_CACHE_NAME);
-    if (await cache.match(src)) {
-      addCachedBannerSnapshot(src);
-      return true;
-    }
-
-    const response = await fetch(src, { cache: 'force-cache' });
-    if (!response.ok) return false;
-
-    await cache.put(src, response.clone());
-    addCachedBannerSnapshot(src);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function runWhenIdle(callback: () => void) {
-  if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(callback, { timeout: 2500 });
-    return;
-  }
-
-  bannerPreloadTimer = setTimeout(callback, 1500);
-}
-
-function preloadBannerImagesInIdle(images: string[], batchSize = 2) {
-  const preloadImages = images.filter(image => image && image !== bannerDefaultImg);
-  let index = 0;
-
-  const runBatch = async () => {
-    if (bannerPreloadStopped) return;
-
-    const batch = preloadImages.slice(index, index + batchSize);
-    index += batchSize;
-    await Promise.all(batch.map(cacheBannerImage));
-
-    if (!bannerPreloadStopped && index < preloadImages.length) {
-      runWhenIdle(runBatch);
-    }
-  };
-
-  if (preloadImages.length) {
-    runWhenIdle(runBatch);
-  }
-}
-
-function startBannerPreloadOnce() {
-  if (bannerPreloadStarted || bannerPreloadStopped) return;
-  bannerPreloadStarted = true;
-  preloadBannerImagesInIdle(articleDetailImages);
-}
-
-async function scheduleBannerPreloadAfterRender() {
-  await nextTick();
-
-  window.requestAnimationFrame(() => {
-    startBannerPreloadOnce();
-  });
 }
 
 function escapeHtml(text: string) {
@@ -798,7 +556,7 @@ watch(
   () => route.params.id,
   async id => {
     if (id) {
-      pickCachedHeroImage(true);
+      pickHeroImage(true);
       await loadArticle(id as string);
     }
   }
@@ -817,8 +575,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  bannerPreloadStopped = true;
-  if (bannerPreloadTimer) clearTimeout(bannerPreloadTimer);
+  stopBannerPreload();
   window.removeEventListener('resize', updateIsMobile);
   window.removeEventListener('keydown', handleImagePreviewKeydown);
   window.removeEventListener('blog-surfer:toggle-toc', handleToggleToc);
@@ -831,41 +588,35 @@ onActivated(() => {
     return;
   }
 
-  pickCachedHeroImage();
+  pickHeroImage();
 });
 </script>
 
 <template>
   <div>
-    <section
-      :key="heroImageKey"
-      class="article-hero relative h-[340px] overflow-hidden bg-cover bg-center sm:h-[420px] md:h-[500px]"
-      :style="articleHeroStyle"
-    >
-      <div v-if="!heroResolved" class="article-hero-skeleton" aria-hidden="true">
-        <div class="article-hero-skeleton-cover"></div>
-        <div class="article-hero-skeleton-body">
-          <div class="article-hero-skeleton-line article-hero-skeleton-title"></div>
-          <div class="article-hero-skeleton-meta">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <div class="article-hero-skeleton-info">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+    <Slide :key="heroImageKey" :src="articleHeroImageSrc" :loading="!heroResolved" class="article-hero">
+      <template #skeleton>
+        <div class="article-hero-skeleton" aria-hidden="true">
+          <div class="article-hero-skeleton-cover"></div>
+          <div class="article-hero-skeleton-body">
+            <div class="article-hero-skeleton-line article-hero-skeleton-title"></div>
+            <div class="article-hero-skeleton-meta">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="article-hero-skeleton-info">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="absolute inset-0 bg-black/35"></div>
-      <div class="article-stars absolute inset-0 overflow-hidden">
-        <Starry />
-      </div>
+      </template>
 
       <div
-        class="article-hero-inner relative z-10 mx-auto flex h-full max-w-screen-2xl items-center justify-center px-4 text-white md:px-6"
+        class="article-hero-inner mx-auto flex h-full max-w-screen-2xl items-center justify-center px-4 text-white md:px-6"
       >
         <div v-if="loading" class="w-full max-w-3xl animate-pulse space-y-5 text-center">
           <div class="mx-auto h-10 w-3/4 rounded-xl bg-white/20"></div>
@@ -960,29 +711,7 @@ onActivated(() => {
           </div>
         </template>
       </div>
-
-      <div class="article-hero-fade absolute inset-x-0 bottom-0 h-[22%]"></div>
-    </section>
-
-    <div class="article-ripple" aria-hidden="true">
-      <svg
-        class="waves"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 24 150 28"
-        preserveAspectRatio="none"
-        shape-rendering="auto"
-      >
-        <defs>
-          <path id="article-gentle-wave" d="M-160 44c30 0 58-18 88-18s58 18 88 18s58-18 88-18s58 18 88 18v44h-352z" />
-        </defs>
-        <g class="parallax">
-          <use href="#article-gentle-wave" x="48" y="0" />
-          <use href="#article-gentle-wave" x="48" y="3" />
-          <use href="#article-gentle-wave" x="48" y="5" />
-          <use href="#article-gentle-wave" x="48" y="7" />
-        </g>
-      </svg>
-    </div>
+    </Slide>
 
     <main class="mx-auto max-w-screen-2xl px-1 py-1 md:px-6">
       <ARow :gutter="[28, 28]">
@@ -1109,10 +838,6 @@ onActivated(() => {
 </template>
 
 <style scoped>
-.article-hero {
-  background-color: #111827;
-}
-
 .article-hero-skeleton {
   position: absolute;
   inset: 0;
@@ -1176,26 +901,6 @@ onActivated(() => {
   height: 18px;
 }
 
-.article-hero::before {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 25% 24%, rgb(83 157 253 / 22%), transparent 30%),
-    radial-gradient(circle at 78% 20%, rgb(62 207 154 / 18%), transparent 28%),
-    linear-gradient(180deg, rgb(0 0 0 / 12%), rgb(0 0 0 / 28%));
-  content: '';
-}
-
-.article-hero-fade {
-  z-index: 2;
-  background: linear-gradient(to top, #f7fbf8, transparent);
-}
-
-.dark .article-hero-fade,
-html.dark .article-hero-fade {
-  background: linear-gradient(to top, #232931, transparent);
-}
-
 .custom-text-shadow {
   text-shadow: 0 4px 22px rgb(0 0 0 / 55%);
 }
@@ -1235,61 +940,6 @@ html.dark .article-hero-fade {
   box-shadow: 0 6px 16px rgb(0 0 0 / 24%);
 }
 
-.article-stars {
-  z-index: 1;
-  pointer-events: none;
-}
-
-.article-ripple {
-  position: relative;
-  z-index: 5;
-  height: 1px;
-}
-
-.article-ripple .waves {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: 15%;
-  min-height: 80px;
-  max-height: 150px;
-  margin-bottom: -7px;
-  transform: translateY(-100%);
-}
-
-.article-ripple .parallax > use {
-  animation: article-wave-move 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
-}
-
-.article-ripple .parallax > use:nth-child(1) {
-  fill: rgb(247 251 248 / 70%);
-  animation-delay: -2s;
-  animation-duration: 7s;
-}
-
-.article-ripple .parallax > use:nth-child(2) {
-  fill: rgb(247 251 248 / 50%);
-  animation-delay: -3s;
-  animation-duration: 10s;
-}
-
-.article-ripple .parallax > use:nth-child(3) {
-  fill: rgb(247 251 248 / 30%);
-  animation-delay: -4s;
-  animation-duration: 13s;
-}
-
-.article-ripple .parallax > use:nth-child(4) {
-  fill: #f7fbf8;
-  animation-delay: -5s;
-  animation-duration: 20s;
-}
-
-.dark .article-ripple .parallax > use,
-html.dark .article-ripple .parallax > use {
-  fill: rgb(35 41 49 / 90%);
-}
-
 .article-title-cursor {
   margin-left: 0.08em;
   animation: article-title-cursor-blink 0.86s step-end infinite;
@@ -1307,24 +957,9 @@ html.dark .article-ripple .parallax > use {
   }
 }
 
-@keyframes article-wave-move {
-  0% {
-    transform: translate3d(-90px, 0, 0);
-  }
-
-  100% {
-    transform: translate3d(85px, 0, 0);
-  }
-}
-
 @media (max-width: 768px) {
   .article-typing-title {
     font-size: 1.75rem;
-  }
-
-  .article-ripple .waves {
-    height: 40px;
-    min-height: 40px;
   }
 
   .article-hero-skeleton-cover {

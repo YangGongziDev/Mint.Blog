@@ -24,6 +24,7 @@ export interface AdminArticleListItem {
   categoryName: string;
   tags: ArticleTagItem[];
   isTop: boolean;
+  visibility: 1 | 2;
   isDeleted?: boolean | number;
   readCount: number;
   createTime?: string;
@@ -42,6 +43,7 @@ export interface ArticleFormModel {
   cover: string;
   categoryId?: string;
   tagIds: string[];
+  visibility: 1 | 2;
 }
 
 export interface ArticleDraftDetail {
@@ -53,6 +55,7 @@ export interface ArticleDraftDetail {
   cover: string;
   categoryId?: string | null;
   tagIds: string[];
+  visibility: 1 | 2;
   createdAt: string;
   updatedAt: string;
 }
@@ -111,6 +114,12 @@ export function updateArticle(articleId: string, data: ArticleFormModel) {
 
 export function setArticleTop(articleId: string, isTop: boolean) {
   return axios.patch(`/blog/admin/article/${articleId}/top`, { articleId, isTop }) as Promise<{ success: boolean }>;
+}
+
+export function setArticleVisibility(articleId: string, visibility: 1 | 2) {
+  return axios.patch(`/blog/admin/article/${articleId}/visibility`, { articleId, visibility }) as Promise<{
+    success: boolean;
+  }>;
 }
 
 export function deleteArticle(articleId: string, deleteType: number) {

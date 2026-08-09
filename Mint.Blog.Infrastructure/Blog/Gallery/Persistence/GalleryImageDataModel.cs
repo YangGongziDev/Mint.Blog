@@ -37,6 +37,9 @@ public sealed class GalleryImageDataModel {
 	[SugarColumn(ColumnName = "file_name")]
 	public string FileName { get; set; } = string.Empty;
 
+	[SugarColumn(ColumnName = "size")]
+	public int Size { get; set; }
+
 	[SugarColumn(ColumnName = "sort")]
 	public int Sort { get; set; }
 

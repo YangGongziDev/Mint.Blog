@@ -225,8 +225,6 @@ const local: App.I18n.Schema = {
     'blog-surfer_tag': '标签',
     'blog-surfer_archive': '归档',
     'blog-surfer_column': '专栏',
-    'blog-surfer_resource': '资源',
-    'blog-surfer_tools': '工具',
     'blog-surfer_about': '关于',
     'blog-surfer_author': '博主',
     'blog-surfer_interaction': '互动',

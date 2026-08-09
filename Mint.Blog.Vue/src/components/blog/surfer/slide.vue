@@ -1,34 +1,45 @@
 <script setup lang="ts">
-defineOptions({ name: 'surfer-slide' });
+import Ripple from '@/components/blog/surfer/ripple.vue';
+import Starry from '@/components/blog/surfer/starry.vue';
 
-withDefaults(defineProps<{
-  src?: string;
-  fallbackSrc?: string;
-  isRipple?: boolean;
-}>(), {
-  isRipple: true,
-});
+defineOptions({ name: 'SurferSlide' });
+
+withDefaults(
+  defineProps<{
+    src?: string;
+    fallbackSrc?: string;
+    loading?: boolean;
+    isRipple?: boolean;
+    isStarry?: boolean;
+  }>(),
+  {
+    src: '',
+    fallbackSrc: '',
+    loading: false,
+    isRipple: true,
+    isStarry: true
+  }
+);
 </script>
 
 <template>
-  <div>
-    <div
-      class="slide-inner"
-      style="min-height: 300px; position: relative; background: #1a1a2e; overflow: hidden;"
-    >
+  <div class="slide">
+    <div class="slide-inner">
       <div
         v-if="fallbackSrc"
-        style="position: absolute; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat;"
+        class="slide-background slide-background-fallback"
         :style="{ backgroundImage: `url(${fallbackSrc})` }"
-      />
-      <div
-        v-if="src"
-        style="position: absolute; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat;"
-        :style="{ backgroundImage: `url(${src})` }"
-      />
-      <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.2); z-index: 1;" />
-      <div class="slide-fade" />
-      <div style="position: relative; height: 100%; z-index: 10;">
+      ></div>
+      <div v-if="src" class="slide-background" :style="{ backgroundImage: `url(${src})` }"></div>
+      <div v-if="loading" class="slide-skeleton">
+        <slot name="skeleton" />
+      </div>
+      <div class="slide-overlay"></div>
+      <div v-if="isStarry" class="slide-starry">
+        <Starry />
+      </div>
+      <div class="slide-fade"></div>
+      <div v-if="!loading" class="slide-content">
         <slot />
       </div>
     </div>
@@ -38,27 +49,70 @@ withDefaults(defineProps<{
 
 <style scoped>
 .slide-inner {
-  height: 300px;
+  position: relative;
+  height: var(--slide-height, 340px);
+  overflow: hidden;
+  background-color: var(--slide-background-color, #1a1a2e);
 }
-.slide-fade {
+
+.slide-background,
+.slide-overlay,
+.slide-starry,
+.slide-fade,
+.slide-skeleton {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
+}
+
+.slide-background {
+  z-index: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.slide-background-fallback {
+  background-color: var(--slide-background-color, #1a1a2e);
+}
+
+.slide-skeleton {
   z-index: 1;
+}
+
+.slide-overlay {
+  z-index: 2;
+  background: var(--slide-overlay-color, rgb(0 0 0 / 35%));
+}
+
+.slide-starry {
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.slide-fade {
+  top: auto;
+  z-index: 4;
   height: 24%;
   background: linear-gradient(to top, rgb(var(--layout-bg-color)), rgb(var(--layout-bg-color) / 72%), transparent);
 }
+
+.slide-content {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  text-shadow: 0 4px 22px rgb(0 0 0 / 55%);
+}
+
 @media (min-width: 640px) {
   .slide-inner {
-    height: 400px;
+    height: var(--slide-height-sm, 420px);
   }
 }
+
 @media (min-width: 768px) {
   .slide-inner {
-    height: 500px;
+    height: var(--slide-height-md, 500px);
   }
 }
 </style>
-
-

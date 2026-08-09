@@ -1,5 +1,6 @@
 using ArticleEntity = Mint.Blog.Domain.Blog.Article.Entities.Article;
 using Mint.Blog.Application.Abstractions;
+using Mint.Blog.Domain.Blog.Article;
 using Mint.Blog.Domain.Blog.Article.Repositories;
 using Mint.Blog.Domain.Blog.Category.Repositories;
 using Mint.Blog.Domain.Blog.Tag.Repositories;
@@ -29,6 +30,8 @@ public sealed class CreateArticleCommandHandler(
 			"Article content is required.");
 		Guard.Against(string.IsNullOrWhiteSpace(cover), ErrorCodes.ArticleCoverInvalid,
 			"Article cover is required.");
+		Guard.Against(!Enum.IsDefined((ArticleVisibility)command.Visibility), ErrorCodes.ArticleContentInvalid,
+			"Article visibility must be 1 or 2.");
 
 		var categoryExists = await categoryRepository.ExistsAsync(command.CategoryId, cancellationToken);
 		Guard.Against(!categoryExists, ErrorCodes.CategoryNotFound, "Category does not exist.");
@@ -43,7 +46,8 @@ public sealed class CreateArticleCommandHandler(
 			content,
 			cover,
 			command.CategoryId,
-			existingTagIds);
+			existingTagIds,
+			(ArticleVisibility)command.Visibility);
 
 		await unitOfWork.BeginTransactionAsync(cancellationToken);
 

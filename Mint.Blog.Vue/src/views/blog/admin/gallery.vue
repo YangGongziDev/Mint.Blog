@@ -41,8 +41,9 @@ const uploadLoading = ref(false);
 const bucketOptions = ref<RustfsBucketItem[]>([]);
 const defaultBucketName = ref(localStorage.getItem('blog-gallery-default-bucket') || '');
 const uploadFileList = ref<UploadProps['fileList']>([]);
-const selectedLocalFile = ref<File | null>(null);
+const selectedLocalFiles = ref<File[]>([]);
 let externalMetadataTimer: ReturnType<typeof setTimeout> | null = null;
+let imageSearchTimer: ReturnType<typeof setTimeout> | null = null;
 const categoryForm = reactive({ name: '', description: '', sort: 0, enabled: true });
 const imageForm = reactive({
   sourceType: 'local' as 'local' | 'external',
@@ -53,6 +54,10 @@ const imageForm = reactive({
   ratio: '',
   time: '',
   url: '',
+  objectName: '',
+  fileName: '',
+  size: 0,
+  sort: 0,
   enabled: true
 });
 
@@ -61,18 +66,23 @@ const categoryData = ref<GalleryCategoryItem[]>([]);
 const categoryOptions = ref<GalleryCategoryItem[]>([]);
 const imageData = ref<GalleryImageItem[]>([]);
 const selectedImageRowKeys = ref<string[]>([]);
+const duplicateSelectedRowKeys = ref<string[]>([]);
+const duplicateConditions = ref<string[]>(['resolution', 'ratio', 'size']);
 const editingCategory = ref<GalleryCategoryItem | null>(null);
 const editingImage = ref<GalleryImageItem | null>(null);
 const isDemoAdmin = computed(() => {
   const roleText = authStore.userInfo.roles.join(',').toLowerCase();
   const userText = `${authStore.userInfo.userName},${authStore.userInfo.displayName}`.toLowerCase();
-  return /demo|演示/.test(roleText) || /demo|演示/.test(userText);
+  return /demo|visitor|演示|游客/.test(roleText) || /demo|visitor|演示|游客/.test(userText);
 });
-const readonlyActionMessage = '演示管理员仅允许查看画廊数据，不能上传、新增、修改或删除';
+const readonlyActionMessage = '游客演示账号仅允许查看画廊数据，不能上传、新增、修改或删除';
 
 const tableSize = computed(() => (appStore.isMobile ? 'small' : 'middle'));
 const tableScrollX = computed(() => (appStore.isMobile ? 1180 : 1400));
 const modalWidth = computed(() => (appStore.isMobile ? '92vw' : 560));
+const isBatchLocalUpload = computed(
+  () => !editingImage.value && imageForm.sourceType === 'local' && selectedLocalFiles.value.length > 1
+);
 
 const categoryColumns: TableColumnsType<GalleryCategoryItem> = [
   { title: '序号', key: 'index', width: 80, align: 'center' },
@@ -91,10 +101,65 @@ const imageColumns: TableColumnsType<GalleryImageItem> = [
   { title: '分类', dataIndex: 'categoryName', key: 'categoryName', width: 140, align: 'center' },
   { title: '分辨率', dataIndex: 'resolution', key: 'resolution', width: 100, align: 'center' },
   { title: '比例', dataIndex: 'ratio', key: 'ratio', width: 100, align: 'center', customRender: ({ text }) => formatRatio(text) },
+  {
+    title: '大小',
+    dataIndex: 'size',
+    key: 'size',
+    width: 100,
+    align: 'center',
+    customRender: ({ text }) => `${text} MB`
+  },
   { title: '时间', dataIndex: 'time', key: 'time', width: 140, align: 'center' },
   { title: '状态', dataIndex: 'enabled', key: 'enabled', width: 100, align: 'center' },
   { title: '操作', key: 'action', width: 180, align: 'center', fixed: appStore.isMobile ? undefined : 'right' }
 ];
+
+type DuplicateImageRow = GalleryImageItem & { duplicateGroupKey: string; duplicateGroupLabel: string; duplicateGroupCount: number };
+
+const duplicateColumns: TableColumnsType<DuplicateImageRow> = [
+  { title: '重复组标识', dataIndex: 'duplicateGroupLabel', key: 'duplicateGroupLabel', width: 260, align: 'center' },
+  { title: '组内数量', dataIndex: 'duplicateGroupCount', key: 'duplicateGroupCount', width: 100, align: 'center' },
+  { title: '图片', dataIndex: 'url', key: 'url', width: 120, align: 'center' },
+  { title: '名称', dataIndex: 'name', key: 'name', width: 180, align: 'center', ellipsis: true },
+  { title: '分类', dataIndex: 'categoryName', key: 'categoryName', width: 140, align: 'center' },
+  { title: '分辨率', dataIndex: 'resolution', key: 'resolution', width: 110, align: 'center' },
+  { title: '比例', dataIndex: 'ratio', key: 'ratio', width: 100, align: 'center', customRender: ({ text }) => formatRatio(text) },
+  { title: '大小', dataIndex: 'size', key: 'size', width: 100, align: 'center', customRender: ({ text }) => `${text} MB` },
+  { title: '时间', dataIndex: 'time', key: 'time', width: 140, align: 'center' }
+];
+
+const duplicateGroups = computed(() => {
+  if (!duplicateConditions.value.length) return [];
+  const groups = new Map<string, GalleryImageItem[]>();
+  imageData.value.forEach(item => {
+    const values = duplicateConditions.value.map(condition => {
+      if (condition === 'resolution') return item.resolution || '';
+      if (condition === 'ratio') return item.ratio || '';
+      return item.size;
+    });
+    const key = JSON.stringify(values);
+    groups.set(key, [...(groups.get(key) || []), item]);
+  });
+  return [...groups.entries()].filter(([, items]) => items.length >= 2);
+});
+
+const duplicateRows = computed<DuplicateImageRow[]>(() =>
+  duplicateGroups.value.flatMap(([key, items]) => {
+    const labels = duplicateConditions.value.map(condition => {
+      if (condition === 'resolution') return items[0].resolution || '空分辨率';
+      if (condition === 'ratio') return items[0].ratio ? formatRatio(items[0].ratio) : '空比例';
+      return `${items[0].size} MB`;
+    });
+    return items.map(item => ({
+      ...item,
+      duplicateGroupKey: key,
+      duplicateGroupLabel: labels.join(' / '),
+      duplicateGroupCount: items.length
+    }));
+  })
+);
+
+const duplicateImageCount = computed(() => duplicateRows.value.length);
 
 async function loadCategories() {
   loading.value = true;
@@ -157,11 +222,13 @@ function formatRatio(ratio: string) {
   bestDifference = Number.POSITIVE_INFINITY;
   for (let candidateWidth = 1; candidateWidth <= 99; candidateWidth += 1) {
     for (let candidateHeight = 1; candidateHeight <= 99; candidateHeight += 1) {
-      const difference = Math.abs(width / height - candidateWidth / candidateHeight);
-      if (difference < bestDifference) {
-        bestWidth = candidateWidth;
-        bestHeight = candidateHeight;
-        bestDifference = difference;
+      if (candidateWidth <= 9 || candidateHeight <= 9) {
+        const difference = Math.abs(width / height - candidateWidth / candidateHeight);
+        if (difference < bestDifference) {
+          bestWidth = candidateWidth;
+          bestHeight = candidateHeight;
+          bestDifference = difference;
+        }
       }
     }
   }
@@ -170,6 +237,11 @@ function formatRatio(ratio: string) {
 
 async function loadData() {
   await Promise.all([loadCategories(), loadCategoryOptions(), loadImages()]);
+}
+
+function scheduleImageSearch() {
+  if (imageSearchTimer) clearTimeout(imageSearchTimer);
+  imageSearchTimer = setTimeout(loadImages, 300);
 }
 
 function warnReadonlyAction() {
@@ -238,20 +310,33 @@ function resetImageForm() {
     ratio: '',
     time: '',
     url: '',
+    objectName: '',
+    fileName: '',
+    size: 0,
+    sort: 0,
     enabled: true
   });
   uploadFileList.value = [];
-  selectedLocalFile.value = null;
+  selectedLocalFiles.value = [];
+}
+
+async function uploadLocalFile(file: File) {
+  const res = await uploadBlogImage({
+    newImageFile: file,
+    newImageOriginalName: file.name,
+    bucketName: imageForm.bucketName
+  });
+  return res.success ? res.data?.url : undefined;
 }
 
 async function uploadSelectedLocalImage() {
   if (!ensureWritable()) {
     uploadFileList.value = [];
-    selectedLocalFile.value = null;
+    selectedLocalFiles.value = [];
     return false;
   }
 
-  const file = selectedLocalFile.value;
+  const file = selectedLocalFiles.value[0];
   if (!file) {
     message.warning('请先选择本地图片');
     return false;
@@ -264,14 +349,11 @@ async function uploadSelectedLocalImage() {
 
   uploadLoading.value = true;
   try {
-    const res = await uploadBlogImage({
-      newImageFile: file,
-      newImageOriginalName: file.name,
-      bucketName: imageForm.bucketName
-    });
-    const url = res.data?.url;
-    if (res.success && url) {
+    const url = await uploadLocalFile(file);
+    if (url) {
       imageForm.url = url;
+      imageForm.objectName = getObjectName(url, imageForm.bucketName);
+      imageForm.fileName = file.name;
       if (!imageForm.name) imageForm.name = file.name.replace(/\.[^.]+$/, '');
       message.success('图片上传成功，链接已自动生成');
       return true;
@@ -284,51 +366,66 @@ async function uploadSelectedLocalImage() {
   }
 }
 
-async function fillImageMetadata(file: File) {
+async function getImageMetadata(file: File) {
   const image = await createImageBitmap(file);
   const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
   const divisor = gcd(image.width, image.height);
-  imageForm.resolution = `${image.width}x${image.height}`;
-  imageForm.ratio = formatRatio(`${image.width / divisor}:${image.height / divisor}`);
-  imageForm.time = new Date(file.lastModified).toISOString().slice(0, 10);
+  const metadata = {
+    resolution: `${image.width}x${image.height}`,
+    ratio: formatRatio(`${image.width / divisor}:${image.height / divisor}`),
+    time: new Date(file.lastModified).toISOString().slice(0, 10)
+  };
   image.close();
+  return metadata;
 }
 
-function handleBeforeLocalUpload(file: File) {
-  selectedLocalFile.value = file;
-  imageForm.url = '';
-  if (!imageForm.name) imageForm.name = file.name.replace(/\.[^.]+$/, '');
-  fillImageMetadata(file);
+async function fillImageMetadata(file: File) {
+  Object.assign(imageForm, await getImageMetadata(file));
+}
+
+function handleBeforeLocalUpload() {
   return false;
 }
 
 async function handleLocalUpload(change: UploadChangeParam) {
   if (!ensureWritable()) {
     uploadFileList.value = [];
-    selectedLocalFile.value = null;
+    selectedLocalFiles.value = [];
     return;
   }
 
-  if (change.file.status === 'removed') {
-    selectedLocalFile.value = null;
-    imageForm.url = '';
-    return;
+  selectedLocalFiles.value = change.fileList.flatMap(item => {
+    const file = item.originFileObj;
+    return file instanceof File ? [file] : [];
+  });
+  const changedFile = change.file.originFileObj;
+  if (changedFile instanceof File && selectedLocalFiles.value.length === 0) {
+    selectedLocalFiles.value = [changedFile];
   }
+  imageForm.url = '';
+  imageForm.size = selectedLocalFiles.value.length === 1
+    ? Math.max(1, Math.ceil(selectedLocalFiles.value[0].size / 1024 / 1024))
+    : 0;
 
-  const file = change.file.originFileObj ?? (change.file as unknown as File);
-  if (file instanceof File) {
-    selectedLocalFile.value = file;
-    imageForm.url = '';
-    if (!imageForm.name) imageForm.name = file.name.replace(/\.[^.]+$/, '');
+  if (selectedLocalFiles.value.length === 1) {
+    const [file] = selectedLocalFiles.value;
+    imageForm.name = file.name.replace(/\.[^.]+$/, '');
+    await fillImageMetadata(file);
+  } else if (selectedLocalFiles.value.length > 1) {
+    imageForm.name = '';
+    imageForm.resolution = '';
+    imageForm.ratio = '';
+    imageForm.time = '';
   }
 }
 
 function handleSourceTypeChange() {
   imageForm.url = '';
   uploadFileList.value = [];
-  selectedLocalFile.value = null;
-  if (imageForm.sourceType === 'external' && !imageForm.time) {
-    imageForm.time = new Date().toLocaleDateString('en-CA');
+  selectedLocalFiles.value = [];
+  if (imageForm.sourceType === 'external') {
+    imageForm.size = 0;
+    if (!imageForm.time) imageForm.time = new Date().toLocaleDateString('en-CA');
   }
 }
 
@@ -343,13 +440,12 @@ async function fillExternalImageMetadata() {
   const url = imageForm.url.trim();
   if (!/^https?:\/\/.+/i.test(url)) return;
 
-  if (!imageForm.name) {
-    try {
-      const fileName = decodeURIComponent(new URL(url).pathname.split('/').pop() || '');
-      imageForm.name = fileName.replace(/\.[^.]+$/, '') || new URL(url).hostname;
-    } catch {
-      // 链接格式由保存时统一验证
-    }
+  try {
+    const parsedUrl = new URL(url);
+    const fileName = decodeURIComponent(parsedUrl.pathname.split('/').pop() || '');
+    imageForm.name = fileName.replace(/\.[^.]+$/, '') || parsedUrl.hostname;
+  } catch {
+    return;
   }
 
   const image = new Image();
@@ -357,8 +453,46 @@ async function fillExternalImageMetadata() {
     imageForm.resolution = `${image.naturalWidth}x${image.naturalHeight}`;
     imageForm.ratio = formatRatio(`${image.naturalWidth}:${image.naturalHeight}`);
   };
-  image.onerror = () => message.warning('无法读取外部图片信息，请手动填写名称、分辨率和比例');
+  image.onerror = () => message.warning('无法读取外部图片信息，请检查图片链接');
   image.src = url;
+}
+
+function validateExternalImageUrl(url: string) {
+  try {
+    const parsedUrl = new URL(url);
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) return Promise.resolve(false);
+  } catch {
+    return Promise.resolve(false);
+  }
+
+  return new Promise<boolean>(resolve => {
+    const image = new Image();
+    image.onload = () => resolve(image.naturalWidth > 0 && image.naturalHeight > 0);
+    image.onerror = () => resolve(false);
+    image.src = url;
+  });
+}
+
+async function canSaveExternalImage() {
+  if (imageForm.sourceType !== 'external') return true;
+  if (await validateExternalImageUrl(imageForm.url.trim())) return true;
+  message.warning('请输入可以正常访问的有效图片链接');
+  return false;
+}
+
+async function ensureLocalImageUploaded() {
+  if (imageForm.sourceType !== 'local' || imageForm.url.trim()) return true;
+  return uploadSelectedLocalImage();
+}
+
+function getObjectName(url: string, bucketName: string) {
+  try {
+    const segments = new URL(url).pathname.split('/').filter(Boolean).map(decodeURIComponent);
+    const bucketIndex = segments.indexOf(bucketName);
+    return segments.slice(bucketIndex >= 0 ? bucketIndex + 1 : 1).join('/');
+  } catch {
+    return '';
+  }
 }
 
 function shouldCleanupOldLocalImage(oldImage: GalleryImageItem | null, newUrl: string) {
@@ -425,19 +559,53 @@ function openEditImage(record: GalleryImageItem) {
     ratio: record.ratio,
     time: record.time || '',
     url: record.url,
+    objectName: record.objectName,
+    fileName: record.fileName,
+    size: record.size,
+    sort: record.sort,
     enabled: record.enabled
   });
   uploadFileList.value = [];
-  selectedLocalFile.value = null;
+  selectedLocalFiles.value = [];
   imageModalOpen.value = true;
+}
+
+async function createSelectedLocalImages() {
+  if (!selectedLocalFiles.value.length) {
+    message.warning('请先选择本地图片');
+    return false;
+  }
+  if (uploadLoading.value) return false;
+
+  uploadLoading.value = true;
+  try {
+    await Promise.all(
+      selectedLocalFiles.value.map(async file => {
+        const [url, metadata] = await Promise.all([uploadLocalFile(file), getImageMetadata(file)]);
+        if (!url) throw new Error(`${file.name} 上传失败`);
+        await createGalleryImage({
+          name: file.name.replace(/\.[^.]+$/, ''),
+          categoryId: imageForm.categoryId,
+          ...metadata,
+          url,
+          sourceType: 'local',
+          bucketName: imageForm.bucketName,
+          objectName: '',
+          fileName: file.name,
+          size: Math.max(1, Math.ceil(file.size / 1024 / 1024)),
+          sort: 0,
+          enabled: imageForm.enabled
+        });
+      })
+    );
+    return true;
+  } finally {
+    uploadLoading.value = false;
+  }
 }
 
 async function handleImageSubmit() {
   if (!ensureWritable()) return;
-  if (!imageForm.name.trim()) {
-    message.warning('请输入图片名称');
-    return;
-  }
   if (!imageForm.categoryId) {
     message.warning('请选择图片分类');
     return;
@@ -446,14 +614,20 @@ async function handleImageSubmit() {
     message.warning('请选择存储桶');
     return;
   }
-  if (imageForm.sourceType === 'external' && !/^https?:\/\/.+/i.test(imageForm.url.trim())) {
-    message.warning('请输入有效的外部图片链接');
+  if (isBatchLocalUpload.value) {
+    const created = await createSelectedLocalImages();
+    if (!created) return;
+    message.success(`成功上传 ${selectedLocalFiles.value.length} 张图片`);
+    imageModalOpen.value = false;
+    await loadImages();
     return;
   }
-  if (imageForm.sourceType === 'local' && !imageForm.url.trim()) {
-    const uploaded = await uploadSelectedLocalImage();
-    if (!uploaded) return;
+  if (!imageForm.name.trim()) {
+    message.warning('请输入图片名称');
+    return;
   }
+  if (!(await canSaveExternalImage())) return;
+  if (!(await ensureLocalImageUploaded())) return;
 
   if (!imageForm.url.trim()) {
     message.warning(imageForm.sourceType === 'local' ? '请先选择并上传本地图片' : '请输入外部图片链接');
@@ -469,9 +643,12 @@ async function handleImageSubmit() {
     url: imageForm.url.trim(),
     sourceType: imageForm.sourceType,
     bucketName: imageForm.sourceType === 'local' ? imageForm.bucketName : '',
-    objectName: '',
-    fileName: '',
-    sort: 0,
+    objectName: imageForm.sourceType === 'local' ? imageForm.objectName : '',
+    fileName: imageForm.sourceType === 'local' ? imageForm.fileName : '',
+    size: imageForm.sourceType === 'local' && selectedLocalFiles.value[0]
+      ? Math.max(1, Math.ceil(selectedLocalFiles.value[0].size / 1024 / 1024))
+      : imageForm.size,
+    sort: imageForm.sort,
     enabled: imageForm.enabled
   };
   const oldImage = editingImage.value;
@@ -511,10 +688,25 @@ function confirmDeleteImages(records: GalleryImageItem[]) {
       await Promise.all(records.map(record => deleteGalleryImage(record.id)));
       await Promise.all(records.map(record => cleanupOldLocalImage(record, '')));
       selectedImageRowKeys.value = [];
+      duplicateSelectedRowKeys.value = [];
       message.success(`已删除 ${records.length} 张图片`);
       await loadImages();
     }
   });
+}
+
+function handleDuplicateConditionChange() {
+  duplicateSelectedRowKeys.value = [];
+  if (!duplicateConditions.value.length) message.warning('请至少选择一个查重条件');
+}
+
+function selectDuplicateExtras() {
+  duplicateSelectedRowKeys.value = duplicateGroups.value.flatMap(([, items]) => items.slice(1).map(item => item.id));
+}
+
+function confirmDeleteSelectedDuplicates() {
+  const records = duplicateRows.value.filter(item => duplicateSelectedRowKeys.value.includes(item.id));
+  confirmDeleteImages(records);
 }
 
 function confirmDeleteImage(record: GalleryImageItem) {
@@ -544,18 +736,20 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (externalMetadataTimer) clearTimeout(externalMetadataTimer);
+  if (imageSearchTimer) clearTimeout(imageSearchTimer);
 });
 </script>
 
 <template>
   <div class="gallery-admin-page">
     <ACard :bordered="false" class="page-card">
-      <div class="gallery-toolbar-row">
+      <div v-if="activeTab === 'images'" class="gallery-toolbar-row">
         <AInput
           v-model:value="imageKeyword"
           allow-clear
           placeholder="搜索图片名称、分类、分辨率"
           class="search-input"
+          @input="scheduleImageSearch"
           @press-enter="loadImages"
         >
           <template #prefix><SearchOutlined /></template>
@@ -591,7 +785,7 @@ onBeforeUnmount(() => {
             :pagination="false"
             :size="tableSize"
             :scroll="{ x: tableScrollX }"
-            :row-selection="{ selectedRowKeys: selectedImageRowKeys, onChange: keys => (selectedImageRowKeys = keys.map(String)) }"
+            :row-selection="{ selectedRowKeys: selectedImageRowKeys, onChange: (keys: (string | number)[]) => (selectedImageRowKeys = keys.map(String)) }"
           >
             <template #title>
               <ASpace v-if="selectedImageRowKeys.length">
@@ -645,16 +839,7 @@ onBeforeUnmount(() => {
         </ATabPane>
 
         <ATabPane key="categories" tab="分类管理">
-          <div class="table-toolbar">
-            <AInput
-              v-model:value="categoryKeyword"
-              allow-clear
-              placeholder="搜索分类名称或描述"
-              class="search-input"
-              @press-enter="loadCategories"
-            >
-              <template #prefix><SearchOutlined /></template>
-            </AInput>
+          <div class="table-toolbar category-toolbar">
             <AButton type="primary" ghost :disabled="isDemoAdmin" @click="openCategoryModal">
               <PlusOutlined />
               新增分类
@@ -700,6 +885,62 @@ onBeforeUnmount(() => {
             </template>
           </ATable>
         </ATabPane>
+
+        <ATabPane key="duplicates" tab="查重管理">
+          <div class="duplicate-toolbar">
+            <ASpace wrap>
+              <span>查重条件：</span>
+              <ACheckboxGroup v-model:value="duplicateConditions" @change="handleDuplicateConditionChange">
+                <ACheckbox value="resolution">分辨率</ACheckbox>
+                <ACheckbox value="ratio">比例</ACheckbox>
+                <ACheckbox value="size">大小</ACheckbox>
+              </ACheckboxGroup>
+            </ASpace>
+            <ASpace wrap>
+              <span>重复组 {{ duplicateGroups.length }} 组，重复图片 {{ duplicateImageCount }} 张</span>
+              <AButton size="small" :disabled="!duplicateRows.length" @click="selectDuplicateExtras">每组保留一张</AButton>
+            </ASpace>
+          </div>
+          <AAlert
+            v-if="!duplicateConditions.length"
+            message="请至少选择一个查重条件"
+            type="warning"
+            show-icon
+            class="duplicate-alert"
+          />
+          <ATable
+            row-key="id"
+            :loading="loading"
+            :columns="duplicateColumns"
+            :data-source="duplicateRows"
+            :pagination="false"
+            :size="tableSize"
+            :scroll="{ x: tableScrollX }"
+            :row-selection="{
+              selectedRowKeys: duplicateSelectedRowKeys,
+              onChange: (keys: (string | number)[]) => (duplicateSelectedRowKeys = keys.map(String))
+            }"
+          >
+            <template #title>
+              <ASpace>
+                <span>已选择 {{ duplicateSelectedRowKeys.length }} 张</span>
+                <AButton
+                  danger
+                  size="small"
+                  :disabled="isDemoAdmin || !duplicateSelectedRowKeys.length"
+                  @click="confirmDeleteSelectedDuplicates"
+                >
+                  批量删除
+                </AButton>
+              </ASpace>
+            </template>
+            <template #bodyCell="{ column, record }">
+              <template v-if="column.key === 'url'">
+                <AImage :src="record.url" :width="72" :height="46" />
+              </template>
+            </template>
+          </ATable>
+        </ATabPane>
         </ATabs>
       </div>
     </ACard>
@@ -723,7 +964,7 @@ onBeforeUnmount(() => {
 
     <AModal v-model:open="imageModalOpen" title="画廊图片" :width="modalWidth" destroy-on-close>
       <AForm :model="imageForm" layout="vertical">
-        <AFormItem label="图片名称" required>
+        <AFormItem v-if="!isBatchLocalUpload" label="图片名称" required>
           <AInput v-model:value="imageForm.name" placeholder="请输入图片名称" />
         </AFormItem>
         <AFormItem label="图片来源" required>
@@ -743,7 +984,8 @@ onBeforeUnmount(() => {
           <AUpload
             v-model:file-list="uploadFileList"
             accept="image/*"
-            :max-count="1"
+            :multiple="!editingImage"
+            :max-count="editingImage ? 1 : undefined"
             :show-upload-list="true"
             :before-upload="handleBeforeLocalUpload"
             @change="handleLocalUpload"
@@ -753,7 +995,10 @@ onBeforeUnmount(() => {
               选择本地图片
             </AButton>
           </AUpload>
-          <div v-if="imageForm.url" class="generated-url">链接已生成：{{ imageForm.url }}</div>
+          <div v-if="isBatchLocalUpload" class="generated-url">
+            将按文件名创建 {{ selectedLocalFiles.length }} 条画廊记录
+          </div>
+          <div v-else-if="imageForm.url" class="generated-url">链接已生成：{{ imageForm.url }}</div>
         </AFormItem>
         <AFormItem v-else label="图片链接" required>
           <AInput v-model:value="imageForm.url" placeholder="请输入外部图片链接" @input="scheduleExternalImageMetadata" @blur="fillExternalImageMetadata" @press-enter="fillExternalImageMetadata" />
@@ -765,14 +1010,14 @@ onBeforeUnmount(() => {
             </ASelectOption>
           </ASelect>
         </AFormItem>
-        <ARow :gutter="16">
-          <ACol :span="8">
+        <ARow v-if="!isBatchLocalUpload" :gutter="16">
+          <ACol :span="6">
             <AFormItem label="分辨率"><AInput v-model:value="imageForm.resolution" placeholder="例如 4K" /></AFormItem>
           </ACol>
-          <ACol :span="8">
+          <ACol :span="6">
             <AFormItem label="比例"><AInput v-model:value="imageForm.ratio" placeholder="例如 16:9" /></AFormItem>
           </ACol>
-          <ACol :span="8">
+          <ACol :span="6">
             <AFormItem label="时间">
               <ADatePicker
                 v-model:value="imageForm.time"
@@ -780,6 +1025,11 @@ onBeforeUnmount(() => {
                 class="w-full"
                 placeholder="请选择时间"
               />
+            </AFormItem>
+          </ACol>
+          <ACol :span="6">
+            <AFormItem label="大小（MB）">
+              <AInputNumber v-model:value="imageForm.size" :min="0" class="w-full" />
             </AFormItem>
           </ACol>
         </ARow>
@@ -845,6 +1095,23 @@ onBeforeUnmount(() => {
   margin-bottom: 16px;
 }
 
+.category-toolbar {
+  justify-content: flex-end;
+  padding-top: 16px;
+}
+
+.duplicate-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.duplicate-alert {
+  margin-bottom: 12px;
+}
+
 .search-input {
   max-width: 340px;
 }
@@ -886,7 +1153,9 @@ onBeforeUnmount(() => {
     flex-direction: column;
   }
 
-  .table-toolbar {
+  .table-toolbar,
+  .duplicate-toolbar {
+    align-items: flex-start;
     flex-direction: column;
   }
 

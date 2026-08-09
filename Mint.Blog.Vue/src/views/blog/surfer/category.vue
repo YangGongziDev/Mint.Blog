@@ -107,9 +107,9 @@ onMounted(async () => {
 <template>
   <main class="mx-auto max-w-screen-2xl px-4 md:px-6 py-4">
     <div class="grid grid-cols-1 gap-7 lg:grid-cols-4">
-      <div class="mt-10 col-span-1 lg:col-span-3 mb-3">
+      <div class="col-span-1 mt-0 mb-3 lg:col-span-3 lg:mt-6">
         <div
-          class="w-full p-5 pb-7 mb-3 rounded-lg border border-[#3ecf9a]/14 bg-white/84 dark:border-[#334155] dark:bg-[#2c333e]/72"
+          class="sticky top-2 z-20 w-full p-5 pb-7 mb-3 rounded-lg border border-[#3ecf9a]/14 bg-white/95 shadow-sm backdrop-blur-md dark:border-[#334155] dark:bg-[#2c333e]/95"
         >
           <h2 class="flex items-center mb-5 font-bold text-[#0d3d2d] dark:text-white">
             <FolderOutlined class="w-5 h-5 mr-2 text-[#3ecf9a]" />

@@ -587,9 +587,9 @@ onBeforeUnmount(() => {
 
     <main
       class="w-full px-4 md:px-6 py-4"
-      :class="[catalogsVisible ? 'sm:ml-[320px] max-w-screen-2xl' : 'mx-auto max-w-screen-2xl']"
+      :class="[catalogsVisible ? 'sm:ml-[320px] sm:w-[calc(100%-320px)]' : '']"
     >
-      <div class="grid grid-cols-1 gap-7 lg:grid-cols-4">
+      <div class="mx-auto grid max-w-screen-2xl grid-cols-1 gap-7 lg:grid-cols-4">
         <div
           class="mt-6 col-span-1 mb-3"
           :class="desktopTocVisible && hasTocHeadings ? 'lg:col-span-3' : 'lg:col-span-4'"

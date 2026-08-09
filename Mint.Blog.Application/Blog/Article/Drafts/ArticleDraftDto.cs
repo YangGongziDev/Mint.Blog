@@ -9,5 +9,6 @@ public sealed record ArticleDraftDto(
 	string Cover,
 	long? CategoryId,
 	IReadOnlyCollection<long> TagIds,
+	short Visibility,
 	DateTimeOffset CreatedAt,
 	DateTimeOffset UpdatedAt);

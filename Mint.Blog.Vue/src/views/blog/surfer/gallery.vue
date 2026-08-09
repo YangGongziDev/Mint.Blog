@@ -71,11 +71,13 @@ function formatRatio(ratio: string) {
   bestDifference = Number.POSITIVE_INFINITY;
   for (let candidateWidth = 1; candidateWidth <= 99; candidateWidth += 1) {
     for (let candidateHeight = 1; candidateHeight <= 99; candidateHeight += 1) {
-      const difference = Math.abs(width / height - candidateWidth / candidateHeight);
-      if (difference < bestDifference) {
-        bestWidth = candidateWidth;
-        bestHeight = candidateHeight;
-        bestDifference = difference;
+      if (candidateWidth <= 9 || candidateHeight <= 9) {
+        const difference = Math.abs(width / height - candidateWidth / candidateHeight);
+        if (difference < bestDifference) {
+          bestWidth = candidateWidth;
+          bestHeight = candidateHeight;
+          bestDifference = difference;
+        }
       }
     }
   }
@@ -101,7 +103,7 @@ onMounted(loadGallery);
     <section class="image-panel"><div class="toolbar"><div><h2>{{ activeCategoryName }}</h2><p>共 {{ filteredImages.length }} 张图片</p></div></div>
       <div v-if="loading" class="empty-state">正在加载图片...</div>
       <div v-else-if="!filteredImages.length" class="empty-state">暂无匹配图片</div>
-      <div v-else class="image-grid"><article v-for="image in filteredImages" :key="image.id" class="image-card"><div class="image-cover"><img :src="image.url" :alt="image.name" loading="lazy" /><div class="image-actions"><button @click="openPreview(image)"><EyeOutlined /> 预览</button><a :href="image.url" target="_blank" rel="noopener noreferrer" :download="image.name"><DownloadOutlined /> 下载</a></div></div><div class="image-info"><h3>{{ image.name }}</h3><div class="meta-row"><span>{{ image.categoryName }}</span><span>{{ image.resolution }}</span><span>{{ formatRatio(image.ratio) }}</span></div><p><CalendarOutlined /> {{ image.time || '未设置时间' }}</p></div></article></div>
+      <div v-else class="image-grid"><article v-for="image in filteredImages" :key="image.id" class="image-card"><div class="image-cover"><img :src="image.url" :alt="image.name" loading="lazy" /><div class="image-actions"><button @click="openPreview(image)"><EyeOutlined /> 预览</button><a :href="image.url" target="_blank" rel="noopener noreferrer" :download="image.name"><DownloadOutlined /> 下载</a></div></div><div class="image-info"><h3>{{ image.name }}</h3><div class="meta-row"><span>{{ image.categoryName }}</span><span>{{ image.resolution }}</span><span>{{ formatRatio(image.ratio) }}</span><span>{{ image.size }} MB</span></div><p><CalendarOutlined /> {{ image.time || '未设置时间' }}</p></div></article></div>
     </section>
     <AModal v-model:open="previewOpen" centered :footer="null" width="min(92vw, 980px)" :title="previewImage?.name"><img v-if="previewImage" class="preview-img" :src="previewImage.url" :alt="previewImage.name" /></AModal>
   </main>

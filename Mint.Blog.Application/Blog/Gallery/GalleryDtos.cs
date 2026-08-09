@@ -24,6 +24,7 @@ public sealed record GalleryImageDto(
 	string BucketName,
 	string ObjectName,
 	string FileName,
+	int Size,
 	int Sort,
 	bool Enabled,
 	DateTimeOffset CreatedAt,
@@ -52,6 +53,7 @@ public sealed record SaveGalleryImageCommand(
 	string? BucketName,
 	string? ObjectName,
 	string? FileName,
+	int Size,
 	int Sort,
 	bool Enabled);
 

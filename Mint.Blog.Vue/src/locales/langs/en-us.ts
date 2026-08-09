@@ -225,8 +225,6 @@ const local: App.I18n.Schema = {
     'blog-surfer_tag': 'Tags',
     'blog-surfer_archive': 'Archiving',
     'blog-surfer_column': 'Column',
-    'blog-surfer_resource': 'Resources',
-    'blog-surfer_tools': 'Tools',
     'blog-surfer_about': 'About',
     'blog-surfer_author': 'Author',
     'blog-surfer_interaction': 'Interaction',

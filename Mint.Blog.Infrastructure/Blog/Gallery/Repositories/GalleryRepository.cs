@@ -154,6 +154,7 @@ public sealed class GalleryRepository(ISqlSugarDbContext dbContext) : IGalleryQu
 			BucketName = command.BucketName?.Trim() ?? string.Empty,
 			ObjectName = command.ObjectName?.Trim() ?? string.Empty,
 			FileName = command.FileName?.Trim() ?? string.Empty,
+			Size = command.Size,
 			Sort = command.Sort,
 			Enabled = command.Enabled,
 			CreatedAt = now,
@@ -184,6 +185,7 @@ public sealed class GalleryRepository(ISqlSugarDbContext dbContext) : IGalleryQu
 				BucketName = bucketName,
 				ObjectName = objectName,
 				FileName = fileName,
+				Size = command.Size,
 				Sort = command.Sort,
 				Enabled = command.Enabled,
 				UpdatedAt = DateTimeOffset.UtcNow
@@ -203,6 +205,7 @@ public sealed class GalleryRepository(ISqlSugarDbContext dbContext) : IGalleryQu
 	private async Task ValidateImageAsync(SaveGalleryImageCommand command, CancellationToken cancellationToken){
 		Guard.Against(string.IsNullOrWhiteSpace(command.Name), ErrorCodes.ArticleTitleInvalid, "Gallery image name is required.");
 		Guard.Against(string.IsNullOrWhiteSpace(command.Url), ErrorCodes.ArticleCoverInvalid, "Gallery image url is required.");
+		Guard.Against(command.Size < 0, ErrorCodes.ArticleCoverInvalid, "Gallery image size must be greater than or equal to 0.");
 		var categoryExists = await dbContext.Client.Queryable<GalleryCategoryDataModel>().AnyAsync(x => x.Id == command.CategoryId, cancellationToken);
 		Guard.Against(!categoryExists, ErrorCodes.CategoryNotFound, "Gallery category not found.");
 		_ = NormalizeSourceType(command.SourceType);
@@ -236,6 +239,7 @@ public sealed class GalleryRepository(ISqlSugarDbContext dbContext) : IGalleryQu
 			data.BucketName,
 			data.ObjectName,
 			data.FileName,
+			data.Size,
 			data.Sort,
 			data.Enabled,
 			data.CreatedAt,

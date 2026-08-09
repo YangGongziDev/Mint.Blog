@@ -7,13 +7,14 @@ import type { Dayjs } from 'dayjs';
 import { DeleteOutlined, EditOutlined, EyeOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons-vue';
 import {
   type AdminArticleListItem,
+  type ArticleDraftListItem,
   deleteArticle,
   deleteArticleDraft,
   getArticleDraftPageList,
   getArticlePageList,
   publishArticleDraft,
   setArticleTop,
-  type ArticleDraftListItem
+  setArticleVisibility
 } from '@/service/blog/admin/article';
 import { useAppStore } from '@/store/system/app';
 import type { TimeSortOrder } from '@/utils/date-time';
@@ -75,6 +76,7 @@ const columns = computed<TableColumnsType<AdminArticleListItem>>(() => [
   { title: '摘要', dataIndex: 'summary', key: 'summary', width: 380, align: 'center', ellipsis: true },
   { title: '封面', dataIndex: 'cover', key: 'cover', width: 180, align: 'center' },
   { title: '是否置顶', dataIndex: 'isTop', key: 'isTop', width: 100, align: 'center' },
+  { title: '仅专栏可见', dataIndex: 'visibility', key: 'visibility', width: 120, align: 'center' },
   { title: '删除状态', dataIndex: 'isDeleted', key: 'isDeleted', width: 100, align: 'center' },
   {
     title: '发布时间',
@@ -88,7 +90,7 @@ const columns = computed<TableColumnsType<AdminArticleListItem>>(() => [
   },
   { title: '操作', key: 'action', width: 150, align: 'center' }
 ]);
-const tableScrollX = 1200;
+const tableScrollX = 1320;
 const tableScrollY = computed(() => (appStore.isMobile ? 'calc(100vh - 400px)' : 'calc(100vh - 440px)'));
 async function loadData() {
   loading.value = true;
@@ -122,6 +124,18 @@ async function handleTopChange(id: string, isTop: boolean) {
   const res = await setArticleTop(id, isTop);
   if (res.success) message.success('置顶状态已更新');
   await loadData();
+}
+async function handleVisibilityChange(record: AdminArticleListItem, checked: boolean) {
+  const previousVisibility = record.visibility;
+  record.visibility = checked ? 2 : 1;
+  try {
+    const res = await setArticleVisibility(record.id, record.visibility);
+    if (res.success) {
+      message.success('仅专栏可见状态已更新');
+      return;
+    }
+  } catch {}
+  record.visibility = previousVisibility;
 }
 function openDeleteModal(record: AdminArticleListItem) {
   currentDeleteArticle.value = record;
@@ -288,6 +302,14 @@ onMounted(() => {
               un-checked-children="普通"
               class="top-switch"
               @change="() => handleTopChange(record.id, record.isTop)"
+            />
+          </template>
+          <template v-else-if="column.key === 'visibility'">
+            <ASwitch
+              :checked="record.visibility === 2"
+              checked-children="专栏"
+              un-checked-children="公开"
+              @change="checked => handleVisibilityChange(record as AdminArticleListItem, checked as boolean)"
             />
           </template>
           <template v-else-if="column.key === 'isDeleted'">

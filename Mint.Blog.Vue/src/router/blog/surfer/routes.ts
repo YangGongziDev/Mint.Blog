@@ -89,7 +89,7 @@ export const blogSurferRoutes: RouteRecordRaw[] = [
       i18nKey: 'route.blog-surfer_column',
       hideInMenu: true,
       public: false,
-      activeMenu: 'blog-surfer_dashboard'
+      activeMenu: 'blog-surfer_column'
     }
   },
   {
@@ -110,28 +110,6 @@ export const blogSurferRoutes: RouteRecordRaw[] = [
     meta: {
       title: 'blog-surfer_author',
       i18nKey: 'route.blog-surfer_author',
-      hideInMenu: true,
-      public: false
-    }
-  },
-  {
-    path: 'resource',
-    name: 'blog-surfer_resource',
-    component: () => import('@/views/blog/surfer/resource.vue'),
-    meta: {
-      title: 'blog-surfer_resource',
-      i18nKey: 'route.blog-surfer_resource',
-      hideInMenu: true,
-      public: false
-    }
-  },
-  {
-    path: 'tools',
-    name: 'blog-surfer_tools',
-    component: () => import('@/views/blog/surfer/tools.vue'),
-    meta: {
-      title: 'blog-surfer_tools',
-      i18nKey: 'route.blog-surfer_tools',
       hideInMenu: true,
       public: false
     }

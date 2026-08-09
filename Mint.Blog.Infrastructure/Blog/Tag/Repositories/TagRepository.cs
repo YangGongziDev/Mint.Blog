@@ -1,6 +1,7 @@
 using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
 using Mint.Blog.Application.Blog.Tag.Queries.GetTagList;
 using Mint.Blog.Application.Blog.Tag.Queries.GetTagPageList;
+using Mint.Blog.Domain.Blog.Article;
 using Mint.Blog.Domain.Blog.Tag.Repositories;
 using Mint.Blog.Infrastructure.Blog.Article.Persistence;
 using Mint.Blog.Infrastructure.Blog.Persistence.SqlSugar;
@@ -185,7 +186,7 @@ public sealed class TagRepository(ISqlSugarDbContext dbContext)
 
 		var articleIds = articleRelations.Select(relation => relation.ArticleId).Distinct().ToArray();
 		var publishedArticleIds = await dbContext.Client.Queryable<ArticleDataModel>()
-			.Where(article => articleIds.Contains(article.Id) && article.IsDeleted == 0 && article.Type == 1)
+			.Where(article => articleIds.Contains(article.Id) && article.IsDeleted == 0 && article.Visibility == (short)ArticleVisibility.Public)
 			.Select(article => article.Id)
 			.ToListAsync();
 		var publishedArticleIdSet = publishedArticleIds.ToHashSet();

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { message } from 'ant-design-vue';
 import {
   CopyOutlined,
@@ -10,13 +10,15 @@ import {
   TeamOutlined,
   UserOutlined
 } from '@ant-design/icons-vue';
-import Starry from '@/components/blog/surfer/starry.vue';
 import {
   type Friend,
   type FriendApplicationForm,
   getFriendPageList,
   submitFriendApplication
 } from '@/service/blog/surfer/friend';
+import { useBannerImage } from '@/hooks/blog/use-banner-image';
+import bannerDefaultImg from '@/assets/blog/surfer/article-banner/banner-default.jpg';
+import Slide from '@/components/blog/surfer/slide.vue';
 
 defineOptions({ name: 'SurferFriendPage' });
 
@@ -33,33 +35,18 @@ const friendHeroImages = Object.values(
     import: 'default'
   })
 ) as string[];
-const friendHeroImage = ref('');
-const friendHeroImageKey = ref(0);
-const friendHeroStyle = computed(() => {
-  if (!friendHeroImage.value) return undefined;
-  return { backgroundImage: `url(${friendHeroImage.value})` };
+const {
+  imageKey: friendHeroImageKey,
+  resolved: friendHeroResolved,
+  imageSrc: friendHeroImageSrc,
+  resolveInitialImage: resolveInitialFriendHeroImage,
+  schedulePreloadAfterRender: scheduleFriendBannerPreloadAfterRender,
+  stopPreload: stopFriendBannerPreload
+} = useBannerImage({
+  images: friendHeroImages,
+  fallbackImage: bannerDefaultImg,
+  storageNamespace: 'blog-surfer:friend-hero'
 });
-
-function pickFriendHeroImage() {
-  if (!friendHeroImages.length) {
-    friendHeroImage.value = '';
-    friendHeroImageKey.value += 1;
-    return;
-  }
-
-  const lastImage = window.sessionStorage.getItem('blog-surfer:last-friend-hero-image');
-  const candidates =
-    friendHeroImages.length > 1
-      ? friendHeroImages.filter(image => image !== lastImage && image !== friendHeroImage.value)
-      : friendHeroImages;
-  const pool = candidates.length ? candidates : friendHeroImages.filter(image => image !== friendHeroImage.value);
-  const nextPool = pool.length ? pool : friendHeroImages;
-  const nextImage = nextPool[Math.floor(Math.random() * nextPool.length)];
-
-  friendHeroImage.value = nextImage;
-  friendHeroImageKey.value += 1;
-  window.sessionStorage.setItem('blog-surfer:last-friend-hero-image', nextImage);
-}
 
 // 网站信息数据对象
 const siteInfo = ref({
@@ -133,6 +120,7 @@ const fieldErrors = ref({
 });
 
 // 验证单个字段
+/* eslint-disable complexity, default-case */
 const validateField = (field: string) => {
   const value = applicationForm.value[field as keyof FriendApplicationForm];
 
@@ -147,13 +135,10 @@ const validateField = (field: string) => {
     case 'avatar':
       if (!value?.trim()) {
         fieldErrors.value.avatar = '请输入网站图标链接';
+      } else if (URL.canParse(value)) {
+        fieldErrors.value.avatar = '';
       } else {
-        try {
-          new URL(value);
-          fieldErrors.value.avatar = '';
-        } catch {
-          fieldErrors.value.avatar = '请输入有效的图标链接地址';
-        }
+        fieldErrors.value.avatar = '请输入有效的图标链接地址';
       }
       break;
     case 'category':
@@ -166,13 +151,10 @@ const validateField = (field: string) => {
     case 'url':
       if (!value?.trim()) {
         fieldErrors.value.url = '请输入网站网址';
+      } else if (URL.canParse(value)) {
+        fieldErrors.value.url = '';
       } else {
-        try {
-          new URL(value);
-          fieldErrors.value.url = '';
-        } catch {
-          fieldErrors.value.url = '请输入有效的网站地址';
-        }
+        fieldErrors.value.url = '请输入有效的网站地址';
       }
       break;
     case 'description':
@@ -198,6 +180,7 @@ const validateField = (field: string) => {
       break;
   }
 };
+/* eslint-enable complexity, default-case */
 
 // 清除字段错误
 const clearFieldError = (field: string) => {
@@ -388,6 +371,7 @@ const loadFriends = async () => {
     ];
   } finally {
     loading.value = false;
+    await scheduleFriendBannerPreloadAfterRender();
   }
 };
 
@@ -543,8 +527,6 @@ const friendGroups = computed<FriendGroup[]>(() => {
   ].filter(group => group.friends.length > 0);
 });
 
-const filteredFriends = computed(() => friendGroups.value.flatMap(group => group.friends));
-
 // 获取分类数量
 const getCategoryCount = (categoryKey: string) => {
   const visibleFriends = friends.value.filter(friend => !friend.isDeleted);
@@ -596,27 +578,31 @@ const handleImageError = (event: Event) => {
 
 // 组件挂载时加载数据
 onMounted(() => {
-  pickFriendHeroImage();
+  resolveInitialFriendHeroImage().catch(() => undefined);
   loadFriends();
+});
+
+onBeforeUnmount(() => {
+  stopFriendBannerPreload();
 });
 </script>
 
 <template>
   <div class="friend-page theme-text-primary min-h-screen">
-    <section
+    <Slide
       :key="friendHeroImageKey"
-      class="friend-hero relative h-[340px] overflow-hidden bg-cover bg-center sm:h-[420px] md:h-[500px]"
-      :style="friendHeroStyle"
+      :src="friendHeroImageSrc"
+      :loading="!friendHeroResolved"
+      class="friend-hero"
     >
-      <div class="absolute inset-0 bg-black/35"></div>
-      <div class="friend-stars absolute inset-0 overflow-hidden">
-        <Starry />
-      </div>
+      <template #skeleton>
+        <div class="friend-hero-skeleton" aria-hidden="true"></div>
+      </template>
 
       <div
-        class="friend-hero-inner relative z-10 mx-auto flex h-full max-w-screen-2xl items-center justify-center px-4 text-white md:px-6"
+        class="friend-hero-inner mx-auto flex h-full max-w-screen-2xl items-center justify-center px-4 text-white md:px-6"
       >
-        <div class="friend-hero-content w-full max-w-5xl text-center custom-text-shadow md:-translate-y-8">
+        <div class="friend-hero-content w-full max-w-5xl text-center md:-translate-y-8">
           <div class="mb-5 flex justify-center">
             <span
               class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/18 text-3xl text-white shadow-2xl backdrop-blur-sm"
@@ -658,29 +644,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-
-      <div class="friend-hero-fade absolute inset-x-0 bottom-0 h-[22%]"></div>
-    </section>
-
-    <div class="friend-ripple" aria-hidden="true">
-      <svg
-        class="waves"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 24 150 28"
-        preserveAspectRatio="none"
-        shape-rendering="auto"
-      >
-        <defs>
-          <path id="friend-gentle-wave" d="M-160 44c30 0 58-18 88-18s58 18 88 18s58-18 88-18s58 18 88 18v44h-352z" />
-        </defs>
-        <g class="parallax">
-          <use href="#friend-gentle-wave" x="48" y="0" />
-          <use href="#friend-gentle-wave" x="48" y="3" />
-          <use href="#friend-gentle-wave" x="48" y="5" />
-          <use href="#friend-gentle-wave" x="48" y="7" />
-        </g>
-      </svg>
-    </div>
+    </Slide>
 
     <!-- 主要内容区域 -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 pb-20">
@@ -1308,13 +1272,17 @@ onMounted(() => {
   }
 }
 
-.friend-hero-content {
-  transform: translateY(-18px);
+.friend-hero-skeleton {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 25% 24%, rgb(83 157 253 / 18%), transparent 30%),
+    linear-gradient(135deg, #111827, #1f2937);
+  animation: pulse 1.6s ease-in-out infinite;
 }
 
-.friend-stars {
-  z-index: 1;
-  pointer-events: none;
+.friend-hero-content {
+  transform: translateY(-18px);
 }
 
 .hero-meta-icon {
@@ -1330,66 +1298,6 @@ onMounted(() => {
   box-shadow: 0 6px 16px rgb(0 0 0 / 24%);
 }
 
-.friend-ripple {
-  position: relative;
-  z-index: 5;
-  height: 1px;
-}
-
-.friend-ripple .waves {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: 15%;
-  min-height: 80px;
-  max-height: 150px;
-  margin-bottom: -7px;
-  transform: translateY(-100%);
-}
-
-.friend-ripple .parallax > use {
-  animation: friend-wave-move 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
-}
-
-.friend-ripple .parallax > use:nth-child(1) {
-  fill: rgb(247 251 248 / 70%);
-  animation-delay: -2s;
-  animation-duration: 7s;
-}
-
-.friend-ripple .parallax > use:nth-child(2) {
-  fill: rgb(247 251 248 / 50%);
-  animation-delay: -3s;
-  animation-duration: 10s;
-}
-
-.friend-ripple .parallax > use:nth-child(3) {
-  fill: rgb(247 251 248 / 30%);
-  animation-delay: -4s;
-  animation-duration: 13s;
-}
-
-.friend-ripple .parallax > use:nth-child(4) {
-  fill: #f7fbf8;
-  animation-delay: -5s;
-  animation-duration: 20s;
-}
-
-.dark .friend-ripple .parallax > use,
-html.dark .friend-ripple .parallax > use {
-  fill: rgb(35 41 49 / 90%);
-}
-
-@keyframes friend-wave-move {
-  0% {
-    transform: translate3d(-90px, 0, 0);
-  }
-
-  100% {
-    transform: translate3d(85px, 0, 0);
-  }
-}
-
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -1401,11 +1309,6 @@ html.dark .friend-ripple .parallax > use {
 @media (max-width: 768px) {
   .friend-hero-content {
     transform: translateY(0);
-  }
-
-  .friend-ripple .waves {
-    height: 40px;
-    min-height: 40px;
   }
 
   .friend-card {

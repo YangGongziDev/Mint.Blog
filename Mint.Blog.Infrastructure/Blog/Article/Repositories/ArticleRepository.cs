@@ -7,6 +7,7 @@ using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
 using Mint.Blog.Application.Blog.Article.Queries.GetBlogHome;
 using Mint.Blog.Application.Blog.Article.Queries.SearchArticles;
 using Mint.Blog.Application.Blog.Statistics.Commands.TrackArticleRead;
+using Mint.Blog.Domain.Blog.Article;
 using Mint.Blog.Domain.Blog.Article.Entities;
 using Mint.Blog.Domain.Blog.Article.Repositories;
 using Mint.Blog.Infrastructure.Blog.Persistence.SqlSugar;
@@ -68,6 +69,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 				item.CategoryId,
 				item.Tags.Select(x => x.Id),
 				item.IsTop,
+				(ArticleVisibility)item.Visibility,
 				false,
 				item.ReadCount,
 				item.CreatedAt,
@@ -83,7 +85,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 			IsDeleted = article.IsDeleted ? (short)1 : (short)0,
 			ReadCount = article.ReadCount,
 			Weight = article.IsTop ? 1 : 0,
-			Type = 1,
+			Visibility = (short)article.Visibility,
 			CreatedAt = article.CreatedAt,
 			UpdatedAt = article.UpdatedAt
 		};
@@ -113,6 +115,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 		existingArticle.Title = article.Title;
 		existingArticle.Summary = article.Summary;
 		existingArticle.Cover = article.Cover;
+		existingArticle.Visibility = (short)article.Visibility;
 		existingArticle.IsDeleted = article.IsDeleted ? (short)1 : (short)0;
 		existingArticle.ReadCount = article.ReadCount;
 		existingArticle.Weight = article.IsTop ? 1 : 0;
@@ -193,7 +196,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 		var skip = (normalizedPageNumber - 1) * normalizedPageSize;
 
 		var articleQueryable = dbContext.Client.Queryable<ArticleDataModel>()
-			.Where(x => x.IsDeleted == 0 && x.Type == 1);
+			.Where(x => x.IsDeleted == 0 && x.Visibility == (short)ArticleVisibility.Public);
 
 		var totalCount = await articleQueryable.CountAsync();
 		var articles = await articleQueryable
@@ -212,7 +215,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 		var endExclusive = start.AddYears(1);
 
 		var articles = await dbContext.Client.Queryable<ArticleDataModel>()
-			.Where(x => x.IsDeleted == 0 && x.Type == 1 && x.CreatedAt >= start && x.CreatedAt < endExclusive)
+			.Where(x => x.IsDeleted == 0 && x.Visibility == (short)ArticleVisibility.Public && x.CreatedAt >= start && x.CreatedAt < endExclusive)
 			.OrderByDescending(x => x.CreatedAt)
 			.ToListAsync();
 
@@ -221,7 +224,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 
 	public async Task<IReadOnlyCollection<int>> GetAsync(CancellationToken cancellationToken = default){
 		var articles = await dbContext.Client.Queryable<ArticleDataModel>()
-			.Where(x => x.IsDeleted == 0 && x.Type == 1)
+			.Where(x => x.IsDeleted == 0 && x.Visibility == (short)ArticleVisibility.Public)
 			.ToListAsync();
 
 		return articles
@@ -261,6 +264,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 			tags.Select(tag =>
 				new Mint.Blog.Application.Blog.Article.Queries.GetArticleDetail.ArticleTagDto(tag.Id, tag.Name)).ToArray(),
 			article.IsTop,
+			(short)article.Visibility,
 			article.ReadCount,
 			article.CreatedAt,
 			article.UpdatedAt);
@@ -269,7 +273,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 	public async Task<PagedResult<ArticleListItemDto>> GetAsync(ArticleListQuery query,
 		CancellationToken cancellationToken = default){
 		return await GetListAsync(query.PageNumber, query.PageSize, query.CategoryId, query.TagId, query.Title,
-			query.StartDate, query.EndDate, query.SortOrder, cancellationToken);
+			query.StartDate, query.EndDate, query.SortOrder, query.IncludeColumnOnly, cancellationToken);
 	}
 
 	public async Task<BlogHomeDto> GetAsync(BlogHomeQuery query, CancellationToken cancellationToken = default){
@@ -278,20 +282,20 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 		var topCount = query.TopArticleCount <= 0 ? 5 : query.TopArticleCount;
 
 		var latestArticles = await dbContext.Client.Queryable<ArticleDataModel>()
-			.Where(x => x.IsDeleted == 0 && x.Type == 1)
+			.Where(x => x.IsDeleted == 0 && x.Visibility == (short)ArticleVisibility.Public)
 			.OrderByDescending(x => x.CreatedAt)
 			.Take(latestCount)
 			.ToListAsync();
 
 		var hotArticles = await dbContext.Client.Queryable<ArticleDataModel>()
-			.Where(x => x.IsDeleted == 0 && x.Type == 1)
+			.Where(x => x.IsDeleted == 0 && x.Visibility == (short)ArticleVisibility.Public)
 			.OrderByDescending(x => x.ReadCount)
 			.OrderByDescending(x => x.CreatedAt)
 			.Take(hotCount)
 			.ToListAsync();
 
 		var topArticles = await dbContext.Client.Queryable<ArticleDataModel>()
-			.Where(x => x.IsDeleted == 0 && x.Type == 1 && x.Weight > 0)
+			.Where(x => x.IsDeleted == 0 && x.Visibility == (short)ArticleVisibility.Public && x.Weight > 0)
 			.OrderByDescending(x => x.Weight)
 			.OrderByDescending(x => x.CreatedAt)
 			.Take(topCount)
@@ -320,7 +324,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 		var skip = (normalizedPageNumber - 1) * normalizedPageSize;
 
 		var articleQueryable = dbContext.Client.Queryable<ArticleDataModel>()
-			.Where(x => x.IsDeleted == 0 && x.Type == 1);
+			.Where(x => x.IsDeleted == 0 && x.Visibility == (short)ArticleVisibility.Public);
 
 		articleQueryable = ApplyKeywordFilter(articleQueryable, normalizedKeyword);
 		var totalCount = await articleQueryable.CountAsync();
@@ -359,6 +363,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 		DateOnly? startDate,
 		DateOnly? endDate,
 		string? sortOrder,
+		bool includeColumnOnly,
 		CancellationToken cancellationToken){
 		var normalizedPageNumber = pageNumber <= 0 ? 1 : pageNumber;
 		var normalizedPageSize = pageSize <= 0 ? 10 : pageSize;
@@ -372,8 +377,10 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 				.ToListAsync()
 			: null;
 
-		var articleQueryable = dbContext.Client.Queryable<ArticleDataModel>()
-			.Where(x => x.Type == 1);
+		var articleQueryable = dbContext.Client.Queryable<ArticleDataModel>();
+		articleQueryable = includeColumnOnly
+			? articleQueryable.Where(x => x.Visibility == (short)ArticleVisibility.Public || x.Visibility == (short)ArticleVisibility.ColumnOnly)
+			: articleQueryable.Where(x => x.Visibility == (short)ArticleVisibility.Public);
 
 		if (categoryId.HasValue) {
 			var categoryArticleIds = await dbContext.Client.Queryable<ArticleCategoryRelationDataModel>()
@@ -574,6 +581,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 			viewData.CategoryNameLookup.GetValueOrDefault(categoryId, string.Empty),
 			viewData.ArticleTagsLookup.GetValueOrDefault(article.Id, []),
 			article.Weight > 0,
+			article.Visibility,
 			article.IsDeleted,
 			article.ReadCount,
 			article.CreatedAt);
@@ -636,6 +644,7 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 			categoryId,
 			tagIds,
 			data.Weight > 0,
+			(ArticleVisibility)data.Visibility,
 			data.IsDeleted != 0,
 			data.ReadCount,
 			data.CreatedAt,

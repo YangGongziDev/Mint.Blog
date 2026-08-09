@@ -1,8 +1,6 @@
 import type { AppMenuRecord } from '@/menu/types';
 
 export const blogSurferMenus: AppMenuRecord[] = [
-
-
   {
     id: 'blog-surfer_home',
     parentId: null,
@@ -15,8 +13,6 @@ export const blogSurferMenus: AppMenuRecord[] = [
     icon: 'mdi:home-outline',
     order: 1
   },
-
-
   {
     id: 'blog-surfer_content',
     parentId: null,
@@ -26,7 +22,7 @@ export const blogSurferMenus: AppMenuRecord[] = [
     enabled: true,
     menuI18nKey: 'route.blog-surfer_content',
     icon: 'mdi:book-open-page-variant-outline',
-    order: 2
+    order: 3
   },
   {
     id: 'blog-surfer_dashboard',
@@ -42,7 +38,7 @@ export const blogSurferMenus: AppMenuRecord[] = [
   },
   {
     id: 'blog-surfer_column',
-    parentId: 'blog-surfer_content',
+    parentId: null,
     menuType: 'route',
     routerName: 'blog-surfer_column',
     path: '/blog/surfer/column',
@@ -88,36 +84,6 @@ export const blogSurferMenus: AppMenuRecord[] = [
     icon: 'mdi:tag-multiple-outline',
     order: 5
   },
-
-
-  {
-    id: 'blog-surfer_resource',
-    parentId: 'null',
-    menuType: 'route',
-    routerName: 'blog-surfer_resource',
-    path: '/blog/surfer/resource',
-    tableName: 'blog-surfer_resource',
-    enabled: true,
-    menuI18nKey: 'route.blog-surfer_resource',
-    icon: 'mdi:layers-outline',
-    order: 3
-  },
-
-
-  {
-    id: 'blog-surfer_tools',
-    parentId: 'null',
-    menuType: 'route',
-    routerName: 'blog-surfer_tools',
-    path: '/blog/surfer/tools',
-    tableName: 'blog-surfer_tools',
-    enabled: true,
-    menuI18nKey: 'route.blog-surfer_tools',
-    icon: 'mdi:tools',
-    order: 4
-  },
-
-
   {
     id: 'blog-surfer_interaction',
     parentId: null,
@@ -177,8 +143,6 @@ export const blogSurferMenus: AppMenuRecord[] = [
     icon: 'mdi:message-outline',
     order: 4
   },
-
-
   {
     id: 'blog-surfer_more',
     parentId: null,

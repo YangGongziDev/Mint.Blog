@@ -25,6 +25,7 @@ public sealed class Article : AggregateRoot<long> {
 		long categoryId,
 		IEnumerable<long> tagIds,
 		bool isTop,
+		ArticleVisibility visibility,
 		bool isDeleted,
 		long readCount,
 		DateTimeOffset createdAt,
@@ -37,6 +38,7 @@ public sealed class Article : AggregateRoot<long> {
 		CategoryId = categoryId;
 		_tagIds.AddRange(tagIds.Distinct());
 		IsTop = isTop;
+		Visibility = visibility;
 		IsDeleted = isDeleted;
 		ReadCount = readCount;
 		CreatedAt = createdAt;
@@ -52,6 +54,7 @@ public sealed class Article : AggregateRoot<long> {
 	public long CategoryId { get; private set; }
 	public IReadOnlyCollection<long> TagIds => _tagIds.AsReadOnly();
 	public bool IsTop { get; private set; }
+	public ArticleVisibility Visibility { get; private set; }
 	public bool IsDeleted { get; private set; }
 	public long ReadCount { get; private set; }
 	public DateTimeOffset CreatedAt { get; private set; }
@@ -63,7 +66,8 @@ public sealed class Article : AggregateRoot<long> {
 		string content,
 		string cover,
 		long categoryId,
-		IEnumerable<long> tagIds){
+		IEnumerable<long> tagIds,
+		ArticleVisibility visibility){
 		var now = DateTimeOffset.UtcNow;
 		var article = new Article(
 			0,
@@ -74,6 +78,7 @@ public sealed class Article : AggregateRoot<long> {
 			categoryId,
 			tagIds,
 			false,
+			visibility,
 			false,
 			0,
 			now,
@@ -92,6 +97,7 @@ public sealed class Article : AggregateRoot<long> {
 		long categoryId,
 		IEnumerable<long> tagIds,
 		bool isTop,
+		ArticleVisibility visibility,
 		bool isDeleted,
 		long readCount,
 		DateTimeOffset createdAt,
@@ -105,6 +111,7 @@ public sealed class Article : AggregateRoot<long> {
 			categoryId,
 			tagIds,
 			isTop,
+			visibility,
 			isDeleted,
 			readCount,
 			createdAt,
@@ -117,7 +124,8 @@ public sealed class Article : AggregateRoot<long> {
 		string content,
 		string cover,
 		long categoryId,
-		IEnumerable<long> tagIds){
+		IEnumerable<long> tagIds,
+		ArticleVisibility visibility){
 		Title = ArticleTitle.Create(title).Value;
 		Summary = ArticleSummary.Create(summary).Value;
 		Content = ArticleContent.Create(content).Value;
@@ -125,6 +133,7 @@ public sealed class Article : AggregateRoot<long> {
 		CategoryId = categoryId;
 		_tagIds.Clear();
 		_tagIds.AddRange(tagIds.Distinct());
+		Visibility = visibility;
 		UpdatedAt = DateTimeOffset.UtcNow;
 		AddDomainEvent(new ArticleUpdatedDomainEvent(Id, UpdatedAt));
 	}
@@ -139,6 +148,12 @@ public sealed class Article : AggregateRoot<long> {
 		IsTop = isTop;
 		UpdatedAt = DateTimeOffset.UtcNow;
 		AddDomainEvent(new ArticleTopChangedDomainEvent(Id, IsTop, UpdatedAt));
+	}
+
+	public void SetVisibility(ArticleVisibility visibility){
+		Visibility = visibility;
+		UpdatedAt = DateTimeOffset.UtcNow;
+		AddDomainEvent(new ArticleVisibilityChangedDomainEvent(Id, Visibility, UpdatedAt));
 	}
 
 	public void IncreaseReadCount(){

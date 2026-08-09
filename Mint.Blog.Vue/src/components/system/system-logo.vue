@@ -1,11 +1,31 @@
 <template>
   <div class="app-logo">
-    <img class="logo" :src="logSvg" alt="no logoSvg" />
+    <img class="logo" :src="logoSrc" alt="no logoSvg" @error="handleError" />
   </div>
 </template>
 
 <script setup lang="ts">
-import logSvg from '@/assets/system/svg/logo.svg';
+import { computed, ref, watch } from 'vue';
+import logoSvg from '@/assets/system/svg/logo.svg';
+
+interface Props {
+  src?: string;
+}
+
+const props = defineProps<Props>();
+const loadFailed = ref(false);
+const logoSrc = computed(() => (!loadFailed.value && props.src ? props.src : logoSvg));
+
+watch(
+  () => props.src,
+  () => {
+    loadFailed.value = false;
+  }
+);
+
+function handleError() {
+  if (logoSrc.value !== logoSvg) loadFailed.value = true;
+}
 </script>
 
 <style>

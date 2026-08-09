@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using Mint.Blog.Application.Abstractions;
 using Mint.Blog.Application.Blog.Article.Drafts;
 using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
+using Mint.Blog.Domain.Blog.Article;
 using Mint.Blog.Domain.Blog.Article.Repositories;
 using Mint.Blog.Domain.Blog.Category.Repositories;
 using Mint.Blog.Domain.Blog.Tag.Repositories;
@@ -88,6 +89,9 @@ public sealed partial class ArticleDraftService(
 			Guard.Against(article is null, ErrorCodes.ArticleNotFound, "Article does not exist.");
 		}
 
+		Guard.Against(!Enum.IsDefined((ArticleVisibility)command.Visibility), ErrorCodes.ArticleContentInvalid,
+			"Article visibility must be 1 or 2.");
+
 		var tagIds = command.TagIds?.Distinct().ToArray() ?? [];
 		var now = DateTimeOffset.UtcNow;
 		var existing = await ResolveDraftAsync(command, cancellationToken);
@@ -103,6 +107,7 @@ public sealed partial class ArticleDraftService(
 					Summary = Normalize(command.Summary),
 					Cover = Normalize(command.Cover),
 					CategoryId = command.CategoryId,
+					Visibility = command.Visibility,
 					CreatedAt = now,
 					UpdatedAt = now
 				};
@@ -116,6 +121,7 @@ public sealed partial class ArticleDraftService(
 				existing.Summary = Normalize(command.Summary);
 				existing.Cover = Normalize(command.Cover);
 				existing.CategoryId = command.CategoryId;
+				existing.Visibility = command.Visibility;
 				existing.UpdatedAt = now;
 				await dbContext.Client.Updateable(existing).ExecuteCommandAsync();
 				draftId = existing.Id;
@@ -178,7 +184,8 @@ public sealed partial class ArticleDraftService(
 			var oldArticleImages = GetArticleImages(article!);
 			var draftImages = GetDraftImages(draft);
 			var imagesRemovedFromArticle = oldArticleImages.Except(draftImages, StringComparer.OrdinalIgnoreCase).ToArray();
-			article!.Update(title, summary, content, cover, draft.CategoryId!.Value, existingTagIds);
+			article!.Update(title, summary, content, cover, draft.CategoryId!.Value, existingTagIds,
+				(ArticleVisibility)draft.Visibility);
 			await unitOfWork.BeginTransactionAsync(cancellationToken);
 			try {
 				await articleRepository.UpdateAsync(article, cancellationToken);
@@ -198,7 +205,8 @@ public sealed partial class ArticleDraftService(
 			content,
 			cover,
 			draft.CategoryId!.Value,
-			existingTagIds);
+			existingTagIds,
+			(ArticleVisibility)draft.Visibility);
 
 		await unitOfWork.BeginTransactionAsync(cancellationToken);
 		try {
@@ -271,6 +279,7 @@ public sealed partial class ArticleDraftService(
 			draft.Cover,
 			draft.CategoryId,
 			tagIds,
+			draft.Visibility,
 			draft.CreatedAt,
 			draft.UpdatedAt);
 	}

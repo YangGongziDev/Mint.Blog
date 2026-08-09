@@ -7,4 +7,5 @@ public sealed record UpdateArticleCommand(
 	string Content,
 	string Cover,
 	long CategoryId,
-	IReadOnlyCollection<long> TagIds);
+	IReadOnlyCollection<long> TagIds,
+	short Visibility);

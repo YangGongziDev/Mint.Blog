@@ -6,4 +6,5 @@ public sealed record CreateArticleCommand(
 	string Content,
 	string Cover,
 	long CategoryId,
-	IReadOnlyCollection<long> TagIds);
+	IReadOnlyCollection<long> TagIds,
+	short Visibility);

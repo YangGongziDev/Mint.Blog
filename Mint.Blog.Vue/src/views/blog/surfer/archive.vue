@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { CalendarOutlined } from '@ant-design/icons-vue';
-import { getArchivePageList } from '@/service/blog/surfer/archive';
+import { CalendarOutlined, DownOutlined, UpOutlined } from '@ant-design/icons-vue';
+import { getArchivePageList, getArchiveYears } from '@/service/blog/surfer/archive';
 import SurferSidebar from '@/components/blog/surfer/sidebar-right.vue';
 
 defineOptions({ name: 'SurferArchivePage' });
 
+type Api<T> = { success: boolean; data: T };
 type ArticleItem = { id: number; title: string; cover?: string; createDate?: string };
 type ArchiveMonth = { month: string; articles: ArticleItem[] };
 type PageResult = {
@@ -21,43 +22,34 @@ type PageResult = {
 const route = useRoute();
 const router = useRouter();
 const archives = ref<ArchiveMonth[]>([]);
+const selectedYear = ref((route.query.year as string) || '');
+const availableYears = ref<number[]>([]);
 const current = computed(() => {
-  const q = route.query.page;
-  const n = Number(q);
-  return Number.isFinite(n) && n > 0 ? n : 1;
+  const page = Number(route.query.page);
+  return Number.isFinite(page) && page > 0 ? page : 1;
 });
 const size = ref(20);
 const total = ref(0);
 const pages = ref(0);
-const loading = ref(true);
-
-const selectedYear = ref('');
-const availableYears = ref<number[]>([]);
+const loading = ref(false);
+const isYearCollapsed = ref(true);
 
 function getArchives(pageNo: number) {
   if (pageNo < 1 || (pages.value > 0 && pageNo > pages.value)) return;
+
   loading.value = true;
   archives.value = [];
-  const params: Record<string, unknown> = { current: pageNo, size: size.value };
-  if (selectedYear.value) params.year = selectedYear.value;
-
-  getArchivePageList<PageResult>(params)
+  getArchivePageList<PageResult>({
+    current: pageNo,
+    size: size.value,
+    year: selectedYear.value
+  })
     .then(res => {
       if (res.success) {
         archives.value = res.data || [];
         size.value = res.size;
         total.value = res.total;
         pages.value = res.pages;
-
-        const years = new Set<number>();
-        (res.data || []).forEach(m => {
-          const y = Number.parseInt((m.month || '').slice(0, 4), 10);
-          if (!Number.isNaN(y)) years.add(y);
-        });
-        availableYears.value = [...years].sort((a, b) => b - a);
-        if (!selectedYear.value && availableYears.value.length > 0) {
-          selectedYear.value = String(availableYears.value[0]);
-        }
       }
     })
     .catch(() => {
@@ -70,19 +62,37 @@ function getArchives(pageNo: number) {
     });
 }
 
-function goArticle(id: number) {
-  router.push(`/blog/surfer/article/${id}`);
+function selectYear(year: number | '') {
+  router.push({
+    path: '/blog/surfer/archive',
+    query: { year: year ? String(year) : undefined }
+  });
 }
+
+function goArticle(articleId: number) {
+  router.push(`/blog/surfer/article/${articleId}`);
+}
+
 function goPage(page: number) {
   router.replace({ query: { ...route.query, page: page > 1 ? String(page) : undefined } });
 }
 
-watch(selectedYear, () => {
-  router.replace({ query: { ...route.query, page: undefined } });
-  getArchives(1);
-});
+watch(
+  () => [route.query.year, route.query.page],
+  () => {
+    selectedYear.value = (route.query.year as string) || '';
+    getArchives(current.value);
+  }
+);
 
-onMounted(() => {
+onMounted(async () => {
+  try {
+    const res = await getArchiveYears<Api<number[]>>();
+    if (res.success) availableYears.value = [...(res.data || [])].sort((a, b) => b - a);
+  } catch {
+    availableYears.value = [];
+  }
+
   getArchives(current.value);
 });
 </script>
@@ -90,99 +100,181 @@ onMounted(() => {
 <template>
   <main class="mx-auto max-w-screen-2xl px-4 md:px-6 py-4">
     <div class="grid grid-cols-1 gap-7 lg:grid-cols-4">
-      <div class="mt-10 col-span-1 lg:col-span-3 mb-3">
+      <div class="col-span-1 mt-0 mb-3 lg:col-span-3 lg:mt-6">
         <div
-          class="w-full p-5 pb-7 mb-3 rounded-lg border border-[#3ecf9a]/14 bg-white/84 dark:border-[#334155] dark:bg-[#2c333e]/72"
+          class="sticky top-2 z-20 w-full p-5 pb-7 mb-3 rounded-lg border border-[#3ecf9a]/14 bg-white/95 shadow-sm backdrop-blur-md dark:border-[#334155] dark:bg-[#2c333e]/95"
         >
           <h2 class="flex items-center mb-5 font-bold text-[#0d3d2d] dark:text-white">
             <CalendarOutlined class="w-5 h-5 mr-2 text-[#3ecf9a]" />
             归档
+            <span v-if="availableYears.length" class="ml-2 font-normal text-[#557468] dark:text-[#cbd5e1]">
+              ( {{ availableYears.length }} )
+            </span>
           </h2>
-          <div v-if="availableYears.length" class="flex flex-wrap items-center gap-3">
-            <span class="text-sm font-medium text-[#557468] dark:text-[#cbd5e1]">年份:</span>
-            <select
-              v-model="selectedYear"
-              class="rounded-lg border border-[#3ecf9a]/20 bg-white/72 px-3 py-2 text-sm text-[#3ecf9a] outline-none focus:border-[#3ecf9a] dark:bg-[#2c333e]/72 dark:text-white dark:border-[#334155]"
+
+          <div
+            v-if="availableYears.length"
+            class="flex flex-wrap gap-3 transition-[max-height] duration-300"
+            :class="
+              isYearCollapsed
+                ? 'max-h-[92px] overflow-y-auto overflow-x-hidden pr-1'
+                : 'max-h-[180px] overflow-y-auto overflow-x-hidden pr-1'
+            "
+          >
+            <button
+              class="inline-flex cursor-pointer items-center rounded-xl border px-3.5 py-1.5 text-sm font-medium transition-all duration-300"
+              :class="[
+                !selectedYear
+                  ? 'border-transparent bg-[#3ecf9a] text-white shadow-md dark:border-[#539dfd]/30 dark:bg-[#539dfd]/10 dark:text-[#539dfd] dark:shadow-none'
+                  : 'border-gray-200 text-[#557468] hover:bg-gray-100 dark:border-[#334155] dark:text-[#cbd5e1] dark:hover:bg-white/5'
+              ]"
+              @click="selectYear('')"
             >
-              <option v-for="y in availableYears" :key="y" :value="String(y)">{{ y }}</option>
-            </select>
+              全部
+            </button>
+            <button
+              v-for="year in availableYears"
+              :key="year"
+              class="inline-flex cursor-pointer items-center rounded-xl border px-3.5 py-1.5 text-sm font-medium transition-all duration-300"
+              :class="[
+                selectedYear === String(year)
+                  ? 'border-transparent bg-[#3ecf9a] text-white shadow-md dark:border-[#539dfd]/30 dark:bg-[#539dfd]/10 dark:text-[#539dfd] dark:shadow-none'
+                  : 'border-gray-200 text-[#557468] hover:bg-gray-100 dark:border-[#334155] dark:text-[#cbd5e1] dark:hover:bg-white/5'
+              ]"
+              @click="selectYear(year)"
+            >
+              {{ year }} 年
+            </button>
           </div>
+
+          <button
+            v-if="availableYears.length > 8"
+            class="mt-4 flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg border border-[#3ecf9a]/14 bg-[#f0faf5]/70 py-2 text-sm font-semibold text-[#15956b] transition-colors hover:bg-[#3ecf9a]/12 dark:border-[#539dfd]/18 dark:bg-[#539dfd]/8 dark:text-[#8cc8ff] dark:hover:bg-[#539dfd]/14"
+            @click="isYearCollapsed = !isYearCollapsed"
+          >
+            {{ isYearCollapsed ? `展开全部年份（${availableYears.length}）` : '收起年份' }}
+            <DownOutlined v-if="isYearCollapsed" class="text-xs" />
+            <UpOutlined v-else class="text-xs" />
+          </button>
         </div>
 
-        <div v-if="loading" class="space-y-4">
-          <div
-            v-for="i in 3"
-            :key="i"
-            class="animate-pulse rounded-lg border border-[#3ecf9a]/14 bg-white/84 p-5 dark:border-[#334155] dark:bg-[#2c333e]/72"
-          >
-            <div class="mb-3 h-5 w-24 rounded bg-[#15956b]/8 dark:bg-white/5"></div>
-            <div v-for="j in 2" :key="j" class="mb-3 flex items-center gap-3">
-              <div class="h-12 w-24 rounded-lg bg-[#15956b]/8 dark:bg-white/5"></div>
-              <div class="h-4 w-3/5 rounded bg-gray-200 dark:bg-white/5"></div>
+        <div
+          class="p-5 mb-4 rounded-lg border border-[#3ecf9a]/14 bg-white/84 dark:border-[#334155] dark:bg-[#2c333e]/72"
+        >
+          <div v-if="loading" class="space-y-5">
+            <div v-for="i in 3" :key="i" class="animate-pulse">
+              <div class="mb-3 h-5 w-24 rounded bg-[#15956b]/8 dark:bg-[#539dfd]/10"></div>
+              <div v-for="j in 2" :key="j" class="mb-2 flex items-center gap-3 p-3">
+                <div class="h-12 w-24 rounded-lg bg-[#15956b]/8 dark:bg-[#539dfd]/10"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-4 w-3/4 rounded bg-gray-200 dark:bg-white/5"></div>
+                  <div class="h-3 w-1/3 rounded bg-gray-200 dark:bg-white/5"></div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div v-else-if="!archives.length" class="flex flex-col items-center justify-center py-16">
-          <div class="text-6xl font-black text-[#3ecf9a]/20">📝</div>
-          <p class="mt-4 text-[#557468] dark:text-[#cbd5e1]">还没有发布文章</p>
-        </div>
+          <div v-else-if="!archives.length" class="flex flex-col items-center justify-center py-16">
+            <div class="text-6xl font-black text-[#3ecf9a]/20">—</div>
+            <p class="mt-4 mb-2 text-[#557468] dark:text-[#cbd5e1]">
+              {{ selectedYear ? `${selectedYear} 年还未发布文章哟~` : '还未发布文章哟~' }}
+            </p>
+          </div>
 
-        <template v-else>
-          <div
-            v-for="archive in archives"
-            :key="archive.month"
-            class="mb-4 rounded-lg border border-[#3ecf9a]/14 bg-white/84 p-5 dark:border-[#334155] dark:bg-[#2c333e]/72"
-          >
-            <h3 class="mb-3 text-lg font-bold text-[#0d3d2d] dark:text-white">
-              {{ archive.month }}
-            </h3>
-            <ol class="divide-y divide-gray-100 dark:divide-white/5">
-              <li v-for="article in archive.articles" :key="article.id">
-                <button
-                  class="flex w-full items-center p-3 text-left rounded-lg hover:bg-[#f0faf5] dark:hover:bg-white/5 transition-colors cursor-pointer"
-                  @click="goArticle(article.id)"
-                >
-                  <img
-                    v-if="article.cover"
-                    class="w-24 h-12 mb-0 mr-3 rounded-lg object-cover shrink-0"
-                    :src="article.cover"
-                  />
-                  <div
-                    v-else
-                    class="w-24 h-12 mb-0 mr-3 rounded-lg shrink-0 bg-[#15956b]/8 flex items-center justify-center text-[#3ecf9a]/40 text-lg font-bold"
+          <div v-else class="relative pl-5 sm:pl-7">
+            <div
+              class="absolute bottom-2 left-[7px] top-2 w-px bg-[#3ecf9a]/20 dark:bg-[#539dfd]/20 sm:left-[11px]"
+            ></div>
+            <section v-for="archive in archives" :key="archive.month" class="relative mb-7 last:mb-0">
+              <div
+                class="absolute -left-[19px] top-1.5 h-3 w-3 rounded-full border-2 border-white bg-[#3ecf9a] shadow-[0_0_0_4px_rgba(62,207,154,0.12)] dark:border-[#2c333e] dark:bg-[#539dfd] sm:-left-[23px]"
+              ></div>
+              <h3 class="mb-3 text-lg font-bold text-[#0d3d2d] dark:text-white">{{ archive.month }}</h3>
+              <ol class="divide-y divide-gray-100 dark:divide-white/5">
+                <li v-for="article in archive.articles" :key="article.id">
+                  <button
+                    class="flex w-full cursor-pointer items-center rounded-lg bg-transparent p-3 text-left transition-colors hover:bg-[#f0faf5] dark:bg-transparent dark:hover:bg-white/5"
+                    @click="goArticle(article.id)"
                   >
-                    M
-                  </div>
-                  <div class="min-w-0">
-                    <h2 class="text-base font-medium text-[#0d3d2d] dark:text-white line-clamp-1">
-                      {{ article.title }}
-                    </h2>
-                    <span class="inline-flex items-center text-xs mt-1 text-[#557468] dark:text-[#cbd5e1]">
-                      <CalendarOutlined class="w-2.5 h-2.5 mr-2" />
-                      {{ article.createDate }}
-                    </span>
-                  </div>
-                </button>
-              </li>
-            </ol>
+                    <img
+                      v-if="article.cover"
+                      class="w-24 h-12 mb-0 mr-3 rounded-lg object-cover shrink-0"
+                      :src="article.cover"
+                      :alt="article.title"
+                    />
+                    <div
+                      v-else
+                      class="w-24 h-12 mb-0 mr-3 rounded-lg shrink-0 bg-[#15956b]/8 dark:bg-[#539dfd]/10 flex items-center justify-center text-[#3ecf9a]/40 text-lg font-bold"
+                    >
+                      M
+                    </div>
+                    <div class="min-w-0">
+                      <h2 class="line-clamp-1 text-base font-medium text-[#0d3d2d] dark:text-white">
+                        {{ article.title }}
+                      </h2>
+                      <span class="mt-1 inline-flex items-center text-xs text-[#557468] dark:text-[#cbd5e1]">
+                        <CalendarOutlined class="mr-2 h-2.5 w-2.5" />
+                        {{ article.createDate }}
+                      </span>
+                    </div>
+                  </button>
+                </li>
+              </ol>
+            </section>
           </div>
+        </div>
 
-          <div v-if="pages > 0" class="flex justify-center pt-4">
-            <APagination
-              :current="current"
-              :page-size="size"
-              :total="total"
-              :show-size-changer="false"
-              @change="goPage"
-            />
-          </div>
-        </template>
+        <div v-if="pages > 1" class="flex justify-center pt-4">
+          <APagination
+            :current="current"
+            :page-size="size"
+            :total="total"
+            :show-size-changer="false"
+            @change="goPage"
+          />
+        </div>
       </div>
 
-      <div class="col-span-1 mt-10 mb-3">
+      <div class="col-span-1 mt-3 mb-3">
         <SurferSidebar />
       </div>
     </div>
   </main>
 </template>
+
+<style scoped lang="scss">
+:global(html.dark) :deep(ol > li),
+:global(html.dark) :deep(ol > li > button) {
+  background-color: transparent !important;
+}
+
+:global(html.dark) :deep(ol > li > button:hover) {
+  background-color: rgb(255 255 255 / 5%) !important;
+}
+
+:global(html.dark) :deep(.ant-pagination .ant-pagination-item),
+:global(html.dark) :deep(.ant-pagination .ant-pagination-prev .ant-pagination-item-link),
+:global(html.dark) :deep(.ant-pagination .ant-pagination-next .ant-pagination-item-link) {
+  border-color: rgb(51 65 85);
+  background-color: rgb(44 51 62 / 72%);
+}
+
+:global(html.dark) :deep(.ant-pagination .ant-pagination-item a),
+:global(html.dark) :deep(.ant-pagination .ant-pagination-prev .ant-pagination-item-link),
+:global(html.dark) :deep(.ant-pagination .ant-pagination-next .ant-pagination-item-link) {
+  color: rgb(203 213 225);
+}
+
+:global(html.dark) :deep(.ant-pagination .ant-pagination-item-active) {
+  border-color: #539dfd;
+  background-color: rgb(83 157 253 / 12%);
+}
+
+:global(html.dark) :deep(.ant-pagination .ant-pagination-item-active a) {
+  color: #8cc8ff;
+}
+
+:global(html.dark) :deep(.ant-pagination .ant-pagination-disabled .ant-pagination-item-link) {
+  color: rgb(100 116 139);
+}
+</style>

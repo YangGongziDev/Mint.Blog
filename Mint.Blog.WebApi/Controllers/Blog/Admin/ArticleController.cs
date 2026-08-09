@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mint.Blog.Application.Abstractions;
 using Mint.Blog.Application.Blog.Article.Commands.CreateArticle;
 using Mint.Blog.Application.Blog.Article.Commands.DeleteArticle;
+using Mint.Blog.Application.Blog.Article.Commands.SetArticleVisibility;
 using Mint.Blog.Application.Blog.Article.Commands.SetArticleTop;
 using Mint.Blog.Application.Blog.Article.Commands.UpdateArticle;
 using Mint.Blog.Application.Blog.Article.Queries.GetArticleDetail;
@@ -19,7 +20,8 @@ public sealed class ArticleController(
 	CreateArticleCommandHandler createArticleCommandHandler,
 	UpdateArticleCommandHandler updateArticleCommandHandler,
 	DeleteArticleCommandHandler deleteArticleCommandHandler,
-	SetArticleTopCommandHandler setArticleTopCommandHandler) : ControllerBase {
+	SetArticleTopCommandHandler setArticleTopCommandHandler,
+	SetArticleVisibilityCommandHandler setArticleVisibilityCommandHandler) : ControllerBase {
 	[HttpGet]
 	[ProducesResponseType(typeof(ApiResponse<PagedResult<ArticleListItemDto>>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
@@ -34,7 +36,8 @@ public sealed class ArticleController(
 		[FromQuery] string? sortOrder = null,
 		CancellationToken cancellationToken = default){
 		var result = await articleListQueryService.GetAsync(
-			new ArticleListQuery(pageNumber, pageSize, categoryId, tagId, title, startDate, endDate, sortOrder),
+			new ArticleListQuery(pageNumber, pageSize, categoryId, tagId, title, startDate, endDate, sortOrder,
+				IncludeColumnOnly: true),
 			cancellationToken);
 		var response = new PagedResult<object>(
 			result.Items.Select(item => new {
@@ -46,6 +49,7 @@ public sealed class ArticleController(
 				item.CategoryName,
 				item.Tags,
 				item.IsTop,
+				item.Visibility,
 				item.IsDeleted,
 				item.ReadCount,
 				item.CreatedAt,
@@ -77,6 +81,7 @@ public sealed class ArticleController(
 				article.CategoryName,
 				article.Tags,
 				article.IsTop,
+				article.Visibility,
 				article.ReadCount,
 				article.CreatedAt,
 				article.UpdatedAt
@@ -114,6 +119,18 @@ public sealed class ArticleController(
 		CancellationToken cancellationToken){
 		await setArticleTopCommandHandler.HandleAsync(command with { ArticleId = articleId }, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id = articleId, isTop = command.IsTop }));
+	}
+
+	[HttpPatch("{articleId:long}/visibility")]
+	[Authorize(Roles = "ROLE_ADMIN,ROLE_SUPER")]
+	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
+	public async Task<ActionResult<ApiResponse<object>>> SetVisibility(long articleId,
+		[FromBody] SetArticleVisibilityCommand command,
+		CancellationToken cancellationToken){
+		await setArticleVisibilityCommandHandler.HandleAsync(command with { ArticleId = articleId }, cancellationToken);
+		return Ok(ApiResponse<object>.Ok(new { id = articleId, visibility = command.Visibility }));
 	}
 
 	[HttpDelete("{articleId:long}")]

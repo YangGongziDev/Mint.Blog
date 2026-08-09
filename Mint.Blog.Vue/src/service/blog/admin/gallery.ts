@@ -23,6 +23,7 @@ export interface GalleryImageItem {
   bucketName: string;
   objectName: string;
   fileName: string;
+  size: number;
   sort: number;
   enabled: boolean;
   createdAt?: string;
@@ -67,6 +68,7 @@ export interface SaveGalleryImagePayload {
   bucketName?: string;
   objectName?: string;
   fileName?: string;
+  size: number;
   sort: number;
   enabled: boolean;
 }

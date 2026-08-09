@@ -9,6 +9,7 @@ public sealed record ArticleListItemDto(
 	string CategoryName,
 	IReadOnlyCollection<ArticleTagDto> Tags,
 	bool IsTop,
+	short Visibility,
 	short IsDeleted,
 	long ReadCount,
 	DateTimeOffset CreatedAt) {

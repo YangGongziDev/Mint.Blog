@@ -1,4 +1,5 @@
 using Mint.Blog.Application.Abstractions;
+using Mint.Blog.Domain.Blog.Article;
 using Mint.Blog.Domain.Blog.Article.Repositories;
 using Mint.Blog.Domain.Blog.Category.Repositories;
 using Mint.Blog.Domain.Blog.Tag.Repositories;
@@ -29,6 +30,9 @@ public sealed class UpdateArticleCommandHandler(
 		Guard.Against(string.IsNullOrWhiteSpace(cover), ErrorCodes.ArticleCoverInvalid,
 			"Article cover is required.");
 
+		Guard.Against(!Enum.IsDefined((ArticleVisibility)command.Visibility), ErrorCodes.ArticleContentInvalid,
+			"Article visibility must be 1 or 2.");
+
 		var article = await articleRepository.GetByIdAsync(command.ArticleId, cancellationToken);
 		Guard.Against(article is null, ErrorCodes.ArticleNotFound, "Article does not exist.");
 
@@ -45,7 +49,8 @@ public sealed class UpdateArticleCommandHandler(
 			content,
 			cover,
 			command.CategoryId,
-			existingTagIds);
+			existingTagIds,
+			(ArticleVisibility)command.Visibility);
 
 		await unitOfWork.BeginTransactionAsync(cancellationToken);
 

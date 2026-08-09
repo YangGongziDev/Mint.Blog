@@ -7,6 +7,7 @@ using Mint.Blog.Application.Abstractions;
 using Mint.Blog.Application.Blog.Article.Commands.CreateArticle;
 using Mint.Blog.Application.Blog.Article.Commands.DeleteArticle;
 using Mint.Blog.Application.Blog.Article.Commands.SetArticleTop;
+using Mint.Blog.Application.Blog.Article.Commands.SetArticleVisibility;
 using Mint.Blog.Application.Blog.Article.Commands.UpdateArticle;
 using Mint.Blog.Application.Blog.Article.Queries.GetArchivePageList;
 using Mint.Blog.Application.Blog.Article.Queries.GetArchiveYearList;
@@ -254,6 +255,7 @@ public static class ServiceCollectionExtensions {
 		services.AddScoped<UpdateArticleCommandHandler>();
 		services.AddScoped<DeleteArticleCommandHandler>();
 		services.AddScoped<SetArticleTopCommandHandler>();
+		services.AddScoped<SetArticleVisibilityCommandHandler>();
 		services.AddScoped<CreateCategoryCommandHandler>();
 		services.AddScoped<UpdateCategoryCommandHandler>();
 		services.AddScoped<DeleteCategoryCommandHandler>();

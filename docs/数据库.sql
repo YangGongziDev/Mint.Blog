@@ -198,7 +198,7 @@ CREATE TABLE "public"."blog_article" (
   "is_deleted" int2 NOT NULL DEFAULT 0,
   "read_num" int4 NOT NULL DEFAULT 1,
   "weight" int4 NOT NULL DEFAULT 0,
-  "type" int2 NOT NULL DEFAULT 1
+  "visibility" int2 NOT NULL DEFAULT 1
 )
 ;
 ALTER TABLE "public"."blog_article" OWNER TO "postgres";
@@ -211,7 +211,7 @@ COMMENT ON COLUMN "public"."blog_article"."update_time" IS '最后一次更新�
 COMMENT ON COLUMN "public"."blog_article"."is_deleted" IS '删除标志位：0：未删除 1：已删除';
 COMMENT ON COLUMN "public"."blog_article"."read_num" IS '被阅读次数';
 COMMENT ON COLUMN "public"."blog_article"."weight" IS '文章权重，用于是否置顶（0: 未置顶；>0: 参与置顶，权重值越高越靠前）';
-COMMENT ON COLUMN "public"."blog_article"."type" IS '文章类型1：普通文章，2：收录于知识库';
+COMMENT ON COLUMN "public"."blog_article"."visibility" IS '文章可见性，1：公开可见 2：仅专栏可见';
 COMMENT ON TABLE "public"."blog_article" IS '文章表';
 
 -- ----------------------------
@@ -2782,11 +2782,14 @@ CREATE TABLE "public"."blog_article_draft" (
   "summary" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "cover" text COLLATE "pg_catalog"."default" NOT NULL,
   "category_id" int8,
+  "visibility" int2 NOT NULL,
   "create_time" timestamp(6) NOT NULL,
   "update_time" timestamp(6) NOT NULL
 )
 ;
 ALTER TABLE "public"."blog_article_draft" OWNER TO "postgres";
+
+COMMENT ON COLUMN "public"."blog_article_draft"."visibility" IS '1 ：公开可见 2 ：仅专栏可见';
 
 -- ----------------------------
 -- Records of blog_article_draft
@@ -3972,6 +3975,7 @@ CREATE TABLE IF NOT EXISTS public.blog_gallery_image (
   bucket_name VARCHAR(120) NOT NULL DEFAULT '',
   object_name VARCHAR(500) NOT NULL DEFAULT '',
   file_name VARCHAR(260) NOT NULL DEFAULT '',
+  size int4 NOT NULL DEFAULT 0 ,
   sort INTEGER NOT NULL DEFAULT 0,
   enabled BOOLEAN NOT NULL DEFAULT TRUE,
   create_time TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -3990,6 +3994,7 @@ COMMENT ON COLUMN public.blog_gallery_image.source_type IS '图片来源类型�
 COMMENT ON COLUMN public.blog_gallery_image.bucket_name IS '本地上传图片所在对象存储桶名称，外部引用时为空';
 COMMENT ON COLUMN public.blog_gallery_image.object_name IS '本地上传图片在对象存储中的对象名称，外部引用时为空';
 COMMENT ON COLUMN public.blog_gallery_image.file_name IS '原始文件名或显示文件名';
+COMMENT ON COLUMN public.blog_gallery_image.size IS '图片大小，单位M，外部引用时为空';
 COMMENT ON COLUMN public.blog_gallery_image.sort IS '排序值，数值越大越靠前';
 COMMENT ON COLUMN public.blog_gallery_image.enabled IS '是否启用，true启用，false停用';
 COMMENT ON COLUMN public.blog_gallery_image.create_time IS '创建时间';

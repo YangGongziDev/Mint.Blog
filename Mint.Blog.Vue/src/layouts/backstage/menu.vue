@@ -97,7 +97,11 @@
             class="w-full flex items-center justify-center overflow-hidden whitespace-nowrap"
             :style="{ height: themeStore.header.height + 'px' }"
           >
-            <SystemLogo class="h-[48px] w-[48px]" :style="{ '--lw': '48px', '--lh': '48px' }" />
+            <SystemLogo
+              :src="blogLogo"
+              class="h-[48px] w-[48px]"
+              :style="{ '--lw': '48px', '--lh': '48px' }"
+            />
           </RouterLink>
           <SimpleScrollbar>
             <div
@@ -185,9 +189,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import type { MenuInfo } from 'ant-design-vue/es/menu/src/interface';
 import { GLOBAL_HEADER_MENU_ID, GLOBAL_SIDER_MENU_ID } from '@/constants/app';
+import { getBlogSettingsDetail } from '@/service/blog/surfer/setting';
 import { useAppStore } from '@/store/system/app';
 import { useThemeStore } from '@/store/system/theme';
 import { useRouteStore } from '@/store/system/route';
@@ -205,6 +210,26 @@ const themeStore = useThemeStore();
 const routeStore = useRouteStore();
 const { routerPushByMenu, routerPushByMenuKey } = useRouterPush();
 const drawerVisible = ref(false);
+
+type Api<T> = { success: boolean; data: T };
+type Settings = { logo?: string };
+
+const blogLogo = ref<string>();
+
+function resolveImageUrl(url?: string) {
+  if (!url) return undefined;
+  if (/^(https?:|data:|blob:)/i.test(url)) return url;
+  return url.startsWith('/') ? url : `/${url}`;
+}
+
+onMounted(async () => {
+  try {
+    const res = await getBlogSettingsDetail<Api<Settings>>();
+    if (res.success) blogLogo.value = resolveImageUrl(res.data?.logo);
+  } catch {
+    blogLogo.value = undefined;
+  }
+});
 
 const selectedKey = computed(() => routeStore.selectedMenuKey || '');
 const allMenus = computed<App.Global.Menu[]>(() => routeStore.menus);

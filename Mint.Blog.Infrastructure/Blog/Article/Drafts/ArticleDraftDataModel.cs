@@ -22,6 +22,9 @@ public sealed class ArticleDraftDataModel {
 	[SugarColumn(ColumnName = "category_id", IsNullable = true)]
 	public long? CategoryId { get; set; }
 
+	[SugarColumn(ColumnName = "visibility", DefaultValue = "1")]
+	public short Visibility { get; set; }
+
 	[SugarColumn(ColumnName = "create_time")]
 	public DateTimeOffset CreatedAt { get; set; }
 

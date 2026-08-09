@@ -2,12 +2,14 @@
 import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, useCssModule, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAppStore } from '@/store/system/app';
-import { useThemeStore } from '@/store/system/theme';
 import { useRouteStore } from '@/store/system/route';
+import { useThemeStore } from '@/store/system/theme';
+import { useBannerImage } from '@/hooks/blog/use-banner-image';
+import bannerDefaultImg from '@/assets/blog/surfer/article-banner/banner-default.jpg';
+import Footer from '@/layouts/frontdesk/footer.vue';
 import Header from '@/layouts/frontdesk/header.vue';
 import Sider from '@/layouts/frontdesk/sider.vue';
 import Tab from '@/layouts/frontdesk/tab-bar.vue';
-import Footer from '@/layouts/frontdesk/footer.vue';
 import ThemeDrawer from '@/layouts/frontdesk/theme-drawer.vue';
 import FloatingTools from '@/components/blog/surfer/floating-tools.vue';
 
@@ -27,6 +29,13 @@ const props = withDefaults(defineProps<Props>(), {
 
 const LAYOUT_SCROLL_EL_ID = '__SCROLL_EL_ID__';
 const LAYOUT_MAX_Z_INDEX = 100;
+const BANNER_PRELOAD_ROUTE_NAMES = new Set(['blog-surfer_home', 'blog-surfer_article_detail', 'blog-surfer_friend']);
+const bannerImages = Object.values(
+  import.meta.glob('@/assets/blog/surfer/article-banner/*.{png,jpg,jpeg,webp,avif,gif}', {
+    eager: true,
+    import: 'default'
+  })
+) as string[];
 
 const style = useCssModule();
 const appStore = useAppStore();
@@ -35,6 +44,13 @@ const routeStore = useRouteStore();
 const router = useRouter();
 const mainRef = ref<HTMLElement>();
 const footerAnimalsVisible = ref(true);
+const { schedulePreloadAfterRender: scheduleBannerPreloadAfterRender, stopPreload: stopBannerPreload } = useBannerImage(
+  {
+    images: bannerImages,
+    fallbackImage: bannerDefaultImg,
+    storageNamespace: 'blog-surfer:layout-banner-preload'
+  }
+);
 let footerAnimalsObserver: IntersectionObserver | null = null;
 let scrollRoot: HTMLElement | null = null;
 
@@ -82,21 +98,29 @@ function setupFooterAnimalsObserver() {
   });
 }
 
+function preloadBannerImages() {
+  const routeName = String(router.currentRoute.value.name || '');
+  if (!BANNER_PRELOAD_ROUTE_NAMES.has(routeName)) scheduleBannerPreloadAfterRender();
+}
+
 watch(router.currentRoute, () => {
   if (appStore.isMobile) {
     appStore.siderCollapse = true;
   }
 
   setupFooterAnimalsObserver();
+  preloadBannerImages();
 });
 
 onMounted(() => {
   setupFooterAnimalsObserver();
+  preloadBannerImages();
 });
 
 onBeforeUnmount(() => {
   footerAnimalsObserver?.disconnect();
   scrollRoot?.removeEventListener('scroll', updateFooterAnimalsVisibleByScroll);
+  stopBannerPreload();
 });
 
 const Menu = defineAsyncComponent(() => import('@/layouts/frontdesk/menu.vue'));

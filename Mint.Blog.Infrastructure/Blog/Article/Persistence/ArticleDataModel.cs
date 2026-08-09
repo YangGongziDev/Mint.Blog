@@ -31,8 +31,8 @@ public sealed class ArticleDataModel {
 	[SugarColumn(ColumnName = "weight")]
 	public int Weight { get; set; }
 
-	[SugarColumn(ColumnName = "type")]
-	public int Type { get; set; }
+	[SugarColumn(ColumnName = "visibility")]
+	public short Visibility { get; set; }
 
 	[SugarColumn(IsIgnore = true)]
 	public string Content { get; set; } = string.Empty;

@@ -120,7 +120,8 @@ const formModel = reactive<ArticleFormModel>({
   content: '',
   cover: '',
   categoryId: undefined,
-  tagIds: []
+  tagIds: [],
+  visibility: 1
 });
 
 const modalWidth = computed(() => (appStore.isMobile ? '92vw' : 680));
@@ -347,7 +348,8 @@ function snapshotForm(): ArticleFormModel {
     content: formModel.content,
     cover: formModel.cover,
     categoryId: formModel.categoryId,
-    tagIds: [...formModel.tagIds]
+    tagIds: [...formModel.tagIds],
+    visibility: formModel.visibility
   };
 }
 
@@ -368,7 +370,8 @@ function applyDraft(draft: ArticleDraftDetail) {
     content: draft.content,
     cover: draft.cover,
     categoryId: draft.categoryId ?? undefined,
-    tagIds: draft.tagIds
+    tagIds: draft.tagIds,
+    visibility: draft.visibility
   });
   serverDraftId.value = draft.id;
   pendingCoverImage.value = null;
@@ -510,7 +513,8 @@ async function loadDetail() {
         content: res.data.content,
         cover: res.data.cover,
         categoryId: res.data.categoryId,
-        tagIds: res.data.tags.map(tag => tag.id)
+        tagIds: res.data.tags.map(tag => tag.id),
+        visibility: res.data.visibility
       });
       originalCoverUrl.value = res.data.cover;
     }
@@ -771,6 +775,15 @@ onBeforeUnmount(() => {
           <ASelect v-model:value="formModel.categoryId" allow-clear show-search placeholder="请选择分类">
             <ASelectOption v-for="item in categories" :key="item.id" :value="item.id">{{ item.name }}</ASelectOption>
           </ASelect>
+        </AFormItem>
+        <AFormItem label="仅专栏可见">
+          <div class="flex items-center gap-3">
+            <ASwitch
+              :checked="formModel.visibility === 2"
+              @change="checked => (formModel.visibility = checked ? 2 : 1)"
+            />
+            <span class="text-color-2">开启后，文章仅在所属专栏中展示；当前无需选择专栏。</span>
+          </div>
         </AFormItem>
         <AFormItem label="标签" name="tagIds">
           <ASelect

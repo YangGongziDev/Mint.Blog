@@ -10,6 +10,7 @@ public sealed record ArticleDetailDto(
 	string CategoryName,
 	IReadOnlyCollection<ArticleTagDto> Tags,
 	bool IsTop,
+	short Visibility,
 	long ReadCount,
 	DateTimeOffset CreatedAt,
 	DateTimeOffset UpdatedAt);

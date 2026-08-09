@@ -8,4 +8,5 @@ public sealed record ArticleListQuery(
 	string? Title = null,
 	DateOnly? StartDate = null,
 	DateOnly? EndDate = null,
-	string? SortOrder = null);
+	string? SortOrder = null,
+	bool IncludeColumnOnly = false);
