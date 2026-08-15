@@ -20,7 +20,7 @@
           <span>
             © 2025-{{ new Date().getFullYear() }}
             <a href="https://www.yanggongzi.dev/blog/surfer/me" target="_blank" rel="noopener noreferrer">
-              程序员-杨工子
+              杨工子
             </a>
             All Rights Reserved.
           </span>

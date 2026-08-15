@@ -44,7 +44,7 @@ export const builtinRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/index.vue'),
     redirect: '/blog',
     meta: {
-      title: '程序员-杨工子',
+      title: '杨工子',
       hideInMenu: true
     },
     children: [

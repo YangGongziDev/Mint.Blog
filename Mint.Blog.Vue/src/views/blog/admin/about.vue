@@ -14,7 +14,7 @@ const stats = [
 
 const projectInfo = [
   { label: '项目名称', value: 'Mint.Blog' },
-  { label: '作者', value: '程序员-杨工子' },
+  { label: '作者', value: '杨工子' },
   { label: '开源协议', value: 'GPL-3.0 license' },
   { label: '项目定位', value: '个人博客 / 内容管理 / 知识整理' },
   { label: '项目仓库', value: 'https://github.com/YangGongziDev/Mint.Blog', link: 'https://github.com/YangGongziDev/Mint.Blog' },

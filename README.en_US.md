@@ -1,13 +1,9 @@
 <div align="center">
   <img src="./Mint.Blog.Vue/public/favicon.svg" width="160" />
-  <h1>Mint.Blog V2</h1>
-  <h2>Author: <a href="https://www.yanggongzi.dev/surfer/my">Coder-YangGongZi</a></h2>
+  <h1>Mint.Blog</h1>
+  <h2>Author: <a href="https://www.yanggongzi.dev/surfer/my">YangGongzi</a></h2>
   <span><a href="./README.md">中文</a> | English</span>
 </div>
-
----
-<h3>Original RocBlog (RocBlog) renamed to Mint.Blog V1</h3>
-<h3>Code merged into the Mint.Blog repository under the <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a> branch</h3>
 
 ---
 
@@ -15,10 +11,7 @@
 [![github stars](https://img.shields.io/github/stars/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)
 [![github forks](https://img.shields.io/github/forks/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)
 [![gitee stars](https://gitee.com/YangGongziDev/Mint.Blog/badge/star.svg)](https://gitee.com/YangGongziDev/Mint.Blog)
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/chart?repos=YangGongziDev/Mint.Blog&type=date&legend=top-left)](https://www.star-history.com/?type=date&repos=YangGongziDev%2FMint.Blog)
+[![gitee forks](https://img.shields.io/gitee/forks/YangGongziDev/Mint.Blog)](https://gitee.com/YangGongziDev/Mint.Blog)
 
 > [!NOTE]
 > If you find `Mint.Blog` helpful or simply enjoy the project, please give it a ⭐️ on GitHub or Gitee. Your support is the driving force behind continuous improvements and new features. Thank you for your support!
@@ -54,7 +47,8 @@ is a clean and elegant blog template; built with cutting-edge technology stack; 
 
 ## Documentation
 
-- [https://www.yanggongzi.dev/blog/surfer/column/1](https://www.yanggongzi.dev/blog/surfer/column/1)
+- Documentation: [https://www.yanggongzi.dev/blog/surfer/column/1](https://www.yanggongzi.dev/blog/surfer/column/1)
+- Demo: [https://www.yanggongzi.dev](https://www.yanggongzi.dev)
 
 ## Screenshots
 ### Mobile

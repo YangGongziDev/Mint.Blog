@@ -88,9 +88,9 @@ onMounted(async () => {
   try {
     const cats = await getCategoryList<Api<CategoryItem[]>>();
     if (cats.success && cats.data?.length) {
-      const sorted = byArticles(cats.data);
+      const sorted = byArticles(cats.data.filter(category => category.articlesTotal > 0));
       allCategories.value = sorted;
-      if (!categoryId.value) {
+      if (!categoryId.value && sorted.length > 0) {
         const first = sorted[0];
         await router.replace({ path: '/blog/surfer/category', query: { id: String(first.id), name: first.name } });
         categoryId.value = String(first.id);

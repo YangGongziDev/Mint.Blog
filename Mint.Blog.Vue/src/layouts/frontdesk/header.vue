@@ -51,11 +51,9 @@ onMounted(async () => {
 <template>
   <DarkModeContainer class="h-full flex items-center px-[8px] sm:px-[12px] shadow-header">
     <RouterLink
-      v-if="showLogo"
+      v-if="showLogo && appStore.isMobile"
       to="/blog/surfer/home"
-      class="h-full flex items-center shrink-0 overflow-visible"
-      :class="[appStore.isMobile ? 'justify-start' : 'justify-center']"
-      :style="{ width: appStore.isMobile ? 'auto' : themeStore.sider.width + 'px' }"
+      class="h-full flex items-center shrink-0 overflow-visible justify-start"
     >
       <SystemLogo
         :src="authorAvatar"

@@ -1393,7 +1393,7 @@ INSERT INTO "public"."blog_article_content" ("id", "article_id", "content") VALU
 
 
 
-> 大家好，我是 程序员-杨工子。前某厂中台架构，公众号 程序员菜鲲 作者。95后，码龄 2 年，先后供职于支付、共享等互联网领域，主导负责过数据传输、日志平台、任务调度、文件平台等产品，以支撑各部门业务线。喜欢分享知识，热爱技术，也不止于技术，不只是写 Java，业余也爱玩前端、.Net 等，是个活跃的技术折腾者。
+> 大家好，我是 杨工子。前某厂中台架构，公众号 程序员菜鲲 作者。95后，码龄 2 年，先后供职于支付、共享等互联网领域，主导负责过数据传输、日志平台、任务调度、文件平台等产品，以支撑各部门业务线。喜欢分享知识，热爱技术，也不止于技术，不只是写 Java，业余也爱玩前端、.Net 等，是个活跃的技术折腾者。
 
 ```java
 
@@ -3247,7 +3247,7 @@ COMMENT ON TABLE "public"."blog_settings" IS '博客设置表';
 -- Records of blog_settings
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."blog_settings" ("id", "logo", "name", "author", "introduction", "copyright_declaration", "avatar", "github_homepage", "csdn_homepage", "gitee_homepage", "zhihu_homepage", "mail", "is_comment_sensi_word_open", "is_comment_examine_open", "is_auto_theme", "douyin_homepage") VALUES (1, 'http://127.0.0.1:9000/blog-article/logo_1780037348776_600.webp', 'Mint.Blog', '程序员-杨工子', '大家好,我是练习编程两年半的"程序员-杨工子",喜欢CV、Tab、Agent。', '本文为 程序员-杨工子 原创文章，遵循 CC BY 4.0 版权协议，转载请附上原文出处和链接。
+INSERT INTO "public"."blog_settings" ("id", "logo", "name", "author", "introduction", "copyright_declaration", "avatar", "github_homepage", "csdn_homepage", "gitee_homepage", "zhihu_homepage", "mail", "is_comment_sensi_word_open", "is_comment_examine_open", "is_auto_theme", "douyin_homepage") VALUES (1, 'http://127.0.0.1:9000/blog-article/logo_1780037348776_600.webp', 'Mint.Blog', '杨工子', '大家好,我是练习编程两年半的"杨工子",喜欢CV、Tab、Agent。', '本文为 杨工子 原创文章，遵循 CC BY 4.0 版权协议，转载请附上原文出处和链接。
 如您认为本文内容侵犯了您的合法权益，请通过以下方式提供书面证明材料，我将在核实后24小时内处理。
 📧 联系邮箱：yanggongzi@163.com', 'http://127.0.0.1:9000/blog-article/avatar_1780037348841_640.jpg', 'https://github.com/YangGongziDev', 'https://blog.csdn.net/YangMufa', 'https://gitee.com/YangGongziDev', 'https://www.zhihu.com/people/YangMufa', 'yanggongzi@163.com', 't', 'f', 't', 'https://v.douyin.com/8r27sSQYrz0');
 COMMIT;

@@ -215,7 +215,7 @@ async function handleSubmit() {
             </p>
             <p class="text-sm text-[#60786e] transition-colors duration-300 dark:text-[#cbd5e1] lg:text-base">
               <span>最终解释权归作者</span>
-              <span class="login-footnote-author">程序员-杨工子</span>
+              <span class="login-footnote-author">杨工子</span>
               <span>所有 2026-{{ new Date().getFullYear() }}</span>
             </p>
           </div>

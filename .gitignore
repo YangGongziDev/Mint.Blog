@@ -3,15 +3,6 @@ HELP.md
 .DS_Store
 **/.DS_Store
 
-# Java V1 branch (mint-blog-v1-java)
-/Admin/
-/Front/
-/Blog-Admin/
-/Common/
-/Jwt/
-/Search/
-/Surfer/
-
 ### STS ###
 .apt_generated
 .classpath
@@ -27,14 +18,12 @@ HELP.md
 *.iml
 *.ipr
 
-# VS Code
-.vscode/
-.cursor
-
 # Misc
 *.cache
 
 ### NetBeans ###
+.vscode/
+.cursor
 /nbproject/private/
 /nbbuild/
 /dist/
@@ -43,6 +32,7 @@ HELP.md
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+**/.dbg/
 
 # .NET
 bin/
@@ -79,6 +69,15 @@ target/
 hs_err_pid*
 .gradle/
 !gradle/wrapper/gradle-wrapper.jar
+
+# Java V1 branch (mint-blog-v1-java)
+/Admin/
+/Front/
+/Blog-Admin/
+/Common/
+/Jwt/
+/Search/
+/Surfer/
 
 
 

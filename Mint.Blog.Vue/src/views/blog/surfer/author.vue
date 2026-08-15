@@ -62,7 +62,7 @@ function openContact(type: ContactType) {
         <p class="eyebrow">About Author</p>
         <h1>
           你好，我是
-          <span>程序员-杨工子</span>
+          <span>杨工子</span>
         </h1>
         <p class="hero-desc">
           练习编程三年半，喜欢 CV、Tab、Agent。主要关注 C#.Net、Vue3 与 B/S 全栈开发，也把技术、生活和思考记录在 Mint

@@ -88,9 +88,9 @@ onMounted(async () => {
   try {
     const tags = await getTagList<Api<TagItem[]>>();
     if (tags.success && tags.data?.length) {
-      const sorted = byArticles(tags.data);
+      const sorted = byArticles(tags.data.filter(tag => tag.articlesTotal > 0));
       allTags.value = sorted;
-      if (!tagId.value) {
+      if (!tagId.value && sorted.length > 0) {
         const first = sorted[0];
         await router.replace({ path: '/blog/surfer/tag', query: { id: String(first.id), name: first.name } });
         tagId.value = String(first.id);
