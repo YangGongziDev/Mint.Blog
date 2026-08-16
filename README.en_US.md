@@ -1,22 +1,18 @@
 <div align="center">
-  <img src="./Mint.Blog.Vue/public/favicon.svg" width="160" />
+  <img src="./Docs/PageImages/system-logo.svg" width="160" />
   <h1>Mint.Blog</h1>
-  <h2>Author: <a href="https://www.yanggongzi.dev/surfer/my">YangGongzi</a></h2>
+  <h2>Author: <a href="https://www.yanggongzi.dev/blog/surfer/author">YangGongzi</a></h2>
   <span><a href="./README.md">中文</a> | English</span>
 </div>
 
 ---
 
-[![license](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
-[![github stars](https://img.shields.io/github/stars/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)
-[![github forks](https://img.shields.io/github/forks/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)
-[![gitee stars](https://gitee.com/YangGongziDev/Mint.Blog/badge/star.svg)](https://gitee.com/YangGongziDev/Mint.Blog)
-[![gitee forks](https://img.shields.io/gitee/forks/YangGongziDev/Mint.Blog)](https://gitee.com/YangGongziDev/Mint.Blog)
+[![license](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)[![github stars](https://img.shields.io/github/stars/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)[![github forks](https://img.shields.io/github/forks/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)[![gitee stars](https://gitee.com/YangGongziDev/Mint.Blog/badge/star.svg)](https://gitee.com/YangGongziDev/Mint.Blog)[![gitee forks](https://gitee.com/YangGongziDev/Mint.Blog/badge/fork.svg)](https://gitee.com/YangGongziDev/Mint.Blog)
 
 > [!NOTE]
 > If you find `Mint.Blog` helpful or simply enjoy the project, please give it a ⭐️ on GitHub or Gitee. Your support is the driving force behind continuous improvements and new features. Thank you for your support!
 
-## Project Structure
+## Project Structure (DDD Architecture)
 
 - `Mint.Blog.Domain`: Backend - Domain Layer
 - `Mint.Blog.Application`: Backend - Application Layer
@@ -25,8 +21,8 @@
 - `Mint.Blog.Vue`: Frontend
 
 ## Tech Stack
-Backend: `.NET DDD + SqlSugar + PostgreSQL`  
-Frontend: `TypeScript + Vue + AntDesignVue + TailwindCSS`  
+Backend: `.NET 10 + SqlSugar 5.0 + PostgreSQL 18`  
+Frontend: `TypeScript 8 + Vue3 + AntDesignVue 3 + TailwindCSS 4`  
 
 
 ## Introduction
@@ -51,23 +47,66 @@ is a clean and elegant blog template; built with cutting-edge technology stack; 
 - Demo: [https://www.yanggongzi.dev](https://www.yanggongzi.dev)
 
 ## Screenshots
+
+### Desktop Frontend
+
+#### Dashboard
+![](./Docs/PageImages/DesktopFront%20/dashboard.png)
+
+#### Home
+![](./Docs/PageImages/DesktopFront%20/home.png)
+
+#### Columns
+![](./Docs/PageImages/DesktopFront%20/column.png)
+
+#### Column Details
+![](./Docs/PageImages/DesktopFront%20/column-detail.png)
+
+#### Categories
+![](./Docs/PageImages/DesktopFront%20/category.png)
+
+#### Gallery
+![](./Docs/PageImages/DesktopFront%20/gallery.png)
+
+#### Friends
+![](./Docs/PageImages/DesktopFront%20/friend.png)
+
+#### Article Details
+![](./Docs/PageImages/DesktopFront%20/%E5%85%B6%E4%BB%96/article-detail2.png)
+
+#### Comments
+![](./Docs/PageImages/DesktopFront%20/%E5%85%B6%E4%BB%96/Comment.png)
+
+#### Dark Theme
+![](./Docs/PageImages/DesktopFront%20/%E5%85%B6%E4%BB%96/nighttime-theme.png)
+
+### Desktop Admin
+
+#### Admin Home
+![](./Docs/PageImages/DesktopBackstage/home.png)
+
+#### Image Management
+![](./Docs/PageImages/DesktopBackstage/gallery.png)
+
+#### Blog Settings
+![](./Docs/PageImages/DesktopBackstage/settings.png)
+
 ### Mobile
-![](https://img.yanggongzi.dev/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_%E8%8F%9C%E5%8D%95.png)
-![](https://img.yanggongzi.dev/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_%E9%A6%96%E9%A1%B5.png)
-![](https://img.yanggongzi.dev/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_%E6%96%87%E7%AB%A0%E8%AF%A6%E6%83%85.png)
-### Desktop
-![](https://img.yanggongzi.dev/blog-system/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E7%9C%8B%E6%9D%BF.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E9%A6%96%E9%A1%B5.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0_Banner.png)
-![](https://img.yanggongzi.dev/blog-system/gallery-b233ef9d-0871-4041-b8f4-a0fde6dd5f1a.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0_%E8%AF%A6%E6%83%85.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0_%E5%BA%95%E9%83%A8.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E4%B8%93%E6%A0%8F.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0_%E5%88%86%E7%B1%BB.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0%E7%AE%A1%E7%90%86.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E5%9B%BE%E7%89%87%E7%AE%A1%E7%90%86.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E4%B8%93%E6%A0%8F%E7%AE%A1%E7%90%86.png)
+
+#### Menu
+<img src="./Docs/PageImages/Mobile/menu-list.png" alt="Mobile menu" width="360" />
+
+#### Home
+<img src="./Docs/PageImages/Mobile/home.png" alt="Mobile home" width="360" />
+
+#### Article Contents
+<img src="./Docs/PageImages/Mobile/article-ontents.png" alt="Mobile article contents" width="360" />
+
+#### Article Details
+<img src="./Docs/PageImages/Mobile/article-detail.png" alt="Mobile article details" width="360" />
+
+#### Gallery
+<img src="./Docs/PageImages/Mobile/gallery.png" alt="Mobile gallery" width="360" />
 
 ## Usage
 

@@ -30,7 +30,7 @@ function createDocumentTitleGuard(router: Router) {
     const { i18nKey, title } = to.meta;
     const routeTitle = i18nKey ? $t(i18nKey) : title;
     const appTitle = import.meta.env.VITE_APP_TITLE;
-    const documentTitle = routeTitle ? `${routeTitle} - ${appTitle}` : appTitle;
+    const documentTitle = routeTitle ? `${appTitle}-${routeTitle}` : appTitle;
 
     useTitle(documentTitle);
   });

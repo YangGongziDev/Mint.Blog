@@ -436,7 +436,7 @@ function loadArticle(articleId: string | number) {
       article.value = res.data || {};
       if (article.value.title) {
         tabStore.setTabLabel(article.value.title);
-        document.title = `${article.value.title} - ${import.meta.env.VITE_APP_TITLE}`;
+        document.title = `${import.meta.env.VITE_APP_TITLE}-${article.value.title}`;
       }
 
       nextTick(() => {

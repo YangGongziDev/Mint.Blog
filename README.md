@@ -1,22 +1,18 @@
 <div align="center">
-  <img src="./Mint.Blog.Vue/public/favicon.svg" width="160" />
+  <img src="./Docs/PageImages/system-logo.svg" width="160" />
   <h1>Mint.Blog</h1>
-  <h2>作者：<a href="https://www.yanggongzi.dev/surfer/my">杨工子</a></h2>
+  <h2>作者：<a href="https://www.yanggongzi.dev/blog/surfer/author">杨工子</a></h2>
   <span>中文 | <a href="./README.en_US.md">English</a></span>
 </div>
 
 ---
 
-[![license](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
-[![github stars](https://img.shields.io/github/stars/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)
-[![github forks](https://img.shields.io/github/forks/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)
-[![gitee stars](https://gitee.com/YangGongziDev/Mint.Blog/badge/star.svg)](https://gitee.com/YangGongziDev/Mint.Blog)
-[![gitee forks](https://img.shields.io/gitee/forks/YangGongziDev/Mint.Blog)](https://gitee.com/YangGongziDev/Mint.Blog)
+[![license](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)[![github stars](https://img.shields.io/github/stars/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)[![github forks](https://img.shields.io/github/forks/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)[![gitee stars](https://gitee.com/YangGongziDev/Mint.Blog/badge/star.svg)](https://gitee.com/YangGongziDev/Mint.Blog)[![gitee forks](https://gitee.com/YangGongziDev/Mint.Blog/badge/fork.svg)](https://gitee.com/YangGongziDev/Mint.Blog)
 
 > [!NOTE]
 > 如果您觉得 `Mint.Blog` 对你有所帮助，或者您喜欢这个项目，请在 GitHub、Gitee 上给我一个 ⭐️。你的支持是我持续改进和增加新功能的动力！感谢你的支持！
 
-## 项目结构
+## 项目结构(DDD架构)
 
 - `Mint.Blog.Domain`：后端-领域层
 - `Mint.Blog.Application`：后端-应用层
@@ -25,8 +21,8 @@
 - `Mint.Blog.Vue`：前端
 
 ## 技术栈
-后端：`.NET DDD + SqlSugar + PostgreSQL`  
-前端：`TypeScript + Vue + AntDesignVue + TailwindCSS`  
+后端：`.NET 10 + SqlSugar 5 + PostgreSQL 18`  
+前端：`TypeScript 8 + Vue3  + AntDesignVue 3 + TailwindCSS 4`  
 
 
 ## 简介
@@ -51,23 +47,66 @@
 - 演示：[https://www.yanggongzi.dev](https://www.yanggongzi.dev)
 
 ## 示例图片
-### 移动端  
-![](https://img.yanggongzi.dev/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_%E8%8F%9C%E5%8D%95.png)
-![](https://img.yanggongzi.dev/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_%E9%A6%96%E9%A1%B5.png)
-![](https://img.yanggongzi.dev/blog-system/%E7%A7%BB%E5%8A%A8%E7%AB%AF_%E6%96%87%E7%AB%A0%E8%AF%A6%E6%83%85.png)
-### PC端  
-![](https://img.yanggongzi.dev/blog-system/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E7%9C%8B%E6%9D%BF.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E9%A6%96%E9%A1%B5.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0_Banner.png)
-![](https://img.yanggongzi.dev/blog-system/gallery-b233ef9d-0871-4041-b8f4-a0fde6dd5f1a.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0_%E8%AF%A6%E6%83%85.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0_%E5%BA%95%E9%83%A8.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E4%B8%93%E6%A0%8F.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0_%E5%88%86%E7%B1%BB.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E6%96%87%E7%AB%A0%E7%AE%A1%E7%90%86.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E5%9B%BE%E7%89%87%E7%AE%A1%E7%90%86.png)
-![](https://img.yanggongzi.dev/blog-system/PC_%E4%B8%93%E6%A0%8F%E7%AE%A1%E7%90%86.png)
+
+### PC 端前台
+
+#### 看板
+![](./Docs/PageImages/DesktopFront%20/dashboard.png)
+
+#### 首页
+![](./Docs/PageImages/DesktopFront%20/home.png)
+
+#### 专栏
+![](./Docs/PageImages/DesktopFront%20/column.png)
+
+#### 专栏详情
+![](./Docs/PageImages/DesktopFront%20/column-detail.png)
+
+#### 分类
+![](./Docs/PageImages/DesktopFront%20/category.png)
+
+#### 画廊
+![](./Docs/PageImages/DesktopFront%20/gallery.png)
+
+#### 友链
+![](./Docs/PageImages/DesktopFront%20/friend.png)
+
+#### 文章详情
+![](./Docs/PageImages/DesktopFront%20/article-detail2.png)
+
+#### 评论
+![](./Docs/PageImages/DesktopFront%20/Comment.png)
+
+#### 夜间主题
+![](./Docs/PageImages/DesktopFront%20/nighttime-theme.png)
+
+### PC 端后台
+
+#### 后台首页
+![](./Docs/PageImages/DesktopBackstage/home.png)
+
+#### 图片管理
+![](./Docs/PageImages/DesktopBackstage/gallery.png)
+
+#### 博客设置
+![](./Docs/PageImages/DesktopBackstage/settings.png)
+
+### 移动端
+
+#### 菜单
+<img src="./Docs/PageImages/Mobile/menu-list.png" alt="移动端菜单" width="360" />
+
+#### 首页
+<img src="./Docs/PageImages/Mobile/home.png" alt="移动端首页" width="360" />
+
+#### 文章目录
+<img src="./Docs/PageImages/Mobile/article-ontents.png" alt="移动端文章目录" width="360" />
+
+#### 文章详情
+<img src="./Docs/PageImages/Mobile/article-detail.png" alt="移动端文章详情" width="360" />
+
+#### 画廊
+<img src="./Docs/PageImages/Mobile/gallery.png" alt="移动端画廊" width="360" />
 
 ## 使用
 

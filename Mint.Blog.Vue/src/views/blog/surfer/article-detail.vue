@@ -535,7 +535,7 @@ async function loadArticle(articleId: string | number) {
     typeArticleTitle(article.value.title);
     if (article.value.title) {
       tabStore.setTabLabel(article.value.title);
-      document.title = `${article.value.title} - ${import.meta.env.VITE_APP_TITLE}`;
+      document.title = `${import.meta.env.VITE_APP_TITLE}-${article.value.title}`;
     }
     articleNotFound.value = false;
 

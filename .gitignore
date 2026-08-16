@@ -12,16 +12,14 @@ HELP.md
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea/
-*.iws
-*.iml
-*.ipr
-
 # Misc
 *.cache
 
 ### NetBeans ###
+.idea/
+*.iws
+*.iml
+*.ipr
 .vscode/
 .cursor
 /nbproject/private/
