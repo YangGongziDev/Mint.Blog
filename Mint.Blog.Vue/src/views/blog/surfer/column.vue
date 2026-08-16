@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { BookOutlined, ReadOutlined } from '@ant-design/icons-vue';
 import { getColumnList } from '@/service/blog/surfer/column';
+import { useThemeStore } from '@/store/system/theme';
 import SurferSidebar from '@/components/blog/surfer/sidebar-right.vue';
 
 defineOptions({ name: 'SurferColumnPage' });
@@ -20,6 +21,8 @@ type ColumnItem = {
 type Api<T> = { success: boolean; data: T };
 
 const router = useRouter();
+const themeStore = useThemeStore();
+const pageClass = computed(() => ({ dark: themeStore.darkMode }));
 const columns = ref<ColumnItem[]>([]);
 const loading = ref(true);
 const failedCoverIds = ref<Set<number>>(new Set());
@@ -60,9 +63,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="column-page mx-auto max-w-screen-2xl px-4 py-4 md:px-6">
+  <main class="column-page mx-auto max-w-screen-2xl px-4 py-4 md:px-6" :class="pageClass">
     <div class="grid grid-cols-1 gap-7 lg:grid-cols-4">
-      <div class="col-span-1 mt-0 mb-1 lg:mt-10 lg:col-span-3 lg:mb-3">
+      <div class="col-span-1 mt-0 mb-3 lg:col-span-3 lg:mt-2">
         <div class="column-content">
           <div v-if="loading" class="column-grid">
             <article v-for="i in 6" :key="i" class="column-card skeleton-card">
@@ -99,8 +102,8 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="col-span-1 mt-10 mb-3">
-        <SurferSidebar hide-columns />
+      <div class="col-span-1 mt-0 mb-3 lg:mt-2">
+        <SurferSidebar class="lg:!top-2" hide-columns />
       </div>
     </div>
   </main>
@@ -214,7 +217,7 @@ p {
 }
 
 .column-info {
-  padding: 15px;
+  padding: 7.5px 15px;
 
   h3 {
     color: #0d3d2d;
@@ -228,7 +231,7 @@ p {
   p {
     display: -webkit-box;
     min-height: 44px;
-    margin-top: 9px;
+    margin-top: 0px;
     overflow: hidden;
     color: #60786e;
     font-size: 13px;
@@ -307,25 +310,47 @@ p {
   }
 }
 
-:global(.dark) .toolbar h2,
-:global(.dark) .column-info h3 {
+.column-page.dark .toolbar h2,
+.column-page.dark .column-info h3 {
   color: #f8fafc;
 }
 
-:global(.dark) .toolbar p,
-:global(.dark) .column-info p,
-:global(.dark) .empty-box p {
+.column-page.dark .toolbar p,
+.column-page.dark .column-info p,
+.column-page.dark .empty-box p {
   color: #cbd5e1;
 }
 
-:global(.dark) .column-card {
+.column-page.dark .column-card {
   border-color: rgb(51 65 85 / 78%);
   background: rgb(30 41 59 / 58%);
+
+  &:hover {
+    box-shadow: 0 18px 36px rgb(0 0 0 / 28%);
+  }
 }
 
-:global(.dark) .skeleton-cover,
-:global(.dark) .skeleton-line {
+.column-page.dark .column-cover,
+.column-page.dark .cover-placeholder {
+  background: rgb(15 23 42 / 48%);
+}
+
+.column-page.dark .cover-placeholder {
+  color: rgb(110 231 183 / 55%);
+}
+
+.column-page.dark .card-actions button {
+  background: #1e293b;
+  color: #d1fae5;
+}
+
+.column-page.dark .skeleton-cover,
+.column-page.dark .skeleton-line {
   background: rgb(255 255 255 / 6%);
+
+  &::after {
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 10%), transparent);
+  }
 }
 
 @media (max-width: 1200px) {

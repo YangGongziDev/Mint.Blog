@@ -10,6 +10,7 @@ defineOptions({ name: 'SurferArchivePage' });
 type Api<T> = { success: boolean; data: T };
 type ArticleItem = { id: number; title: string; cover?: string; createDate?: string };
 type ArchiveMonth = { month: string; articles: ArticleItem[] };
+type ArchiveYear = { year: number; articlesTotal: number };
 type PageResult = {
   success: boolean;
   data: ArchiveMonth[];
@@ -23,7 +24,7 @@ const route = useRoute();
 const router = useRouter();
 const archives = ref<ArchiveMonth[]>([]);
 const selectedYear = ref((route.query.year as string) || '');
-const availableYears = ref<number[]>([]);
+const availableYears = ref<ArchiveYear[]>([]);
 const current = computed(() => {
   const page = Number(route.query.page);
   return Number.isFinite(page) && page > 0 ? page : 1;
@@ -87,8 +88,8 @@ watch(
 
 onMounted(async () => {
   try {
-    const res = await getArchiveYears<Api<number[]>>();
-    if (res.success) availableYears.value = [...(res.data || [])].sort((a, b) => b - a);
+    const res = await getArchiveYears<Api<ArchiveYear[]>>();
+    if (res.success) availableYears.value = [...(res.data || [])].sort((a, b) => b.year - a.year);
   } catch {
     availableYears.value = [];
   }
@@ -100,29 +101,29 @@ onMounted(async () => {
 <template>
   <main class="mx-auto max-w-screen-2xl px-4 md:px-6 py-4">
     <div class="grid grid-cols-1 gap-7 lg:grid-cols-4">
-      <div class="col-span-1 mt-0 mb-3 lg:col-span-3 lg:mt-6">
+      <div class="col-span-1 mt-0 mb-3 lg:col-span-3 lg:mt-2">
         <div
-          class="sticky top-2 z-20 w-full p-5 pb-7 mb-3 rounded-lg border border-[#3ecf9a]/14 bg-white/95 shadow-sm backdrop-blur-md dark:border-[#334155] dark:bg-[#2c333e]/95"
+          class="sticky top-2 z-20 mb-3 w-full rounded-lg border border-[#3ecf9a]/14 bg-white/95 px-2.5 py-2.5 shadow-sm backdrop-blur-md dark:border-[#334155] dark:bg-[#2c333e]/95"
         >
-          <h2 class="flex items-center mb-5 font-bold text-[#0d3d2d] dark:text-white">
-            <CalendarOutlined class="w-5 h-5 mr-2 text-[#3ecf9a]" />
+          <h2 class="mb-1 flex items-center font-bold text-[#0d3d2d] dark:text-white">
+            <CalendarOutlined class="mr-1 h-5 w-5 text-[#3ecf9a]" />
             归档
-            <span v-if="availableYears.length" class="ml-2 font-normal text-[#557468] dark:text-[#cbd5e1]">
+            <span v-if="availableYears.length" class="ml-1 font-normal text-[#557468] dark:text-[#cbd5e1]">
               ( {{ availableYears.length }} )
             </span>
           </h2>
 
           <div
             v-if="availableYears.length"
-            class="flex flex-wrap gap-3 transition-[max-height] duration-300"
+            class="flex flex-wrap gap-x-1.5 gap-y-1.5 text-sm font-medium transition-[max-height] duration-300"
             :class="
               isYearCollapsed
-                ? 'max-h-[92px] overflow-y-auto overflow-x-hidden pr-1'
+                ? 'max-h-[100px] overflow-y-auto overflow-x-hidden pr-1'
                 : 'max-h-[180px] overflow-y-auto overflow-x-hidden pr-1'
             "
           >
             <button
-              class="inline-flex cursor-pointer items-center rounded-xl border px-3.5 py-1.5 text-sm font-medium transition-all duration-300"
+              class="inline-flex cursor-pointer items-center rounded-xl border px-1.75 py-0.75 text-sm font-medium transition-all duration-300"
               :class="[
                 !selectedYear
                   ? 'border-transparent bg-[#3ecf9a] text-white shadow-md dark:border-[#539dfd]/30 dark:bg-[#539dfd]/10 dark:text-[#539dfd] dark:shadow-none'
@@ -133,23 +134,33 @@ onMounted(async () => {
               全部
             </button>
             <button
-              v-for="year in availableYears"
-              :key="year"
-              class="inline-flex cursor-pointer items-center rounded-xl border px-3.5 py-1.5 text-sm font-medium transition-all duration-300"
+              v-for="item in availableYears"
+              :key="item.year"
+              class="inline-flex cursor-pointer items-center rounded-xl border px-1.75 py-0.75 text-sm font-medium transition-all duration-300"
               :class="[
-                selectedYear === String(year)
+                selectedYear === String(item.year)
                   ? 'border-transparent bg-[#3ecf9a] text-white shadow-md dark:border-[#539dfd]/30 dark:bg-[#539dfd]/10 dark:text-[#539dfd] dark:shadow-none'
                   : 'border-gray-200 text-[#557468] hover:bg-gray-100 dark:border-[#334155] dark:text-[#cbd5e1] dark:hover:bg-white/5'
               ]"
-              @click="selectYear(year)"
+              @click="selectYear(item.year)"
             >
-              {{ year }} 年
+              {{ item.year }} 年
+              <span
+                class="ml-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold tabular-nums"
+                :class="[
+                  selectedYear === String(item.year)
+                    ? 'bg-[#15956b] text-white dark:bg-[#539dfd]'
+                    : 'bg-[#3ecf9a]/12 text-[#15956b] dark:bg-[#539dfd]/10 dark:text-[#539dfd]'
+                ]"
+              >
+                {{ item.articlesTotal }}
+              </span>
             </button>
           </div>
 
           <button
             v-if="availableYears.length > 8"
-            class="mt-4 flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg border border-[#3ecf9a]/14 bg-[#f0faf5]/70 py-2 text-sm font-semibold text-[#15956b] transition-colors hover:bg-[#3ecf9a]/12 dark:border-[#539dfd]/18 dark:bg-[#539dfd]/8 dark:text-[#8cc8ff] dark:hover:bg-[#539dfd]/14"
+            class="mt-2 flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg border border-[#3ecf9a]/14 bg-[#f0faf5]/70 py-1 text-sm font-semibold text-[#15956b] transition-colors hover:bg-[#3ecf9a]/12 dark:border-[#539dfd]/18 dark:bg-[#539dfd]/8 dark:text-[#8cc8ff] dark:hover:bg-[#539dfd]/14"
             @click="isYearCollapsed = !isYearCollapsed"
           >
             {{ isYearCollapsed ? `展开全部年份（${availableYears.length}）` : '收起年份' }}
@@ -235,7 +246,7 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="col-span-1 mt-3 mb-3">
+      <div class="archive-sidebar col-span-1 mt-0 mb-3 lg:mt-2">
         <SurferSidebar />
       </div>
     </div>
@@ -243,6 +254,12 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
+@media (min-width: 1024px) {
+  .archive-sidebar :deep(aside) {
+    top: 20px;
+  }
+}
+
 :global(html.dark) :deep(ol > li),
 :global(html.dark) :deep(ol > li > button) {
   background-color: transparent !important;

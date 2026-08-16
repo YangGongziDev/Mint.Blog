@@ -222,15 +222,15 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 		return BuildArchiveGroups(articles);
 	}
 
-	public async Task<IReadOnlyCollection<int>> GetAsync(CancellationToken cancellationToken = default){
+	public async Task<IReadOnlyCollection<ArchiveYearDto>> GetAsync(CancellationToken cancellationToken = default){
 		var articles = await dbContext.Client.Queryable<ArticleDataModel>()
 			.Where(x => x.IsDeleted == 0 && x.Visibility == (short)ArticleVisibility.Public)
 			.ToListAsync();
 
 		return articles
-			.Select(x => x.CreatedAt.Year)
-			.Distinct()
-			.OrderByDescending(x => x)
+			.GroupBy(x => x.CreatedAt.Year)
+			.Select(group => new ArchiveYearDto(group.Key, group.Count()))
+			.OrderByDescending(x => x.Year)
 			.ToArray();
 	}
 

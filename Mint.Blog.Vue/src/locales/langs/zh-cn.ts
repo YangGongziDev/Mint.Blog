@@ -233,7 +233,6 @@ const local: App.I18n.Schema = {
     'blog-surfer_message': '留言',
     'blog-surfer_more': '更多',
     'blog-surfer_equipment': '设备',
-    'blog-surfer_moments': '说说',
     'blog-surfer_gallery': '画廊'
   },
   page: {

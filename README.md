@@ -51,34 +51,34 @@
 ### PC 端前台
 
 #### 看板
-![](./Docs/PageImages/DesktopFront%20/dashboard.png)
+![](./Docs/PageImages/DesktopFront/dashboard.png)
 
 #### 首页
-![](./Docs/PageImages/DesktopFront%20/home.png)
+![](./Docs/PageImages/DesktopFront/home.png)
 
 #### 专栏
-![](./Docs/PageImages/DesktopFront%20/column.png)
+![](./Docs/PageImages/DesktopFront/column.png)
 
 #### 专栏详情
-![](./Docs/PageImages/DesktopFront%20/column-detail.png)
+![](./Docs/PageImages/DesktopFront/column-detail.png)
 
 #### 分类
-![](./Docs/PageImages/DesktopFront%20/category.png)
+![](./Docs/PageImages/DesktopFront/category.png)
 
 #### 画廊
-![](./Docs/PageImages/DesktopFront%20/gallery.png)
+![](./Docs/PageImages/DesktopFront/gallery.png)
 
 #### 友链
-![](./Docs/PageImages/DesktopFront%20/friend.png)
+![](./Docs/PageImages/DesktopFront/friend.png)
 
 #### 文章详情
-![](./Docs/PageImages/DesktopFront%20/article-detail2.png)
+![](./Docs/PageImages/DesktopFront/article-detail2.png)
 
 #### 评论
-![](./Docs/PageImages/DesktopFront%20/Comment.png)
+![](./Docs/PageImages/DesktopFront/comment.png)
 
 #### 夜间主题
-![](./Docs/PageImages/DesktopFront%20/nighttime-theme.png)
+![](./Docs/PageImages/DesktopFront/nighttime-theme.png)
 
 ### PC 端后台
 

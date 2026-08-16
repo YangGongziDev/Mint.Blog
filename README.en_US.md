@@ -51,34 +51,34 @@ is a clean and elegant blog template; built with cutting-edge technology stack; 
 ### Desktop Frontend
 
 #### Dashboard
-![](./Docs/PageImages/DesktopFront%20/dashboard.png)
+![](./Docs/PageImages/DesktopFront/dashboard.png)
 
 #### Home
-![](./Docs/PageImages/DesktopFront%20/home.png)
+![](./Docs/PageImages/DesktopFront/home.png)
 
 #### Columns
-![](./Docs/PageImages/DesktopFront%20/column.png)
+![](./Docs/PageImages/DesktopFront/column.png)
 
 #### Column Details
-![](./Docs/PageImages/DesktopFront%20/column-detail.png)
+![](./Docs/PageImages/DesktopFront/column-detail.png)
 
 #### Categories
-![](./Docs/PageImages/DesktopFront%20/category.png)
+![](./Docs/PageImages/DesktopFront/category.png)
 
 #### Gallery
-![](./Docs/PageImages/DesktopFront%20/gallery.png)
+![](./Docs/PageImages/DesktopFront/gallery.png)
 
 #### Friends
-![](./Docs/PageImages/DesktopFront%20/friend.png)
+![](./Docs/PageImages/DesktopFront/friend.png)
 
 #### Article Details
-![](./Docs/PageImages/DesktopFront%20/%E5%85%B6%E4%BB%96/article-detail2.png)
+![](./Docs/PageImages/DesktopFront/article-detail2.png)
 
 #### Comments
-![](./Docs/PageImages/DesktopFront%20/%E5%85%B6%E4%BB%96/Comment.png)
+![](./Docs/PageImages/DesktopFront/comment.png)
 
 #### Dark Theme
-![](./Docs/PageImages/DesktopFront%20/%E5%85%B6%E4%BB%96/nighttime-theme.png)
+![](./Docs/PageImages/DesktopFront/nighttime-theme.png)
 
 ### Desktop Admin
 

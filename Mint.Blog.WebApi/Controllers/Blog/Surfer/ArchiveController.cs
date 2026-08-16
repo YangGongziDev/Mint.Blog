@@ -26,11 +26,11 @@ public sealed class ArchiveController(
 	}
 
 	[HttpGet("year")]
-	[ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<int>>), StatusCodes.Status200OK)]
-	public async Task<ActionResult<ApiResponse<IReadOnlyCollection<int>>>>
+	[ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<ArchiveYearDto>>), StatusCodes.Status200OK)]
+	public async Task<ActionResult<ApiResponse<IReadOnlyCollection<ArchiveYearDto>>>>
 		GetYears(CancellationToken cancellationToken){
 		var result = await archiveYearsQueryService.GetAsync(cancellationToken);
-		return Ok(ApiResponse<IReadOnlyCollection<int>>.Ok(result));
+		return Ok(ApiResponse<IReadOnlyCollection<ArchiveYearDto>>.Ok(result));
 	}
 
 	[HttpGet("{year:int}")]
@@ -92,7 +92,7 @@ public sealed record SurferArchivePageResponse(
 	int Total,
 	int Pages);
 
-public sealed record SurferArchiveYearsResponse(bool Success, IReadOnlyCollection<int> Data);
+public sealed record SurferArchiveYearsResponse(bool Success, IReadOnlyCollection<ArchiveYearDto> Data);
 
 public sealed record SurferArchiveMonth(string Month, IReadOnlyCollection<SurferArchiveArticle> Articles);
 

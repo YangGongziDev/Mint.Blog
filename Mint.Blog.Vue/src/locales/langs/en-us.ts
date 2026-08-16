@@ -233,7 +233,6 @@ const local: App.I18n.Schema = {
     'blog-surfer_message': 'Messages',
     'blog-surfer_more': 'More',
     'blog-surfer_equipment': 'About Equipment',
-    'blog-surfer_moments': 'Moments',
     'blog-surfer_gallery': 'Gallery'
   },
   page: {

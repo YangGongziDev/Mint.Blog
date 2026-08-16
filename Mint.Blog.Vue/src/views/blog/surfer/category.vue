@@ -107,29 +107,29 @@ onMounted(async () => {
 <template>
   <main class="mx-auto max-w-screen-2xl px-4 md:px-6 py-4">
     <div class="grid grid-cols-1 gap-7 lg:grid-cols-4">
-      <div class="col-span-1 mt-0 mb-3 lg:col-span-3 lg:mt-6">
+      <div class="col-span-1 mt-0 mb-3 lg:col-span-3 lg:mt-2">
         <div
-          class="sticky top-2 z-20 w-full p-5 pb-7 mb-3 rounded-lg border border-[#3ecf9a]/14 bg-white/95 shadow-sm backdrop-blur-md dark:border-[#334155] dark:bg-[#2c333e]/95"
+          class="sticky top-2 z-20 mb-3 w-full rounded-lg border border-[#3ecf9a]/14 bg-white/95 px-2.5 py-2.5 shadow-sm backdrop-blur-md dark:border-[#334155] dark:bg-[#2c333e]/95"
         >
-          <h2 class="flex items-center mb-5 font-bold text-[#0d3d2d] dark:text-white">
-            <FolderOutlined class="w-5 h-5 mr-2 text-[#3ecf9a]" />
+          <h2 class="mb-1 flex items-center font-bold text-[#0d3d2d] dark:text-white">
+            <FolderOutlined class="mr-1 h-5 w-5 text-[#3ecf9a]" />
             分类
-            <span v-if="allCategories.length > 0" class="ml-2 font-normal text-[#557468] dark:text-[#cbd5e1]">
+            <span v-if="allCategories.length > 0" class="ml-1 font-normal text-[#557468] dark:text-[#cbd5e1]">
               ( {{ allCategories.length }} )
             </span>
           </h2>
           <div
-            class="text-sm flex flex-wrap gap-3 font-medium transition-[max-height] duration-300"
+            class="flex flex-wrap gap-x-1.5 gap-y-1.5 text-sm font-medium transition-[max-height] duration-300"
             :class="
               isMobileCategoryCollapsed
-                ? 'max-h-[92px] overflow-y-auto overflow-x-hidden pr-1'
+                ? 'max-h-[100px] overflow-y-auto overflow-x-hidden pr-1'
                 : 'max-h-[180px] overflow-y-auto overflow-x-hidden pr-1'
             "
           >
             <button
               v-for="category in allCategories"
               :key="category.id"
-              class="inline-flex cursor-pointer items-center rounded-xl border px-3.5 py-1.5 text-sm font-medium text-center transition-all duration-300"
+              class="inline-flex cursor-pointer items-center rounded-xl border px-1.75 py-0.75 text-center text-sm font-medium transition-all duration-300"
               :class="[
                 route.query.name === category.name
                   ? 'border-transparent bg-gradient-to-r from-[#3ecf9a] to-[#3ecf9a] text-white shadow-md dark:border-[#539dfd]/30 dark:bg-none dark:bg-[#539dfd]/10 dark:text-[#539dfd] dark:shadow-none'
@@ -139,7 +139,7 @@ onMounted(async () => {
             >
               {{ category.name }}
               <span
-                class="inline-flex items-center justify-center w-5 h-5 ms-2 text-xs font-semibold rounded-full tabular-nums shrink-0"
+                class="ms-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold tabular-nums"
                 :class="[
                   route.query.name === category.name
                     ? 'bg-[#15956b] text-white dark:bg-[#539dfd] dark:text-white'
@@ -152,7 +152,7 @@ onMounted(async () => {
           </div>
           <button
             v-if="allCategories.length > 8"
-            class="mt-4 flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg border border-[#3ecf9a]/14 bg-[#f0faf5]/70 py-2 text-sm font-semibold text-[#15956b] transition-colors hover:bg-[#3ecf9a]/12 dark:border-[#539dfd]/18 dark:bg-[#539dfd]/8 dark:text-[#8cc8ff] dark:hover:bg-[#539dfd]/14"
+            class="mt-2 flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg border border-[#3ecf9a]/14 bg-[#f0faf5]/70 py-1 text-sm font-semibold text-[#15956b] transition-colors hover:bg-[#3ecf9a]/12 dark:border-[#539dfd]/18 dark:bg-[#539dfd]/8 dark:text-[#8cc8ff] dark:hover:bg-[#539dfd]/14"
             @click="isMobileCategoryCollapsed = !isMobileCategoryCollapsed"
           >
             {{ isMobileCategoryCollapsed ? `展开全部分类（${allCategories.length}）` : '收起分类' }}
@@ -219,7 +219,7 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="col-span-1 mt-10 mb-3">
+      <div class="col-span-1 mt-0 mb-3 lg:mt-2">
         <SurferSidebar hide-categories />
       </div>
     </div>

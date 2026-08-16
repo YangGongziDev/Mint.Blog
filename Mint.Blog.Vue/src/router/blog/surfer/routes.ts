@@ -149,17 +149,6 @@ export const blogSurferRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: 'moments',
-    name: 'blog-surfer_moments',
-    component: () => import('@/views/blog/surfer/moments.vue'),
-    meta: {
-      title: 'blog-surfer_moments',
-      i18nKey: 'route.blog-surfer_moments',
-      hideInMenu: true,
-      public: false
-    }
-  },
-  {
     path: 'gallery',
     name: 'blog-surfer_gallery',
     component: () => import('@/views/blog/surfer/gallery.vue'),

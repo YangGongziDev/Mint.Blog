@@ -110,18 +110,6 @@ export const blogSurferMenus: AppMenuRecord[] = [
     order: 9
   },
   {
-    id: 'blog-surfer_moments',
-    parentId: null,
-    menuType: 'route',
-    routerName: 'blog-surfer_moments',
-    path: '/blog/surfer/moments',
-    tableName: 'blog-surfer_moments',
-    enabled: true,
-    menuI18nKey: 'route.blog-surfer_moments',
-    icon: 'mdi:chat-outline',
-    order: 10
-  },
-  {
     id: 'blog-surfer_about-group',
     parentId: null,
     menuType: 'folder',

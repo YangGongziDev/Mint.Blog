@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { ApiOutlined, AppleOutlined, CodeOutlined, DesktopOutlined, LaptopOutlined, RocketOutlined, ThunderboltOutlined, ToolOutlined } from '@ant-design/icons-vue';
+import { useThemeStore } from '@/store/system/theme';
 
 interface EquipmentItem {
   name: string;
@@ -18,6 +20,9 @@ interface SimpleItem {
 }
 
 defineOptions({ name: 'SurferEquipmentPage' });
+
+const themeStore = useThemeStore();
+const pageClass = computed(() => ({ dark: themeStore.darkMode }));
 
 const summary = [
   { label: '主力设备', value: 'MacBook Pro' },
@@ -81,7 +86,7 @@ const softwareStack: SimpleItem[] = [
 </script>
 
 <template>
-  <main class="equipment-page mx-auto max-w-screen-xl px-4 py-4 md:px-6">
+  <main class="equipment-page mx-auto max-w-screen-xl px-4 py-4 md:px-6" :class="pageClass">
     <div class="mt-10 mb-3">
         <section class="hero panel">
           <div>
@@ -205,11 +210,14 @@ li { border-radius: 14px; background: rgb(62 207 154 / 8%); padding: 9px 10px; c
 .software-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .software-item { border-radius: 18px; background: rgb(248 253 251 / 92%); padding: 15px; }
 .software-item strong, .software-item span { display: block; }
-:global(.dark) .panel { border-color: rgb(51 65 85 / 90%); background: rgb(44 51 62 / 74%); box-shadow: 0 8px 28px rgb(0 0 0 / 18%); }
-:global(.dark) h1, :global(.dark) .section-title h2, :global(.dark) .summary-card strong, :global(.dark) .card-head h3, :global(.dark) .workflow-item h3, :global(.dark) .software-item strong { color: #f8fafc; }
-:global(.dark) .hero-desc, :global(.dark) .section-title p, :global(.dark) .device-card > p, :global(.dark) .workflow-item p, :global(.dark) .software-item span, :global(.dark) .summary-card span { color: #cbd5e1; }
-:global(.dark) .device-card, :global(.dark) .software-item { border-color: rgb(51 65 85 / 78%); background: rgb(30 41 59 / 58%); }
-:global(.dark) li, :global(.dark) .workflow-item { background: rgb(15 23 42 / 38%); color: #d1fae5; }
+.equipment-page.dark .panel { border-color: rgb(51 65 85 / 90%); background: rgb(44 51 62 / 74%); box-shadow: 0 8px 28px rgb(0 0 0 / 18%); }
+.equipment-page.dark h1, .equipment-page.dark .section-title h2, .equipment-page.dark .summary-card strong, .equipment-page.dark .card-head h3, .equipment-page.dark .workflow-item h3, .equipment-page.dark .software-item strong { color: #f8fafc; }
+.equipment-page.dark .hero-desc, .equipment-page.dark .section-title p, .equipment-page.dark .device-card > p, .equipment-page.dark .workflow-item p, .equipment-page.dark .software-item span, .equipment-page.dark .summary-card span { color: #cbd5e1; }
+.equipment-page.dark .device-card, .equipment-page.dark .software-item { border-color: rgb(51 65 85 / 78%); background: rgb(30 41 59 / 58%); }
+.equipment-page.dark .device-card:hover { box-shadow: 0 18px 36px rgb(0 0 0 / 28%); }
+.equipment-page.dark .device-icon, .equipment-page.dark .workflow-icon { background: color-mix(in srgb, var(--accent, #3ecf9a) 18%, #0f172a); }
+.equipment-page.dark .hero-tags span, .equipment-page.dark .tag-list span { background: rgb(62 207 154 / 14%); color: #6ee7b7; }
+.equipment-page.dark li, .equipment-page.dark .workflow-item { background: rgb(15 23 42 / 38%); color: #d1fae5; }
 @media (max-width: 1024px) { .hero, .bottom-grid { grid-template-columns: 1fr; } }
 @media (max-width: 768px) { .hero, .section-panel { border-radius: 22px; padding: 22px; } .summary-grid, .equipment-grid, .software-grid, ul { grid-template-columns: 1fr; } }
 </style>
