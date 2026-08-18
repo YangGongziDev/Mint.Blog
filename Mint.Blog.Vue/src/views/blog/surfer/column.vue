@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { BookOutlined, ReadOutlined } from '@ant-design/icons-vue';
 import { getColumnList } from '@/service/blog/surfer/column';
@@ -51,6 +51,13 @@ function shouldShowCover(column: ColumnItem) {
 }
 
 onMounted(async () => {
+  await nextTick();
+  // #region debug-point A-B-C-D-E:column-mounted-styles
+  (() => { const page = document.querySelector('.column-page'); const layout = document.querySelector('main#__SCROLL_EL_ID__') || document.getElementById('__SCROLL_EL_ID__'); const messagePage = document.querySelector('.message-page, main.min-h-screen.bg-layout'); fetch('http://127.0.0.1:7777/event', { method: 'POST', body: JSON.stringify({ sessionId: 'message-column-blue-bg', runId: 'post-fix', hypothesisId: 'A-B-C-D-E', location: 'column.vue:onMounted', msg: '[DEBUG] Column mounted DOM and computed backgrounds', data: { pageClass: page?.className, pageBackground: page ? getComputedStyle(page).backgroundColor : null, pageWidth: page ? getComputedStyle(page).width : null, layoutClass: layout?.className, layoutBackground: layout ? getComputedStyle(layout).backgroundColor : null, bodyBackground: getComputedStyle(document.body).backgroundColor, htmlBackground: getComputedStyle(document.documentElement).backgroundColor, layoutVariable: getComputedStyle(document.documentElement).getPropertyValue('--layout-bg-color'), messageNodePresent: Boolean(messagePage), mains: Array.from(document.querySelectorAll('main')).map(item => ({ className: item.className, background: getComputedStyle(item).backgroundColor })) }, ts: Date.now() }) }).catch(() => {}); })();
+  // #region debug-point D:matching-background-rules
+  setTimeout(() => { const page = document.querySelector('.column-page'); const collect = (target: Element | null) => { if (!target) return []; const matches: Array<{ selector: string; background: string; backgroundColor: string }> = []; const visit = (rules: CSSRuleList) => Array.from(rules).forEach(rule => { if (rule instanceof CSSStyleRule) { try { const selector = rule.selectorText.replaceAll(/::[-\w()]+/g, ''); if (target.matches(selector) && (rule.style.background || rule.style.backgroundColor)) matches.push({ selector: rule.selectorText, background: rule.style.background, backgroundColor: rule.style.backgroundColor }); } catch {} } else if ('cssRules' in rule) visit((rule as CSSGroupingRule).cssRules); }); Array.from(document.styleSheets).forEach(sheet => { try { visit(sheet.cssRules); } catch {} }); return matches; }; fetch('http://127.0.0.1:7777/event', { method: 'POST', body: JSON.stringify({ sessionId: 'message-column-blue-bg', runId: 'post-fix', hypothesisId: 'D', location: 'column.vue:style-rule-scan', msg: '[DEBUG] Matching background CSS rules', data: { htmlRules: collect(document.documentElement), pageRules: collect(page), htmlBackground: getComputedStyle(document.documentElement).backgroundColor, pageBackground: page ? getComputedStyle(page).backgroundColor : null }, ts: Date.now() }) }).catch(() => {}); }, 100);
+  // #endregion
+  const debugLoadStartedAt = performance.now();
   try {
     const res = await getColumnList<Api<ColumnItem[]>>();
     if (res.success) columns.value = byColumn(res.data || []);
@@ -58,12 +65,15 @@ onMounted(async () => {
     columns.value = [];
   } finally {
     loading.value = false;
+    // #region debug-point F:column-loading-duration
+    fetch('http://127.0.0.1:7777/event', { method: 'POST', body: JSON.stringify({ sessionId: 'message-column-blue-bg', runId: 'post-fix', hypothesisId: 'F', location: 'column.vue:getColumnList', msg: '[DEBUG] Column loading duration', data: { durationMs: Math.round(performance.now() - debugLoadStartedAt), columnCount: columns.value.length }, ts: Date.now() }) }).catch(() => {});
+    // #endregion
   }
 });
 </script>
 
 <template>
-  <main class="column-page mx-auto max-w-screen-2xl px-4 py-4 md:px-6" :class="pageClass">
+  <main class="column-page mx-auto min-h-screen max-w-screen-2xl bg-layout px-4 py-4 md:px-6" :class="pageClass">
     <div class="grid grid-cols-1 gap-7 lg:grid-cols-4">
       <div class="col-span-1 mt-0 mb-3 lg:col-span-3 lg:mt-2">
         <div class="column-content">

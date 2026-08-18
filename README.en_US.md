@@ -79,6 +79,9 @@ is a clean and elegant blog template; built with cutting-edge technology stack; 
 
 #### Dark Theme
 ![](./Docs/PageImages/DesktopFront/nighttime-theme.png)
+![](./Docs/PageImages/DesktopFront/nighttime-theme2.png)
+![](./Docs/PageImages/DesktopFront/nighttime-theme3.png)
+![](./Docs/PageImages/DesktopFront/nighttime-theme4.png)
 
 ### Desktop Admin
 
@@ -93,20 +96,20 @@ is a clean and elegant blog template; built with cutting-edge technology stack; 
 
 ### Mobile
 
-#### Menu
-<img src="./Docs/PageImages/Mobile/menu-list.png" alt="Mobile menu" width="360" />
-
 #### Home
-<img src="./Docs/PageImages/Mobile/home.png" alt="Mobile home" width="360" />
+<img src="./Docs/PageImages/Mobile/home.png" alt="Mobile home" width="230" />
+
+#### Menu
+<img src="./Docs/PageImages/Mobile/menu-list.png" alt="Mobile menu" width="230" />
 
 #### Article Contents
-<img src="./Docs/PageImages/Mobile/article-ontents.png" alt="Mobile article contents" width="360" />
+<img src="./Docs/PageImages/Mobile/article-ontents.png" alt="Mobile article contents" width="230" />
 
 #### Article Details
-<img src="./Docs/PageImages/Mobile/article-detail.png" alt="Mobile article details" width="360" />
+<img src="./Docs/PageImages/Mobile/article-detail.png" alt="Mobile article details" width="230" />
 
 #### Gallery
-<img src="./Docs/PageImages/Mobile/gallery.png" alt="Mobile gallery" width="360" />
+<img src="./Docs/PageImages/Mobile/gallery.png" alt="Mobile gallery" width="230" />
 
 ## Usage
 

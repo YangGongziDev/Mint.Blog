@@ -29,15 +29,14 @@ const stats = [
   { label: '坐标', value: 'Guangzhou' }
 ];
 const timelines = [
-  { time: '2026.06', title: 'Mint.Blog V2 上线', desc: '.Net + Vue3 构建的新版本博客，合并旧版分支并完善后台能力。' },
-  { time: '2024.12', title: 'Mint.Blog V1 上线', desc: '基于 Java + Vue3 的个人博客。' },
+  { time: '2026.08', title: 'Mint.Blog 上线', desc: '.Net + Vue3 构建的新版本博客，合并旧版分支并完善后台能力。' },
   { time: '2023.06', title: '工业自动化软件开发', desc: '参与新能源客户相关业务的软件代码编写与交付。' },
   { time: '2022.06', title: '系统学习与沉淀', desc: '重新整理知识体系，持续补齐工程化和全栈能力。' },
 ];
 const showcases: Showcase[] = [
   {
     type: '站点',
-    title: 'MintBlogV2',
+    title: '杨工子',
     desc: '基于 .Net10 + Vue3 的个人博客。',
     img: siteProjectIcon1,
     link: 'https://www.yanggongzi.dev'
@@ -170,6 +169,7 @@ function openContact(type: ContactType) {
 <style scoped lang="scss">
 .author-page {
   color: #0d3d2d;
+  background-color: rgb(var(--layout-bg-color));
 }
 .author-hero,
 .panel,

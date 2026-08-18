@@ -157,7 +157,7 @@ const softwareStack: SimpleItem[] = [
 </template>
 
 <style scoped lang="scss">
-.equipment-page { color: #0d3d2d; }
+.equipment-page { color: #0d3d2d; background-color: rgb(var(--layout-bg-color)); }
 .panel { border: 1px solid rgb(62 207 154 / 42%); border-radius: 28px; background: rgb(255 255 255 / 88%); box-shadow: 0 8px 28px rgb(15 23 42 / 7%); }
 h1, h2, h3, p { margin: 0; }
 .hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); gap: 30px; align-items: center; overflow: hidden; padding: 34px; }

@@ -128,7 +128,7 @@ watch(
 </script>
 
 <template>
-  <main class="min-h-screen bg-[#f6fbf8] px-4 py-10 dark:bg-[#08111f] sm:px-6">
+  <main class="min-h-screen bg-layout px-4 py-10 sm:px-6">
     <section class="mx-auto max-w-5xl">
       <div class="mb-8 rounded-3xl border border-[#3ecf9a]/30 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-white/5">
         <p class="text-sm font-bold uppercase tracking-[0.24em] text-[#3ecf9a]">Message Board</p>
@@ -266,13 +266,5 @@ watch(
 
 .message-form-field {
   display: block;
-}
-
-:global(.dark) .message-list-scroll {
-  scrollbar-color: rgb(83 157 253 / 45%) transparent;
-}
-
-:global(.dark) .message-list-scroll::-webkit-scrollbar-thumb {
-  background: rgb(83 157 253 / 45%);
 }
 </style>

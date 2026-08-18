@@ -218,9 +218,17 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="col-span-1 mt-0 mb-3 lg:mt-2">
+      <div class="tag-sidebar col-span-1 mt-0 mb-3 lg:mt-2">
         <SurferSidebar hide-tags />
       </div>
     </div>
   </main>
 </template>
+
+<style scoped lang="scss">
+@media (min-width: 1024px) {
+  .tag-sidebar :deep(aside) {
+    top: 0.5rem;
+  }
+}
+</style>

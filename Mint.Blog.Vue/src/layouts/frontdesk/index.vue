@@ -103,11 +103,14 @@ function preloadBannerImages() {
   if (!BANNER_PRELOAD_ROUTE_NAMES.has(routeName)) scheduleBannerPreloadAfterRender();
 }
 
-watch(router.currentRoute, () => {
+watch(router.currentRoute, async () => {
   if (appStore.isMobile) {
     appStore.siderCollapse = true;
   }
 
+  await nextTick();
+  document.getElementById(LAYOUT_SCROLL_EL_ID)?.scrollTo({ top: 0, left: 0 });
+  window.scrollTo({ top: 0, left: 0 });
   setupFooterAnimalsObserver();
   preloadBannerImages();
 });
