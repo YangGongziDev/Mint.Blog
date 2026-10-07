@@ -150,8 +150,8 @@ pnpm build
 
 ## Ecosystem
 
-- [Mint.Admin.DDD](https://github.com/YangGongziDev/Mint.Admin.DDD): A `.NET DDD` rapid development framework for admin systems, rebuilt based on `Mint.Blog`.
-- [Mint.Admin.Vue](https://github.com/YangGongziDev/Mint.Admin.Vue): A `TypeScript Vue` rapid development project for admin systems, rebuilt based on `Mint.Blog.Vue`, used to pair with `Mint.Admin.DDD` for backend development.
+- [Mint.Cloud](https://github.com/YangGongziDev/Mint.Cloud): A `.NET Cloud` rapid development framework for admin systems, rebuilt based on `Mint.Blog`.
+- [Mint.Cloud.Vue](https://github.com/YangGongziDev/Mint.Cloud.Vue): A `TypeScript Vue` rapid development project for admin systems, rebuilt based on `Mint.Blog.Vue`, used to pair with `Mint.Cloud` for backend development.
 
 
 ## How to Contribute
