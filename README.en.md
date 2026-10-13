@@ -78,4 +78,4 @@ pnpm dev
 ## PageScreenshot
 ![](./Docs/PageImages/PC_V1_Home.png)
 ![](./Docs/PageImages/PC_V1_ArticleDetails.png)
-![](./Docs/PageImages/Mobile_V1_ArticleDetails.png)
+<img src="./Docs/PageImages/Mobile_V1_ArticleDetails.png" alt="移动端首页" width="230" />
