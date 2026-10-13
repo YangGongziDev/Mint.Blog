@@ -44,7 +44,8 @@ is a clean and elegant blog template; built with cutting-edge technology stack; 
 ## Documentation
 
 - Documentation: [https://www.yanggongzi.dev/blog/surfer/column/1](https://www.yanggongzi.dev/blog/surfer/column/1)
-- Demo: [https://www.yanggongzi.dev](https://www.yanggongzi.dev)
+- Demo: [https://www.yanggongzi.dev](https://www.yanggongzi.dev)  
+(The account and password have been automatically entered.)
 
 ## Screenshots
 
@@ -181,7 +182,7 @@ Thank you to all contributors for their efforts. If you'd like to contribute to 
 
 ## Disclaimer
 
-1. This project is open-sourced under [2026 YangGongziDev © GPL3.0](./LICENSE) for learning and reference purposes only. To protect the original author's rights, commercial use or secondary open-sourcing must retain the original author's copyright information and comply with the GPL3.0 license. The author promises that once the GitHub repository reaches 2,000 stars, this project will be re-licensed under the MIT license.
+1. This project is open-sourced under the [2026 YangGongziDev © MIT](./LICENSE) license. It is provided for learning and reference purposes only. To protect the original author's intellectual property rights, if you intend to use it commercially or for secondary open-sourcing, please retain the original author's copyright information.
 
 2. The frontend of this project draws inspiration from the following projects. Please support them as well:
 - [soybean-admin-antd](https://github.com/soybeanjs/soybean-admin-antd)  

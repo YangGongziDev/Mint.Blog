@@ -44,7 +44,7 @@
 ## 文档
 
 - 文档：[https://www.yanggongzi.dev/blog/surfer/column/1](https://www.yanggongzi.dev/blog/surfer/column/1)
-- 演示：[https://www.yanggongzi.dev](https://www.yanggongzi.dev)
+- 演示：[https://www.yanggongzi.dev](https://www.yanggongzi.dev)(账号密码会自动输入)
 
 ## 示例图片
 
@@ -181,7 +181,7 @@ pnpm run build
 
 ## 声明
 
-1.本项目基于 [2026 杨工子 © GPL3.0](./LICENSE) 协议开源，仅供学习参考，为了保护原作者的成果权益，商业使用或二次开源请保留原作者版权信息并遵循GPL3.0协议，本人承诺当Github仓库Star突破2000后此项目将改为MIT协议开源。
+1.本项目基于 [2026 程序员杨工子 © MIT](./LICENSE) 协议开源，仅供学习参考，为了保护原作者的成果权益，商业使用或二次开源请保留原作者版权信息。
 
 2.本项目前端从如下项目获得了不少灵感,请多多支持他们:  
 - [soybean-admin-antd](https://github.com/soybeanjs/soybean-admin-antd)  
