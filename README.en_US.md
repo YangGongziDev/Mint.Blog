@@ -18,7 +18,7 @@
 - `Mint.Blog.Application`: Backend - Application Layer
 - `Mint.Blog.Infrastructure`: Backend - Infrastructure Layer
 - `Mint.Blog.WebApi`: Backend - API Layer
-- `Mint.Blog.Vue`: Frontend
+- `Mint.Blog.Vue`: Frontend(Front desk + Back office)
 
 ## Tech Stack
 Backend: `.NET 10 + SqlSugar 5.0 + PostgreSQL 18`  

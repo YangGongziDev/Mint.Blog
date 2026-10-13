@@ -18,7 +18,7 @@
 - `Mint.Blog.Application`：后端-应用层
 - `Mint.Blog.Infrastructure`：后端-基础设施层
 - `Mint.Blog.WebApi`：后端-接口层
-- `Mint.Blog.Vue`：前端
+- `Mint.Blog.Vue`：前端(前台+后台)
 
 ## 技术栈
 后端：`.NET 10 + SqlSugar 5 + PostgreSQL 18`  
