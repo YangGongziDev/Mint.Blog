@@ -1,14 +1,19 @@
  <div align="center">
   <img src="https://img.yangmufa.cn/blog-system/mint-logo.svg" width="160" />
-  <h1>mint-blog-v1-java 已停止更新</h1>
-  <h1>欢迎体验基于 .Net DDD 的 Mint.Blog V2 版本</h1>
-  <h2>作者：<a href="https://www.yangmufa.cn/blog/surfer/author">程序员-杨工子</a></h2>
+  <h1>mint-blog-v1-java</h1>
+  <h2>作者：<a href="https://www.yangmufa.cn/blog/surfer/author">程序员杨工子</a></h2>
+  <h5>
+    历史分支：
+    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (最新)</a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2</a></a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java (当前)</a></span>
+  </h5>
   <span>中文 | <a href="./README.en.md">English</a></span>
 </div>
 
 
 #### 介绍
-mint-blog-v1-java（原 RocBlog 鲲鹏博客）基于 **Java Spring Boot + Vue3** 技术栈构建，是一款前后端分离的博客系统。  
+mint-blog-v1-java 基于 **Java Spring Boot + Vue3** 技术栈构建，是一款前后端分离的博客系统。  
 当前分支已停止更新，请移步 [main](https://github.com/YangMufa/Mint.Blog) 分支体验基于 .NET DDD 的 V2 版本。
 
 **核心特性：**

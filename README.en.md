@@ -1,13 +1,18 @@
  <div align="center">
   <img src="https://img.yangmufa.cn/blog-system/mint-logo.svg" width="160" />
-  <h1>mint-blog-v1-java Has stopped updating</h1>
-  <h1>Welcome to experience the V2 version of Mint.Blog based on.Net DDD</h1>
-  <h2>author：<a href="https://www.yangmufa.cn/blog/surfer/author">程序员-杨工子</a></h2>
+  <h1>mint-blog-v1-java</h1>
+  <h2>author：<a href="https://www.yangmufa.cn/blog/surfer/author">YangGongziDev</a></h2>
+  <h5>
+    Historical branch：
+    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (Latest)</a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2</a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java (Currently)</a></span>
+  </h5>
   <span>English | <a href="./README.md">中文</a></span>
 </div>
 
 #### Description
-mint-blog-v1-java (formerly RocBlog / Kunpeng Blog) is a blog system built on the **Java Spring Boot + Vue3** tech stack with separated frontend and backend.  
+mint-blog-v1-java is a blog system built on the **Java Spring Boot + Vue3** tech stack with separated frontend and backend.  
 This branch is no longer maintained. Please visit the [main](https://github.com/YangMufa/Mint.Blog) branch for the .NET DDD-based V2 version.
 
 **Core Features:**
