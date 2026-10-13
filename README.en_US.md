@@ -2,6 +2,12 @@
   <img src="./Docs/PageImages/system-logo.svg" width="160" />
   <h1>Mint.Blog</h1>
   <h2>Author: <a href="https://www.yanggongzi.dev/blog/surfer/author">YangGongziDev</a></h2>
+  <h5>
+    Historical branch：
+    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">mint-blog-v3 (Latest Main)</a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2 (Currently)</a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a></span>
+  </h5>
   <span><a href="./README.md">中文</a> | English</span>
 </div>
 
