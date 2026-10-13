@@ -3,4 +3,5 @@
     <Project Path="Mint.Blog.Domain/Mint.Blog.Domain.csproj"/>
     <Project Path="Mint.Blog.Infrastructure/Mint.Blog.Infrastructure.csproj"/>
     <Project Path="Mint.Blog.WebApi/Mint.Blog.WebApi.csproj"/>
+    <Project Path="Mint.Blog.IntegrationTests/Mint.Blog.IntegrationTests.csproj"/>
 </Solution>

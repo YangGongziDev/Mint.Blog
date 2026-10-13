@@ -76,16 +76,6 @@ using Mint.Blog.Application.Blog.Upload.Commands.RenameImage;
 using Mint.Blog.Application.Blog.Upload.Commands.UploadFile;
 using Mint.Blog.Application.Blog.Upload.Commands.UploadImage;
 using Mint.Blog.Application.Blog.Upload.Images;
-using Mint.Blog.Application.System.Menu.Queries.GetAllPages;
-using Mint.Blog.Application.System.Menu.Queries.GetMenuList;
-using Mint.Blog.Application.System.Menu.Queries.GetMenuTree;
-using Mint.Blog.Application.System.Role.Queries.GetAllRoles;
-using Mint.Blog.Application.System.Role.Queries.GetRoleList;
-using Mint.Blog.Application.System.User.Commands.DeleteUser;
-using Mint.Blog.Application.System.User.Commands.UpdateSystemUserPassword;
-using Mint.Blog.Application.System.User.Commands.UpdateUser;
-using Mint.Blog.Application.System.User.Queries.GetSystemUserInfo;
-using Mint.Blog.Application.System.User.Queries.GetUserList;
 using Mint.Blog.Application.Blog.Column.Commands.CreateColumn;
 using Mint.Blog.Application.Blog.Column.Commands.DeleteColumn;
 using Mint.Blog.Application.Blog.Column.Commands.SetColumnPublish;
@@ -130,8 +120,6 @@ using Mint.Blog.Infrastructure.Blog.Column.Repositories;
 using Mint.Blog.Infrastructure.Blog.Statistics.Repositories;
 using Mint.Blog.Infrastructure.Blog.Persistence.SqlSugar;
 using Mint.Blog.Infrastructure.Blog.Upload;
-using Mint.Blog.Infrastructure.System.Menu;
-using Mint.Blog.Infrastructure.System.Role;
 using Mint.Blog.Infrastructure.System.User.Persistence.Repositories;
 
 namespace Mint.Blog.Infrastructure.DependencyInjection;
@@ -175,6 +163,9 @@ public static class ServiceCollectionExtensions {
 		services.AddScoped<ISqlSugarDbContext, SqlSugarDbContext>();
 		services.AddScoped<IUnitOfWork, SqlSugarUnitOfWork>();
 		services.AddScoped<IDomainEventDispatcher, ServiceProviderDomainEventDispatcher>();
+		services.AddScoped<Mint.Blog.Application.System.Auth.IAdminIdentityQuery, AdminIdentityQuery>();
+		services.AddScoped<Mint.Blog.Application.System.Auth.IAdminRbacService, AdminRbacService>();
+		services.AddScoped<Mint.Blog.Application.System.Auth.IAdminModuleService, AdminModuleService>();
 		services.AddScoped<ITokenService, JwtTokenService>();
 		services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
 		services.AddScoped<IAdminCredentialValidator, ConfiguredAdminCredentialValidator>();
@@ -220,13 +211,6 @@ public static class ServiceCollectionExtensions {
 		services.AddScoped<IGetAdminFriendPageListQueryService, FriendRepository>();
 		services.AddScoped<IGetTagListQueryService, TagRepository>();
 		services.AddScoped<IGetTagPageListQueryService, TagRepository>();
-		services.AddScoped<IGetSystemUserInfoQueryService, UserRepository>();
-		services.AddScoped<IGetUserListQueryService, UserRepository>();
-		services.AddScoped<IGetRoleListQueryService, RoleQueryService>();
-		services.AddScoped<IGetAllRolesQueryService, RoleQueryService>();
-		services.AddScoped<IGetMenuListQueryService, MenuQueryService>();
-		services.AddScoped<IGetAllPagesQueryService, MenuQueryService>();
-		services.AddScoped<IGetMenuTreeQueryService, MenuQueryService>();
 		services.AddScoped<IGetBlogStatisticsQueryService, StatisticsQueryRepository>();
 		services.AddScoped<IGetAdminDashboardStatisticsQueryService, StatisticsQueryRepository>();
 		services.AddScoped<IGetAdminDashboardPvStatisticsQueryService, StatisticsQueryRepository>();
@@ -238,6 +222,7 @@ public static class ServiceCollectionExtensions {
 		services.AddScoped<IGetBlogColumnArticlePreNextQueryService, ColumnRepository>();
 		services.AddScoped<IGetMessageListQueryService, MessageRepository>();
 
+		services.AddScoped<Mint.Blog.Application.System.User.Commands.ChangeOwnPasswordHandler>();
 		services.AddScoped<LoginCommandHandler>();
 		services.AddScoped<RefreshTokenCommandHandler>();
 		services.AddScoped<LogoutCommandHandler>();
@@ -277,9 +262,6 @@ public static class ServiceCollectionExtensions {
 		services.AddScoped<UpdateFriendSortCommandHandler>();
 		services.AddScoped<MoveFriendSortFirstCommandHandler>();
 		services.AddScoped<MoveFriendSortLastCommandHandler>();
-		services.AddScoped<UpdateSystemUserPasswordCommandHandler>();
-		services.AddScoped<UpdateUserCommandHandler>();
-		services.AddScoped<DeleteUserCommandHandler>();
 		services.AddScoped<UploadImageCommandHandler>();
 		services.AddScoped<DeleteImageCommandHandler>();
 		services.AddScoped<DeleteImagesCommandHandler>();
@@ -296,7 +278,6 @@ public static class ServiceCollectionExtensions {
 		services.AddScoped<UpdateColumnSortCommandHandler>();
 		services.AddScoped<UpdateColumnCatalogCommandHandler>();
 		services.AddScoped<PublishMessageCommandHandler>();
-		services.AddScoped<UpdateUserRoleCommandHandler>();
 
 		return services;
 	}

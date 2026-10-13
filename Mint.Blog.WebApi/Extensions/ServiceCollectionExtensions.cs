@@ -13,7 +13,9 @@ public static class ServiceCollectionExtensions {
 	public static IServiceCollection AddWebApi(this IServiceCollection services, IConfiguration configuration){
 		var jwtOptions = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
 
-		services.AddControllers()
+		services.AddControllers(options => options.Filters.Add<AdminPermissionFilter>())
+			.ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = context =>
+				new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(ApiResponse<object>.Fail("validation_error", "请求参数无效")))
 			.AddJsonOptions(options => {
 				options.JsonSerializerOptions.Converters.Add(new LongToStringJsonConverter());
 				options.JsonSerializerOptions.Converters.Add(new NullableLongToStringJsonConverter());

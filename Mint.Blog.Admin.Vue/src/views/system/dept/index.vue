@@ -1,0 +1,663 @@
+<template>
+  <div class="page-container">
+    <ProSplitLayout :side-width="280">
+      <template #side>
+        <!-- dept tree -->
+        <div class="dept-tree-header">
+          <h3>{{ t('dept.organizationStructure') }}</h3>
+          <a-button type="primary" size="small" @click="handleAdd(null)">
+            <template #icon><PlusOutlined /></template>
+            {{ t('common.add') }}
+          </a-button>
+        </div>
+        <div class="dept-tree-search">
+          <a-input-search
+            v-model:value="searchText"
+            :placeholder="t('dept.searchDept')"
+            allow-clear
+            @search="loadDeptTree"
+          />
+        </div>
+        <div class="dept-tree-body">
+          <a-tree
+            v-if="treeData.length"
+            :tree-data="treeData"
+            :field-names="{ title: 'name', key: 'id', children: 'children' }"
+            :selected-keys="selectedKeys"
+            default-expand-all
+            block-node
+            @select="handleTreeSelect"
+          >
+            <template #title="{ name, status }">
+              <div class="tree-node">
+                <span class="tree-node-name">{{ name }}</span>
+                <span v-if="status === 'disabled'" class="tree-node-badge">{{
+                  t('dept.disabled')
+                }}</span>
+              </div>
+            </template>
+          </a-tree>
+          <a-empty v-else :image="null" :description="t('common.noData')" />
+        </div>
+      </template>
+
+      <template #main>
+        <!-- dept detail -->
+        <template v-if="selectedDept">
+          <div class="dept-detail-header">
+            <div class="dept-detail-title">
+              <h3>{{ selectedDept.name }}</h3>
+              <ProStatus :value="selectedDept.status" :status-map="deptStatusMap" />
+            </div>
+            <a-space>
+              <a-button type="primary" size="small" @click="handleAdd(selectedDept.id)">
+                <template #icon><PlusOutlined /></template>
+                {{ t('dept.addChildDept') }}
+              </a-button>
+              <a-button size="small" @click="handleEdit(selectedDept)">
+                <template #icon><EditOutlined /></template>
+                {{ t('common.edit') }}
+              </a-button>
+              <a-button size="small" danger @click="handleDelete(selectedDept)">
+                <template #icon><DeleteOutlined /></template>
+                {{ t('common.delete') }}
+              </a-button>
+            </a-space>
+          </div>
+          <ProDescriptions
+            :columns="deptDescColumns"
+            :data="deptDescData"
+            :column="2"
+            bordered
+            size="middle"
+            class="dept-descriptions"
+          />
+
+          <!-- child dept list -->
+          <div class="dept-children">
+            <ProTable
+              :key="selectedDept.id + '-' + refreshKey"
+              :columns="childColumns"
+              :request="loadChildDepts"
+              :search="false"
+              :pagination="false"
+              :toolbar="{
+                title: `${t('dept.childDepts')} (${childDepts.length})`,
+              }"
+            >
+              <template #bodyCell="{ column, record }">
+                <template v-if="column.key === 'status'">
+                  <ProStatus :value="record.status" :status-map="deptStatusMap" />
+                </template>
+                <template v-if="column.key === 'action'">
+                  <a-space :size="4">
+                    <a-button type="link" size="small" @click="selectDept(record.id)">{{
+                      t('common.view')
+                    }}</a-button>
+                    <a-button type="link" size="small" @click="handleEdit(record)">{{
+                      t('common.edit')
+                    }}</a-button>
+                  </a-space>
+                </template>
+              </template>
+            </ProTable>
+          </div>
+        </template>
+        <div v-else class="dept-detail-empty">
+          <a-empty :description="t('dept.selectDeptNode')" />
+        </div>
+      </template>
+    </ProSplitLayout>
+
+    <!-- add/edit modal -->
+    <a-modal v-model:open="modalVisible" :title="modalTitle" @ok="handleSubmit" :width="520">
+      <a-form :model="form" :label-col="{ span: 6 }" style="margin-top: 16px">
+        <a-form-item :label="t('dept.parentDept')">
+          <TreeSelect
+            v-model:value="form.parentId"
+            :tree-data="parentTreeData"
+            :field-names="{ label: 'name', value: 'id', children: 'children' }"
+            :placeholder="t('dept.noneTopLevelDept')"
+            allow-clear
+            tree-default-expand-all
+          />
+        </a-form-item>
+        <a-form-item :label="t('dept.deptName')" required>
+          <a-input v-model:value="form.name" :placeholder="t('dept.pleaseEnterDeptName')" />
+        </a-form-item>
+        <a-form-item :label="t('dept.leader')">
+          <a-input v-model:value="form.leader" :placeholder="t('dept.pleaseEnterLeader')" />
+        </a-form-item>
+        <a-form-item :label="t('dept.phone')">
+          <a-input v-model:value="form.phone" :placeholder="t('dept.pleaseEnterPhone')" />
+        </a-form-item>
+        <a-form-item :label="t('dept.email')">
+          <a-input v-model:value="form.email" :placeholder="t('dept.pleaseEnterEmail')" />
+        </a-form-item>
+        <a-form-item :label="t('dept.sort')">
+          <a-input-number v-model:value="form.sort" :min="0" style="width: 100%" />
+        </a-form-item>
+        <a-form-item :label="t('dept.status')">
+          <a-radio-group v-model:value="form.status">
+            <a-radio value="enabled">{{ t('dept.enabled') }}</a-radio>
+            <a-radio value="disabled">{{ t('dept.disabled') }}</a-radio>
+          </a-radio-group>
+        </a-form-item>
+        <a-form-item :label="t('dept.remark')">
+          <a-textarea
+            v-model:value="form.remark"
+            :placeholder="t('dept.pleaseEnterRemark')"
+            :rows="3"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+  </div>
+</template>
+
+<script setup lang="ts">
+import type { Department } from '@/types/dept';
+import type { ProTableColumn, ProDescriptionItem, ProStatusMap } from '@/types/pro';
+
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@antdv-next/icons';
+import { message, Modal, TreeSelect } from 'antdv-next';
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import ProDescriptions from '@/components/Pro/ProDescriptions/index.vue';
+import ProSplitLayout from '@/components/Pro/ProSplitLayout/index.vue';
+import ProStatus from '@/components/Pro/ProStatus/index.vue';
+import ProTable from '@/components/Pro/ProTable/index.vue';
+
+const deptTime = '2026-06-06 06:06:06';
+const departments: Department[] = [
+  {
+    id: '1',
+    name: '总公司',
+    parentId: null,
+    leader: '杨总',
+    phone: '18888888888',
+    email: 'YangGongziDev@163.com',
+    sort: 1,
+    status: 'enabled',
+  },
+  {
+    id: '10',
+    name: '技术研发部',
+    parentId: '1',
+    leader: '李工',
+    phone: '13800000010',
+    email: 'tech@example.com',
+    sort: 1,
+    status: 'enabled',
+  },
+  {
+    id: '11',
+    name: '产品设计部',
+    parentId: '1',
+    leader: '王设计',
+    phone: '13800000011',
+    email: 'design@example.com',
+    sort: 2,
+    status: 'enabled',
+  },
+  {
+    id: '12',
+    name: '市场营销部',
+    parentId: '1',
+    leader: '赵市场',
+    phone: '13800000012',
+    email: 'market@example.com',
+    sort: 3,
+    status: 'enabled',
+  },
+  {
+    id: '13',
+    name: '人力资源部',
+    parentId: '1',
+    leader: '孙HR',
+    phone: '13800000013',
+    email: 'hr@example.com',
+    sort: 4,
+    status: 'enabled',
+  },
+  {
+    id: '14',
+    name: '财务部',
+    parentId: '1',
+    leader: '周财务',
+    phone: '13800000014',
+    email: 'finance@example.com',
+    sort: 5,
+    status: 'enabled',
+  },
+  {
+    id: '101',
+    name: '前端开发组',
+    parentId: '10',
+    leader: '陈前端',
+    phone: '13800000101',
+    sort: 1,
+    status: 'enabled',
+  },
+  {
+    id: '102',
+    name: '后端开发组',
+    parentId: '10',
+    leader: '刘后端',
+    phone: '13800000102',
+    sort: 2,
+    status: 'enabled',
+  },
+  {
+    id: '103',
+    name: '测试组',
+    parentId: '10',
+    leader: '吴测试',
+    phone: '13800000103',
+    sort: 3,
+    status: 'enabled',
+  },
+  {
+    id: '104',
+    name: '运维组',
+    parentId: '10',
+    leader: '郑运维',
+    phone: '13800000104',
+    sort: 4,
+    status: 'enabled',
+  },
+  {
+    id: '111',
+    name: 'UI设计组',
+    parentId: '11',
+    leader: '钱UI',
+    phone: '13800000111',
+    sort: 1,
+    status: 'enabled',
+  },
+  {
+    id: '112',
+    name: '产品策划组',
+    parentId: '11',
+    leader: '冯策划',
+    phone: '13800000112',
+    sort: 2,
+    status: 'enabled',
+  },
+  {
+    id: '121',
+    name: '品牌推广组',
+    parentId: '12',
+    leader: '韩品牌',
+    phone: '13800000121',
+    sort: 1,
+    status: 'enabled',
+  },
+  {
+    id: '122',
+    name: '渠道销售组',
+    parentId: '12',
+    leader: '杨销售',
+    phone: '13800000122',
+    sort: 2,
+    status: 'enabled',
+  },
+  { id: '131', name: '招聘组', parentId: '13', leader: '朱招聘', sort: 1, status: 'enabled' },
+  {
+    id: '132',
+    name: '培训组',
+    parentId: '13',
+    leader: '秦培训',
+    sort: 2,
+    status: 'disabled',
+    remark: '暂停运营',
+    updateTime: '2026-06-01 00:00:00',
+  },
+].map((item) => ({
+  ...item,
+  status: item.status as Department['status'],
+  createTime: deptTime,
+  updateTime: item.updateTime || deptTime,
+}));
+let nextDeptId = 133;
+const refreshKey = ref(0);
+
+const buildDeptTree = (list: Department[], parentId: string | null = null): Department[] =>
+  list
+    .filter((item) => item.parentId === parentId)
+    .sort((a, b) => a.sort - b.sort)
+    .map((item) => {
+      const children = buildDeptTree(list, item.id);
+      return { ...item, ...(children.length ? { children } : {}) };
+    });
+
+const { t } = useI18n();
+
+const deptStatusMap = computed<ProStatusMap>(() => ({
+  enabled: { text: t('dept.enabled'), color: '#52c41a' },
+  disabled: { text: t('dept.disabled'), color: '#bfbfbf' },
+}));
+
+const searchText = ref('');
+const treeData = ref<Department[]>([]);
+const flatList = ref<Department[]>([]);
+const selectedKeys = ref<string[]>([]);
+
+const selectedDept = computed(() => {
+  if (!selectedKeys.value.length) return null;
+  return flatList.value.find((d) => d.id === selectedKeys.value[0]) || null;
+});
+
+const childDepts = computed(() => {
+  if (!selectedDept.value) return [];
+  return flatList.value
+    .filter((d) => d.parentId === selectedDept.value!.id)
+    .toSorted((a, b) => a.sort - b.sort);
+});
+
+const parentTreeData = computed(() => {
+  const root: Department = {
+    id: '',
+    name: t('dept.noneTopLevelDept'),
+    parentId: null,
+    sort: 0,
+    status: 'enabled',
+    createTime: '',
+    updateTime: '',
+  };
+  const excluded = new Set<string>();
+  if (form.value.id) {
+    const excludeBranch = (id: string) => {
+      excluded.add(id);
+      flatList.value
+        .filter((item) => item.parentId === id)
+        .forEach((item) => excludeBranch(item.id));
+    };
+    excludeBranch(form.value.id);
+  }
+  return [
+    { ...root, children: buildDeptTree(flatList.value.filter((item) => !excluded.has(item.id))) },
+  ];
+});
+
+// modal
+const modalVisible = ref(false);
+const modalTitle = computed(() => (form.value.id ? t('dept.editDept') : t('dept.createDept')));
+const form = ref<Partial<Department>>({
+  name: '',
+  parentId: null,
+  leader: '',
+  phone: '',
+  email: '',
+  sort: 0,
+  status: 'enabled',
+  remark: '',
+});
+
+const childColumns = computed<ProTableColumn[]>(() => [
+  { title: t('dept.deptName'), dataIndex: 'name', key: 'name' },
+  { title: t('dept.leader'), dataIndex: 'leader', key: 'leader', width: 100 },
+  { title: t('dept.sort'), dataIndex: 'sort', key: 'sort', width: 70 },
+  { title: t('dept.status'), dataIndex: 'status', key: 'status', width: 80 },
+  {
+    title: t('common.actions'),
+    dataIndex: 'action',
+    key: 'action',
+    width: 120,
+  },
+]);
+
+const deptDescColumns = computed<ProDescriptionItem[]>(() => [
+  { label: t('dept.deptName'), dataIndex: 'name' },
+  { label: t('dept.parentDept'), dataIndex: 'parentName' },
+  { label: t('dept.leader'), dataIndex: 'leader' },
+  { label: t('dept.phone'), dataIndex: 'phone' },
+  { label: t('dept.email'), dataIndex: 'email' },
+  { label: t('dept.sort'), dataIndex: 'sort' },
+  { label: t('dept.createTime'), dataIndex: 'createTime' },
+  { label: t('dept.updateTime'), dataIndex: 'updateTime' },
+  { label: t('dept.remark'), dataIndex: 'remark', span: 2 },
+]);
+
+const deptDescData = computed(() => {
+  if (!selectedDept.value) return {};
+  return {
+    ...selectedDept.value,
+    parentName: getParentName(selectedDept.value.parentId),
+  };
+});
+
+const getParentName = (parentId: string | null) => {
+  if (!parentId) return t('dept.noneTopLevel');
+  return flatList.value.find((d) => d.id === parentId)?.name || '-';
+};
+
+const selectDept = (id: string) => {
+  selectedKeys.value = [id];
+};
+
+const loadChildDepts = async () => {
+  return {
+    data: childDepts.value,
+    total: childDepts.value.length,
+    success: true,
+  };
+};
+
+const loadDeptTree = async () => {
+  try {
+    const matched = new Set<string>();
+    departments
+      .filter((item) => item.name.includes(searchText.value))
+      .forEach((item) => {
+        let current: Department | undefined = item;
+        while (current && !matched.has(current.id)) {
+          matched.add(current.id);
+          current = departments.find((parent) => parent.id === current?.parentId);
+        }
+      });
+    const treeRes = {
+      code: 200,
+      message: 'success',
+      success: true,
+      data: buildDeptTree(departments.filter((item) => matched.has(item.id))),
+    };
+    const listRes = {
+      code: 200,
+      message: 'success',
+      success: true,
+      data: [...departments].sort((a, b) => a.sort - b.sort),
+    };
+    if (treeRes.code === 200) treeData.value = treeRes.data;
+    if (listRes.code === 200) flatList.value = listRes.data;
+    refreshKey.value++;
+    if (!selectedKeys.value.length && treeData.value.length) {
+      selectedKeys.value = [treeData.value[0].id];
+    }
+  } catch (error: unknown) {
+    console.error(t('dept.loadDataFailed'), (error as Error).message);
+  }
+};
+
+const handleTreeSelect = (keys: string[]) => {
+  if (keys.length) selectedKeys.value = keys;
+};
+
+const handleAdd = (parentId: string | null) => {
+  form.value = {
+    name: '',
+    parentId,
+    leader: '',
+    phone: '',
+    email: '',
+    sort: 0,
+    status: 'enabled',
+    remark: '',
+  };
+  modalVisible.value = true;
+};
+
+const handleEdit = (dept: Department) => {
+  form.value = { ...dept };
+  modalVisible.value = true;
+};
+
+const handleDelete = (dept: Department) => {
+  const hasChildren = flatList.value.some((d) => d.parentId === dept.id);
+  if (hasChildren) {
+    message.warning(t('dept.hasChildrenWarning'));
+    return;
+  }
+  Modal.confirm({
+    title: t('dept.confirmDelete'),
+    content: t('dept.confirmDeleteContent', { name: dept.name }),
+    onOk: async () => {
+      try {
+        const index = departments.findIndex((item) => item.id === dept.id);
+        if (index !== -1) departments.splice(index, 1);
+        const response = { code: 200, message: 'success', success: true };
+        if (response.code === 200) {
+          message.success(t('dept.deleteSuccess'));
+          selectedKeys.value = [];
+          loadDeptTree();
+        } else {
+          message.error(response.message || t('dept.deleteFailed'));
+        }
+      } catch (_error: unknown) {
+        message.error(t('dept.deleteFailed'));
+      }
+    },
+  });
+};
+
+const handleSubmit = async () => {
+  if (!form.value.name) {
+    message.warning(t('dept.pleaseEnterDeptName'));
+    return;
+  }
+  try {
+    const existing = departments.find((item) => item.id === form.value.id);
+    const now = new Date().toISOString().replace('T', ' ').slice(0, 19);
+    const dept: Department = {
+      ...form.value,
+      id: existing?.id || String(nextDeptId++),
+      name: form.value.name,
+      parentId: form.value.parentId || null,
+      sort: form.value.sort || 0,
+      status: form.value.status || 'enabled',
+      createTime: existing?.createTime || now,
+      updateTime: now,
+    };
+    if (existing) departments.splice(departments.indexOf(existing), 1, dept);
+    else departments.push(dept);
+    const response = { code: 200, message: 'success', success: true, data: dept };
+    if (response.code === 200) {
+      message.success(t(existing ? 'dept.updateSuccess' : 'dept.createSuccess'));
+      modalVisible.value = false;
+      loadDeptTree();
+    }
+  } catch (_error: unknown) {
+    message.error(t('dept.operateFailed'));
+  }
+};
+
+// init
+loadDeptTree();
+</script>
+
+<style scoped lang="scss">
+// dept tree content
+.dept-tree-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+}
+
+.dept-tree-search {
+  margin-bottom: 12px;
+}
+
+.dept-tree-body {
+  flex: 1;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+
+  :deep(.ant-tree-node-content-wrapper) {
+    flex: 1;
+  }
+
+  .tree-node {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .tree-node-name {
+      flex: 1;
+    }
+
+    .tree-node-badge {
+      font-size: 11px;
+      padding: 0 6px;
+      border-radius: 8px;
+      background: #fff1f0;
+      color: #cf1322;
+      line-height: 18px;
+    }
+  }
+}
+
+// dept detail content
+.dept-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border-secondary, #f0f0f0);
+
+  .dept-detail-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    h3 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 600;
+    }
+  }
+}
+
+.dept-descriptions {
+  margin-bottom: 24px;
+}
+
+.dept-children {
+  :deep(.ant-table-thead > tr > th) {
+    background: var(--color-fill-quaternary);
+  }
+}
+
+.dept-detail-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+</style>

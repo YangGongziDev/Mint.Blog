@@ -16,6 +16,9 @@ public sealed class UserDataModel {
 	[SugarColumn(ColumnName = "password")]
 	public string Password { get; set; } = string.Empty;
 
+	[SugarColumn(ColumnName = "status")]
+	public string Status { get; set; } = "active";
+
 	[SugarColumn(ColumnName = "is_deleted")]
 	public int IsDeleted { get; set; }
 

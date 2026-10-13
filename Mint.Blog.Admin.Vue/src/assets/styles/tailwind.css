@@ -1,0 +1,16 @@
+@layer theme, base, antd, components, utilities;
+
+@import 'tailwindcss';
+
+@theme {
+  --color-primary: var(--color-primary);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-bg-container: var(--color-bg-container);
+  --color-bg-layout: var(--color-bg-layout);
+  --color-border: var(--color-border);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
+  --color-info: var(--color-info);
+}

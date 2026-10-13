@@ -19,7 +19,7 @@ public sealed class LoginCommandHandler(
 		Guard.Against(string.IsNullOrWhiteSpace(command.Password), ErrorCodes.LoginInvalid, "Password is required.");
 
 		var userName = UserName.Create(command.UserName).Value;
-		var password = command.Password.Trim();
+		var password = command.Password;
 		var validationResult = adminCredentialValidator.Validate(userName, password);
 
 		Guard.Against(validationResult is null, ErrorCodes.LoginInvalid, "Invalid user name or password.");

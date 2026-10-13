@@ -38,6 +38,7 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseMiddleware<Mint.Blog.WebApi.Middleware.AdminAuditMiddleware>();
 app.UseAuthorization();
 app.UseFriendlyForbidden();
 app.MapControllers();

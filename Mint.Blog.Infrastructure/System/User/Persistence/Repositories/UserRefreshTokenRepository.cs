@@ -31,14 +31,16 @@ public sealed class UserRefreshTokenRepository(ISqlSugarDbContext dbContext) : I
 		return data is null ? null : MapToDomain(data);
 	}
 
-	public Task RevokeAsync(UserRefreshTokenEntity refreshToken, CancellationToken cancellationToken = default){
-		return dbContext.Client.Updateable<UserRefreshTokenDataModel>()
+	public async Task RevokeAsync(UserRefreshTokenEntity refreshToken, CancellationToken cancellationToken = default){
+		var affected = await dbContext.Client.Updateable<UserRefreshTokenDataModel>()
 			.SetColumns(x => new UserRefreshTokenDataModel {
 				IsRevoked = refreshToken.IsRevoked ? 1 : 0,
 				RevokedAt = refreshToken.RevokedAt
 			})
-			.Where(x => x.Id == refreshToken.Id)
+			.Where(x => x.Id == refreshToken.Id && x.IsRevoked == 0)
 			.ExecuteCommandAsync(cancellationToken);
+		if (affected != 1) throw new Mint.Blog.Application.Abstractions.BusinessException(
+			Mint.Blog.Application.Abstractions.ErrorCodes.RefreshTokenInvalid, "刷新令牌已被使用或吊销");
 	}
 
 	public Task RevokeAllByUserIdAsync(long userId, CancellationToken cancellationToken = default){

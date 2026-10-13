@@ -12,7 +12,7 @@
  Target Server Version : 180003 (180003)
  File Encoding         : 65001
 
- Date: 07/08/2026 21:14:47
+ Date: 12/10/2026 10:44:41
 */
 
 
@@ -185,6 +185,42 @@ CACHE 1;
 ALTER SEQUENCE "public"."blog_wiki_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
+-- Sequence structure for sys_admin_record_id_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."sys_admin_record_id_seq";
+CREATE SEQUENCE "public"."sys_admin_record_id_seq" 
+INCREMENT 1
+MINVALUE  1
+MAXVALUE 9223372036854775807
+START 1
+CACHE 1;
+ALTER SEQUENCE "public"."sys_admin_record_id_seq" OWNER TO "postgres";
+
+-- ----------------------------
+-- Sequence structure for sys_permission_id_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."sys_permission_id_seq";
+CREATE SEQUENCE "public"."sys_permission_id_seq" 
+INCREMENT 1
+MINVALUE  1
+MAXVALUE 9223372036854775807
+START 1
+CACHE 1;
+ALTER SEQUENCE "public"."sys_permission_id_seq" OWNER TO "postgres";
+
+-- ----------------------------
+-- Sequence structure for sys_role_id_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."sys_role_id_seq";
+CREATE SEQUENCE "public"."sys_role_id_seq" 
+INCREMENT 1
+MINVALUE  1
+MAXVALUE 9223372036854775807
+START 1
+CACHE 1;
+ALTER SEQUENCE "public"."sys_role_id_seq" OWNER TO "postgres";
+
+-- ----------------------------
 -- Sequence structure for sys_user_id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."sys_user_id_seq";
@@ -235,7 +271,8 @@ COMMENT ON COLUMN "public"."blog_article"."update_time" IS '最后一次更新�
 COMMENT ON COLUMN "public"."blog_article"."is_deleted" IS '删除标志位：0：未删除 1：已删除';
 COMMENT ON COLUMN "public"."blog_article"."read_num" IS '被阅读次数';
 COMMENT ON COLUMN "public"."blog_article"."weight" IS '文章权重，用于是否置顶（0: 未置顶；>0: 参与置顶，权重值越高越靠前）';
-COMMENT ON COLUMN "public"."blog_article"."visibility" IS '文章可见性，1：公开可见 2：仅专栏可见';
+COMMENT ON COLUMN "public"."blog_article"."visibility" IS '1 ：公开可见
+2 ：仅专栏可见';
 COMMENT ON TABLE "public"."blog_article" IS '文章表';
 
 -- ----------------------------
@@ -281,13 +318,14 @@ CREATE TABLE "public"."blog_article_draft" (
   "summary" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "cover" text COLLATE "pg_catalog"."default" NOT NULL,
   "category_id" int8,
-  "visibility" int2 NOT NULL,
   "create_time" timestamp(6) NOT NULL,
-  "update_time" timestamp(6) NOT NULL
+  "update_time" timestamp(6) NOT NULL,
+  "visibility" int2 NOT NULL
 )
 ;
 ALTER TABLE "public"."blog_article_draft" OWNER TO "postgres";
-COMMENT ON COLUMN "public"."blog_article_draft"."visibility" IS '1 ：公开可见 2 ：仅专栏可见';
+COMMENT ON COLUMN "public"."blog_article_draft"."visibility" IS '1 ：公开可见
+2 ：仅专栏可见';
 
 -- ----------------------------
 -- Table structure for blog_article_draft_content
@@ -521,13 +559,13 @@ CREATE TABLE "public"."blog_gallery_image" (
   "category_id" int8 NOT NULL,
   "resolution" varchar(255) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "ratio" varchar(255) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "file_name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "image_time" timestamp(6) NOT NULL,
+  "size" int4 NOT NULL,
   "url" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "source_type" varchar(255) COLLATE "pg_catalog"."default" NOT NULL DEFAULT 'local'::character varying,
   "bucket_name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
   "object_name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "file_name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
-  "size" int4 NOT NULL DEFAULT 0,
   "sort" int4 NOT NULL DEFAULT 0,
   "enabled" bool NOT NULL DEFAULT true,
   "create_time" timestamp(6) NOT NULL DEFAULT now(),
@@ -540,13 +578,13 @@ COMMENT ON COLUMN "public"."blog_gallery_image"."name" IS '图片名称';
 COMMENT ON COLUMN "public"."blog_gallery_image"."category_id" IS '所属画廊分类ID，关联blog_gallery_category.id';
 COMMENT ON COLUMN "public"."blog_gallery_image"."resolution" IS '图片分辨率，例如4K、1920x1080';
 COMMENT ON COLUMN "public"."blog_gallery_image"."ratio" IS '图片比例，例如16:9、4:3、9:16';
+COMMENT ON COLUMN "public"."blog_gallery_image"."file_name" IS '原始文件名或显示文件名';
 COMMENT ON COLUMN "public"."blog_gallery_image"."image_time" IS '图片时间或拍摄/收集日期';
+COMMENT ON COLUMN "public"."blog_gallery_image"."size" IS '图片大小(M)';
 COMMENT ON COLUMN "public"."blog_gallery_image"."url" IS '图片访问链接，本地上传时由对象存储自动生成，外部引用时为第三方图片链接';
 COMMENT ON COLUMN "public"."blog_gallery_image"."source_type" IS '图片来源类型，local表示本地上传，external表示外部引用';
 COMMENT ON COLUMN "public"."blog_gallery_image"."bucket_name" IS '本地上传图片所在对象存储桶名称，外部引用时为空';
 COMMENT ON COLUMN "public"."blog_gallery_image"."object_name" IS '本地上传图片在对象存储中的对象名称，外部引用时为空';
-COMMENT ON COLUMN "public"."blog_gallery_image"."file_name" IS '原始文件名或显示文件名';
-COMMENT ON COLUMN "public"."blog_gallery_image"."size" IS '图片文件大小，单位 MB';
 COMMENT ON COLUMN "public"."blog_gallery_image"."sort" IS '排序值，数值越大越靠前';
 COMMENT ON COLUMN "public"."blog_gallery_image"."enabled" IS '是否启用，true启用，false停用';
 COMMENT ON COLUMN "public"."blog_gallery_image"."create_time" IS '创建时间';
@@ -658,6 +696,87 @@ COMMENT ON COLUMN "public"."blog_tag"."sort" IS '排序';
 COMMENT ON TABLE "public"."blog_tag" IS '文章标签表';
 
 -- ----------------------------
+-- Table structure for sys_admin_record
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."sys_admin_record";
+CREATE TABLE "public"."sys_admin_record" (
+  "id" int8 NOT NULL GENERATED BY DEFAULT AS IDENTITY (
+INCREMENT 1
+MINVALUE  1
+MAXVALUE 9223372036854775807
+START 1
+CACHE 1
+),
+  "resource" varchar(32) COLLATE "pg_catalog"."default" NOT NULL,
+  "data" jsonb NOT NULL,
+  "create_time" timestamptz(6) NOT NULL DEFAULT now(),
+  "update_time" timestamptz(6) NOT NULL DEFAULT now()
+)
+;
+ALTER TABLE "public"."sys_admin_record" OWNER TO "postgres";
+
+-- ----------------------------
+-- Table structure for sys_permission
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."sys_permission";
+CREATE TABLE "public"."sys_permission" (
+  "id" int8 NOT NULL GENERATED BY DEFAULT AS IDENTITY (
+INCREMENT 1
+MINVALUE  1
+MAXVALUE 9223372036854775807
+START 1
+CACHE 1
+),
+  "name" text COLLATE "pg_catalog"."default" NOT NULL,
+  "code" varchar(150) COLLATE "pg_catalog"."default" NOT NULL,
+  "description" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::text,
+  "resource" varchar(100) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "action" varchar(100) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "type" varchar(16) COLLATE "pg_catalog"."default" NOT NULL DEFAULT 'menu'::character varying,
+  "parent_id" int8,
+  "path" text COLLATE "pg_catalog"."default",
+  "component" text COLLATE "pg_catalog"."default",
+  "icon" text COLLATE "pg_catalog"."default",
+  "sort" int4 NOT NULL DEFAULT 0,
+  "status" varchar(16) COLLATE "pg_catalog"."default" NOT NULL DEFAULT 'active'::character varying,
+  "visible" bool NOT NULL DEFAULT true
+)
+;
+ALTER TABLE "public"."sys_permission" OWNER TO "postgres";
+
+-- ----------------------------
+-- Table structure for sys_role
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."sys_role";
+CREATE TABLE "public"."sys_role" (
+  "id" int8 NOT NULL GENERATED BY DEFAULT AS IDENTITY (
+INCREMENT 1
+MINVALUE  1
+MAXVALUE 9223372036854775807
+START 1
+CACHE 1
+),
+  "name" varchar(100) COLLATE "pg_catalog"."default" NOT NULL,
+  "code" varchar(100) COLLATE "pg_catalog"."default" NOT NULL,
+  "description" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::text,
+  "create_time" timestamptz(6) NOT NULL DEFAULT now(),
+  "update_time" timestamptz(6) NOT NULL DEFAULT now()
+)
+;
+ALTER TABLE "public"."sys_role" OWNER TO "postgres";
+
+-- ----------------------------
+-- Table structure for sys_role_permission
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."sys_role_permission";
+CREATE TABLE "public"."sys_role_permission" (
+  "role_id" int8 NOT NULL,
+  "permission_id" int8 NOT NULL
+)
+;
+ALTER TABLE "public"."sys_role_permission" OWNER TO "postgres";
+
+-- ----------------------------
 -- Table structure for sys_user
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_user";
@@ -668,7 +787,14 @@ CREATE TABLE "public"."sys_user" (
   "password" varchar(60) COLLATE "pg_catalog"."default" NOT NULL,
   "is_deleted" int2 NOT NULL DEFAULT 0,
   "create_time" timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "update_time" timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+  "update_time" timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "status" varchar(16) COLLATE "pg_catalog"."default" NOT NULL DEFAULT 'active'::character varying,
+  "email" varchar(254) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "phone" varchar(32) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "avatar" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::text,
+  "gender" varchar(16) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "birth_date" varchar(32) COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::character varying,
+  "bio" text COLLATE "pg_catalog"."default" NOT NULL DEFAULT ''::text
 )
 ;
 ALTER TABLE "public"."sys_user" OWNER TO "postgres";
@@ -705,7 +831,9 @@ CREATE TABLE "public"."sys_user_role" (
   "id" int8 NOT NULL DEFAULT nextval('sys_user_role_id_seq'::regclass),
   "username" varchar(60) COLLATE "pg_catalog"."default" NOT NULL,
   "role" varchar(60) COLLATE "pg_catalog"."default" NOT NULL,
-  "create_time" timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+  "create_time" timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "user_id" int8 NOT NULL,
+  "role_id" int8 NOT NULL
 )
 ;
 ALTER TABLE "public"."sys_user_role" OWNER TO "postgres";
@@ -819,9 +947,7 @@ SELECT setval('"public"."blog_gallery_category_id_seq"', 2, true);
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
-ALTER SEQUENCE "public"."blog_gallery_image_id_seq"
-OWNED BY "public"."blog_gallery_image"."id";
-SELECT setval('"public"."blog_gallery_image_id_seq"', 19, true);
+SELECT setval('"public"."blog_gallery_image_id_seq"', 10, true);
 
 -- ----------------------------
 -- Alter sequences owned by
@@ -855,6 +981,27 @@ SELECT setval('"public"."blog_wiki_catalog_id_seq"', 732, true);
 ALTER SEQUENCE "public"."blog_wiki_id_seq"
 OWNED BY "public"."blog_column"."id";
 SELECT setval('"public"."blog_wiki_id_seq"', 16, true);
+
+-- ----------------------------
+-- Alter sequences owned by
+-- ----------------------------
+ALTER SEQUENCE "public"."sys_admin_record_id_seq"
+OWNED BY "public"."sys_admin_record"."id";
+SELECT setval('"public"."sys_admin_record_id_seq"', 10, true);
+
+-- ----------------------------
+-- Alter sequences owned by
+-- ----------------------------
+ALTER SEQUENCE "public"."sys_permission_id_seq"
+OWNED BY "public"."sys_permission"."id";
+SELECT setval('"public"."sys_permission_id_seq"', 50, true);
+
+-- ----------------------------
+-- Alter sequences owned by
+-- ----------------------------
+ALTER SEQUENCE "public"."sys_role_id_seq"
+OWNED BY "public"."sys_role"."id";
+SELECT setval('"public"."sys_role_id_seq"', 5, true);
 
 -- ----------------------------
 -- Alter sequences owned by
@@ -1088,9 +1235,69 @@ CREATE UNIQUE INDEX "uk_name_tag" ON "public"."blog_tag" USING btree (
 ALTER TABLE "public"."blog_tag" ADD CONSTRAINT "blog_tag_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
+-- Indexes structure for table sys_admin_record
+-- ----------------------------
+CREATE INDEX "ix_sys_admin_record_resource" ON "public"."sys_admin_record" USING btree (
+  "resource" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+  "id" "pg_catalog"."int8_ops" ASC NULLS LAST
+);
+CREATE UNIQUE INDEX "ux_admin_config_key" ON "public"."sys_admin_record" USING btree (
+  (data ->> 'key'::text) COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
+) WHERE resource::text = 'config'::text;
+CREATE UNIQUE INDEX "ux_admin_dict_type" ON "public"."sys_admin_record" USING btree (
+  (data ->> 'code'::text) COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
+) WHERE resource::text = 'dictType'::text;
+CREATE UNIQUE INDEX "ux_admin_dict_value" ON "public"."sys_admin_record" USING btree (
+  (data ->> 'typeCode'::text) COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+  (data ->> 'value'::text) COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
+) WHERE resource::text = 'dictData'::text;
+
+-- ----------------------------
+-- Checks structure for table sys_admin_record
+-- ----------------------------
+ALTER TABLE "public"."sys_admin_record" ADD CONSTRAINT "sys_admin_record_resource_check" CHECK (resource::text = ANY (ARRAY['dept'::character varying, 'dictType'::character varying, 'dictData'::character varying, 'config'::character varying, 'file'::character varying, 'loginLog'::character varying, 'operationLog'::character varying]::text[]));
+
+-- ----------------------------
+-- Primary Key structure for table sys_admin_record
+-- ----------------------------
+ALTER TABLE "public"."sys_admin_record" ADD CONSTRAINT "sys_admin_record_pkey" PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Uniques structure for table sys_permission
+-- ----------------------------
+ALTER TABLE "public"."sys_permission" ADD CONSTRAINT "sys_permission_code_key" UNIQUE ("code");
+
+-- ----------------------------
+-- Checks structure for table sys_permission
+-- ----------------------------
+ALTER TABLE "public"."sys_permission" ADD CONSTRAINT "sys_permission_check" CHECK (parent_id <> id);
+ALTER TABLE "public"."sys_permission" ADD CONSTRAINT "sys_permission_type_check" CHECK (type::text = ANY (ARRAY['menu'::character varying, 'button'::character varying, 'api'::character varying]::text[]));
+ALTER TABLE "public"."sys_permission" ADD CONSTRAINT "sys_permission_status_check" CHECK (status::text = ANY (ARRAY['active'::character varying, 'inactive'::character varying]::text[]));
+
+-- ----------------------------
+-- Primary Key structure for table sys_permission
+-- ----------------------------
+ALTER TABLE "public"."sys_permission" ADD CONSTRAINT "sys_permission_pkey" PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Uniques structure for table sys_role
+-- ----------------------------
+ALTER TABLE "public"."sys_role" ADD CONSTRAINT "sys_role_code_key" UNIQUE ("code");
+
+-- ----------------------------
+-- Primary Key structure for table sys_role
+-- ----------------------------
+ALTER TABLE "public"."sys_role" ADD CONSTRAINT "sys_role_pkey" PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Primary Key structure for table sys_role_permission
+-- ----------------------------
+ALTER TABLE "public"."sys_role_permission" ADD CONSTRAINT "sys_role_permission_pkey" PRIMARY KEY ("role_id", "permission_id");
+
+-- ----------------------------
 -- Indexes structure for table sys_user
 -- ----------------------------
-CREATE UNIQUE INDEX "uk_username" ON "public"."sys_user" USING btree (
+CREATE UNIQUE INDEX "ux_sys_user_username" ON "public"."sys_user" USING btree (
   "username" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
 );
 
@@ -1120,6 +1327,10 @@ ALTER TABLE "public"."sys_user_refresh_token" ADD CONSTRAINT "sys_user_refresh_t
 CREATE INDEX "idx_username" ON "public"."sys_user_role" USING btree (
   "username" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
 );
+CREATE UNIQUE INDEX "ux_sys_user_role" ON "public"."sys_user_role" USING btree (
+  "user_id" "pg_catalog"."int8_ops" ASC NULLS LAST,
+  "role_id" "pg_catalog"."int8_ops" ASC NULLS LAST
+);
 
 -- ----------------------------
 -- Primary Key structure for table sys_user_role
@@ -1130,3 +1341,20 @@ ALTER TABLE "public"."sys_user_role" ADD CONSTRAINT "sys_user_role_pkey" PRIMARY
 -- Foreign Keys structure for table blog_gallery_image
 -- ----------------------------
 ALTER TABLE "public"."blog_gallery_image" ADD CONSTRAINT "blog_gallery_image_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "public"."blog_gallery_category" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Keys structure for table sys_permission
+-- ----------------------------
+ALTER TABLE "public"."sys_permission" ADD CONSTRAINT "sys_permission_parent_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "public"."sys_permission" ("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Keys structure for table sys_role_permission
+-- ----------------------------
+ALTER TABLE "public"."sys_role_permission" ADD CONSTRAINT "sys_role_permission_permission_id_fkey" FOREIGN KEY ("permission_id") REFERENCES "public"."sys_permission" ("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "public"."sys_role_permission" ADD CONSTRAINT "sys_role_permission_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "public"."sys_role" ("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Keys structure for table sys_user_role
+-- ----------------------------
+ALTER TABLE "public"."sys_user_role" ADD CONSTRAINT "sys_user_role_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "public"."sys_role" ("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "public"."sys_user_role" ADD CONSTRAINT "sys_user_role_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."sys_user" ("id") ON DELETE CASCADE ON UPDATE NO ACTION;

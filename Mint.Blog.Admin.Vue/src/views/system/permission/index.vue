@@ -1,0 +1,639 @@
+<template>
+  <div class="page-container">
+    <a-alert type="info" show-icon style="margin-bottom: 16px" message="导航使用前端静态路由与权限码。菜单路径、组件、图标、排序及可见性等元信息暂不驱动导航。" />
+    <ProTable
+      ref="tableRef"
+      :columns="columns"
+      :request="fetchTableData"
+      :toolbar="toolbarConfig"
+      :search="{
+        formItems: searchFormItems,
+        labelWidth: 6,
+        defaultCollapsed: false,
+      }"
+      :pagination="false"
+      :show-index-column="false"
+      row-key="id"
+      :expanded-row-keys="expandedRowKeys"
+      :children-column-name="'children'"
+      :expandable="{ expandIconColumnIndex: 0 }"
+      @expanded-rows-change="handleExpandedRowsChange"
+    >
+      <template #toolbar-actions>
+        <a-space :size="8">
+          <a-button v-if="can('*')" type="primary" @click="handleCreateRoot">
+            <PlusOutlined /> {{ $t('permission.createPermission') }}
+          </a-button>
+          <a-button @click="expandAllRows">{{ $t('permission.expandAll') }}</a-button>
+          <a-button @click="collapseAllRows">{{ $t('permission.collapseAll') }}</a-button>
+        </a-space>
+      </template>
+    </ProTable>
+
+    <ProFormModal
+      v-model:open="modalVisible"
+      :title="modalTitle"
+      :confirm-loading="submitting"
+      :session-key="formSessionKey"
+      :form-items="formItems"
+      :initial-values="formData"
+      :grid="{ cols: 2, gutter: 16 }"
+      :layout="{ layout: 'vertical' }"
+      width="760px"
+      @submit="handleSubmit"
+      @cancel="handleCancel"
+      @closed="handleFormClosed"
+      @values-change="handleFormValuesChange"
+    >
+      <template #before-form>
+        <a-alert v-if="currentParentName" type="info" show-icon style="margin-bottom: 12px">
+          <template #message> {{ $t('permission.parentMenu') }}：{{ currentParentName }} </template>
+        </a-alert>
+      </template>
+    </ProFormModal>
+  </div>
+</template>
+
+<script setup lang="ts">
+import type { PermissionWriteParams } from '@/api/permission';
+import type { LocalizedText, Permission } from '@/types/auth';
+import type { ProFormItem, ProTableColumn } from '@/types/pro';
+
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@antdv-next/icons';
+import { message, Modal } from 'antdv-next';
+import { computed, ref } from 'vue';
+
+import {
+  createPermission,
+  deletePermission,
+  getPermissionList,
+  updatePermission,
+} from '@/api/permission';
+import I18nInput from '@/components/I18nInput/index.vue';
+import IconPicker from '@/components/IconPicker/index.vue';
+import ProFormModal from '@/components/Pro/ProFormModal/index.vue';
+import ProTable from '@/components/Pro/ProTable/index.vue';
+import { useCrudFormSession } from '@/composables/useCrudFormSession';
+import { usePermission } from '@/composables/usePermission';
+import { $t, getLocale } from '@/locales';
+import { useAuthStore } from '@/stores/auth';
+import { useSettingsStore } from '@/stores/settings';
+import { renderIcon } from '@/utils/icon';
+import { resolveLocalizedText } from '@/utils/localizedText';
+
+const { can } = usePermission();
+
+type PermissionFormValues = {
+  name: string | LocalizedText;
+  code: string;
+  type: Permission['type'];
+  description: string;
+  parentId?: string;
+  path: string;
+  component: string;
+  icon: string;
+  sort: number;
+  status: boolean;
+  visible: boolean;
+};
+
+const viewModules = import.meta.glob('/src/views/**/*.vue');
+const componentPathOptions = Object.keys(viewModules)
+  .map((filePath) => filePath.replace(/^\/src\/views\//, '').replace(/\.vue$/, ''))
+  .sort((firstPath, secondPath) => firstPath.localeCompare(secondPath))
+  .map((componentPath) => ({
+    label: componentPath,
+    value: componentPath,
+  }));
+
+const tableRef = ref<{
+  refresh: () => void;
+} | null>(null);
+
+const settingsStore = useSettingsStore();
+const useI18nName = computed(() => settingsStore.showLanguageSwitch);
+
+const {
+  open: modalVisible,
+  mode: modalMode,
+  record: editingPermission,
+  initialValues: formData,
+  sessionKey: formSessionKey,
+  openCreate: openCreateForm,
+  openEdit: openEditForm,
+  close: closeFormModal,
+  finishClose: finishFormClose,
+} = useCrudFormSession<Permission, PermissionFormValues>(createDefaultFormValues);
+const submitting = ref(false);
+const editingPermissionId = computed(() => editingPermission.value?.id ?? null);
+
+const menuTree = ref<Permission[]>([]);
+const expandedRowKeys = ref<string[]>([]);
+const keepExpandAll = ref(true);
+
+const formValues = ref<PermissionFormValues>(createDefaultFormValues());
+
+const toolbarConfig = computed(() => ({
+  title: $t('permission.title'),
+  subTitle: 'ProTable + ProForm',
+  actions: ['refresh', 'density', 'columnSetting'] as Array<
+    'refresh' | 'density' | 'columnSetting'
+  >,
+}));
+
+const permissionTypeOptions = computed(() => [
+  { label: $t('permission.menu'), value: 'menu' },
+  { label: $t('permission.button'), value: 'button' },
+  { label: $t('permission.api'), value: 'api' },
+]);
+
+const currentType = computed(() => formValues.value.type || 'menu');
+
+const modalTitle = computed(() => {
+  if (modalMode.value === 'edit') {
+    return $t('permission.editPermission');
+  }
+  return formValues.value.parentId
+    ? $t('permission.createChildMenu')
+    : $t('permission.createPermission');
+});
+
+const currentParentName = computed(() => {
+  if (!formValues.value.parentId) {
+    return '';
+  }
+  return findPermissionName(menuTree.value, formValues.value.parentId) || '-';
+});
+
+const permissionTypeValueEnum = computed<
+  Record<string, { text: string; status?: string; color?: string }>
+>(() => ({
+  menu: { text: $t('permission.menu'), color: 'processing' },
+  button: { text: $t('permission.button'), color: 'success' },
+  api: { text: $t('permission.api'), color: 'purple' },
+}));
+
+const permissionStatusValueEnum = computed<
+  Record<string, { text: string; status?: string; color?: string }>
+>(() => ({
+  active: { text: $t('user.active'), status: 'success' },
+  inactive: { text: $t('user.inactive'), status: 'default' },
+}));
+
+const permissionVisibleValueEnum = computed<
+  Record<string, { text: string; status?: string; color?: string }>
+>(() => ({
+  true: { text: $t('permission.show'), color: 'blue' },
+  false: { text: $t('permission.hide'), color: 'default' },
+}));
+
+function createLocalizedName(value = ''): string | LocalizedText {
+  if (!useI18nName.value) {
+    return value;
+  }
+  return {
+    'zh-CN': value,
+    'en-US': value,
+    'ja-JP': value,
+    'ko-KR': value,
+  };
+}
+
+const searchFormItems = computed<ProFormItem[]>(() => [
+  { name: 'keyword', label: $t('common.search'), type: 'input' },
+  {
+    name: 'type',
+    label: $t('permission.type'),
+    type: 'select',
+    options: permissionTypeOptions.value,
+  },
+  {
+    name: 'status',
+    label: $t('common.status'),
+    type: 'select',
+    options: [
+      { label: $t('user.active'), value: 'active' },
+      { label: $t('user.inactive'), value: 'inactive' },
+    ],
+  },
+]);
+
+const columns = computed((): ProTableColumn[] => [
+  {
+    title: $t('common.search'),
+    dataIndex: 'keyword',
+    hideInTable: true,
+  },
+  {
+    title: $t('permission.name'),
+    dataIndex: 'name',
+    width: 220,
+    fixed: 'left',
+    render: (value) => resolveLocalizedText(value as Permission['name'], getLocale()),
+  },
+  {
+    title: $t('permission.icon'),
+    dataIndex: 'icon',
+    width: 80,
+    align: 'center',
+    render: (value) => renderIcon(value as string) || '-',
+  },
+  {
+    title: $t('permission.code'),
+    dataIndex: 'code',
+    width: 220,
+  },
+  {
+    title: $t('permission.type'),
+    dataIndex: 'type',
+    width: 120,
+    valueType: 'tag',
+    valueEnum: permissionTypeValueEnum.value,
+  },
+  {
+    title: $t('permission.routePath'),
+    dataIndex: 'path',
+    width: 170,
+  },
+  {
+    title: $t('permission.componentPath'),
+    dataIndex: 'component',
+    width: 220,
+  },
+  {
+    title: $t('common.status'),
+    dataIndex: 'status',
+    width: 120,
+    valueType: 'badge',
+    valueEnum: permissionStatusValueEnum.value,
+  },
+  {
+    title: $t('permission.visible'),
+    dataIndex: 'visible',
+    width: 100,
+    valueType: 'tag',
+    valueEnum: permissionVisibleValueEnum.value,
+  },
+  {
+    title: $t('permission.sort'),
+    dataIndex: 'sort',
+    width: 90,
+  },
+  {
+    title: $t('common.actions'),
+    dataIndex: 'action',
+    width: 260,
+    fixed: 'right',
+    actions: [
+      {
+        label: $t('common.edit'),
+        icon: EditOutlined,
+        permission: '*',
+        hidden: () => !can('*'),
+        onClick: (record) => handleEdit(record as unknown as Permission),
+      },
+      {
+        label: $t('common.delete'),
+        icon: DeleteOutlined,
+        permission: '*',
+        hidden: () => !can('*'),
+        danger: true,
+        confirm: $t('permission.confirmDelete'),
+        onClick: (record) => handleDelete(record as unknown as Permission),
+      },
+      {
+        label: $t('permission.addChild'),
+        icon: PlusOutlined,
+        permission: '*',
+        hidden: (record) => !can('*') || (record as unknown as Permission).type !== 'menu',
+        onClick: (record) => handleCreateChild(record as unknown as Permission),
+      },
+    ],
+  },
+]);
+
+const formItems = computed<ProFormItem[]>(() => [
+  useI18nName.value
+    ? {
+        name: 'name',
+        label: $t('permission.name'),
+        type: 'custom',
+        render: I18nInput,
+        required: true,
+        props: {
+          placeholder: $t('permission.name'),
+          modalTitle: $t('permission.name'),
+        },
+      }
+    : {
+        name: 'name',
+        label: $t('permission.name'),
+        type: 'input',
+        required: true,
+        props: {
+          placeholder: $t('permission.name'),
+        },
+        rules: [{ required: true, message: $t('permission.nameRequired') }],
+      },
+  {
+    name: 'code',
+    label: $t('permission.code'),
+    type: 'input',
+    required: true,
+    props: {
+      disabled: Boolean(editingPermissionId.value),
+    },
+    rules: [
+      { required: true, message: $t('permission.codeRequired') },
+      { pattern: /^[a-zA-Z0-9_.-]+$/, message: $t('permission.codePattern') },
+    ],
+  },
+  {
+    name: 'type',
+    label: $t('permission.type'),
+    type: 'select',
+    options: permissionTypeOptions.value,
+    required: true,
+  },
+  {
+    name: 'status',
+    label: $t('common.status'),
+    type: 'switch',
+    valuePropName: 'checked',
+    props: {
+      checkedChildren: $t('user.active'),
+      unCheckedChildren: $t('user.inactive'),
+    },
+  },
+  {
+    name: 'path',
+    label: $t('permission.routePath'),
+    type: 'input',
+    hidden: currentType.value !== 'menu',
+    rules: [
+      {
+        validator: (_rule: unknown, value: unknown) => {
+          if (currentType.value === 'menu' && !String(value || '').trim()) {
+            return Promise.reject(new Error($t('permission.menuRouteRequired')));
+          }
+          return Promise.resolve();
+        },
+      },
+    ],
+  },
+  {
+    name: 'component',
+    label: $t('permission.componentPath'),
+    type: 'select',
+    hidden: currentType.value !== 'menu',
+    options: componentPathOptions,
+    props: {
+      showSearch: true,
+      placeholder: $t('permission.componentPathPlaceholder'),
+    },
+  },
+  {
+    name: 'icon',
+    label: $t('permission.icon'),
+    type: 'custom',
+    hidden: currentType.value !== 'menu',
+    render: IconPicker,
+    props: {
+      placeholder: $t('permission.iconPlaceholder'),
+      onlineLimit: 160,
+    },
+  },
+  {
+    name: 'sort',
+    label: $t('permission.sort'),
+    type: 'number',
+    hidden: currentType.value !== 'menu',
+    props: {
+      min: 0,
+    },
+  },
+  {
+    name: 'description',
+    label: $t('role.description'),
+    type: 'textarea',
+    colSpan: 2,
+    props: {
+      rows: 3,
+    },
+  },
+  {
+    name: 'visible',
+    label: $t('permission.visibleStatus'),
+    type: 'switch',
+    colSpan: 2,
+    valuePropName: 'checked',
+    props: {
+      checkedChildren: $t('permission.show'),
+      unCheckedChildren: $t('permission.hide'),
+    },
+  },
+]);
+
+function createDefaultFormValues(): PermissionFormValues {
+  return {
+    name: createLocalizedName(),
+    code: '',
+    type: 'menu',
+    description: '',
+    parentId: undefined,
+    path: '',
+    component: '',
+    icon: '',
+    sort: 0,
+    status: true,
+    visible: true,
+  };
+}
+
+function normalizePath(path: string) {
+  if (!path) {
+    return '';
+  }
+  return path.startsWith('/') ? path : `/${path}`;
+}
+
+function collectPermissionIds(list: Permission[]): string[] {
+  const ids: string[] = [];
+  list.forEach((item) => {
+    ids.push(item.id);
+    if (item.children && item.children.length > 0) {
+      ids.push(...collectPermissionIds(item.children));
+    }
+  });
+  return ids;
+}
+
+function findPermissionName(list: Permission[], id: string): string {
+  for (const item of list) {
+    if (item.id === id) {
+      return resolveLocalizedText(item.name, getLocale());
+    }
+    if (item.children && item.children.length > 0) {
+      const childName = findPermissionName(item.children, id);
+      if (childName) {
+        return childName;
+      }
+    }
+  }
+  return '';
+}
+
+const fetchTableData = async (params: Record<string, unknown>) => {
+  const keyword = typeof params.keyword === 'string' ? params.keyword.trim() : undefined;
+  const response = await getPermissionList({
+    keyword: keyword || undefined,
+    type: params.type || undefined,
+    status: params.status || undefined,
+  });
+
+  menuTree.value = response.data;
+  const allIds = collectPermissionIds(menuTree.value);
+
+  if (keepExpandAll.value) {
+    expandedRowKeys.value = allIds;
+  } else {
+    expandedRowKeys.value = expandedRowKeys.value.filter((id) => allIds.includes(String(id)));
+  }
+
+  return {
+    data: response.data,
+    total: allIds.length,
+    success: true,
+  };
+};
+
+const refreshTable = () => {
+  tableRef.value?.refresh();
+};
+
+const handleExpandedRowsChange = (keys: string[]) => {
+  expandedRowKeys.value = keys;
+  const allIds = collectPermissionIds(menuTree.value);
+  keepExpandAll.value = keys.length === allIds.length;
+};
+
+const expandAllRows = () => {
+  expandedRowKeys.value = collectPermissionIds(menuTree.value);
+  keepExpandAll.value = true;
+};
+
+const collapseAllRows = () => {
+  expandedRowKeys.value = [];
+  keepExpandAll.value = false;
+};
+
+const handleCreateRoot = () => {
+  const initialValues = createDefaultFormValues();
+  formValues.value = initialValues;
+  openCreateForm(initialValues);
+};
+
+const handleCreateChild = (record: Permission) => {
+  const initialValues: PermissionFormValues = {
+    ...createDefaultFormValues(),
+    parentId: record.id,
+    type: 'menu' as const,
+  };
+  formValues.value = initialValues;
+  openCreateForm(initialValues);
+};
+
+const handleEdit = (record: Permission) => {
+  const initialValues: PermissionFormValues = {
+    name: useI18nName.value
+      ? typeof record.name === 'string'
+        ? createLocalizedName(record.name)
+        : record.name
+      : resolveLocalizedText(record.name, getLocale()),
+    code: record.code,
+    type: record.type,
+    description: record.description || '',
+    parentId: record.parentId,
+    path: record.path || '',
+    component: record.component || '',
+    icon: record.icon || '',
+    sort: record.sort ?? 0,
+    status: record.status !== 'inactive',
+    visible: record.visible !== false,
+  };
+  formValues.value = initialValues;
+  openEditForm(record, initialValues);
+};
+
+const handleCancel = () => {
+  closeFormModal();
+};
+
+const handleFormClosed = () => {
+  if (modalVisible.value) {
+    return;
+  }
+  finishFormClose();
+  formValues.value = createDefaultFormValues();
+};
+
+const handleDelete = async (record: Permission) => {
+  Modal.confirm({
+    title: $t('permission.deletePermission'),
+    content: $t('permission.confirmDelete'),
+    onOk: async () => {
+      await deletePermission(record.id);
+      await useAuthStore().syncIdentity();
+      message.success($t('common.success'));
+      refreshTable();
+    },
+  });
+};
+
+const handleFormValuesChange = (values: Record<string, unknown>) => {
+  formValues.value = {
+    ...formValues.value,
+    ...values,
+  };
+};
+
+const handleSubmit = async (rawValues: Record<string, unknown>) => {
+  if (!can('*')) return;
+  const values = rawValues as PermissionFormValues;
+
+  const payload: PermissionWriteParams = {
+    name: values.name,
+    code: values.code?.trim(),
+    type: values.type,
+    description: values.description?.trim(),
+    parentId: values.parentId,
+    status: values.status ? 'active' : 'inactive',
+    visible: values.visible,
+    sort: Number(values.sort ?? 0),
+    path: values.type === 'menu' ? normalizePath(values.path?.trim()) : undefined,
+    component: values.type === 'menu' ? values.component?.trim() || undefined : undefined,
+    icon: values.type === 'menu' ? values.icon?.trim() || undefined : undefined,
+    resource:
+      values.type === 'menu'
+        ? normalizePath(values.path?.trim())
+        : values.code?.trim().replace(/\.[^.]+$/, ''),
+    action: values.type === 'menu' ? 'view' : values.code?.trim().split('.').pop() || '*',
+  };
+
+  submitting.value = true;
+  try {
+    if (modalMode.value === 'edit' && editingPermissionId.value) {
+      await updatePermission(editingPermissionId.value, payload);
+      message.success($t('permission.updateSuccess'));
+    } else {
+      await createPermission(payload);
+      message.success($t('permission.createSuccess'));
+    }
+    closeFormModal();
+    await useAuthStore().syncIdentity();
+    refreshTable();
+  } finally {
+    submitting.value = false;
+  }
+};
+</script>
