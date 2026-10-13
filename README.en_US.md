@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./Docs/PageImages/system-logo.svg" width="160" />
   <h1>Mint.Blog</h1>
-  <h2>Author: <a href="https://www.yanggongzi.dev/blog/surfer/author">YangGongzi</a></h2>
+  <h2>Author: <a href="https://www.yanggongzi.dev/blog/surfer/author">YangGongziDev</a></h2>
   <span><a href="./README.md">中文</a> | English</span>
 </div>
 
