@@ -4,7 +4,7 @@
   <h2>Author: <a href="https://www.yanggongzi.dev/blog/surfer/author">YangGongziDev</a></h2>
   <h5>
     Historical branch：
-    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">mint-blog-v3 (Latest Main)</a></span>
+    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (Latest)</a></span>
     <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2 (Currently)</a></span>
     <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a></span>
   </h5>

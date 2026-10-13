@@ -1,10 +1,10 @@
 <div align="center">
   <img src="./Docs/PageImages/system-logo.svg" width="160" />
   <h1>Mint.Blog</h1>
-  <h2>作者：<a href="https://www.yanggongzi.dev/blog/surfer/author">程序员杨工子</a></h2>https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2
+  <h2>作者：<a href="https://www.yanggongzi.dev/blog/surfer/author">程序员杨工子</a></h2>
   <h5>
     历史分支：
-    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">mint-blog-v3 (最新 Main)</a></span>
+    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (最新)</a></span>
     <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2 (当前)</a></a></span>
     <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a></span>
   </h5>
