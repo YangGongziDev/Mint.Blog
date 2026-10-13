@@ -13,8 +13,7 @@
 
 
 #### 介绍
-mint-blog-v1-java 基于 **Java Spring Boot + Vue3** 技术栈构建，是一款前后端分离的博客系统。  
-当前分支已停止更新，请移步 [main](https://github.com/YangMufa/Mint.Blog) 分支体验基于 .NET DDD 的 V2 版本。
+mint-blog-v1-java 基于 **Java Spring Boot + Vue3** 技术栈构建，是一款前后端分离的博客系统。
 
 **核心特性：**
 

@@ -12,8 +12,7 @@
 </div>
 
 #### Description
-mint-blog-v1-java is a blog system built on the **Java Spring Boot + Vue3** tech stack with separated frontend and backend.  
-This branch is no longer maintained. Please visit the [main](https://github.com/YangMufa/Mint.Blog) branch for the .NET DDD-based V2 version.
+mint-blog-v1-java is a blog system built on the **Java Spring Boot + Vue3** tech stack with separated frontend and backend.
 
 **Core Features:**
 
