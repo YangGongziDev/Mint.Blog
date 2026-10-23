@@ -21,6 +21,7 @@ public sealed class ApplyFriendCommandHandler(
 
 		var url = NormalizeUrl(command.Url);
 		var email = NormalizeEmail(command.Email);
+		var rssUrl = NormalizeRssUrl(command.RssUrl);
 
 		var friend = FriendEntity.Create(
 			command.Name.Trim(),
@@ -28,7 +29,8 @@ public sealed class ApplyFriendCommandHandler(
 			command.Category.Trim(),
 			url,
 			command.Description.Trim(),
-			email);
+			email,
+			rssUrl);
 
 		var friendId = await friendRepository.AddAsync(friend, cancellationToken);
 		await domainEventDispatcher.DispatchAsync(friend.DomainEvents, cancellationToken);
@@ -43,6 +45,18 @@ public sealed class ApplyFriendCommandHandler(
 		catch (ArgumentException) {
 			throw new BusinessException(ErrorCodes.FriendUrlInvalid, "Friend url is invalid.");
 		}
+	}
+
+	private static string? NormalizeRssUrl(string? rssUrl){
+		if (string.IsNullOrWhiteSpace(rssUrl)) return null;
+
+		var normalizedUrl = rssUrl.Trim();
+		Guard.Against(normalizedUrl.Length > 1000, ErrorCodes.FriendRssUrlInvalid,
+			"Friend RSS url cannot exceed 1000 characters.");
+		Guard.Against(!Uri.TryCreate(normalizedUrl, UriKind.Absolute, out var uri)
+			|| (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps),
+			ErrorCodes.FriendRssUrlInvalid, "Friend RSS url must be an HTTP/HTTPS url.");
+		return WebsiteUrl.Create(normalizedUrl).Value;
 	}
 
 	private static string NormalizeEmail(string? email){

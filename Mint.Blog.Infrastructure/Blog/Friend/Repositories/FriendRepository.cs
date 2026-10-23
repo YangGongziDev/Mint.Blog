@@ -1,3 +1,5 @@
+using System.Xml;
+using Mint.Blog.Application.Blog.Friend;
 using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
 using Mint.Blog.Application.Blog.Friend.Queries.GetAdminFriendPageList;
 using Mint.Blog.Application.Blog.Friend.Queries.GetFriendDetail;
@@ -9,13 +11,14 @@ using FriendEntity = Mint.Blog.Domain.Blog.Friend.Entities.Friend;
 
 namespace Mint.Blog.Infrastructure.Blog.Friend.Repositories;
 
-public sealed class FriendRepository(ISqlSugarDbContext dbContext)
+public sealed class FriendRepository(ISqlSugarDbContext dbContext, IFeedMetadataReader feedMetadataReader)
 	: IFriendRepository, IGetFriendListQueryService, IGetFriendDetailQueryService, IGetAdminFriendPageListQueryService {
 	public async Task<long> AddAsync(FriendEntity friend, CancellationToken cancellationToken = default){
 		var data = new FriendDataModel {
 			Name = friend.Name,
 			Description = friend.Description,
 			Url = friend.Url.Value,
+			RssUrl = friend.RssUrl,
 			Avatar = friend.Avatar,
 			Status = friend.Status,
 			Category = friend.Category,
@@ -58,6 +61,7 @@ public sealed class FriendRepository(ISqlSugarDbContext dbContext)
 				Avatar = friend.Avatar,
 				Category = friend.Category,
 				Url = friend.Url.Value,
+				RssUrl = friend.RssUrl,
 				Description = friend.Description,
 				Email = friend.Email.Value,
 				Status = friend.Status,
@@ -161,8 +165,39 @@ public sealed class FriendRepository(ISqlSugarDbContext dbContext)
 			.Take(normalizedPageSize)
 			.ToListAsync(cancellationToken);
 
+		var items = friends.Select(MapToListItem).ToArray();
+		using var budget = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+		budget.CancelAfter(TimeSpan.FromSeconds(8));
+		try {
+			await Parallel.ForEachAsync(Enumerable.Range(0, friends.Count), new ParallelOptions {
+				MaxDegreeOfParallelism = 4,
+				CancellationToken = budget.Token
+			}, async (index, token) => {
+				var rssUrl = friends[index].RssUrl;
+				if (string.IsNullOrWhiteSpace(rssUrl)) return;
+				try {
+					var metadata = await feedMetadataReader.ReadAsync(rssUrl, token);
+					token.ThrowIfCancellationRequested();
+					var item = items[index];
+					items[index] = item with {
+						Name = string.IsNullOrWhiteSpace(metadata.Name) ? item.Name : metadata.Name,
+						Description = string.IsNullOrWhiteSpace(metadata.Description) ? item.Description : metadata.Description,
+						Url = string.IsNullOrWhiteSpace(metadata.Url) ? item.Url : metadata.Url,
+						Avatar = string.IsNullOrWhiteSpace(metadata.Avatar) ? item.Avatar : metadata.Avatar
+					};
+				}
+				catch (OperationCanceledException) when (!token.IsCancellationRequested) {
+				}
+				catch (Exception exception) when (exception is HttpRequestException or IOException or InvalidDataException or XmlException or ArgumentException) {
+				}
+			});
+		}
+		catch (OperationCanceledException) when (budget.IsCancellationRequested && !cancellationToken.IsCancellationRequested) {
+		}
+		cancellationToken.ThrowIfCancellationRequested();
+
 		return new PagedResult<FriendListItemDto>(
-			friends.Select(MapToListItem).ToArray(),
+			items,
 			normalizedPageNumber,
 			normalizedPageSize,
 			totalCount);
@@ -182,7 +217,8 @@ public sealed class FriendRepository(ISqlSugarDbContext dbContext)
 			data.Sort,
 			FromDbFlag(data.IsDeleted),
 			data.CreatedAt,
-			data.UpdatedAt);
+			data.UpdatedAt,
+			data.RssUrl);
 	}
 
 	private static FriendListItemDto MapToListItem(FriendDataModel data){
@@ -231,7 +267,8 @@ public sealed class FriendRepository(ISqlSugarDbContext dbContext)
 			data.Email,
 			data.Sort,
 			FromDbFlag(data.IsDeleted),
-			data.UpdatedAt);
+			data.UpdatedAt,
+			data.RssUrl);
 	}
 
 	private static bool FromDbFlag(short value) => value != 0;

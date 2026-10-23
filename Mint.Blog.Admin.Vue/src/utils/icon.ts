@@ -1,20 +1,9 @@
-import type { VNode, VNodeProps } from 'vue';
+export function getLocalIcons() {
+  const svgIcons = import.meta.glob('/src/assets/system/svg/*.svg');
 
-import { h } from 'vue';
+  const keys = Object.keys(svgIcons)
+    .map(item => item.split('/').at(-1)?.replace('.svg', '') || '')
+    .filter(Boolean);
 
-import IconView from '@/components/Icon/index.vue';
-import { parseIconName } from '@/utils/iconName';
-
-type IconProps = VNodeProps & Record<string, unknown>;
-
-export function renderIcon(name?: string, props: IconProps = {}): VNode | undefined {
-  const iconName = name?.trim();
-  if (!iconName || !parseIconName(iconName)) {
-    return undefined;
-  }
-
-  return h(IconView, {
-    ...props,
-    icon: iconName,
-  });
+  return keys;
 }

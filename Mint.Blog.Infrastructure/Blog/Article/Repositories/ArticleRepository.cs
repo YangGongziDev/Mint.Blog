@@ -5,6 +5,7 @@ using Mint.Blog.Application.Blog.Article.Queries.GetArchiveYears;
 using Mint.Blog.Application.Blog.Article.Queries.GetArticleDetail;
 using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
 using Mint.Blog.Application.Blog.Article.Queries.GetBlogHome;
+using Mint.Blog.Application.Blog.Article.Queries.GetRssArticles;
 using Mint.Blog.Application.Blog.Article.Queries.SearchArticles;
 using Mint.Blog.Application.Blog.Statistics.Commands.TrackArticleRead;
 using Mint.Blog.Domain.Blog.Article;
@@ -28,7 +29,41 @@ public sealed class ArticleRepository(ISqlSugarDbContext dbContext, IArticleRead
 		ISearchArticlesQueryService,
 		IGetArchivePageListQueryService,
 		IGetArchiveYearListQueryService,
-		IGetArchiveYearsQueryService {
+		IGetArchiveYearsQueryService,
+		IGetRssArticlesQueryService {
+	async Task<IReadOnlyCollection<RssArticleDto>> IGetRssArticlesQueryService.GetAsync(CancellationToken cancellationToken){
+		cancellationToken.ThrowIfCancellationRequested();
+		var articles = await dbContext.Client.Queryable<ArticleDataModel>()
+			.Where(x => x.IsDeleted == 0 && x.Visibility == (short)ArticleVisibility.Public)
+			.OrderByDescending(x => x.CreatedAt)
+			.OrderByDescending(x => x.Id)
+			.Take(20)
+			.Select(x => new ArticleDataModel {
+				Id = x.Id,
+				Title = x.Title,
+				Summary = x.Summary,
+				CreatedAt = x.CreatedAt,
+				UpdatedAt = x.UpdatedAt
+			})
+			.ToListAsync();
+
+		if (articles.Count == 0) return [];
+
+		var articleIds = articles.Select(x => x.Id).ToArray();
+		var contents = await dbContext.Client.Queryable<ArticleContentDataModel>()
+			.Where(x => articleIds.Contains(x.ArticleId))
+			.Select(x => new ArticleContentDataModel {
+				ArticleId = x.ArticleId,
+				Content = x.Content
+			})
+			.ToListAsync();
+		var contentLookup = contents.ToDictionary(x => x.ArticleId, x => x.Content);
+
+		return articles.Select(x => new RssArticleDto(
+			x.Id, x.Title, x.Summary, contentLookup.GetValueOrDefault(x.Id, string.Empty),
+			x.CreatedAt, x.UpdatedAt)).ToArray();
+	}
+
 	public async Task<ArticleEntity?> GetByIdAsync(long id, CancellationToken cancellationToken = default){
 		var articleData = await dbContext.Client.Queryable<ArticleDataModel>()
 			.Where(x => x.Id == id)

@@ -1,180 +1,70 @@
-// Storage utility with encryption support
+import localforageLib from 'localforage';
 
-interface StorageData<T> {
-  value: T;
-  expire?: number;
-}
+type WebStorageKind = 'local' | 'session';
 
-class Storage {
-  protected storage: globalThis.Storage;
+export function createStorage<T extends object>(type: WebStorageKind, storagePrefix: string) {
+  const stg = type === 'session' ? window.sessionStorage : window.localStorage;
 
-  constructor(storage: globalThis.Storage) {
-    this.storage = storage;
-  }
+  const storage = {
+    set<K extends keyof T>(key: K, value: T[K]) {
+      const json = JSON.stringify(value);
 
-  /**
-   * Set storage item
-   * @param key Storage key
-   * @param value Storage value
-   * @param expire Expiration time in seconds
-   */
-  set<T>(key: string, value: T, expire?: number): void {
-    const data: StorageData<T> = {
-      value,
-    };
+      stg.setItem(`${storagePrefix}${key as string}`, json);
+    },
+    get<K extends keyof T>(key: K): T[K] | null {
+      const json = stg.getItem(`${storagePrefix}${key as string}`);
+      if (json) {
+        let storageData: T[K] | null = null;
 
-    if (expire) {
-      data.expire = Date.now() + expire * 1000;
-    }
+        try {
+          storageData = JSON.parse(json);
+        } catch {}
 
-    this.storage.setItem(key, JSON.stringify(data));
-  }
-
-  /**
-   * Get storage item
-   * @param key Storage key
-   * @param defaultValue Default value if not found or expired
-   */
-  get<T>(key: string, defaultValue?: T): T | null {
-    const item = this.storage.getItem(key);
-
-    if (!item) {
-      return defaultValue ?? null;
-    }
-
-    try {
-      const data = JSON.parse(item) as StorageData<T> | T;
-
-      // Compatible with wrapped storage format: { value, expire }
-      if (typeof data === 'object' && data !== null && 'value' in data) {
-        const wrappedData = data as StorageData<T>;
-
-        // Check if expired
-        if (wrappedData.expire && Date.now() > wrappedData.expire) {
-          this.remove(key);
-          return defaultValue ?? null;
+        if (storageData) {
+          return storageData as T[K];
         }
-
-        return wrappedData.value;
       }
 
-      // Compatible with plain values stored by native localStorage APIs
-      return data as T;
-    } catch {
-      // Compatible with plain string values (e.g. legacy token format)
-      return item as unknown as T;
+      stg.removeItem(`${storagePrefix}${key as string}`);
+
+      return null;
+    },
+    remove(key: keyof T) {
+      stg.removeItem(`${storagePrefix}${key as string}`);
+    },
+    clear() {
+      stg.clear();
     }
-  }
-
-  /**
-   * Remove storage item
-   * @param key Storage key
-   */
-  remove(key: string): void {
-    this.storage.removeItem(key);
-  }
-
-  /**
-   * Clear all storage items
-   */
-  clear(): void {
-    this.storage.clear();
-  }
-
-  /**
-   * Get all keys
-   */
-  keys(): string[] {
-    return Object.keys(this.storage);
-  }
-
-  /**
-   * Check if key exists
-   * @param key Storage key
-   */
-  has(key: string): boolean {
-    return this.storage.getItem(key) !== null;
-  }
+  };
+  return storage;
 }
 
-// Export localStorage and sessionStorage instances
-export const localStorage = new Storage(window.localStorage);
-export const sessionStorage = new Storage(window.sessionStorage);
+type LocalForage<T extends object> = Omit<typeof localforageLib, 'getItem' | 'setItem' | 'removeItem'> & {
+  getItem<K extends keyof T>(key: K, callback?: (err: any, value: T[K] | null) => void): Promise<T[K] | null>;
 
-// Simple encryption/decryption (for basic obfuscation)
-class EncryptedStorage extends Storage {
-  private encryptionKey: string;
+  setItem<K extends keyof T>(key: K, value: T[K], callback?: (err: any, value: T[K]) => void): Promise<T[K]>;
 
-  constructor(storage: globalThis.Storage, encryptionKey: string = 'default-key') {
-    super(storage);
-    this.encryptionKey = encryptionKey;
-  }
+  removeItem(key: keyof T, callback?: (err: any) => void): Promise<void>;
+};
 
-  private encrypt(text: string): string {
-    // Simple XOR encryption (not secure, just for obfuscation)
-    let result = '';
-    for (let i = 0; i < text.length; i++) {
-      result += String.fromCharCode(
-        text.charCodeAt(i) ^ this.encryptionKey.charCodeAt(i % this.encryptionKey.length),
-      );
-    }
-    return btoa(result);
-  }
+type LocalforageDriver = 'local' | 'indexedDB' | 'webSQL';
 
-  private decrypt(encrypted: string): string {
-    try {
-      const text = atob(encrypted);
-      let result = '';
-      for (let i = 0; i < text.length; i++) {
-        result += String.fromCharCode(
-          text.charCodeAt(i) ^ this.encryptionKey.charCodeAt(i % this.encryptionKey.length),
-        );
-      }
-      return result;
-    } catch (error) {
-      console.error('Decryption failed:', error);
-      return '';
-    }
-  }
+export function createLocalforage<T extends object>(driver: LocalforageDriver): LocalForage<T> {
+  const driverMap: Record<LocalforageDriver, string> = {
+    local: localforageLib.LOCALSTORAGE,
+    indexedDB: localforageLib.INDEXEDDB,
+    webSQL: localforageLib.WEBSQL
+  };
 
-  set<T>(key: string, value: T, expire?: number): void {
-    const data: StorageData<T> = {
-      value,
-    };
+  localforageLib.config({
+    driver: driverMap[driver]
+  });
 
-    if (expire) {
-      data.expire = Date.now() + expire * 1000;
-    }
-
-    const encrypted = this.encrypt(JSON.stringify(data));
-    this.storage.setItem(key, encrypted);
-  }
-
-  get<T>(key: string, defaultValue?: T): T | null {
-    const item = this.storage.getItem(key);
-
-    if (!item) {
-      return defaultValue ?? null;
-    }
-
-    try {
-      const decrypted = this.decrypt(item);
-      const data: StorageData<T> = JSON.parse(decrypted);
-
-      // Check if expired
-      if (data.expire && Date.now() > data.expire) {
-        this.remove(key);
-        return defaultValue ?? null;
-      }
-
-      return data.value;
-    } catch (error) {
-      console.error('Failed to parse encrypted storage item:', error);
-      return defaultValue ?? null;
-    }
-  }
+  return localforageLib as LocalForage<T>;
 }
 
-// Export encrypted storage
-export const encryptedLocalStorage = new EncryptedStorage(window.localStorage);
-export const encryptedSessionStorage = new EncryptedStorage(window.sessionStorage);
+export const localStg = createStorage<StorageType.Local>('local', '');
+
+export const sessionStg = createStorage<StorageType.Session>('session', '');
+
+export const localforage = createLocalforage<StorageType.Local>('local');

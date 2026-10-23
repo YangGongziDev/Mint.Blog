@@ -30,8 +30,10 @@ public sealed class Friend : AggregateRoot<long> {
 		int sort,
 		bool isDeleted,
 		DateTimeOffset createdAt,
-		DateTimeOffset updatedAt){
+		DateTimeOffset updatedAt,
+		string? rssUrl = null){
 		Id = id;
+		RssUrl = string.IsNullOrWhiteSpace(rssUrl) ? null : rssUrl.Trim();
 		Name = name;
 		Description = description;
 		Url = WebsiteUrl.Create(url);
@@ -50,6 +52,7 @@ public sealed class Friend : AggregateRoot<long> {
 	public string Name { get; private set; }
 	public string Description { get; private set; }
 	public WebsiteUrl Url { get; private set; }
+	public string? RssUrl { get; private set; }
 	public string Avatar { get; private set; }
 	public string Status { get; private set; }
 	public string Category { get; private set; }
@@ -61,26 +64,28 @@ public sealed class Friend : AggregateRoot<long> {
 	public DateTimeOffset UpdatedAt { get; private set; }
 
 	public static Friend Create(string name, string avatar, string category, string url, string description,
-		string email){
+		string email, string? rssUrl = null){
 		var now = DateTimeOffset.UtcNow;
 		var friend = new Friend(0, NormalizeRequired(name), NormalizeRequired(description), url,
-			NormalizeRequired(avatar), "pending", NormalizeRequired(category), false, email, 0, false, now, now);
+			NormalizeRequired(avatar), "pending", NormalizeRequired(category), false, email, 0, false, now, now, rssUrl);
 		friend.AddDomainEvent(new FriendAppliedDomainEvent(friend.Id, now));
 		return friend;
 	}
 
 	public static Friend CreateAdmin(string name, string avatar, string category, string url, string description,
-		string email){
+		string email, string? rssUrl = null){
 		var now = DateTimeOffset.UtcNow;
 		return new Friend(0, NormalizeRequired(name), NormalizeRequired(description), url, NormalizeRequired(avatar),
-			"active", NormalizeRequired(category), false, email, 0, false, now, now);
+			"active", NormalizeRequired(category), false, email, 0, false, now, now, rssUrl);
 	}
 
-	public void UpdateProfile(string name, string avatar, string category, string url, string description, string email){
+	public void UpdateProfile(string name, string avatar, string category, string url, string description, string email,
+		string? rssUrl = null){
 		Name = NormalizeRequired(name);
 		Avatar = NormalizeRequired(avatar);
 		Category = NormalizeRequired(category);
 		Url = WebsiteUrl.Create(url);
+		RssUrl = string.IsNullOrWhiteSpace(rssUrl) ? null : rssUrl.Trim();
 		Description = NormalizeRequired(description);
 		Email = EmailAddress.CreateOptional(email);
 		UpdatedAt = DateTimeOffset.UtcNow;
@@ -142,9 +147,10 @@ public sealed class Friend : AggregateRoot<long> {
 		int sort,
 		bool isDeleted,
 		DateTimeOffset createdAt,
-		DateTimeOffset updatedAt){
+		DateTimeOffset updatedAt,
+		string? rssUrl = null){
 		return new Friend(id, name, description, url, avatar, status, category, isTop, email, sort, isDeleted,
-			createdAt, updatedAt);
+			createdAt, updatedAt, rssUrl);
 	}
 
 	private static string NormalizeRequired(string value){

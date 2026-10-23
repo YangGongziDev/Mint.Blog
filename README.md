@@ -1,7 +1,13 @@
 <div align="center">
   <img src="./Docs/PageImages/system-logo.svg" width="160" />
   <h1>Mint.Blog</h1>
-  <h2>作者：<a href="https://www.yanggongzi.dev/blog/surfer/author">杨工子</a></h2>
+  <h2>作者：<a href="https://www.yanggongzi.dev/blog/surfer/author">程序员杨工子</a></h2>
+  <h5>
+    历史分支：
+    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (最新) (当前)</a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2</a></a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a></span>
+  </h5>  
   <span>中文 | <a href="./README.en_US.md">English</a></span>
 </div>
 
@@ -18,11 +24,14 @@
 - `Mint.Blog.Application`：后端-应用层
 - `Mint.Blog.Infrastructure`：后端-基础设施层
 - `Mint.Blog.WebApi`：后端-接口层
-- `Mint.Blog.Vue`：前端
+- `Mint.Blog.Admin.Vue`：前端-后台
+- `Mint.Blog.Nuxt`：前端-前台
+
+
 
 ## 技术栈
 后端：`.NET 10 + SqlSugar 5 + PostgreSQL 18`  
-前端：`TypeScript 8 + Vue3  + AntDesignVue 3 + TailwindCSS 4`  
+前端：`TypeScript 8 + Vue3  + AntDesignVue 3 + TailwindCSS 4`
 
 
 ## 简介
@@ -39,14 +48,14 @@
 - **主题与布局**：内置主题配置与布局能力，配合 Tailwind CSS4 快速搭建页面。
 - **权限与路由**：支持路由与权限管理，覆盖常见后台场景。
 - **国际化**：内置 i18n 方案，便于扩展多语言。
-- **组件丰富**：内置常用页面与组件，包含异常页等常用能力。  
+- **组件丰富**：内置常用页面与组件，包含异常页等常用能力。
 
 ## 文档
 
 - 文档：[https://www.yanggongzi.dev/blog/surfer/column/1](https://www.yanggongzi.dev/blog/surfer/column/1)
-- 演示：[https://www.yanggongzi.dev](https://www.yanggongzi.dev)
+- 演示：[https://www.yanggongzi.dev](https://www.yanggongzi.dev)(账号密码会自动输入)
 
-## 示例图片
+## 页面截图
 
 ### PC 端前台
 
@@ -181,8 +190,4 @@ pnpm run build
 
 ## 声明
 
-1.本项目基于 [2026 杨工子 © GPL3.0](./LICENSE) 协议开源，仅供学习参考，为了保护原作者的成果权益，商业使用或二次开源请保留原作者版权信息并遵循GPL3.0协议，本人承诺当Github仓库Star突破2000后此项目将改为MIT协议开源。
-
-2.本项目前端从如下项目获得了不少灵感,请多多支持他们:  
-- [soybean-admin-antd](https://github.com/soybeanjs/soybean-admin-antd)  
-- [ThriveX-Blog](https://github.com/LiuYuYang01/ThriveX-Blog)  
+1.本项目基于 [2026 程序员杨工子 © MIT](./LICENSE) 协议开源，仅供学习参考，为了保护原作者的成果权益，商业使用或二次开源只需保留原作者版权信息即可。

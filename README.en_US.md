@@ -1,7 +1,13 @@
 <div align="center">
   <img src="./Docs/PageImages/system-logo.svg" width="160" />
   <h1>Mint.Blog</h1>
-  <h2>Author: <a href="https://www.yanggongzi.dev/blog/surfer/author">YangGongzi</a></h2>
+  <h2>Author: <a href="https://www.yanggongzi.dev/blog/surfer/author">YangGongziDev</a></h2>
+  <h5>
+    Historical branch：
+    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (Latest) (Currently)</a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2</a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a></span>
+  </h5>
   <span><a href="./README.md">中文</a> | English</span>
 </div>
 
@@ -18,11 +24,11 @@
 - `Mint.Blog.Application`: Backend - Application Layer
 - `Mint.Blog.Infrastructure`: Backend - Infrastructure Layer
 - `Mint.Blog.WebApi`: Backend - API Layer
-- `Mint.Blog.Vue`: Frontend
-
+- `Mint.Blog.Admin.Vue`: Frontend - Front desk
+- `Mint.Blog.Nuxt`: Frontend - Backstage
 ## Tech Stack
 Backend: `.NET 10 + SqlSugar 5.0 + PostgreSQL 18`  
-Frontend: `TypeScript 8 + Vue3 + AntDesignVue 3 + TailwindCSS 4`  
+Frontend: `TypeScript 8 + Vue3 + AntDesignVue 3 + TailwindCSS 4`
 
 
 ## Introduction
@@ -44,9 +50,10 @@ is a clean and elegant blog template; built with cutting-edge technology stack; 
 ## Documentation
 
 - Documentation: [https://www.yanggongzi.dev/blog/surfer/column/1](https://www.yanggongzi.dev/blog/surfer/column/1)
-- Demo: [https://www.yanggongzi.dev](https://www.yanggongzi.dev)
+- Demo: [https://www.yanggongzi.dev](https://www.yanggongzi.dev)  
+  (The account and password have been automatically entered.)
 
-## Screenshots
+## PageScreenshots
 
 ### Desktop Frontend
 
@@ -181,8 +188,4 @@ Thank you to all contributors for their efforts. If you'd like to contribute to 
 
 ## Disclaimer
 
-1. This project is open-sourced under [2026 YangGongziDev © GPL3.0](./LICENSE) for learning and reference purposes only. To protect the original author's rights, commercial use or secondary open-sourcing must retain the original author's copyright information and comply with the GPL3.0 license. The author promises that once the GitHub repository reaches 2,000 stars, this project will be re-licensed under the MIT license.
-
-2. The frontend of this project draws inspiration from the following projects. Please support them as well:
-- [soybean-admin-antd](https://github.com/soybeanjs/soybean-admin-antd)  
-- [ThriveX-Blog](https://github.com/LiuYuYang01/ThriveX-Blog)
+1. This project is open-sourced under the [2026 Programmer YangGongziDev © MIT](./LICENSE) license. It is provided for learning and reference purposes only. To protect the original author's intellectual property rights, for commercial use or secondary open-sourcing, it is sufficient to retain the original author's copyright information.

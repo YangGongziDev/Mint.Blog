@@ -20,6 +20,7 @@ public sealed class UpdateFriendCommandHandler(IFriendRepository friendRepositor
 
 		var url = NormalizeUrl(command.Url);
 		var email = NormalizeEmail(command.Email);
+		var rssUrl = NormalizeRssUrl(command.RssUrl);
 
 		friend!.UpdateProfile(
 			command.Name.Trim(),
@@ -27,7 +28,8 @@ public sealed class UpdateFriendCommandHandler(IFriendRepository friendRepositor
 			command.Category.Trim(),
 			url,
 			command.Description.Trim(),
-			email);
+			email,
+			rssUrl);
 
 		await friendRepository.UpdateAsync(friend, cancellationToken);
 	}
@@ -39,6 +41,18 @@ public sealed class UpdateFriendCommandHandler(IFriendRepository friendRepositor
 		catch (ArgumentException) {
 			throw new BusinessException(ErrorCodes.FriendUrlInvalid, "Friend url is invalid.");
 		}
+	}
+
+	private static string? NormalizeRssUrl(string? rssUrl){
+		if (string.IsNullOrWhiteSpace(rssUrl)) return null;
+
+		var normalizedUrl = rssUrl.Trim();
+		Guard.Against(normalizedUrl.Length > 1000, ErrorCodes.FriendRssUrlInvalid,
+			"Friend RSS url cannot exceed 1000 characters.");
+		Guard.Against(!Uri.TryCreate(normalizedUrl, UriKind.Absolute, out var uri)
+			|| (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps),
+			ErrorCodes.FriendRssUrlInvalid, "Friend RSS url must be an HTTP/HTTPS url.");
+		return WebsiteUrl.Create(normalizedUrl).Value;
 	}
 
 	private static string NormalizeEmail(string? email){

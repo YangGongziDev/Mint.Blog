@@ -15,6 +15,7 @@ using Mint.Blog.Application.Blog.Article.Queries.GetArchiveYears;
 using Mint.Blog.Application.Blog.Article.Queries.GetArticleDetail;
 using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
 using Mint.Blog.Application.Blog.Article.Queries.GetBlogHome;
+using Mint.Blog.Application.Blog.Article.Queries.GetRssArticles;
 using Mint.Blog.Application.Blog.Article.Queries.SearchArticles;
 using Mint.Blog.Application.Blog.Article.Drafts;
 using Mint.Blog.Application.System.Auth.Login;
@@ -38,6 +39,7 @@ using Mint.Blog.Application.Blog.Comment.Notifications;
 using Mint.Blog.Application.Blog.Comment.Queries.GetAdminCommentPageList;
 using Mint.Blog.Application.Blog.Comment.Queries.GetCommentList;
 using Mint.Blog.Application.Blog.Comment.Queries.GetQqUserInfo;
+using Mint.Blog.Application.Blog.Friend;
 using Mint.Blog.Application.Blog.Friend.Commands.ApplyFriend;
 using Mint.Blog.Application.Blog.Friend.Commands.CreateAdminFriend;
 using Mint.Blog.Application.Blog.Friend.Commands.DeleteFriend;
@@ -112,6 +114,7 @@ using Mint.Blog.Infrastructure.Blog.Article.Drafts;
 using Mint.Blog.Infrastructure.Blog.Category.Repositories;
 using Mint.Blog.Infrastructure.Blog.Tag.Repositories;
 using Mint.Blog.Infrastructure.Blog.Comment.Repositories;
+using Mint.Blog.Infrastructure.Blog.Friend;
 using Mint.Blog.Infrastructure.Blog.Friend.Repositories;
 using Mint.Blog.Infrastructure.Blog.Gallery.Repositories;
 using Mint.Blog.Infrastructure.Blog.Message.Repositories;
@@ -130,6 +133,20 @@ public static class ServiceCollectionExtensions {
 		services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
 		services.Configure<RustFsOptions>(configuration.GetSection(RustFsOptions.SectionName));
 		services.Configure<SmtpOptions>(configuration.GetSection(SmtpOptions.SectionName));
+		services.AddOptions<SiteOptions>()
+			.Bind(configuration.GetSection(SiteOptions.SectionName))
+			.Validate(options => Uri.TryCreate(options.Url, UriKind.Absolute, out var uri)
+			                     && (uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp)
+			                     && string.IsNullOrEmpty(uri.UserInfo)
+			                     && string.IsNullOrEmpty(uri.Query)
+			                     && string.IsNullOrEmpty(uri.Fragment),
+				"Site:Url must be an absolute HTTP(S) frontend URL without credentials, query or fragment.")
+			.Validate(options => string.IsNullOrWhiteSpace(options.FeedUrl)
+			                     || (Uri.TryCreate(options.FeedUrl, UriKind.Absolute, out var uri)
+			                         && (uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp)
+			                         && string.IsNullOrEmpty(uri.UserInfo)
+			                         && string.IsNullOrEmpty(uri.Fragment)),
+				"Site:FeedUrl must be an absolute HTTP(S) feed URL without credentials or fragment.");
 		services.Configure<CommentNotificationOptions>(
 			configuration.GetSection(CommentNotificationOptions.SectionName));
 
@@ -195,6 +212,7 @@ public static class ServiceCollectionExtensions {
 
 		services.AddScoped<IGetArticleDetailQueryService, ArticleRepository>();
 		services.AddScoped<IGetArticleListQueryService, ArticleRepository>();
+		services.AddScoped<IGetRssArticlesQueryService, ArticleRepository>();
 		services.AddScoped<IGetBlogHomeQueryService, ArticleRepository>();
 		services.AddScoped<ISearchArticlesQueryService, ArticleRepository>();
 		services.AddScoped<IGetArchivePageListQueryService, ArticleRepository>();
@@ -206,6 +224,7 @@ public static class ServiceCollectionExtensions {
 		services.AddScoped<IGetCommentListQueryService, CommentRepository>();
 		services.AddScoped<IGetAdminCommentPageListQueryService, CommentRepository>();
 		services.AddScoped<IGetQqUserInfoQueryService, QqUserInfoQueryService>();
+		services.AddScoped<IFeedMetadataReader, FeedMetadataReader>();
 		services.AddScoped<IGetFriendListQueryService, FriendRepository>();
 		services.AddScoped<IGetFriendDetailQueryService, FriendRepository>();
 		services.AddScoped<IGetAdminFriendPageListQueryService, FriendRepository>();

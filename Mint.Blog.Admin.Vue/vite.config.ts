@@ -1,35 +1,98 @@
-import { AntdvNextResolver } from '@antdv-next/auto-import-resolver';
-import tailwindcss from '@tailwindcss/vite';
+import process from 'node:process';
+import path from 'node:path';
+import { URL, fileURLToPath } from 'node:url';
+import { defineConfig, loadEnv } from 'vite';
+import type { IndexHtmlTransformContext, Plugin, PluginOption } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import { fileURLToPath, URL } from 'node:url';
+import vueJsx from '@vitejs/plugin-vue-jsx';
+import progress from 'vite-plugin-progress';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import VueDevtools from 'vite-plugin-vue-devtools';
+import { FileSystemIconLoader } from 'unplugin-icons/loaders';
+import IconsResolver from 'unplugin-icons/resolver';
+import Icons from 'unplugin-icons/vite';
+import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
-import { defineConfig } from 'vite';
-import pkg from './package.json' with { type: 'json' };
+import tailwindcss from '@tailwindcss/vite';
 
-export default defineConfig({
-  base: '/',
-  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
-  plugins: [
-    vue(),
-    Components({ dts: false, resolvers: [AntdvNextResolver({ exclude: ['Select', 'DatePicker', 'DateRangePicker'] })] }),
-    tailwindcss(),
-  ],
-  css: { preprocessorOptions: {
-    scss: { silenceDeprecations: ['legacy-js-api'] },
-    sass: { silenceDeprecations: ['legacy-js-api'] },
-  } },
-  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
-  server: {
-    host: '0.0.0.0',
-    port: 8100,
-    open: false,
-    proxy: { '/api': { target: 'http://localhost:8000', changeOrigin: true } },
-  },
-  build: {
-    target: 'es2020', outDir: 'dist', assetsDir: 'assets', sourcemap: false, chunkSizeWarningLimit: 1500,
-    rollupOptions: { output: { manualChunks(id) {
-      if (id.includes('node_modules/vue/') || id.includes('node_modules/vue-router/') || id.includes('node_modules/pinia/')) return 'vue-vendor';
-      if (id.includes('node_modules/echarts/') || id.includes('node_modules/vue-echarts/')) return 'chart-vendor';
-    } } },
-  },
+const ICON_PREFIX = 'icon';
+const ICON_LOCAL_PREFIX = 'icon-local';
+
+export default defineConfig(configEnv => {
+  const viteEnv = loadEnv(configEnv.mode, process.cwd()) as unknown as Env.ViteEnv;
+  const { VITE_BASE_URL } = viteEnv;
+
+  const localIconPath = path.join(process.cwd(), 'src/assets/system/svg');
+  const collectionName = ICON_LOCAL_PREFIX.replace(`${ICON_PREFIX}-`, '');
+  const isDev = configEnv.mode === 'development';
+
+  const tailwindPlugin = tailwindcss() as unknown as PluginOption;
+
+  const removeCrossoriginPlugin: Plugin = {
+    name: 'remove-crossorigin',
+    enforce: 'post',
+    transformIndexHtml(html: string, _ctx: IndexHtmlTransformContext) {
+      return html.replace(/\s*crossorigin(?=\s|\/|>)/g, '');
+    }
+  };
+
+  return {
+    base: VITE_BASE_URL,
+    resolve: {
+      alias: {
+        '~': fileURLToPath(new URL('./', import.meta.url)),
+        '@': fileURLToPath(new URL('./src', import.meta.url))
+      }
+    },
+    plugins: [
+      vue(),
+      vueJsx(),
+      ...(isDev ? [VueDevtools()] : []),
+      Icons({
+        compiler: 'vue3',
+        customCollections: {
+          [collectionName]: FileSystemIconLoader(localIconPath, svg =>
+            svg.replace(/^<svg\s/, '<svg width="1em" height="1em" ')
+          )
+        },
+        scale: 1,
+        defaultClass: 'inline-block'
+      }),
+      Components({
+        dts: 'src/typings/components.d.ts',
+        excludeNames: [/^\d/],
+        types: [{ from: 'vue-router', names: ['RouterLink', 'RouterView'] }],
+        resolvers: [
+          AntDesignVueResolver({
+            importStyle: false
+          }),
+          IconsResolver({ customCollections: [collectionName], componentPrefix: ICON_PREFIX })
+        ]
+      }),
+      createSvgIconsPlugin({
+        iconDirs: [localIconPath],
+        symbolId: `${ICON_LOCAL_PREFIX}-[dir]-[name]`,
+        inject: 'body-last',
+        customDomId: '__SVG_ICON_LOCAL__'
+      }),
+      progress(),
+      tailwindPlugin,
+      ...(isDev ? [] : [removeCrossoriginPlugin])
+    ],
+    build: {
+      target: 'es2015',
+      cssTarget: 'safari14'
+    },
+    server: {
+      host: '0.0.0.0',
+      port: 7100,
+      open: true,
+      proxy: {
+        '/api': {
+          target: 'http://localhost:7000',
+          changeOrigin: true
+        }
+      }
+    }
+  };
 });

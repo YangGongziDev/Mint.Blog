@@ -16,6 +16,9 @@ public sealed class FriendDataModel {
 	[SugarColumn(ColumnName = "url")]
 	public string Url { get; set; } = string.Empty;
 
+	[SugarColumn(ColumnName = "rss_url", IsNullable = true, Length = 1000)]
+	public string? RssUrl { get; set; }
+
 	[SugarColumn(ColumnName = "avatar")]
 	public string Avatar { get; set; } = string.Empty;
 

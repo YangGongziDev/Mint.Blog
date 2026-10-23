@@ -1,6 +1,0 @@
-allowBuilds:
-  '@parcel/watcher': false
-  core-js: false
-  esbuild: false
-  unrs-resolver: false
-  vue-demi: false

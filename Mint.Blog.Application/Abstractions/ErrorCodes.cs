@@ -45,6 +45,7 @@ public static class ErrorCodes {
 	public const string FriendAvatarInvalid = "friend_avatar_invalid";
 	public const string FriendCategoryInvalid = "friend_category_invalid";
 	public const string FriendUrlInvalid = "friend_url_invalid";
+	public const string FriendRssUrlInvalid = "friend_rss_url_invalid";
 	public const string FriendDescriptionInvalid = "friend_description_invalid";
 	public const string FriendEmailInvalid = "friend_email_invalid";
 	public const string FriendStatusInvalid = "friend_status_invalid";

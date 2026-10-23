@@ -498,6 +498,7 @@ CREATE TABLE "public"."blog_friend" (
   "name" varchar(100) COLLATE "pg_catalog"."default",
   "description" text COLLATE "pg_catalog"."default",
   "url" varchar(500) COLLATE "pg_catalog"."default",
+  "rss_url" varchar(1000) COLLATE "pg_catalog"."default",
   "avatar" varchar(500) COLLATE "pg_catalog"."default",
   "status" varchar(20) COLLATE "pg_catalog"."default" DEFAULT 'pending'::character varying,
   "create_time" timestamp(0) DEFAULT CURRENT_TIMESTAMP,
@@ -514,6 +515,7 @@ COMMENT ON COLUMN "public"."blog_friend"."id" IS '友链ID，主键自增';
 COMMENT ON COLUMN "public"."blog_friend"."name" IS '友链名称';
 COMMENT ON COLUMN "public"."blog_friend"."description" IS '友链描述';
 COMMENT ON COLUMN "public"."blog_friend"."url" IS '友链地址';
+COMMENT ON COLUMN "public"."blog_friend"."rss_url" IS 'RSS/Atom 订阅链接（可选）';
 COMMENT ON COLUMN "public"."blog_friend"."avatar" IS '友链头像URL';
 COMMENT ON COLUMN "public"."blog_friend"."status" IS '友链状态：active-正常，inactive-停用，pending-待审核';
 COMMENT ON COLUMN "public"."blog_friend"."create_time" IS '创建时间';

@@ -1,54 +1,34 @@
-import { createPinia } from 'pinia';
 import { createApp } from 'vue';
-
+import { setupDayjs, setupIconifyOffline, setupLoading, setupNProgress } from './plugins';
+import { validateMenuSetup } from './menu';
+import { setupStore } from './store';
+import { setupRouter } from './router';
+import { setupI18n } from './locales';
+import 'virtual:svg-icons-register';
+import './styles/index.scss';
+import './styles/tailwind.css';
 import App from './App.vue';
-import { registerDefaultComponentProps } from './components/Global/defaultComponentProps';
-import { setupDirectives } from './directives';
-import i18n from './locales';
-import router from './router';
-import { useMenuPreferencesStore } from './stores/menuPreferences';
-// Import global styles
-// Tailwind CSS with @layer configuration (must come after reset.css)
-import 'antdv-next/dist/reset.css';
 
-import './assets/styles/tailwind.css';
-import './assets/styles/variables.css';
-import './assets/styles/animations.css';
-import './assets/styles/global.css';
+async function setupApp() {
+  validateMenuSetup();
 
-function restoreGitHubPagesRedirect() {
-  const redirect = sessionStorage.getItem('redirect');
-  if (!redirect) return;
+  setupLoading();
 
-  sessionStorage.removeItem('redirect');
+  setupNProgress();
 
-  const redirectUrl = new URL(redirect);
-  const target = `${redirectUrl.pathname}${redirectUrl.search}${redirectUrl.hash}`;
-  const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  setupIconifyOffline();
 
-  if (target !== current) {
-    window.history.replaceState(null, '', target);
-  }
-}
-
-function bootstrap() {
-  restoreGitHubPagesRedirect();
+  setupDayjs();
 
   const app = createApp(App);
-  const pinia = createPinia();
 
-  // Register plugins
-  app.use(pinia);
-  // Capture and migrate legacy tab favorites before router guards can rewrite tab state.
-  useMenuPreferencesStore(pinia);
-  app.use(router);
-  app.use(i18n);
-  registerDefaultComponentProps(app);
+  setupStore(app);
 
-  // Register custom directives
-  setupDirectives(app);
+  await setupRouter(app);
+
+  setupI18n(app);
 
   app.mount('#app');
 }
 
-bootstrap();
+setupApp();

@@ -1,4 +1,6 @@
+using System.Xml;
 using Microsoft.AspNetCore.Mvc;
+using Mint.Blog.Application.Blog.Friend;
 using Mint.Blog.Application.Abstractions;
 using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
 using Mint.Blog.Application.Blog.Friend.Commands.ApplyFriend;
@@ -12,7 +14,22 @@ namespace Mint.Blog.WebApi.Controllers.Blog.Surfer;
 public sealed class FriendController(
 	IGetFriendListQueryService friendListQueryService,
 	IGetFriendDetailQueryService friendDetailQueryService,
-	ApplyFriendCommandHandler applyFriendCommandHandler) : ControllerBase {
+	ApplyFriendCommandHandler applyFriendCommandHandler,
+	IFeedMetadataReader feedMetadataReader) : ControllerBase {
+	[HttpGet("feed")]
+	public async Task<ActionResult> GetFeed([FromQuery] string url, CancellationToken cancellationToken){
+		try {
+			var metadata = await feedMetadataReader.ReadAsync(url, cancellationToken);
+			return Ok(ApiResponse<object>.Ok(metadata));
+		}
+		catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested) {
+			return BadRequest(ApiResponse<object>.Fail("feed_timeout", "订阅源解析超时，请手动填写或稍后重试"));
+		}
+		catch (Exception exception) when (exception is HttpRequestException or IOException or InvalidDataException or XmlException or ArgumentException) {
+			return BadRequest(ApiResponse<object>.Fail("invalid_feed", "无法解析订阅源，请检查公网 RSS/Atom 链接，或手动填写"));
+		}
+	}
+
 	[HttpGet]
 	[ProducesResponseType(typeof(ApiResponse<PagedResult<FriendListItemDto>>), StatusCodes.Status200OK)]
 	public async Task<ActionResult<ApiResponse<PagedResult<FriendListItemDto>>>> GetList(

@@ -6,4 +6,5 @@ public sealed record CreateAdminFriendCommand(
 	string Category,
 	string Url,
 	string Description,
-	string? Email);
+	string? Email,
+	string? RssUrl = null);

@@ -3126,6 +3126,7 @@ CREATE TABLE "public"."blog_friend" (
   "name" varchar(100) COLLATE "pg_catalog"."default",
   "description" text COLLATE "pg_catalog"."default",
   "url" varchar(500) COLLATE "pg_catalog"."default",
+  "rss_url" varchar(1000) COLLATE "pg_catalog"."default",
   "avatar" varchar(500) COLLATE "pg_catalog"."default",
   "status" varchar(20) COLLATE "pg_catalog"."default" DEFAULT 'pending'::character varying,
   "create_time" timestamp(0) DEFAULT CURRENT_TIMESTAMP,
@@ -3142,6 +3143,7 @@ COMMENT ON COLUMN "public"."blog_friend"."id" IS '友链ID，主键自增';
 COMMENT ON COLUMN "public"."blog_friend"."name" IS '友链名称';
 COMMENT ON COLUMN "public"."blog_friend"."description" IS '友链描述';
 COMMENT ON COLUMN "public"."blog_friend"."url" IS '友链地址';
+COMMENT ON COLUMN "public"."blog_friend"."rss_url" IS 'RSS/Atom 订阅链接（可选）';
 COMMENT ON COLUMN "public"."blog_friend"."avatar" IS '友链头像URL';
 COMMENT ON COLUMN "public"."blog_friend"."status" IS '友链状态：active-正常，inactive-停用，pending-待审核';
 COMMENT ON COLUMN "public"."blog_friend"."create_time" IS '创建时间';
@@ -3157,12 +3159,13 @@ COMMENT ON TABLE "public"."blog_friend" IS '友情链接表';
 -- Records of blog_friend
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES (3, '发大发', '三十岁', 'http://localhost:9200/admin/friend/list', '大幅度', 'active', '2025-10-20 14:48:18', 'tech', 'f', '', 1, 0, '2026-05-14 07:58:09.40027');
-INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES (4, '呃呃呃', '三十岁', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'active', '2025-10-20 16:27:45', 'tools', 't', '', 8, 0, '2026-05-14 07:58:09.400276');
-INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES (6, 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'active', '2025-10-20 16:31:05', 'navigation', 'f', '', 2, 0, '2026-05-14 07:58:16.825029');
-INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES (7, '我问问', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'active', '2025-10-20 16:31:25', 'aggregate', 'f', '', 1, 0, '2026-05-14 07:58:56.543593');
-INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES (5, '对对对', 'http://localhost:9200/admin/friend/list', 'http://localhost:9200/admin/friend/list', 'https://img.yanggongzi.dev/roc-blog/8c492941ce294ff597feb51f4fd8ff92.jpg', 'active', '2025-10-20 16:28:07', 'tools', 'f', '', 5, 0, '2026-05-14 07:59:43.885175');
-INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES (8, '阶段7友链测试 1777917169', '阶段7自动化友链申请验证', 'https://example.com/phase7-1777917169', 'https://example.com/avatar.png', 'pending', '2026-05-04 17:52:50', '阶段7测试', 'f', 'friend-phase7-1777917169@example.com', 0, 0, '2026-05-13 16:39:24.435354');
+INSERT INTO "public"."blog_friend" ("id", "name", "description", "url", "rss_url", "avatar", "status", "create_time", "category", "is_top", "email", "sort", "is_deleted", "update_time") VALUES
+(3, 'Microsoft Learn', '微软官方技术学习平台，提供 C#、.NET 和 Azure 等技术文档与教程。', 'https://learn.microsoft.com/zh-cn/', NULL, NULL, 'active', '2026-05-01 09:00:00', 'tech', true, NULL, 100, 0, '2026-05-01 09:00:00'),
+(4, 'Vue.js 中文文档', '渐进式 JavaScript 框架的官方中文文档，涵盖入门指南与 API 参考。', 'https://cn.vuejs.org/', NULL, NULL, 'active', '2026-05-01 09:10:00', 'tech', false, NULL, 90, 0, '2026-05-01 09:10:00'),
+(5, '正则表达式工具', '在线编写、测试和调试正则表达式，辅助日常开发与文本处理。', 'https://regex101.com/', NULL, NULL, 'active', '2026-05-01 09:20:00', 'tools', false, NULL, 80, 0, '2026-05-01 09:20:00'),
+(6, 'MDN Web Docs', '面向 Web 开发者的技术文档入口，涵盖 HTML、CSS、JavaScript 与浏览器 API。', 'https://developer.mozilla.org/zh-CN/', NULL, NULL, 'active', '2026-05-01 09:30:00', 'navigation', false, NULL, 70, 0, '2026-05-01 09:30:00'),
+(7, '阮一峰的网络日志', '分享技术学习笔记与科技见闻，收录科技爱好者周刊及开发资源。', 'https://www.ruanyifeng.com/blog/', 'https://www.ruanyifeng.com/blog/atom.xml', NULL, 'active', '2026-05-01 09:40:00', 'aggregate', false, NULL, 60, 0, '2026-05-01 09:40:00'),
+(8, '生活随笔（待审核示例）', '用于演示友链审核状态的示例记录，审核通过后再对外提供访问入口。', 'https://example.com/', NULL, NULL, 'pending', '2026-05-01 09:50:00', 'life', false, NULL, 0, 0, '2026-05-01 09:50:00');
 COMMIT;
 
 -- ----------------------------

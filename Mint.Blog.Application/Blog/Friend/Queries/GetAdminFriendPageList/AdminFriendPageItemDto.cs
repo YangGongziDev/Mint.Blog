@@ -13,4 +13,5 @@ public sealed record AdminFriendPageItemDto(
 	string Email,
 	int Sort,
 	bool IsDeleted,
-	DateTimeOffset UpdatedAt);
+	DateTimeOffset UpdatedAt,
+	string? RssUrl = null);
