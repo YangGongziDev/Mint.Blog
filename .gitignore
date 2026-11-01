@@ -42,6 +42,8 @@ TestResults/
 *.suo
 *.userosscache
 *.sln.docstates
+*log
+*logs
 
 # Vue / Node
 node_modules/
@@ -51,6 +53,7 @@ coverage/
 vite.svg
 *.local
 *.log
+*.logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -76,6 +79,13 @@ hs_err_pid*
 /Jwt/
 /Search/
 /Surfer/
+
+# # Mint.Blog V2
+*Mint.Blog.Api/
+*Mint.Blog.Domain/
+*Mint.Blog.Application/
+*Mint.Blog.Infrastructure/
+*Mint.Blog.Vue/
 
 
 
