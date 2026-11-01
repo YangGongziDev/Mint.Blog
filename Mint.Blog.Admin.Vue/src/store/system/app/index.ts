@@ -92,19 +92,6 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
     watch(
       isMobile,
       newValue => {
-        const currentRoute = router.currentRoute.value;
-        const isFrontdeskLayout =
-          currentRoute.meta.layout === 'frontdesk' || currentRoute.path.startsWith('/blog/surfer');
-
-        if (isFrontdeskLayout) {
-          if (newValue) {
-            setSiderCollapse(true);
-          } else {
-            themeStore.applyThemeLayoutByRoute(router.currentRoute.value);
-          }
-          return;
-        }
-
         if (newValue) {
           // backup theme setting before is mobile
           localStg.set('backupThemeSettingBeforeIsMobile', {

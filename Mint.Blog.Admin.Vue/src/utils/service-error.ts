@@ -15,12 +15,13 @@ const ERROR_CODE_I18N_MAP: Partial<Record<string, App.I18n.I18nKey>> = {
   user_password_invalid: 'page.login.common.invalidCredentials',
   unauthorized: 'page.login.common.sessionExpired',
   token_expired: 'page.login.common.sessionExpired',
-  refresh_token_invalid: 'page.login.common.sessionExpired',
-  forbidden: 'common.noPermission'
+  refresh_token_invalid: 'page.login.common.sessionExpired'
 };
 
 const ERROR_CODE_MESSAGE_MAP: Partial<Record<string, string>> = {
   tag_not_found: '所选标签不存在或已被删除，请重新选择标签',
+  tag_version_delete_referenced: '版本仍被资源导航、正式文章或草稿引用，不能删除；请先移除引用。',
+  tag_version_move_referenced: '版本仍被资源、正式文章或草稿引用，不能更改所属标签；请先移除引用。',
   category_not_found: '所选分类不存在或已被删除，请重新选择分类',
   article_not_found: '文章不存在或已被删除',
   article_draft_not_found: '草稿不存在或已被删除',
@@ -35,6 +36,7 @@ function getApiErrorPayload(error: unknown): ApiErrorBody | null {
 
   if (error && typeof error === 'object' && 'response' in error) {
     const axiosError = error as AxiosError<ApiErrorBody>;
+    if (axiosError.code === 'readonly_request_blocked') return { message: axiosError.message };
     return axiosError.response?.data ?? null;
   }
 
@@ -59,6 +61,7 @@ export function resolveServiceErrorMessage(error: unknown, fallbackKey: App.I18n
   const errorCode = getErrorCode(payload);
   const mappedKey = ERROR_CODE_I18N_MAP[errorCode];
   const mappedMessage = ERROR_CODE_MESSAGE_MAP[errorCode];
+  const rawMessage = getRawMessage(payload);
 
   if (mappedMessage) {
     return mappedMessage;
@@ -68,7 +71,6 @@ export function resolveServiceErrorMessage(error: unknown, fallbackKey: App.I18n
     return $t(mappedKey);
   }
 
-  const rawMessage = getRawMessage(payload);
   if (errorCode === 'internal_server_error' || rawMessage.toLowerCase() === 'internal server error') {
     return $t('page.login.common.serverError');
   }
@@ -76,6 +78,7 @@ export function resolveServiceErrorMessage(error: unknown, fallbackKey: App.I18n
   if (rawMessage) {
     return rawMessage;
   }
+  if (errorCode === 'forbidden') return $t('common.noPermission');
 
   if (error && typeof error === 'object' && 'response' in error) {
     const axiosError = error as AxiosError;

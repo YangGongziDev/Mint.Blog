@@ -1,6 +1,6 @@
 import { getColorPaletteMap, getRgb } from '@/utils/color';
 import { localStg } from '@/utils/storage';
-import loadingSvg from '@/assets/system/svg/loading-lemonade.svg';
+import loadingSvg from '@/assets/system/loading-lemonade.svg';
 import { $t } from '@/locales';
 
 export function setupLoading() {

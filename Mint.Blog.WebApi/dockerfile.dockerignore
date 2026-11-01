@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+.git/
+.vs/
+.vscode/
+**/.env
+**/.env.*
+**/*.pfx
+**/*.key

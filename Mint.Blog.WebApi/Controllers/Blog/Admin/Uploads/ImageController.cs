@@ -1,14 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Mint.Blog.Application.Abstractions;
-using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
-using Mint.Blog.Application.Blog.Upload.Commands.DeleteImage;
-using Mint.Blog.Application.Blog.Upload.Commands.DeleteImages;
-using Mint.Blog.Application.Blog.Upload.Commands.MoveImage;
-using Mint.Blog.Application.Blog.Upload.Commands.MoveImages;
-using Mint.Blog.Application.Blog.Upload.Commands.RenameImage;
-using Mint.Blog.Application.Blog.Upload.Commands.UploadImage;
-using Mint.Blog.Application.Blog.Upload.Images;
+using Mint.Blog.Common.Responses;
+using Mint.Blog.Common.Storage;
+using Mint.Blog.Model.Dtos.Blog.Upload;
+using Mint.Blog.Service.IService.Blog;
+using Mint.Blog.Model.Vos;
+using Mint.Blog.Model.Vos.Blog.Upload;
 
 namespace Mint.Blog.WebApi.Controllers.Blog.Admin.Uploads;
 
@@ -17,21 +14,15 @@ namespace Mint.Blog.WebApi.Controllers.Blog.Admin.Uploads;
 /// </summary>
 [ApiController]
 [Authorize]
-[Route("api/blog/admin/image")]
+[Route("api/admin/image")]
 public sealed class ImageController(
-	UploadImageCommandHandler uploadImageCommandHandler,
-	DeleteImageCommandHandler deleteImageCommandHandler,
-	DeleteImagesCommandHandler deleteImagesCommandHandler,
-	RenameImageCommandHandler renameImageCommandHandler,
-	MoveImageCommandHandler moveImageCommandHandler,
-	MoveImagesCommandHandler moveImagesCommandHandler,
-	IManagedImageQueryService managedImageQueryService,
-	IObjectStorageBucketService bucketService) : ControllerBase {
+	IImageService imageService,
+	IManagedImageService managedImageQueryService) : ControllerBase {
 	[HttpGet("buckets")]
 	[ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<ObjectStorageBucketDto>>), StatusCodes.Status200OK)]
 	public async Task<ActionResult<ApiResponse<IReadOnlyCollection<ObjectStorageBucketDto>>>> GetBuckets(
 		CancellationToken cancellationToken){
-		var buckets = await bucketService.GetBucketsAsync(cancellationToken);
+		var buckets = await managedImageQueryService.GetBucketsAsync(cancellationToken);
 		return Ok(ApiResponse<IReadOnlyCollection<ObjectStorageBucketDto>>.Ok(buckets));
 	}
 
@@ -41,7 +32,7 @@ public sealed class ImageController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<ApiResponse<object>>> CreateBucket([FromBody] CreateBucketRequest request,
 		CancellationToken cancellationToken){
-		await bucketService.CreateBucketAsync(request.BucketName, request.IsPublic, cancellationToken);
+		await managedImageQueryService.CreateBucketAsync(request.BucketName, request.IsPublic, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(default(object?)));
 	}
 
@@ -51,7 +42,7 @@ public sealed class ImageController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<ApiResponse<object>>> SetBucketPublic(string bucketName,
 		[FromBody] SetBucketPublicRequest request, CancellationToken cancellationToken){
-		await bucketService.SetBucketPublicAsync(bucketName, request.IsPublic, cancellationToken);
+		await managedImageQueryService.SetBucketPublicAsync(bucketName, request.IsPublic, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(default(object?)));
 	}
 
@@ -61,7 +52,7 @@ public sealed class ImageController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<ApiResponse<object>>> DeleteBucket(string bucketName,
 		CancellationToken cancellationToken){
-		await bucketService.DeleteBucketAsync(bucketName, cancellationToken);
+		await managedImageQueryService.DeleteBucketAsync(bucketName, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(default(object?)));
 	}
 	/// <summary>
@@ -97,7 +88,7 @@ public sealed class ImageController(
 		[FromForm] UploadImageRequest request,
 		CancellationToken cancellationToken){
 		await using var stream = request.NewImageFile.OpenReadStream();
-		var url = await uploadImageCommandHandler.HandleAsync(
+		var url = await imageService.UploadAsync(
 			new UploadImageCommand(stream, request.NewImageFile.Length, request.NewImageOriginalName,
 				request.NewImageFile.ContentType, request.OldImageName, request.BucketName),
 			cancellationToken);
@@ -117,7 +108,7 @@ public sealed class ImageController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> Delete([FromBody] string? oldImageName,
 		CancellationToken cancellationToken){
-		await deleteImageCommandHandler.HandleAsync(new DeleteImageCommand(oldImageName), cancellationToken);
+		await imageService.DeleteAsync(new DeleteImageCommand(oldImageName), cancellationToken);
 		return Ok(ApiResponse<object>.Ok(default(object?)));
 	}
 
@@ -133,7 +124,7 @@ public sealed class ImageController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> DeleteMany(
 		[FromBody] IReadOnlyCollection<string> oldImageNames, CancellationToken cancellationToken){
-		var result = await deleteImagesCommandHandler.HandleAsync(new DeleteImagesCommand(oldImageNames), cancellationToken);
+		var result = await imageService.DeleteAsync(new DeleteImagesCommand(oldImageNames), cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { deletedCount = result.DeletedCount, skippedUsedCount = result.SkippedUsedCount }));
 	}
 
@@ -147,7 +138,7 @@ public sealed class ImageController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> Rename([FromBody] RenameImageCommand command,
 		CancellationToken cancellationToken){
-		var url = await renameImageCommandHandler.HandleAsync(command, cancellationToken);
+		var url = await imageService.RenameAsync(command, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { url }));
 	}
 
@@ -161,7 +152,7 @@ public sealed class ImageController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> Move([FromBody] MoveImageCommand command,
 		CancellationToken cancellationToken){
-		var url = await moveImageCommandHandler.HandleAsync(command, cancellationToken);
+		var url = await imageService.MoveAsync(command, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { url }));
 	}
 
@@ -175,8 +166,8 @@ public sealed class ImageController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> MoveManyPrecheck([FromBody] MoveImagesPrecheckCommand command,
 		CancellationToken cancellationToken){
-		var result = await moveImagesCommandHandler.PrecheckAsync(command, cancellationToken);
-		return Ok(ApiResponse<object>.Ok(new { conflicts = result.Conflicts }));
+		var conflicts = await imageService.PrecheckAsync(command, cancellationToken);
+		return Ok(ApiResponse<object>.Ok(new { conflicts }));
 	}
 
 	/// <summary>
@@ -189,7 +180,7 @@ public sealed class ImageController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> MoveMany([FromBody] MoveImagesCommand command,
 		CancellationToken cancellationToken){
-		var urls = await moveImagesCommandHandler.HandleAsync(command, cancellationToken);
+		var urls = await imageService.MoveAsync(command, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { urls }));
 	}
 }

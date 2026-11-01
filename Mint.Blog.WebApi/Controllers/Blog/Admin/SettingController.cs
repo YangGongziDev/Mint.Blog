@@ -1,23 +1,22 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Mint.Blog.Application.Abstractions;
-using Mint.Blog.Application.Blog.Setting.Commands.UpdateBlogSettings;
-using Mint.Blog.Application.Blog.Setting.Queries.GetBlogSettingsDetail;
+using Mint.Blog.Common.Responses;
+using Mint.Blog.Model.Dtos.Blog.Setting;
+using Mint.Blog.Model.Vos.Blog.Setting;
+using Mint.Blog.Service.IService.Blog;
 
 namespace Mint.Blog.WebApi.Controllers.Blog.Admin;
 
 [ApiController]
 [Authorize]
-[Route("api/blog/admin/setting")]
-public sealed class SettingController(
-	IGetBlogSettingsDetailQueryService blogSettingsDetailQueryService,
-	UpdateBlogSettingsCommandHandler updateBlogSettingsCommandHandler) : ControllerBase {
+[Route("api/admin/setting")]
+public sealed class SettingController(IBlogSettingService settingService) : ControllerBase {
 	[HttpGet]
-	[ProducesResponseType(typeof(ApiResponse<BlogSettingsDetailDto>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ApiResponse<BlogSettingsDetailVo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
-	public async Task<ActionResult<ApiResponse<BlogSettingsDetailDto>>> Get(CancellationToken cancellationToken){
-		var result = await blogSettingsDetailQueryService.GetAsync(cancellationToken);
-		return Ok(ApiResponse<BlogSettingsDetailDto>.Ok(result, null));
+	public async Task<ActionResult<ApiResponse<BlogSettingsDetailVo>>> Get(CancellationToken cancellationToken){
+		var result = await settingService.GetAsync(cancellationToken);
+		return Ok(ApiResponse<BlogSettingsDetailVo>.Ok(result, null));
 	}
 
 	[HttpPut]
@@ -25,9 +24,9 @@ public sealed class SettingController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
-	public async Task<ActionResult<ApiResponse<object>>> Update([FromBody] UpdateBlogSettingsCommand command,
+	public async Task<ActionResult<ApiResponse<object>>> Update([FromBody] UpdateBlogSettingsDto command,
 		CancellationToken cancellationToken){
-		await updateBlogSettingsCommandHandler.HandleAsync(command, cancellationToken);
+		await settingService.UpdateAsync(command, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(default(object?)));
 	}
 }

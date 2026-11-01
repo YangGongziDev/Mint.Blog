@@ -1,0 +1,20 @@
+services:
+  mint-blog-server:
+    build:
+      context: ..
+      dockerfile: Mint.Blog.WebApi/dockerfile
+    image: mint-blog-server:latest
+    container_name: mint-blog-server
+    # ports:
+    #   - "127.0.0.1:7000:7000"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    volumes:
+      - /opt/mint-blog-server/logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - mint-network
+
+networks:
+  mint-network:
+    external: true

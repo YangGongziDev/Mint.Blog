@@ -4,7 +4,7 @@ import { defineStore } from 'pinia';
 import { router } from '@/router';
 import { useRouterPush } from '@/hooks/routing/use-router-push';
 import { localStg } from '@/utils/storage';
-import type { MenuModuleKey, RouteKey } from '@/router/types';
+import type { RouteKey } from '@/router/types';
 import { SetupStoreId } from '@/enum';
 import { useThemeStore } from '../theme';
 import {
@@ -25,31 +25,22 @@ import {
 export const useTabStore = defineStore(SetupStoreId.Tab, () => {
   const themeStore = useThemeStore();
   const { routerPush } = useRouterPush(false);
-  type TabModule = MenuModuleKey;
-  const LEGACY_TAB_STORAGE_KEY = 'globalTabs';
-  const tabStorageKey = (module: TabModule) => `${LEGACY_TAB_STORAGE_KEY}:${module}`;
-  const readTabStorage = (module: TabModule): App.Global.Tab[] => {
-    const json = window.localStorage.getItem(tabStorageKey(module));
+  const TAB_STORAGE_KEY = 'globalTabs:main';
+  window.localStorage.removeItem('globalTabs:backstage');
+  window.localStorage.removeItem('globalTabs:frontdesk');
+  localStg.remove('globalTabs');
+  const readTabStorage = (): App.Global.Tab[] => {
+    const json = window.localStorage.getItem(TAB_STORAGE_KEY);
     if (!json) return [];
 
     try {
-      return JSON.parse(json) as App.Global.Tab[];
+      const stored: unknown = JSON.parse(json);
+      return Array.isArray(stored) ? stored : [];
     } catch {
-      window.localStorage.removeItem(tabStorageKey(module));
+      window.localStorage.removeItem(TAB_STORAGE_KEY);
       return [];
     }
   };
-  const writeTabStorage = (module: TabModule, nextTabs: App.Global.Tab[]) => {
-    window.localStorage.setItem(tabStorageKey(module), JSON.stringify(nextTabs));
-  };
-  const getTabModuleByPath = (path = router.currentRoute.value.path): TabModule =>
-    router.resolve(path).meta.menuModule || 'frontdesk';
-  const isTabInModule = (tab: App.Global.Tab, module: TabModule) => getTabModuleByPath(tab.routePath) === module;
-  const homeRouteByModule: Record<TabModule, RouteKey> = {
-    backstage: 'blog-admin_home',
-    frontdesk: 'blog-surfer_home'
-  };
-  const currentTabModule = ref<TabModule>(getTabModuleByPath());
 
   /** Tabs */
   const tabs = ref<App.Global.Tab[]>([]);
@@ -61,20 +52,13 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
   const homeTab = ref<App.Global.Tab>();
 
   /** Init home tab */
-  function initHomeTab(path = router.currentRoute.value.path) {
-    currentTabModule.value = getTabModuleByPath(path);
-    const nextHomeRoute = homeRouteByModule[currentTabModule.value] || 'blog-surfer_home';
-
-    homeTab.value = getDefaultHomeTab(router, nextHomeRoute);
-    tabs.value = tabs.value.filter(tab => isTabInModule(tab, currentTabModule.value));
+  function initHomeTab() {
+    homeTab.value = getDefaultHomeTab(router, 'home');
   }
 
-  function getStoredTabs(module: TabModule) {
-    const storageTabs = readTabStorage(module);
-
-    if (!themeStore.tab.cache || !storageTabs) return [];
-
-    return updateTabsByI18nKey(extractTabsByAllRoutes(router, storageTabs).filter(tab => isTabInModule(tab, module)));
+  function getStoredTabs() {
+    if (!themeStore.tab.cache) return [];
+    return updateTabsByI18nKey(extractTabsByAllRoutes(router, readTabStorage()));
   }
 
   /** Get all tabs */
@@ -100,9 +84,8 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    * @param currentRoute Current route
    */
   function initTabStore(currentRoute: App.Global.TabRoute) {
-    const module = getTabModuleByPath(currentRoute.path);
-    currentTabModule.value = module;
-    tabs.value = getStoredTabs(module);
+    initHomeTab();
+    tabs.value = getStoredTabs();
 
     addTab(currentRoute);
   }
@@ -114,15 +97,6 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    * @param active Whether to activate the added tab
    */
   function addTab(route: App.Global.TabRoute, active = true) {
-    const module = getTabModuleByPath(route.path);
-
-    if (module !== currentTabModule.value) {
-      cacheTabs();
-      currentTabModule.value = module;
-      tabs.value = getStoredTabs(module);
-      initHomeTab(route.path);
-    }
-
     const tab = getTabByRoute(route);
 
     const isHomeTab = tab.id === homeTab.value?.id;
@@ -320,11 +294,7 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
   function cacheTabs() {
     if (!themeStore.tab.cache) return;
 
-    writeTabStorage(
-      currentTabModule.value,
-      tabs.value.filter(tab => isTabInModule(tab, currentTabModule.value))
-    );
-    localStg.remove(LEGACY_TAB_STORAGE_KEY);
+    window.localStorage.setItem(TAB_STORAGE_KEY, JSON.stringify(tabs.value));
   }
 
   // cache tabs when page is closed or refreshed

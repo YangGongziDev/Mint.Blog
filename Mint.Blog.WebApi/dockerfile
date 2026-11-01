@@ -1,0 +1,32 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+COPY Mint.Blog.Model/Mint.Blog.Model.csproj Mint.Blog.Model/
+COPY Mint.Blog.Common/Mint.Blog.Common.csproj Mint.Blog.Common/
+COPY Mint.Blog.Repository/Mint.Blog.Repository.csproj Mint.Blog.Repository/
+COPY Mint.Blog.Service/Mint.Blog.Service.csproj Mint.Blog.Service/
+COPY Mint.Blog.WebApi/Mint.Blog.WebApi.csproj Mint.Blog.WebApi/
+RUN dotnet restore Mint.Blog.WebApi/Mint.Blog.WebApi.csproj
+COPY Mint.Blog.Model/ Mint.Blog.Model/
+COPY Mint.Blog.Common/ Mint.Blog.Common/
+COPY Mint.Blog.Repository/ Mint.Blog.Repository/
+COPY Mint.Blog.Service/ Mint.Blog.Service/
+COPY Mint.Blog.WebApi/ Mint.Blog.WebApi/
+RUN dotnet publish Mint.Blog.WebApi/Mint.Blog.WebApi.csproj \
+    -c Release \
+    -o /app/publish \
+    --no-restore \
+    /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+WORKDIR /app
+
+ENV ASPNETCORE_HTTP_PORTS=7000
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+COPY --from=build /app/publish .
+RUN mkdir -p /app/logs && chown app:app /app/logs
+USER app
+
+EXPOSE 7000
+ENTRYPOINT ["dotnet", "Mint.Blog.WebApi.dll"]

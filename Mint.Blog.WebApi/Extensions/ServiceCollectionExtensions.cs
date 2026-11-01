@@ -2,10 +2,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.IdentityModel.Tokens;
-using Mint.Blog.Application.Abstractions;
-using Mint.Blog.Infrastructure.Options;
 using Mint.Blog.WebApi.Json;
 using Mint.Blog.WebApi.Middleware;
+using Mint.Blog.Model.Options;
 
 namespace Mint.Blog.WebApi.Extensions;
 
@@ -21,7 +20,24 @@ public static class ServiceCollectionExtensions {
 				options.JsonSerializerOptions.Converters.Add(new NullableLongToStringJsonConverter());
 			});
 		services.AddEndpointsApiExplorer();
-		services.AddOpenApi();
+		// 配置OpenAPI文档，根据路径分组
+		services.AddOpenApi(options => options.AddDocumentTransformer((document, context, cancellationToken) => {
+			document.Tags = new HashSet<Microsoft.OpenApi.OpenApiTag> {
+				new() { Name = "system" },
+				new() { Name = "admin" },
+				new() { Name = "surfer" }
+			};
+			foreach (var (path, item) in document.Paths) {
+				var group = path.Split('/').ElementAtOrDefault(2);
+				if (group is not ("system" or "admin" or "surfer")) continue;
+				if (item.Operations is null) continue;
+				foreach (var operation in item.Operations.Values)
+					operation.Tags = new HashSet<Microsoft.OpenApi.OpenApiTagReference> {
+						new(group, document)
+					};
+			}
+			return Task.CompletedTask;
+		}));
 		services.AddHttpLogging(options => {
 			options.LoggingFields = HttpLoggingFields.RequestMethod
 			                        | HttpLoggingFields.RequestPath

@@ -1,14 +1,13 @@
 using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Mint.Blog.Application.Abstractions;
-using Mint.Blog.Application.System.Auth;
+using Mint.Blog.Service.IService.System;
 
 namespace Mint.Blog.WebApi.Controllers.System;
 
 [ApiController]
 [Authorize]
-[Route("api")]
+[Route("api/system")]
 public sealed class AdminModulesController(IAdminModuleService service) : ControllerBase {
 	[HttpGet("dept/tree")]
 	[HttpGet("dept/list")]
@@ -55,7 +54,7 @@ public sealed class AdminModulesController(IAdminModuleService service) : Contro
 		await using var stream = file.OpenReadStream();
 		return Ok(ApiResponse<object>.Ok(await service.UploadAsync(stream, file.Length, file.FileName, file.ContentType, User.Identity!.Name!, cancellationToken)));
 	}
-	private string[] Parts() => Request.Path.Value!.Split('/', StringSplitOptions.RemoveEmptyEntries).Skip(1).ToArray();
+	private string[] Parts() => Request.Path.Value!.Split('/', StringSplitOptions.RemoveEmptyEntries).Skip(2).ToArray();
 	private string Resource(){
 		var parts = Parts();
 		return parts[0] switch { "dict" => parts[1] is "type" or "types" ? "dictType" : "dictData", "log" => parts[1] == "login" ? "loginLog" : "operationLog", _ => parts[0] };

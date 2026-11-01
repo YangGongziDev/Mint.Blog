@@ -1,5 +1,5 @@
 import 'vue-router';
-import type { MenuModuleKey, RouteKey, RouteLayout } from '@/router/types';
+import type { RouteKey } from '@/router/types';
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -23,10 +23,6 @@ declare module 'vue-router' {
      * It only works when the route mode is "static", if the route mode is "dynamic", it will be ignored
      */
     roles?: string[];
-    /** The layout shell used by the module route */
-    layout?: RouteLayout;
-    /** The menu module used by the module route */
-    menuModule?: MenuModuleKey;
     /** Whether to cache the route */
     keepAlive?: boolean | null;
     /**

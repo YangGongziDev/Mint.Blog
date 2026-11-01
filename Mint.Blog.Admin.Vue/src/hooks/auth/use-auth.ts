@@ -1,3 +1,4 @@
+import { computed } from 'vue';
 import { useAuthStore } from '@/store/system/auth';
 
 export function useAuth() {
@@ -8,6 +9,8 @@ export function useAuth() {
       return false;
     }
 
+    if (authStore.userInfo.buttons.includes('*')) return true;
+
     if (typeof codes === 'string') {
       return authStore.userInfo.buttons.includes(codes);
     }
@@ -16,6 +19,8 @@ export function useAuth() {
   }
 
   return {
-    hasAuth
+    hasAuth,
+    isReadonly: computed(() => authStore.isReadonly),
+    isReadonlyVisitor: computed(() => authStore.isReadonlyVisitor)
   };
 }

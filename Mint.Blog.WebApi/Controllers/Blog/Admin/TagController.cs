@@ -1,36 +1,23 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Mint.Blog.Application.Abstractions;
-using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
-using Mint.Blog.Application.Blog.Tag.Commands.CreateTag;
-using Mint.Blog.Application.Blog.Tag.Commands.DeleteTag;
-using Mint.Blog.Application.Blog.Tag.Commands.MoveTagSortFirst;
-using Mint.Blog.Application.Blog.Tag.Commands.MoveTagSortLast;
-using Mint.Blog.Application.Blog.Tag.Commands.UpdateTag;
-using Mint.Blog.Application.Blog.Tag.Commands.UpdateTagSort;
-using Mint.Blog.Application.Blog.Tag.Queries.GetTagList;
-using Mint.Blog.Application.Blog.Tag.Queries.GetTagPageList;
+using Mint.Blog.Common.Responses;
+using Mint.Blog.Model.Vos;
+using Mint.Blog.Model.Vos.Blog.Tag;
+using Mint.Blog.Model.Dtos.Blog.Tag;
+using Mint.Blog.Service.IService.Blog;
 
 namespace Mint.Blog.WebApi.Controllers.Blog.Admin;
 
 [ApiController]
 [Authorize]
-[Route("api/blog/admin/tag")]
-public sealed class TagController(
-	IGetTagListQueryService tagListQueryService,
-	IGetTagPageListQueryService tagPageListQueryService,
-	CreateTagCommandHandler createTagCommandHandler,
-	UpdateTagCommandHandler updateTagCommandHandler,
-	UpdateTagSortCommandHandler updateTagSortCommandHandler,
-	MoveTagSortFirstCommandHandler moveTagSortFirstCommandHandler,
-	MoveTagSortLastCommandHandler moveTagSortLastCommandHandler,
-	DeleteTagCommandHandler deleteTagCommandHandler) : ControllerBase {
+[Route("api/admin/tag")]
+public sealed class TagController(ITagService service) : ControllerBase {
 	[HttpGet]
 	[ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<TagListItemDto>>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<IReadOnlyCollection<TagListItemDto>>>> Get(
 		CancellationToken cancellationToken){
-		var tags = await tagListQueryService.GetAsync(cancellationToken);
+		var tags = await service.GetAsync(cancellationToken);
 		return Ok(ApiResponse<IReadOnlyCollection<TagListItemDto>>.Ok(tags));
 	}
 
@@ -46,7 +33,7 @@ public sealed class TagController(
 		[FromQuery] DateOnly? endDate = null,
 		[FromQuery] string? sortOrder = null,
 		CancellationToken cancellationToken = default){
-		var tags = await tagPageListQueryService.GetAsync(
+		var tags = await service.GetAsync(
 			new TagPageListQuery(pageNumber, pageSize, keyword, name, startDate, endDate, sortOrder),
 			cancellationToken);
 		return Ok(ApiResponse<PagedResult<TagListItemDto>>.Ok(tags));
@@ -59,7 +46,7 @@ public sealed class TagController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> Create([FromBody] CreateTagCommand command,
 		CancellationToken cancellationToken){
-		var id = await createTagCommandHandler.HandleAsync(command, cancellationToken);
+		var id = await service.CreateAsync(command, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id }));
 	}
 
@@ -70,7 +57,7 @@ public sealed class TagController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> Update(long tagId, [FromBody] UpdateTagCommand command,
 		CancellationToken cancellationToken){
-		await updateTagCommandHandler.HandleAsync(command with { TagId = tagId }, cancellationToken);
+		await service.UpdateAsync(command with { TagId = tagId }, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id = tagId }));
 	}
 
@@ -81,7 +68,7 @@ public sealed class TagController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> UpdateSort(long tagId,
 		[FromBody] UpdateTagSortCommand command, CancellationToken cancellationToken){
-		await updateTagSortCommandHandler.HandleAsync(command with { TagId = tagId }, cancellationToken);
+		await service.UpdateSortAsync(command with { TagId = tagId }, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id = tagId, sort = command.Sort }));
 	}
 
@@ -92,7 +79,7 @@ public sealed class TagController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> MoveSortFirst(long tagId,
 		CancellationToken cancellationToken){
-		await moveTagSortFirstCommandHandler.HandleAsync(new MoveTagSortFirstCommand(tagId), cancellationToken);
+		await service.MoveSortFirstAsync(new MoveTagSortFirstCommand(tagId), cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id = tagId }));
 	}
 
@@ -103,7 +90,7 @@ public sealed class TagController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> MoveSortLast(long tagId,
 		CancellationToken cancellationToken){
-		await moveTagSortLastCommandHandler.HandleAsync(new MoveTagSortLastCommand(tagId), cancellationToken);
+		await service.MoveSortLastAsync(new MoveTagSortLastCommand(tagId), cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id = tagId }));
 	}
 
@@ -114,9 +101,7 @@ public sealed class TagController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> Delete(long tagId, [FromBody] DeleteTagRequest? request,
 		CancellationToken cancellationToken){
-		await deleteTagCommandHandler.HandleAsync(new DeleteTagCommand(tagId, request?.DeleteType ?? 1), cancellationToken);
+		await service.DeleteAsync(new DeleteTagCommand(tagId, request?.DeleteType ?? 1), cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id = tagId }));
 	}
 }
-
-public sealed record DeleteTagRequest(int DeleteType);

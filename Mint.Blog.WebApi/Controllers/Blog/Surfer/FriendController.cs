@@ -1,25 +1,20 @@
 using System.Xml;
 using Microsoft.AspNetCore.Mvc;
-using Mint.Blog.Application.Blog.Friend;
-using Mint.Blog.Application.Abstractions;
-using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
-using Mint.Blog.Application.Blog.Friend.Commands.ApplyFriend;
-using Mint.Blog.Application.Blog.Friend.Queries.GetFriendDetail;
-using Mint.Blog.Application.Blog.Friend.Queries.GetFriendList;
+using Mint.Blog.Common.Responses;
+using Mint.Blog.Model.Dtos.Blog.Friend;
+using Mint.Blog.Model.Vos;
+using Mint.Blog.Model.Vos.Blog.Friend;
+using Mint.Blog.Service.IService.Blog;
 
 namespace Mint.Blog.WebApi.Controllers.Blog.Surfer;
 
 [ApiController]
-[Route("api/blog/surfer/friend")]
-public sealed class FriendController(
-	IGetFriendListQueryService friendListQueryService,
-	IGetFriendDetailQueryService friendDetailQueryService,
-	ApplyFriendCommandHandler applyFriendCommandHandler,
-	IFeedMetadataReader feedMetadataReader) : ControllerBase {
+[Route("api/surfer/friend")]
+public sealed class FriendController(IFriendService friendService) : ControllerBase {
 	[HttpGet("feed")]
 	public async Task<ActionResult> GetFeed([FromQuery] string url, CancellationToken cancellationToken){
 		try {
-			var metadata = await feedMetadataReader.ReadAsync(url, cancellationToken);
+			var metadata = await friendService.ReadAsync(url, cancellationToken);
 			return Ok(ApiResponse<object>.Ok(metadata));
 		}
 		catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested) {
@@ -31,33 +26,29 @@ public sealed class FriendController(
 	}
 
 	[HttpGet]
-	[ProducesResponseType(typeof(ApiResponse<PagedResult<FriendListItemDto>>), StatusCodes.Status200OK)]
-	public async Task<ActionResult<ApiResponse<PagedResult<FriendListItemDto>>>> GetList(
-		[FromQuery] int pageNumber = 1,
-		[FromQuery] int pageSize = 10,
+	[ProducesResponseType(typeof(ApiResponse<PagedResult<FriendListItemVo>>), StatusCodes.Status200OK)]
+	public async Task<ActionResult<ApiResponse<PagedResult<FriendListItemVo>>>> GetList(
+		[FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10,
 		CancellationToken cancellationToken = default){
-		var result =
-			await friendListQueryService.GetAsync(new GetFriendListQuery(pageNumber, pageSize), cancellationToken);
-		return Ok(ApiResponse<PagedResult<FriendListItemDto>>.Ok(result));
+		var result = await friendService.GetAsync(new GetFriendListQuery(pageNumber, pageSize), cancellationToken);
+		return Ok(ApiResponse<PagedResult<FriendListItemVo>>.Ok(result));
 	}
 
 	[HttpGet("{friendId:long}")]
-	[ProducesResponseType(typeof(ApiResponse<FriendDetailDto>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ApiResponse<FriendDetailVo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
-	public async Task<ActionResult<ApiResponse<FriendDetailDto>>> GetDetail(long friendId,
-		CancellationToken cancellationToken){
-		var result = await friendDetailQueryService.GetAsync(new GetFriendDetailQuery(friendId), cancellationToken);
+	public async Task<ActionResult<ApiResponse<FriendDetailVo>>> GetDetail(long friendId, CancellationToken cancellationToken){
+		var result = await friendService.GetAsync(new GetFriendDetailQuery(friendId), cancellationToken);
 		return result is null
-			? NotFound(ApiResponse<FriendDetailDto>.Fail(ErrorCodes.FriendNotFound, "Friend not found"))
-			: Ok(ApiResponse<FriendDetailDto>.Ok(result));
+			? NotFound(ApiResponse<FriendDetailVo>.Fail(ErrorCodes.FriendNotFound, "Friend not found"))
+			: Ok(ApiResponse<FriendDetailVo>.Ok(result));
 	}
 
 	[HttpPost]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult<ApiResponse<object>>> Apply([FromBody] ApplyFriendCommand command,
-		CancellationToken cancellationToken){
-		var id = await applyFriendCommandHandler.HandleAsync(command, cancellationToken);
+	public async Task<ActionResult<ApiResponse<object>>> Apply([FromBody] ApplyFriendCommand command, CancellationToken cancellationToken){
+		var id = await friendService.ApplyAsync(command, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id }));
 	}
 }

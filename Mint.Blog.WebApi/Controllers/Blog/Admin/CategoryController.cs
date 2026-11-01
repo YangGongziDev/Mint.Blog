@@ -1,36 +1,23 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Mint.Blog.Application.Abstractions;
-using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
-using Mint.Blog.Application.Blog.Category.Commands.CreateCategory;
-using Mint.Blog.Application.Blog.Category.Commands.DeleteCategory;
-using Mint.Blog.Application.Blog.Category.Commands.MoveCategorySortFirst;
-using Mint.Blog.Application.Blog.Category.Commands.MoveCategorySortLast;
-using Mint.Blog.Application.Blog.Category.Commands.UpdateCategory;
-using Mint.Blog.Application.Blog.Category.Commands.UpdateCategorySort;
-using Mint.Blog.Application.Blog.Category.Queries.GetCategoryList;
-using Mint.Blog.Application.Blog.Category.Queries.GetCategoryPageList;
+using Mint.Blog.Common.Responses;
+using Mint.Blog.Model.Vos;
+using Mint.Blog.Model.Vos.Blog.Category;
+using Mint.Blog.Model.Dtos.Blog.Category;
+using Mint.Blog.Service.IService.Blog;
 
 namespace Mint.Blog.WebApi.Controllers.Blog.Admin;
 
 [ApiController]
 [Authorize]
-[Route("api/blog/admin/category")]
-public sealed class CategoryController(
-	IGetCategoryListQueryService categoryListQueryService,
-	IGetCategoryPageListQueryService categoryPageListQueryService,
-	CreateCategoryCommandHandler createCategoryCommandHandler,
-	UpdateCategoryCommandHandler updateCategoryCommandHandler,
-	UpdateCategorySortCommandHandler updateCategorySortCommandHandler,
-	MoveCategorySortFirstCommandHandler moveCategorySortFirstCommandHandler,
-	MoveCategorySortLastCommandHandler moveCategorySortLastCommandHandler,
-	DeleteCategoryCommandHandler deleteCategoryCommandHandler) : ControllerBase {
+[Route("api/admin/category")]
+public sealed class CategoryController(ICategoryService service) : ControllerBase {
 	[HttpGet]
 	[ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<CategoryListItemDto>>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<IReadOnlyCollection<CategoryListItemDto>>>> Get(
 		CancellationToken cancellationToken){
-		var categories = await categoryListQueryService.GetAsync(cancellationToken);
+		var categories = await service.GetAsync(cancellationToken);
 		return Ok(ApiResponse<IReadOnlyCollection<CategoryListItemDto>>.Ok(categories));
 	}
 
@@ -46,7 +33,7 @@ public sealed class CategoryController(
 		[FromQuery] DateOnly? endDate = null,
 		[FromQuery] string? sortOrder = null,
 		CancellationToken cancellationToken = default){
-		var categories = await categoryPageListQueryService.GetAsync(
+		var categories = await service.GetAsync(
 			new CategoryPageListQuery(pageNumber, pageSize, keyword, name, startDate, endDate, sortOrder),
 			cancellationToken);
 		return Ok(ApiResponse<PagedResult<CategoryListItemDto>>.Ok(categories));
@@ -59,7 +46,7 @@ public sealed class CategoryController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> Create([FromBody] CreateCategoryCommand command,
 		CancellationToken cancellationToken){
-		var id = await createCategoryCommandHandler.HandleAsync(command, cancellationToken);
+		var id = await service.CreateAsync(command, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id }));
 	}
 
@@ -70,7 +57,7 @@ public sealed class CategoryController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> Update(long categoryId,
 		[FromBody] UpdateCategoryCommand command, CancellationToken cancellationToken){
-		await updateCategoryCommandHandler.HandleAsync(command with { CategoryId = categoryId }, cancellationToken);
+		await service.UpdateAsync(command with { CategoryId = categoryId }, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id = categoryId }));
 	}
 
@@ -81,7 +68,7 @@ public sealed class CategoryController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> UpdateSort(long categoryId,
 		[FromBody] UpdateCategorySortCommand command, CancellationToken cancellationToken){
-		await updateCategorySortCommandHandler.HandleAsync(command with { CategoryId = categoryId }, cancellationToken);
+		await service.UpdateSortAsync(command with { CategoryId = categoryId }, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id = categoryId, sort = command.Sort }));
 	}
 
@@ -92,7 +79,7 @@ public sealed class CategoryController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> MoveSortFirst(long categoryId,
 		CancellationToken cancellationToken){
-		await moveCategorySortFirstCommandHandler.HandleAsync(new MoveCategorySortFirstCommand(categoryId),
+		await service.MoveSortFirstAsync(new MoveCategorySortFirstCommand(categoryId),
 			cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id = categoryId }));
 	}
@@ -104,7 +91,7 @@ public sealed class CategoryController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> MoveSortLast(long categoryId,
 		CancellationToken cancellationToken){
-		await moveCategorySortLastCommandHandler.HandleAsync(new MoveCategorySortLastCommand(categoryId),
+		await service.MoveSortLastAsync(new MoveCategorySortLastCommand(categoryId),
 			cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id = categoryId }));
 	}
@@ -116,10 +103,8 @@ public sealed class CategoryController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> Delete(long categoryId,
 		[FromBody] DeleteCategoryRequest? request, CancellationToken cancellationToken){
-		await deleteCategoryCommandHandler.HandleAsync(new DeleteCategoryCommand(categoryId, request?.DeleteType ?? 1),
+		await service.DeleteAsync(new DeleteCategoryCommand(categoryId, request?.DeleteType ?? 1),
 			cancellationToken);
 		return Ok(ApiResponse<object>.Ok(new { id = categoryId }));
 	}
 }
-
-public sealed record DeleteCategoryRequest(int DeleteType);

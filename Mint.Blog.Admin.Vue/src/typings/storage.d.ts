@@ -20,8 +20,9 @@ declare namespace StorageType {
     refreshToken: string;
     /** The theme color */
     themeColor: string;
-    /** Theme layout mode by app section or page path */
+    /** Legacy layout modes, read only during migration. */
     themeLayoutModes: Record<string, UnionKey.ThemeLayoutMode>;
+    themeLayoutMode: UnionKey.ThemeLayoutMode;
     /** The theme settings */
     themeSettings: App.Theme.ThemeSetting;
     /**

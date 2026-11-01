@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Mint.Blog.Application.Abstractions;
-using Mint.Blog.Application.Blog.Article.Drafts;
-using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
+using Mint.Blog.Model.Dtos.Blog.Article;
+using Mint.Blog.Model.Vos;
+using Mint.Blog.Model.Vos.Blog.Article;
+using Mint.Blog.Service.IService.Blog;
 
 namespace Mint.Blog.WebApi.Controllers.Blog.Admin;
 
 [ApiController]
 [Authorize]
-[Route("api/blog/admin/article-draft")]
+[Route("api/admin/article-draft")]
 public sealed class ArticleDraftController(IArticleDraftService articleDraftService) : ControllerBase {
 	[HttpGet]
 	[ProducesResponseType(typeof(ApiResponse<PagedResult<ArticleDraftListItemDto>>), StatusCodes.Status200OK)]

@@ -16,6 +16,12 @@ declare namespace Env {
   interface ViteEnv extends ImportMetaEnv {
     /** The base url of the application */
     readonly VITE_BASE_URL: string;
+    /** Independent Nuxt HTTP(S) base URL; empty keeps same-origin legacy source links */
+    readonly VITE_BLOG_WEB_URL?: string;
+    /** Blog article preview path template */
+    readonly VITE_BLOG_ARTICLE_PATH?: string;
+    /** Blog column preview path template */
+    readonly VITE_BLOG_COLUMN_PATH?: string;
     /** The title of the application */
     readonly VITE_APP_TITLE: string;
     /** The description of the application */

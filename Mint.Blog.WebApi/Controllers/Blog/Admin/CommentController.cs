@@ -1,20 +1,18 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Mint.Blog.Application.Abstractions;
-using Mint.Blog.Application.Blog.Article.Queries.GetArticleList;
-using Mint.Blog.Application.Blog.Comment.Commands.DeleteComment;
-using Mint.Blog.Application.Blog.Comment.Commands.ExamineComment;
-using Mint.Blog.Application.Blog.Comment.Queries.GetAdminCommentPageList;
+using Mint.Blog.Common.Responses;
+using Mint.Blog.Model.Dtos.Blog.Comment;
+using Mint.Blog.Model.Vos;
+using Mint.Blog.Model.Vos.Blog.Comment;
+using Mint.Blog.Service.IService.Blog;
 
 namespace Mint.Blog.WebApi.Controllers.Blog.Admin;
 
 [ApiController]
 [Authorize]
-[Route("api/blog/admin/comment")]
+[Route("api/admin/comment")]
 public sealed class CommentController(
-	IGetAdminCommentPageListQueryService commentPageListQueryService,
-	DeleteCommentCommandHandler deleteCommentCommandHandler,
-	ExamineCommentCommandHandler examineCommentCommandHandler) : ControllerBase {
+	ICommentService commentService) : ControllerBase {
 	[HttpGet]
 	[ProducesResponseType(typeof(ApiResponse<PagedResult<AdminCommentPageItemDto>>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
@@ -29,7 +27,7 @@ public sealed class CommentController(
 		CancellationToken cancellationToken = default){
 		var query = new GetAdminCommentPageListQuery(pageNumber, pageSize, routerUrl, startDate, endDate, status,
 			sortOrder);
-		var result = await commentPageListQueryService.GetAsync(query, cancellationToken);
+		var result = await commentService.GetAsync(query, cancellationToken);
 		return Ok(ApiResponse<PagedResult<AdminCommentPageItemDto>>.Ok(result));
 	}
 
@@ -40,7 +38,7 @@ public sealed class CommentController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> Delete(long id, [FromBody] DeleteCommentCommand command,
 		CancellationToken cancellationToken){
-		await deleteCommentCommandHandler.HandleAsync(command with { Id = id }, cancellationToken);
+		await commentService.DeleteAsync(command with { Id = id }, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(default(object?)));
 	}
 
@@ -51,7 +49,7 @@ public sealed class CommentController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
 	public async Task<ActionResult<ApiResponse<object>>> Examine(long id, [FromBody] ExamineCommentCommand command,
 		CancellationToken cancellationToken){
-		await examineCommentCommandHandler.HandleAsync(command with { Id = id }, cancellationToken);
+		await commentService.ExamineAsync(command with { Id = id }, cancellationToken);
 		return Ok(ApiResponse<object>.Ok(default(object?)));
 	}
 }

@@ -1,11 +1,11 @@
 <div align="center">
   <img src="./Docs/PageImages/system-logo.svg" width="160" />
   <h1>Mint.Blog</h1>
-  <h2>Author: <a href="https://www.yanggongzi.dev/blog/surfer/author">YangGongziDev</a></h2>
+  <h2>Author: <a href="https://www.yanggongzi.dev/author">程序员杨工子</a></h2>
   <h5>
-    Historical branch：
-    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (Latest) (Currently)</a></span>
-    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2</a></span>
+    Version branches:
+    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (Latest V3) (Current)</a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2-ddd</a></a></span>
     <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a></span>
   </h5>
   <span><a href="./README.md">中文</a> | English</span>
@@ -16,46 +16,60 @@
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)[![github stars](https://img.shields.io/github/stars/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)[![github forks](https://img.shields.io/github/forks/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)[![gitee stars](https://gitee.com/YangGongziDev/Mint.Blog/badge/star.svg)](https://gitee.com/YangGongziDev/Mint.Blog)[![gitee forks](https://gitee.com/YangGongziDev/Mint.Blog/badge/fork.svg)](https://gitee.com/YangGongziDev/Mint.Blog)
 
 > [!NOTE]
-> If you find `Mint.Blog` helpful or simply enjoy the project, please give it a ⭐️ on GitHub or Gitee. Your support is the driving force behind continuous improvements and new features. Thank you for your support!
+> If you find `Mint.Blog` helpful or enjoy this project, please give it a star on GitHub or Gitee. Your support motivates me to keep improving it and adding new features. Thank you for your support!
 
-## Project Structure (DDD Architecture)
+## Project Structure
 
-- `Mint.Blog.Domain`: Backend - Domain Layer
-- `Mint.Blog.Application`: Backend - Application Layer
-- `Mint.Blog.Infrastructure`: Backend - Infrastructure Layer
-- `Mint.Blog.WebApi`: Backend - API Layer
-- `Mint.Blog.Admin.Vue`: Frontend - Front desk
-- `Mint.Blog.Nuxt`: Frontend - Backstage
-## Tech Stack
-Backend: `.NET 10 + SqlSugar 5.0 + PostgreSQL 18`  
-Frontend: `TypeScript 8 + Vue3 + AntDesignVue 3 + TailwindCSS 4`
+| Directory | Responsibilities |
+| --- | --- |
+| `Mint.Blog.Common` | Common responses, exceptions, JWT, password hashing, email and object storage adapters |
+| `Mint.Blog.Model` | Data entities, request DTOs, response VOs, configuration Options |
+| `Mint.Blog.Repository` | Repository interfaces and implementations, SqlSugar data access, units of work and transactions |
+| `Mint.Blog.Service` | Business interfaces and implementations, background jobs, notification and statistics queues |
+| `Mint.Blog.WebApi` | ASP.NET Core entry point, controllers, middleware, authentication and authorization, and dependency injection |
+| `Mint.Blog.Admin.Vue` | Vue admin dashboard |
+| `Mint.Blog.Web.Nuxt` | Nuxt blog frontend |
+| `Docs` | System introduction, database scripts, deployment instructions and screenshots |
+
+
+## Technology Stack
+
+| Component | Main Technologies |
+| --- | --- |
+| Backend | .NET / ASP.NET Core 10, SqlSugar 5, PostgreSQL, JWT, Serilog, Scalar OpenAPI |
+| Admin Dashboard | Vue 3.5, Vite 8, TypeScript 6, Ant Design Vue 4, Pinia, Tailwind CSS 4 |
+| Blog Frontend | Nuxt 4, Vue 3.5, TypeScript 6, markdown-it, sanitize-html |
+| Storage and Notifications | RustFS / S3-compatible object storage, SMTP email |
+
+The database schema script was exported from PostgreSQL 17.2; please verify compatibility with other versions yourself. Refer to each project's files and lockfiles for exact dependency versions.
+
+When the backend uses the local `http` launch profile:
+
 
 
 ## Introduction
 
 [`Mint.Blog`](https://github.com/YangGongziDev/Mint.Blog)
-is a clean and elegant blog template; built with cutting-edge technology stack; well-structured and easy to get started; designed to help you dive into business development with minimal learning cost. Core features include theme configuration, common page components, routing and permission solutions, and internationalization support — truly out-of-the-box. It is also an excellent practice ground for learning the latest tech stack.
+is a personal blogging project with a decoupled frontend and backend. It consists of a .NET Web API, a Vue admin dashboard and a Nuxt blog frontend, covering content publishing, reader interaction, resource navigation and administration. Before first use, you need to prepare the database schema, account and permission data, and service configuration; you cannot log in immediately after cloning the repository.
 
 ## Features
 
-- **Clean Architecture**: Discarding redundant abstraction layers, the code organization follows minimal principles. Each module has a single responsibility and follows naming conventions, making it easy for newcomers to locate code and understand logic. Whether you're a beginner or a seasoned developer, you can start business development in no time.
-- **Elegant UI**: Rich color schemes and a modern UI style that aligns with contemporary aesthetics.
-- **Mobile Adaptation**: Full mobile support with responsive layout.
-- **Comprehensive Engineering**: ESLint, type checking (vue-tsc), and unified script commands.
-- **Themes & Layouts**: Built-in theme configuration and layout capabilities, paired with Tailwind CSS4 for rapid page building.
-- **Permissions & Routing**: Route and permission management, covering common admin scenarios.
-- **Internationalization**: Built-in i18n solution for easy multi-language extension.
-- **Rich Components**: Built-in common pages and components, including error pages and other frequently used features.
+- **Content Management**: Article publishing, resources, tags, columns and Markdown content rendering.
+- **Resource Navigation**: Search external resources by technology tag, version and resource type.
+- **Reader Interaction**: Comments, friend links and email notifications.
+- **Blog Presentation**: Gallery, gear, project and author information pages, with light/dark themes and responsive layouts.
+- **Administration**: Users, roles, permissions, site configuration, file management and administrative auditing.
+- **Statistics and Jobs**: Visit statistics and background queue jobs.
+- **Layered Architecture and Tooling**: A backend organized into five projects, with independent builds and type-checking commands for the blog frontend and admin dashboard.
 
-## Documentation
+## Project Documentation
 
-- Documentation: [https://www.yanggongzi.dev/blog/surfer/column/1](https://www.yanggongzi.dev/blog/surfer/column/1)
-- Demo: [https://www.yanggongzi.dev](https://www.yanggongzi.dev)  
-  (The account and password have been automatically entered.)
+- Documentation: [https://www.yanggongzi.dev/columns/1](https://www.yanggongzi.dev/columns/1)
+- Demo: [https://www.yanggongzi.dev](https://www.yanggongzi.dev) (the username and password are filled in automatically)
 
-## PageScreenshots
+## Screenshots
 
-### Desktop Frontend
+### Desktop Blog Frontend
 
 #### Dashboard
 ![](./Docs/PageImages/DesktopFront/dashboard.png)
@@ -75,7 +89,7 @@ is a clean and elegant blog template; built with cutting-edge technology stack; 
 #### Gallery
 ![](./Docs/PageImages/DesktopFront/gallery.png)
 
-#### Friends
+#### Friend Links
 ![](./Docs/PageImages/DesktopFront/friend.png)
 
 #### Article Details
@@ -90,7 +104,7 @@ is a clean and elegant blog template; built with cutting-edge technology stack; 
 ![](./Docs/PageImages/DesktopFront/nighttime-theme3.png)
 ![](./Docs/PageImages/DesktopFront/nighttime-theme4.png)
 
-### Desktop Admin
+### Desktop Admin Dashboard
 
 #### Admin Home
 ![](./Docs/PageImages/DesktopBackstage/home.png)
@@ -104,13 +118,13 @@ is a clean and elegant blog template; built with cutting-edge technology stack; 
 ### Mobile
 
 #### Home
-<img src="./Docs/PageImages/Mobile/home.png" alt="Mobile home" width="230" />
+<img src="./Docs/PageImages/Mobile/home.png" alt="Mobile home page" width="230" />
 
 #### Menu
 <img src="./Docs/PageImages/Mobile/menu-list.png" alt="Mobile menu" width="230" />
 
-#### Article Contents
-<img src="./Docs/PageImages/Mobile/article-ontents.png" alt="Mobile article contents" width="230" />
+#### Article Table of Contents
+<img src="./Docs/PageImages/Mobile/article-ontents.png" alt="Mobile article table of contents" width="230" />
 
 #### Article Details
 <img src="./Docs/PageImages/Mobile/article-detail.png" alt="Mobile article details" width="230" />
@@ -118,61 +132,128 @@ is a clean and elegant blog template; built with cutting-edge technology stack; 
 #### Gallery
 <img src="./Docs/PageImages/Mobile/gallery.png" alt="Mobile gallery" width="230" />
 
-## Usage
+## Local Development
 
-**Environment Setup**
+### Prerequisites
 
-Ensure your environment meets the following requirements:
+- Git and the .NET 10 SDK.
+- Node.js 24 LTS is recommended, with a minimum version of `24.15.0` to meet the current dependencies of the blog frontend and admin dashboard.
+- The admin dashboard uses pnpm, version `10.30.3` or later; the blog frontend instructions below use npm to match its Docker build.
+- PostgreSQL; file uploads also require RustFS or S3-compatible storage, and email notifications require SMTP configuration.
 
-- **git**: You need git to clone and manage project versions.
-- **NodeJS**: >=18.12.0, recommended 18.19.0 or higher.
-- **pnpm**: >= 8.7.0, recommended 8.14.0 or higher.
-
-**Clone the Project**
+### Get the Source Code
 
 ```bash
-# github
 git clone https://github.com/YangGongziDev/Mint.Blog.git
-# gitee
-git clone https://gitee.com/YangGongziDev/Mint.Blog.git
+cd Mint.Blog
 ```
 
-**Install Dependencies**
+You can also get the source code from Gitee: <https://gitee.com/YangGongziDev/Mint.Blog>.
+
+Unless otherwise noted, run the following commands from the repository root. Start the three services in separate terminals.
+
+### 1. Start the Backend WebApi
+
+#### Initialize the Database and Accounts
+
+1. Create the target database and import [Docs\Database.sql](./Docs/Database.sql) into the new database.
+2. Configure the backend connection string and other service settings before starting the backend.
+
+> **Warning: The schema script contains statements that drop tables and sequences, and uses `postgres` as the object owner. Do not import it directly into an existing application database; back up your data and review permissions and the script contents first.**
+
+#### Configure the Database, RustFS and Other Services
+
+Update `Mint.Blog.WebApi/appsettings.Development.json` for your environment, or override the configuration using environment variables. Do not commit real credentials to the repository.
+
+| Configuration Section | Purpose and Main Fields |
+| --- | --- |
+| `PostgreSql` | `ConnectionString`: PostgreSQL connection string |
+| `Jwt` | `Issuer`, `Audience`, `SecurityKey`, `AccessTokenExpireMinutes` |
+| `RustFS` | `Endpoint`, `UseSsl`, `PublicEndpoint`, `AccessKey`, `SecretKey`, `BucketName` |
+| `Smtp` | `Host`, `Port`, `UserName`, `Password`, `From`, `EnableSsl` |
+| `Site` | `Url`, `FeedUrl`: Site and feed URLs |
+| `CommentNotification` | `Domain`: Configuration related to comment notifications |
+
+Start command
+```shell
+cd Mint.Blog.WebApi
+dotnet run
+```
+
+The backend listens at <http://localhost:7000>.
+- [Health Check](http://localhost:7000/api/health): Not restricted to the development environment.
+- [Scalar API Documentation](http://localhost:7000/api/docs): Available only in the `Development` environment.
+- [OpenAPI JSON](http://localhost:7000/api/openapi/v1.json): Available only in the `Development` environment.
+
+### 2. Start the Admin Frontend
+
+Check `VITE_SERVICE_BASE_URL` (backend API) and `VITE_BLOG_WEB_URL` (blog frontend) in `.env.development`. The `/api/` URL in production requires reverse proxy support in your deployment, or you can use the default configuration.
 
 ```bash
-pnpm install
+cd Mint.Blog.Admin.Vue
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-**Start Development Server**
+Admin dashboard URL: <http://localhost:7100>.
+
+#### Initial Accounts and Passwords
+
+| Role | Username | Password |
+| --- | --- | --- |
+| Super Administrator | `SuperAdmin` | `SuperAdmin` |
+| Regular Administrator | `GenerallyAdmin` | `GenerallyAdmin` |
+| Guest User | `VisitorAdmin` | `VisitorAdmin` |
+> These accounts are for development use only. Do not retain the default passwords in production.
+
+### 3. Start the Surfer Frontend
+
+Before starting, update `runtimeConfig` in `Mint.Blog.Web.Nuxt/nuxt.config.ts` for your local environment to configure the backend API, blog frontend, admin dashboard and resource URLs, or use the default configuration.
 
 ```bash
-pnpm run dev
+cd Mint.Blog.Web.Nuxt
+npm ci
+pnpm dev
 ```
 
-**Build for Production**
+Blog frontend URL: <http://localhost:8080>. The Nuxt server connects to `http://localhost:7000/api` by default.
 
-```bash
-pnpm build
-```
+## Docker Deployment
+
+The repository provides separate Compose files for the backend and blog frontend, not a complete one-click deployment stack with all dependencies included. Prepare PostgreSQL, object storage and a reverse proxy separately, and adjust the configuration for your environment.
+
+The blog frontend container sets the following Nuxt runtime configuration through `environment` in `Mint.Blog.Web.Nuxt/compose.yaml`, overriding the defaults in `nuxt.config.ts`:
+
+| Environment Variable | Purpose |
+| --- | --- |
+| `NUXT_API_BASE` | Backend API URL accessed by the Nuxt server; a container network address can be used |
+| `NUXT_PUBLIC_SITE_URL` | Public blog frontend URL; should match the backend's `Site:Url` |
+| `NUXT_PUBLIC_ADMIN_SITE_URL` | Admin dashboard URL accessible from the browser |
+| `NUXT_PUBLIC_ASSET_BASE_URL` | Public resource URL accessible from the browser |
+
+These variables also apply to non-container environments; this section only explains where to configure them for Compose deployments.
+
+For more steps, see the [Docker Deployment Guide](./Docs/Docker部署流程.md). Refer to the current Compose files and Dockerfiles for the actual parameters.
+- [Mint.Blog Docker Deployment](https://www.yanggongzi.dev/columns/1). Refer to the current Compose files and Dockerfiles for the actual parameters.
 
 ## Ecosystem
 
-- [Mint.Cloud](https://github.com/YangGongziDev/Mint.Cloud): A `.NET Cloud` rapid development framework for admin systems, rebuilt based on `Mint.Blog`.
-- [Mint.Cloud.Vue](https://github.com/YangGongziDev/Mint.Cloud.Vue): A `TypeScript Vue` rapid development project for admin systems, rebuilt based on `Mint.Blog.Vue`, used to pair with `Mint.Cloud` for backend development.
+- [Mint.Forge](https://github.com/YangGongziDev/Mint.Forge): A `.NET microservices rapid development framework for middle and back-office applications`, rebuilt from `Mint.Blog` and maintained independently.
+- [Mint.Forge.Vue](https://github.com/YangGongziDev/Mint.Forge.Vue): A `general-purpose admin frontend template`, rebuilt from `Mint.Blog.Vue` and maintained independently, designed to work with the `Mint.Forge` backend.
 
 
 ## How to Contribute
 
-We warmly welcome and appreciate all forms of contributions. If you have any ideas or suggestions, feel free to share them by submitting [pull requests](https://github.com/YangGongziDev/Mint.Blog/pulls) or creating a GitHub [issue](https://github.com/YangGongziDev/Mint.Blog/issues/new).
+We warmly welcome and appreciate contributions of all kinds. If you have any ideas or suggestions, please share them by submitting [pull requests](https://github.com/YangGongziDev/Mint.Blog/pulls) or opening a GitHub [issue](https://github.com/YangGongziDev/Mint.Blog/issues/new).
 
-## Git Commit Convention
+## Git Commit Guidelines
 
-It is recommended to use the [Conventional Commits](https://www.conventionalcommits.org/) specification for organizing commit messages, making it easier to auto-generate changelogs and manage releases.
+We recommend following [Conventional Commits](https://www.conventionalcommits.org/) for commit messages to facilitate automated changelog generation and version management.
 
 
 ## Browser Support
 
-It is recommended to use the latest version of Chrome for development to get the best experience.
+We recommend using the latest version of Chrome for development to get the best experience.
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png" alt="IE" width="24px" height="24px"  />](http://godban.github.io/browsers-support-badges/) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt=" Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/) |
 | --- | --- | --- | --- | --- |
@@ -180,12 +261,12 @@ It is recommended to use the latest version of Chrome for development to get the
 
 ## Contributors
 
-Thank you to all contributors for their efforts. If you'd like to contribute to this project, please refer to [How to Contribute](#how-to-contribute).
+Thank you to the following contributors for their contributions. If you would like to contribute to this project, please see [How to Contribute](#how-to-contribute).
 
 <a href="https://github.com/YangGongziDev/Mint.Blog/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=YangGongziDev/Mint.Blog" />
 </a>
 
-## Disclaimer
+## Notice
 
-1. This project is open-sourced under the [2026 Programmer YangGongziDev © MIT](./LICENSE) license. It is provided for learning and reference purposes only. To protect the original author's intellectual property rights, for commercial use or secondary open-sourcing, it is sufficient to retain the original author's copyright information.
+1. This project is open source under the [2026 程序员杨工子 © MIT](./LICENSE) license and is intended for learning and reference. To protect the original author's rights, you only need to retain the original author's copyright notice when redistributing it as open source or using it commercially.

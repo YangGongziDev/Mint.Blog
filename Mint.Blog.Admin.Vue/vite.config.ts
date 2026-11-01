@@ -22,7 +22,7 @@ export default defineConfig(configEnv => {
   const viteEnv = loadEnv(configEnv.mode, process.cwd()) as unknown as Env.ViteEnv;
   const { VITE_BASE_URL } = viteEnv;
 
-  const localIconPath = path.join(process.cwd(), 'src/assets/system/svg');
+  const localIconPath = path.join(process.cwd(), 'src/assets/system');
   const collectionName = ICON_LOCAL_PREFIX.replace(`${ICON_PREFIX}-`, '');
   const isDev = configEnv.mode === 'development';
 

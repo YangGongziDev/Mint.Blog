@@ -1,17 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
-using Mint.Blog.Application.Abstractions;
-using Mint.Blog.Application.Blog.Setting.Queries.GetBlogSettingsDetail;
+using Mint.Blog.Common.Responses;
+using Mint.Blog.Model.Vos.Blog.Setting;
+using Mint.Blog.Service.IService.Blog;
 
 namespace Mint.Blog.WebApi.Controllers.Blog.Surfer;
 
 [ApiController]
-[Route("api/blog/surfer/setting")]
-public sealed class SettingController(IGetBlogSettingsDetailQueryService blogSettingsDetailQueryService)
+[Route("api/surfer/setting")]
+public sealed class SettingController(IBlogSettingService blogSettingsDetailQueryService)
 	: ControllerBase {
 	[HttpGet]
-	[ProducesResponseType(typeof(ApiResponse<BlogSettingsDetailDto>), StatusCodes.Status200OK)]
-	public async Task<ActionResult<ApiResponse<BlogSettingsDetailDto>>> Get(CancellationToken cancellationToken){
+	[ProducesResponseType(typeof(ApiResponse<BlogSettingsDetailVo>), StatusCodes.Status200OK)]
+	public async Task<ActionResult<ApiResponse<BlogSettingsDetailVo>>> Get(CancellationToken cancellationToken){
 		var result = await blogSettingsDetailQueryService.GetAsync(cancellationToken);
-		return Ok(ApiResponse<BlogSettingsDetailDto>.Ok(result, null));
+		return Ok(ApiResponse<BlogSettingsDetailVo>.Ok(result, null));
 	}
 }

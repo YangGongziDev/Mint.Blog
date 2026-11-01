@@ -1,23 +1,15 @@
 <template>
   <div class="h-full">
-    <iframe id="iframePage" class="size-full" :src="url"></iframe>
+    <iframe v-if="url" id="iframePage" class="size-full" :src="url"></iframe>
+    <div v-else class="flex h-full items-center justify-center text-gray-500">
+      公共站点地址未配置或无效，当前入口不可用。
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onActivated, onMounted } from 'vue';
-
 interface Props {
-  url: string;
+  url?: string;
 }
-
 defineProps<Props>();
-
-onMounted(() => {
-  console.log('mounted');
-});
-
-onActivated(() => {
-  console.log('activated');
-});
 </script>

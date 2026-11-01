@@ -1,6 +1,6 @@
 <template>
   <div class="h-[72px] w-[72px] overflow-hidden rounded-full">
-    <img src="@/assets/blog/surfer/author/author-yangmufa-picture.jpg" class="size-full" />
+    <img src="@/assets/author-yangmufa-picture.jpg" class="size-full" />
   </div>
 </template>
 

@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import logoSvg from '@/assets/system/svg/logo.svg';
+import logoSvg from '@/assets/system/logo.svg';
 
 interface Props {
   src?: string;

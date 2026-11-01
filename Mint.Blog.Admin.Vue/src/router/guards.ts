@@ -50,7 +50,7 @@ function createRouteGuard(router: Router) {
     const authStore = useAuthStore();
     const rootRoute: RouteKey = 'root';
     const loginRoute: RouteKey = 'login';
-    const noAuthorizationRoute: RouteKey = '403';
+    const noAuthorizationRoute: RouteKey = 'exception_403';
     const isLogin = Boolean(localStg.get('token'));
     const needLogin = Boolean(to.meta.public) && to.name !== loginRoute;
     const routeRoles = to.meta.roles || [];
@@ -96,7 +96,7 @@ async function initRoute(to: RouteLocationNormalized): Promise<RouteLocationRaw 
   const isLogin = Boolean(localStg.get('token'));
 
   if (!isLogin) {
-    if ((!to.meta.public || to.name === 'login') && !isNotFoundRoute) {
+    if (!to.meta.public || to.name === 'login') {
       routeStore.onRouteSwitchWhenNotLoggedIn(to.path);
       return null;
     }
@@ -116,7 +116,7 @@ async function initRoute(to: RouteLocationNormalized): Promise<RouteLocationRaw 
   const exist = await routeStore.getIsAuthRouteExist(to.path as string);
 
   if (exist) {
-    return { name: '403' };
+    return { name: 'exception_403' };
   }
 
   return null;
@@ -138,9 +138,7 @@ function getRouteQueryOfLoginRoute(to: RouteLocationNormalized) {
   const [redirectPath, redirectQuery] = redirect.split('?');
   const isRedirectHome =
     redirectPath === '/' ||
-    redirectPath === '/blog' ||
-    redirectPath === '/blog/admin' ||
-    redirectPath === '/blog/surfer';
+    redirectPath === '/home';
   const query: LocationQueryRaw = to.name !== loginRoute && !isRedirectHome ? { redirect } : {};
 
   if (isRedirectHome && redirectQuery) {

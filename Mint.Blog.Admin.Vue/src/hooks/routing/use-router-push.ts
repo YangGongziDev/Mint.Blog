@@ -80,7 +80,7 @@ export function useRouterPush(inSetup = true) {
   }
 
   async function toHome() {
-    return routerPushByKey('blog-admin_home');
+    return routerPushByKey('home');
   }
 
   /**
@@ -124,9 +124,11 @@ export function useRouterPush(inSetup = true) {
    * @param [needRedirect=true] Whether to redirect after login. Default is `true`
    */
   async function redirectFromLogin(needRedirect = true) {
-    const redirect = route.value.query?.redirect as string;
+    const redirect = route.value.query?.redirect;
 
-    if (needRedirect && redirect) {
+    if (needRedirect && typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//') &&
+      !Array.from(redirect).some(char => char === '\\' || char.charCodeAt(0) <= 32 || char.charCodeAt(0) === 127) &&
+      router.resolve(redirect).name !== 'login') {
       await routerPush(redirect);
     } else {
       await toHome();

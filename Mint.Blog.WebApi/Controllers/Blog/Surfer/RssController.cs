@@ -6,9 +6,8 @@ using System.Xml;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Mint.Blog.Application.Blog.Article.Queries.GetRssArticles;
-using Mint.Blog.Application.Blog.Setting.Queries.GetBlogSettingsDetail;
-using Mint.Blog.Infrastructure.Options;
+using Mint.Blog.Service.IService.Blog;
+using Mint.Blog.Model.Options;
 
 namespace Mint.Blog.WebApi.Controllers.Blog.Surfer;
 
@@ -16,8 +15,8 @@ namespace Mint.Blog.WebApi.Controllers.Blog.Surfer;
 [AllowAnonymous]
 [Route("api/rss")]
 public sealed class RssController(
-	IGetRssArticlesQueryService articles,
-	IGetBlogSettingsDetailQueryService settings,
+	IPublicArticleService articles,
+	IBlogSettingService settings,
 	IOptions<SiteOptions> siteOptions) : ControllerBase {
 	private const string ContentNamespace = "http://purl.org/rss/1.0/modules/content/";
 	private const string CreatorNamespace = "http://purl.org/dc/elements/1.1/";
@@ -28,7 +27,7 @@ public sealed class RssController(
 	public async Task<IActionResult> Get(CancellationToken cancellationToken){
 		var siteUrl = new Uri(siteOptions.Value.Url.TrimEnd('/') + "/", UriKind.Absolute);
 		var site = await settings.GetAsync(cancellationToken);
-		var items = await articles.GetAsync(cancellationToken);
+		var items = await articles.GetRssAsync(cancellationToken);
 		var title = string.IsNullOrWhiteSpace(site?.Name) ? "Mint.Blog" : site.Name;
 		var author = site?.Author?.Trim();
 		var mail = site?.Mail?.Trim();
@@ -77,7 +76,7 @@ public sealed class RssController(
 
 			foreach (var item in items) {
 				var id = item.Id.ToString(CultureInfo.InvariantCulture);
-				var articleUrl = new Uri(siteUrl, "blog/surfer/article/" + id).AbsoluteUri;
+				var articleUrl = new Uri(siteUrl, "/articles/" + id).AbsoluteUri;
 				writer.WriteStartElement("item");
 				writer.WriteElementString("title", item.Title);
 				writer.WriteElementString("link", articleUrl);

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Mint.Blog.Model\Mint.Blog.Model.csproj" />
+        <ProjectReference Include="..\Mint.Blog.Common\Mint.Blog.Common.csproj" />
+    </ItemGroup>
+</Project>

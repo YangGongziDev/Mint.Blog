@@ -95,7 +95,9 @@ export function buildMenusByMenuTree(menuTree: AppMenuNode[], routeMap: Map<Rout
     menu.routePath = route?.path || node.path;
     menu.icon = getMenuIcon(route);
     menu.title = menu.menuI18nKey ? $t(menu.menuI18nKey) : menu.label;
-    menu.children = node.children?.map(convert);
+    menu.children = node.children
+      ?.filter(child => child.menuType !== 'route' || routeMap.has(child.routeKey || child.key))
+      .map(convert);
 
     if (!menu.children?.length) {
       delete menu.children;

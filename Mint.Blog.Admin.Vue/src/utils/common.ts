@@ -1,5 +1,12 @@
 import { $t } from '@/locales';
 
+const optionCollator = new Intl.Collator('zh-CN-u-co-pinyin', { sensitivity: 'base' });
+
+/** 按字母、中文拼音排序展示选项，不改变原数组及大小写相同项的相对顺序。 */
+export function sortOptionsByLabel<T>(options: readonly T[], getLabel: (option: T) => string): T[] {
+  return [...options].sort((a, b) => optionCollator.compare(getLabel(a), getLabel(b)));
+}
+
 /**
  * Transform record to option
  *
@@ -14,7 +21,7 @@ import { $t } from '@/locales';
  *   //   { value: 'key1', label: 'label1' },
  *   //   { value: 'key2', label: 'label2' }
  *   // ]
- *   ```;
+ *   ```
  *
  * @param record
  */

@@ -9,6 +9,9 @@
     <ItemGroup>
         <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
         <Content Remove="appsettings-temp.json" />
+        <Using Include="Mint.Blog.Common.Responses" />
+        <Using Include="Mint.Blog.Common.Exceptions" />
+        <Using Include="Mint.Blog.Common.Constants" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,8 +25,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Mint.Blog.Application\Mint.Blog.Application.csproj"/>
-        <ProjectReference Include="..\Mint.Blog.Infrastructure\Mint.Blog.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Mint.Blog.Repository\Mint.Blog.Repository.csproj"/>
+        <ProjectReference Include="..\Mint.Blog.Service\Mint.Blog.Service.csproj"/>
+        <ProjectReference Include="..\Mint.Blog.Common\Mint.Blog.Common.csproj"/>
     </ItemGroup>
 
 </Project>

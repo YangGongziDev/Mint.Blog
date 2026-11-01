@@ -1,378 +1,193 @@
 <template>
-  <LookForward v-if="isDetailPage">
-    <p>{{ detailId }}</p>
-  </LookForward>
-  <div v-else class="min-h-[500px] flex flex-col gap-[16px] overflow-hidden max-sm:overflow-auto">
-    <ACard :title="$t('common.search')" :bordered="false" class="card-wrapper">
-      <AForm ref="searchFormRef" :model="searchParams" :label-col="{ span: 6, md: 8 }">
-        <ARow :gutter="[16, 16]" wrap>
-          <ACol :span="24" :md="12" :lg="6">
-            <AFormItem label="用户名" name="userName" class="m-0">
-              <AInput v-model:value="searchParams.userName" placeholder="请输入用户名" />
-            </AFormItem>
-          </ACol>
-          <ACol :span="24" :md="12" :lg="6">
-            <AFormItem label="显示名称" name="displayName" class="m-0">
-              <AInput v-model:value="searchParams.displayName" placeholder="请输入显示名称" />
-            </AFormItem>
-          </ACol>
-          <ACol :span="24" :md="12" :lg="6">
-            <AFormItem label="删除状态" name="isDeleted" class="m-0">
-              <ASelect
-                v-model:value="searchParams.isDeleted"
-                placeholder="请选择删除状态"
-                :options="isDeletedOptions"
-                allow-clear
-              />
-            </AFormItem>
-          </ACol>
-          <ACol :span="24" :md="12" :lg="6" class="search-action-col">
-            <AFormItem class="m-0">
-              <div class="search-action-group w-full flex flex-wrap items-center justify-end gap-3">
-                <AButton class="search-action-btn" @click="handleSearchReset">
-                  <template #icon>
-                    <icon-ic-round-refresh class="align-sub text-icon" />
-                  </template>
-                  <span class="ml-[8px] whitespace-nowrap">{{ $t('common.reset') }}</span>
-                </AButton>
-                <AButton type="primary" ghost class="search-action-btn" @click="handleSearch">
-                  <template #icon>
-                    <icon-ic-round-search class="align-sub text-icon" />
-                  </template>
-                  <span class="ml-[8px] whitespace-nowrap">{{ $t('common.search') }}</span>
-                </AButton>
-              </div>
-            </AFormItem>
-          </ACol>
-        </ARow>
+  <ACard v-if="isDetailPage" title="用户详情" :loading="detailLoading" class="card-wrapper">
+    <ADescriptions v-if="detail" bordered :column="2">
+      <ADescriptionsItem label="ID">{{ detail.id }}</ADescriptionsItem>
+      <ADescriptionsItem label="用户名">{{ detail.username }}</ADescriptionsItem>
+      <ADescriptionsItem label="姓名">{{ detail.realName }}</ADescriptionsItem>
+      <ADescriptionsItem label="状态">{{ detail.status === 'active' ? '启用' : '禁用' }}</ADescriptionsItem>
+      <ADescriptionsItem label="邮箱">{{ detail.email || '-' }}</ADescriptionsItem>
+      <ADescriptionsItem label="电话">{{ detail.phone || '-' }}</ADescriptionsItem>
+      <ADescriptionsItem label="角色">{{ detail.roles.map(role => role.name).join('、') || '-' }}</ADescriptionsItem>
+      <ADescriptionsItem label="创建时间">{{ detail.createdAt }}</ADescriptionsItem>
+      <ADescriptionsItem label="更新时间">{{ detail.updatedAt || '-' }}</ADescriptionsItem>
+    </ADescriptions>
+    <AEmpty v-else-if="!detailLoading" description="未能加载用户详情" />
+  </ACard>
+  <div v-else class="min-h-[500px] flex flex-col gap-4">
+    <ACard title="搜索" :bordered="false" class="card-wrapper">
+      <AForm layout="inline" :model="searchParams" class="flex flex-wrap gap-3">
+        <AFormItem label="用户名"><AInput v-model:value="searchParams.username" allow-clear /></AFormItem>
+        <AFormItem label="姓名"><AInput v-model:value="searchParams.realName" allow-clear /></AFormItem>
+        <AFormItem label="邮箱"><AInput v-model:value="searchParams.email" allow-clear /></AFormItem>
+        <AFormItem label="电话"><AInput v-model:value="searchParams.phone" allow-clear /></AFormItem>
+        <AFormItem label="状态"><ASelect v-model:value="searchParams.status" :options="statusOptions" allow-clear class="w-[100px]" /></AFormItem>
+        <AButton @click="resetSearchParams">重置</AButton>
+        <AButton type="primary" @click="getDataByPage()">搜索</AButton>
       </AForm>
     </ACard>
-
-    <ACard
-      title="用户管理"
-      :bordered="false"
-      :body-style="{ flex: 1, overflow: 'hidden' }"
-      class="min-h-0 flex flex-col card-wrapper sm:min-w-0 sm:flex-1 sm:overflow-hidden"
-    >
+    <ACard title="用户管理" :bordered="false" class="card-wrapper">
       <template #extra>
-        <TableHeaderOperation
-          v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
-          :loading="loading"
-          @add="handleAdd"
-          @delete="handleBatchDelete"
-          @refresh="getData"
-        />
+        <ASpace>
+          <AButton v-if="can('add')" type="primary" @click="openForm()">新增</AButton>
+          <APopconfirm v-if="can('delete')" title="确认删除所选用户？" @confirm="deleteUsers(checkedIds)">
+            <AButton danger :disabled="!checkedIds.length || deleting">批量删除</AButton>
+          </APopconfirm>
+          <AButton :loading="loading" @click="getData">刷新</AButton>
+        </ASpace>
       </template>
-      <ATable
-        ref="tableWrapperRef"
-        :columns="columns"
-        :data-source="data"
-        size="small"
-        :row-selection="rowSelection"
-        :scroll="scrollConfig"
-        :loading="loading"
-        row-key="id"
-        :pagination="mobilePagination"
-        class="h-full"
-      />
-
-      <ADrawer v-model:open="drawerVisible" :title="drawerTitle" :width="360">
-        <AForm ref="drawerFormRef" layout="vertical" :model="drawerModel" :rules="drawerRules">
-          <AFormItem label="用户名" name="userName">
-            <AInput v-model:value="drawerModel.userName" placeholder="请输入用户名" />
-          </AFormItem>
-          <AFormItem label="显示名称" name="displayName">
-            <AInput v-model:value="drawerModel.displayName" placeholder="请输入显示名称" />
-          </AFormItem>
-          <AFormItem label="删除状态" name="isDeleted">
-            <ARadioGroup v-model:value="drawerModel.isDeleted">
-              <ARadio :value="0">0 - 未删除</ARadio>
-              <ARadio :value="1">1 - 已删除</ARadio>
-            </ARadioGroup>
-          </AFormItem>
-        </AForm>
-        <template #footer>
-          <ASpace :size="16">
-            <AButton @click="closeDrawer">{{ $t('common.cancel') }}</AButton>
-            <AButton type="primary" @click="handleDrawerSubmit">{{ $t('common.confirm') }}</AButton>
-          </ASpace>
-        </template>
-      </ADrawer>
+      <ATable :columns="columns" :data-source="data" :loading="loading || deleting" row-key="id"
+        :row-selection="rowSelection" :pagination="mobilePagination" :scroll="{ x: 1300 }" size="small" />
     </ACard>
+    <ADrawer v-model:open="drawerVisible" :title="editingId ? '编辑用户' : '新增用户'" :width="420">
+      <AForm ref="formRef" layout="vertical" :model="model" :rules="rules">
+        <AFormItem label="用户名" name="username"><AInput v-model:value="model.username" :disabled="Boolean(editingId)" :maxlength="60" /></AFormItem>
+        <AFormItem label="姓名" name="realName"><AInput v-model:value="model.realName" :maxlength="100" /></AFormItem>
+        <AFormItem v-if="!editingId" label="初始密码（至少8字符，不超过72 UTF-8字节）" name="password"><AInputPassword v-model:value="model.password" autocomplete="new-password" /></AFormItem>
+        <AFormItem label="邮箱"><AInput v-model:value="model.email" /></AFormItem>
+        <AFormItem label="电话"><AInput v-model:value="model.phone" /></AFormItem>
+        <AFormItem label="状态"><ASelect v-model:value="model.status" :options="statusOptions" :disabled="isSelf" /></AFormItem>
+        <AFormItem label="角色">
+          <ASelect v-model:value="model.roleIds" mode="multiple" :options="sortedRoleOptions" :loading="rolesLoading" :disabled="isSelf || !rolesReady" @change="rolesChanged = true" />
+          <p v-if="isSelf">不能修改自己的角色或禁用自己。</p>
+          <p v-else-if="!rolesReady">角色选项未加载成功，保存不会修改原角色关联。</p>
+        </AFormItem>
+      </AForm>
+      <template #footer><ASpace><AButton @click="drawerVisible = false">取消</AButton><AButton type="primary" :loading="saving" :disabled="!can(editingId ? 'edit' : 'add')" @click="submit">保存</AButton></ASpace></template>
+    </ADrawer>
   </div>
 </template>
 
 <script setup lang="tsx">
-import { computed, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import { Button, Popconfirm, Tag } from 'ant-design-vue';
-import { fetchGetUserList, fetchUpdateUser } from '@/service/system/user';
+import { computed, nextTick, reactive, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { Button, Popconfirm } from 'ant-design-vue';
+import type { TableRowSelection } from 'ant-design-vue/es/table/interface';
+import { fetchCreateUser, fetchDeleteUser, fetchGetAssignableRoles, fetchGetUser, fetchGetUserList, fetchUpdateUser } from '@/api/system/user';
+import type { RbacUser, UserUpdateInput } from '@/api/system/user';
 import { useAuthStore } from '@/store/system/auth';
-import { useTable, useTableOperate, useTableScroll } from '@/hooks/table/use-table';
-import { useAntdForm, useFormRules } from '@/hooks/form/use-antd-form';
-import { $t } from '@/locales';
+import { useAuth } from '@/hooks/auth/use-auth';
+import { useTable } from '@/hooks/table/use-table';
+import { useAntdForm } from '@/hooks/form/use-antd-form';
+import { sortOptionsByLabel } from '@/utils/common';
 
-defineOptions({
-  name: 'SystemUser'
-});
-
+defineOptions({ name: 'SystemUser' });
 const route = useRoute();
-const authStore = useAuthStore();
-const readonlyActionMessage = '演示账号仅允许查看，不能执行会修改后端数据的操作';
-const isDemoAccount = computed(() => {
-  const roleText = authStore.userInfo.roles.join(',').toLowerCase();
-  const userText = `${authStore.userInfo.userName},${authStore.userInfo.displayName}`.toLowerCase();
-  return /demo|演示/.test(roleText) || /demo|演示/.test(userText);
-});
-
-function warnReadonlyAction() {
-  window.$message?.warning(readonlyActionMessage);
-}
-
+const router = useRouter();
+const auth = useAuthStore();
+const { hasAuth } = useAuth();
+const can = (action: string) => !auth.isReadonly && hasAuth(`system.user.${action}`);
 const isDetailPage = computed(() => route.name === 'system_user-detail');
-
-const detailId = computed(() => route.params.id as string);
-
-const { tableWrapperRef, scrollConfig } = useTableScroll(980);
-
-const isDeletedOptions = [
-  { label: '0 - 未删除', value: 0 },
-  { label: '1 - 已删除', value: 1 }
-];
-
-const {
-  columns,
-  columnChecks,
-  data,
-  getData,
-  getDataByPage,
-  loading,
-  mobilePagination,
-  searchParams,
-  resetSearchParams
-} = useTable({
+const detail = ref<RbacUser | null>(null);
+const detailLoading = ref(false);
+const statusOptions = computed(() => sortOptionsByLabel([{ label: '启用', value: 'active' }, { label: '禁用', value: 'inactive' }], option => option.label));
+const { columns, data, loading, getData, getDataByPage, mobilePagination, searchParams, resetSearchParams } = useTable({
   apiFn: fetchGetUserList,
-  apiParams: {
-    current: 1,
-    size: 10,
-    userName: undefined,
-    displayName: undefined,
-    isDeleted: undefined
-  },
+  immediate: false,
+  apiParams: { current: 1, size: 10, username: undefined, realName: undefined, email: undefined, phone: undefined, status: undefined },
   columns: () => [
-    {
-      key: 'index',
-      title: $t('common.index'),
-      dataIndex: 'index',
-      align: 'center',
-      width: 64
-    },
-    {
-      key: 'id',
-      dataIndex: 'id',
-      title: 'ID',
-      align: 'center',
-      width: 180
-    },
-    {
-      key: 'userName',
-      dataIndex: 'userName',
-      title: '用户名',
-      align: 'center',
-      minWidth: 140
-    },
-    {
-      key: 'displayName',
-      dataIndex: 'displayName',
-      title: '显示名称',
-      align: 'center',
-      minWidth: 140
-    },
-    {
-      key: 'isDeleted',
-      dataIndex: 'isDeleted',
-      title: '删除状态',
-      align: 'center',
-      width: 110,
-      customRender: ({ record }) => {
-        const isDeleted = record.isDeleted === 1;
-        return <Tag color={isDeleted ? 'warning' : 'success'}>{record.isDeleted}</Tag>;
-      }
-    },
-    {
-      key: 'createTime',
-      dataIndex: 'createTime',
-      title: '创建时间',
-      align: 'center',
-      width: 180
-    },
-    {
-      key: 'updateTime',
-      dataIndex: 'updateTime',
-      title: '更新时间',
-      align: 'center',
-      width: 180
-    },
-    {
-      key: 'operate',
-      title: $t('common.operate'),
-      align: 'center',
-      width: 130,
-      customRender: ({ record }) => (
-        <div class="flex items-center justify-center gap-[8px]">
-          <Button type="primary" ghost size="small" onClick={() => edit(record.id)}>
-            {$t('common.edit')}
-          </Button>
-          <Popconfirm title={$t('common.confirmDelete')} onConfirm={() => handleDelete(record.id)}>
-            <Button danger size="small">
-              {$t('common.delete')}
-            </Button>
-          </Popconfirm>
-        </div>
-      )
-    }
+    { key: 'id', dataIndex: 'id', title: 'ID', width: 180 },
+    { key: 'username', dataIndex: 'username', title: '用户名' },
+    { key: 'realName', dataIndex: 'realName', title: '姓名' },
+    { key: 'email', dataIndex: 'email', title: '邮箱' },
+    { key: 'phone', dataIndex: 'phone', title: '电话' },
+    { key: 'status', title: '状态', customRender: ({ record }) => record.status === 'active' ? '启用' : '禁用' },
+    { key: 'roles', title: '角色', customRender: ({ record }) => record.roles.map(role => role.name).join('、') },
+    { key: 'createdAt', dataIndex: 'createdAt', title: '创建时间' },
+    { key: 'updatedAt', dataIndex: 'updatedAt', title: '更新时间' },
+    { key: 'operate', title: '操作', width: 210, customRender: ({ record }) => <div class="flex gap-2">
+      <Button size="small" onClick={() => router.push({ name: 'system_user-detail', params: { id: record.id } })}>详情</Button>
+      {can('edit') && <Button size="small" onClick={() => openForm(record)}>编辑</Button>}
+      {can('delete') && <Popconfirm title="确认删除？" disabled={record.id === auth.userInfo.userId || deleting.value} onConfirm={() => deleteUsers([record.id])}>
+        <Button size="small" danger disabled={record.id === auth.userInfo.userId || deleting.value}>删除</Button>
+      </Popconfirm>}
+    </div> }
   ]
 });
-
-const {
-  drawerVisible,
-  operateType,
-  editingData,
-  handleAdd,
-  handleEdit,
-  checkedRowKeys,
-  rowSelection,
-  onBatchDeleted,
-  onDeleted
-} = useTableOperate(data, getData);
-
-async function handleBatchDelete() {
-  if (isDemoAccount.value) {
-    warnReadonlyAction();
-    return;
-  }
-
-  onBatchDeleted();
+const checkedIds = ref<string[]>([]);
+const deleting = ref(false);
+const rowSelection = computed<TableRowSelection<RbacUser> | undefined>(() => can('delete') ? {
+  selectedRowKeys: checkedIds.value,
+  onChange: keys => { checkedIds.value = keys as string[]; },
+  getCheckboxProps: record => ({ disabled: record.id === auth.userInfo.userId || deleting.value })
+} : undefined);
+async function deleteUsers(ids: string[]) {
+  if (!can('delete') || deleting.value) return;
+  const targets = [...ids].filter(id => id !== auth.userInfo.userId);
+  if (!targets.length) return;
+  deleting.value = true;
+  try {
+    const results = await Promise.all(targets.map(async id => ({ id, ...await fetchDeleteUser(id) })));
+    const failed = results.filter(result => result.error).map(result => result.id);
+    checkedIds.value = failed;
+    const succeeded = results.length - failed.length;
+    if (failed.length) window.$message?.warning(`删除成功 ${succeeded} 项，失败 ${failed.length} 项；失败项已保留选择，请查看错误提示。`);
+    else window.$message?.success(`已删除 ${succeeded} 项`);
+    await getData();
+  } finally { deleting.value = false; }
 }
-
-function handleDelete(_id?: number) {
-  if (isDemoAccount.value) {
-    warnReadonlyAction();
-    return;
-  }
-
-  onDeleted();
-}
-
-function edit(id: number) {
-  handleEdit(id);
-}
-
-const { formRef: searchFormRef, validate: validateSearch, resetFields: resetSearchFields } = useAntdForm();
-
-async function handleSearchReset() {
-  await resetSearchFields();
-  resetSearchParams();
-}
-
-async function handleSearch() {
-  await validateSearch();
-  getDataByPage();
-}
-
-const { formRef: drawerFormRef, validate: validateDrawer, resetFields: resetDrawerFields } = useAntdForm();
-const { defaultRequiredRule } = useFormRules();
-
-const drawerTitle = computed(() => {
-  const titles: Record<AntDesign.TableOperateType, string> = {
-    add: $t('page.manage.user.addUser'),
-    edit: $t('page.manage.user.editUser')
-  };
-  return titles[operateType.value];
-});
-
-type DrawerModel = Pick<Api.SystemManage.User, 'userName' | 'displayName' | 'isDeleted'>;
-
-const drawerModel = ref(createDefaultDrawerModel());
-
-function createDefaultDrawerModel(): DrawerModel {
-  return {
-    userName: '',
-    displayName: '',
-    isDeleted: 0
-  };
-}
-
-type DrawerRuleKey = Extract<keyof DrawerModel, 'userName' | 'isDeleted'>;
-
-const drawerRules: Record<DrawerRuleKey, App.Global.FormRule> = {
-  userName: defaultRequiredRule,
-  isDeleted: defaultRequiredRule
+const drawerVisible = ref(false);
+const editingId = ref('');
+const isSelf = computed(() => Boolean(editingId.value) && editingId.value === auth.userInfo.userId);
+const saving = ref(false);
+const rolesLoading = ref(false);
+const rolesReady = ref(false);
+const rolesChanged = ref(false);
+const roleOptions = ref<{ label: string; value: string }[]>([]);
+const sortedRoleOptions = computed(() => sortOptionsByLabel(roleOptions.value, option => option.label));
+const model = reactive({ username: '', realName: '', password: '', email: '', phone: '', status: 'active' as RbacUser['status'], roleIds: [] as string[] });
+const { formRef, validate } = useAntdForm();
+const rules = {
+  username: [{ required: true, whitespace: true, message: '请输入用户名' }],
+  realName: [{ required: true, whitespace: true, message: '请输入姓名' }],
+  password: [{ validator: async (_rule: unknown, value: string) => {
+    if (!editingId.value && (value.length < 8 || new TextEncoder().encode(value).length > 72)) throw new Error('密码至少8字符且不超过72 UTF-8字节');
+  } }]
 };
-
-function handleInitDrawerModel() {
-  drawerModel.value = createDefaultDrawerModel();
-
-  if (operateType.value === 'edit' && editingData.value) {
-    Object.assign(drawerModel.value, editingData.value);
-  }
+async function openForm(user?: RbacUser) {
+  if (!can(user ? 'edit' : 'add')) return;
+  editingId.value = user?.id || '';
+  Object.assign(model, { username: user?.username || '', realName: user?.realName || '', password: '', email: user?.email || '', phone: user?.phone || '', status: user?.status || 'active', roleIds: user?.roles.map(role => role.id) || [] });
+  rolesChanged.value = false;
+  rolesReady.value = false;
+  roleOptions.value = user?.roles.map(role => ({ label: role.name, value: role.id })) || [];
+  drawerVisible.value = true;
+  await nextTick();
+  formRef.value?.clearValidate();
+  if (isSelf.value) return;
+  rolesLoading.value = true;
+  try {
+    const result = await fetchGetAssignableRoles();
+    if (result.error || !result.data) return;
+    const options = new Map(roleOptions.value.map(option => [option.value, option]));
+    result.data.forEach(role => options.set(role.id, { label: role.name, value: role.id }));
+    roleOptions.value = [...options.values()];
+    rolesReady.value = true;
+  } finally { rolesLoading.value = false; }
 }
-
-function closeDrawer() {
+async function submit() {
+  if (!can(editingId.value ? 'edit' : 'add') || saving.value) return;
+  await validate();
+  const payload: UserUpdateInput = { realName: model.realName.trim(), email: model.email, phone: model.phone, status: isSelf.value ? 'active' : model.status };
+  if (!isSelf.value && rolesReady.value && rolesChanged.value) payload.roleIds = [...model.roleIds];
+  saving.value = true;
+  try {
+    const result = editingId.value ? await fetchUpdateUser(editingId.value, payload) : await fetchCreateUser({ ...payload, username: model.username.trim(), password: model.password });
+    if (result.error) return;
+    window.$message?.success('保存成功');
+    drawerVisible.value = false;
+    model.password = '';
+    await getData();
+  } finally { saving.value = false; }
+}
+watch(() => [route.name, route.params.id], async () => {
   drawerVisible.value = false;
-}
-
-async function handleDrawerSubmit() {
-  if (isDemoAccount.value) {
-    warnReadonlyAction();
-    return;
-  }
-
-  await validateDrawer();
-
-  if (operateType.value === 'edit' && editingData.value) {
-    const { error } = await fetchUpdateUser(editingData.value.id, drawerModel.value);
-    if (error) return;
-  }
-
-  window.$message?.success($t('common.updateSuccess'));
-  closeDrawer();
-  getDataByPage();
-}
-
-watch(drawerVisible, () => {
-  if (drawerVisible.value) {
-    handleInitDrawerModel();
-    resetDrawerFields();
-  }
-});
+  if (!isDetailPage.value) { await getData(); return; }
+  const id = String(route.params.id || '');
+  detail.value = null;
+  detailLoading.value = true;
+  try {
+    const result = await fetchGetUser(id);
+    if (isDetailPage.value && route.params.id === id && !result.error) detail.value = result.data;
+  } finally { detailLoading.value = false; }
+}, { immediate: true });
 </script>
-
-<style scoped lang="scss">
-:deep(.search-action-col .ant-form-item-control-input) {
-  min-height: 32px;
-}
-
-.search-action-group {
-  min-height: 32px;
-}
-
-:deep(.search-action-btn) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 32px;
-  padding-inline: 12px;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-:deep(.search-action-btn .ant-btn-icon),
-:deep(.search-action-btn > span),
-:deep(.search-action-btn .ant-btn-icon + span) {
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-}
-</style>

@@ -48,11 +48,11 @@ import { getColorPalette } from '@/utils/color';
 interface Props {
   /** Theme color */
   themeColor: string;
-}  
+}
 
 const props = defineProps<Props>();
 
-const lightColor = computed(() => getColorPalette(props.themeColor, 3));  
+const lightColor = computed(() => getColorPalette(props.themeColor, 3));
 const darkColor = computed(() => getColorPalette(props.themeColor, 6));
 </script>
 

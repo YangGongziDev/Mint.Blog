@@ -2,6 +2,7 @@
   <ConfigProvider :theme="themeStore.antdTheme" :locale="antdLocale">
     <AppProvider>
       <RouterView class="bg-layout" />
+      <ClickCoreValues />
       <AWatermark
         v-if="themeStore.watermark.visible"
         v-bind="watermarkProps"
@@ -17,18 +18,19 @@ import { ConfigProvider } from 'ant-design-vue';
 import type { WatermarkProps } from 'ant-design-vue';
 import { useAppStore } from '@/store/system/app';
 import { useThemeStore } from '@/store/system/theme';
+import ClickCoreValues from '@/components/system/click-core-values.vue';
 import { antdLocales } from './locales/antd';
 
 defineOptions({
   name: 'App'
-});  
+});
 
 const appStore = useAppStore();
 const themeStore = useThemeStore();
 
 const antdLocale = computed(() => {
   return antdLocales[appStore.locale];
-});  
+});
 
 const watermarkProps = computed(() => {
   const props: WatermarkProps = {
@@ -37,16 +39,14 @@ const watermarkProps = computed(() => {
     height: 120,
     font: {
       fontSize: 16
-    },  
+    },
     offset: [12, 60],
     rotate: -15,
     zIndex: 9999
-  };  
+  };
 
   return props;
-});  
+});
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

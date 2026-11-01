@@ -1,18 +1,18 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using Mint.Blog.Application.Abstractions;
-using Mint.Blog.Application.Blog.Comment.Commands.PublishComment;
-using Mint.Blog.Application.Blog.Comment.Queries.GetCommentList;
-using Mint.Blog.Application.Blog.Comment.Queries.GetQqUserInfo;
+using Mint.Blog.Common.Constants;
+using Mint.Blog.Common.Responses;
+using Mint.Blog.Model.Dtos.Blog.Comment;
+using Mint.Blog.Model.Vos.Blog.Comment;
+using Mint.Blog.Service.IService.Blog;
 
 namespace Mint.Blog.WebApi.Controllers.Blog.Surfer;
 
 [ApiController]
-[Route("api/blog/surfer")]
+[Route("api/surfer")]
 public sealed class CommentController(
-	PublishCommentCommandHandler publishCommentCommandHandler,
-	IGetCommentListQueryService commentListQueryService,
-	IGetQqUserInfoQueryService qqUserInfoQueryService) : ControllerBase {
+	ICommentService commentService,
+	IQqUserInfoService qqUserInfoQueryService) : ControllerBase {
 	[HttpGet("comment/qq-user-info")]
 	[ProducesResponseType(typeof(ApiResponse<QqUserInfoDto>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -32,7 +32,7 @@ public sealed class CommentController(
 	[ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<ApiResponse<object>>> Publish([FromBody] PublishCommentCommand command,
 		CancellationToken cancellationToken){
-		var result = await publishCommentCommandHandler.HandleAsync(command, cancellationToken);
+		var result = await commentService.PublishAsync(command, cancellationToken);
 
 		if (!result.IsSuccess) return BadRequest(ApiResponse<object>.Fail(result.ErrorCode!, result.Message!));
 
@@ -43,7 +43,7 @@ public sealed class CommentController(
 	[ProducesResponseType(typeof(ApiResponse<CommentListDto>), StatusCodes.Status200OK)]
 	public async Task<ActionResult<ApiResponse<CommentListDto>>> Get([FromQuery] string routerUrl,
 		CancellationToken cancellationToken){
-		var result = await commentListQueryService.GetAsync(new GetCommentListQuery(routerUrl), cancellationToken);
+		var result = await commentService.GetAsync(new GetCommentListQuery(routerUrl), cancellationToken);
 		return Ok(ApiResponse<CommentListDto>.Ok(result));
 	}
 
@@ -62,7 +62,7 @@ public sealed class CommentController(
 			ParseCommentId(request.ReplyCommentId),
 			ParseCommentId(request.ParentCommentId));
 
-		var result = await publishCommentCommandHandler.HandleAsync(command, cancellationToken);
+		var result = await commentService.PublishAsync(command, cancellationToken);
 
 		return Ok(result.IsSuccess
 			? SurferCommentResponse<object>.Ok(null)
@@ -75,7 +75,7 @@ public sealed class CommentController(
 		[FromBody] SurferCommentListRequest? request,
 		CancellationToken cancellationToken){
 		var routerUrl = request?.RouterUrl ?? string.Empty;
-		var result = await commentListQueryService.GetAsync(new GetCommentListQuery(routerUrl), cancellationToken);
+		var result = await commentService.GetAsync(new GetCommentListQuery(routerUrl), cancellationToken);
 		return Ok(SurferCommentResponse<SurferCommentListData>.Ok(ToSurferCommentListData(result)));
 	}
 
@@ -120,37 +120,4 @@ public sealed class CommentController(
 			_ => null
 		};
 	}
-}
-
-public sealed record SurferPublishCommentRequest(
-	string? Avatar,
-	string? Nickname,
-	string? Mail,
-	string? Website,
-	string? RouterUrl,
-	string? Content,
-	JsonElement? ReplyCommentId,
-	JsonElement? ParentCommentId);
-
-public sealed record SurferCommentListRequest(string RouterUrl);
-
-public sealed record SurferQqUserInfoRequest(string Qq);
-
-public sealed record SurferCommentListData(int Total, IReadOnlyCollection<SurferCommentItem> Comments);
-
-public sealed record SurferCommentItem(
-	string Id,
-	string Avatar,
-	string Nickname,
-	string Website,
-	string Content,
-	string CreateTime,
-	string? ReplyNickname,
-	IReadOnlyCollection<SurferCommentItem> ChildComments,
-	bool IsShowReplyForm);
-
-public sealed record SurferCommentResponse<T>(bool Success, T? Data, string? Message = null, string? ErrorCode = null) {
-	public static SurferCommentResponse<T> Ok(T? data, string? message = null) => new(true, data, message);
-
-	public static SurferCommentResponse<T> Fail(string message, string? errorCode = null) => new(false, default, message, errorCode);
 }

@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using Mint.Blog.Application.Abstractions;
-using Mint.Blog.Application.Blog.Tag.Queries.GetTagList;
+using Mint.Blog.Common.Responses;
+using Mint.Blog.Model.Vos.Blog.Tag;
+using Mint.Blog.Service.IService.Blog;
 
 namespace Mint.Blog.WebApi.Controllers.Blog.Surfer;
 
 [ApiController]
-[Route("api/blog/surfer/tag")]
-public sealed class TagController(IGetTagListQueryService tagListQueryService) : ControllerBase {
+[Route("api/surfer/tag")]
+public sealed class TagController(ITagService tagListQueryService) : ControllerBase {
 	[HttpGet]
 	[ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<TagListItemDto>>), StatusCodes.Status200OK)]
 	public async Task<ActionResult<ApiResponse<IReadOnlyCollection<TagListItemDto>>>> Get(

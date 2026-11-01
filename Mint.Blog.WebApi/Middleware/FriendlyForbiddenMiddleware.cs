@@ -1,4 +1,4 @@
-using Mint.Blog.Application.Abstractions;
+using Mint.Blog.Common.Responses;
 
 namespace Mint.Blog.WebApi.Middleware;
 

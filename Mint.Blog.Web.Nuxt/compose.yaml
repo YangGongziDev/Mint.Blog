@@ -1,0 +1,19 @@
+services:
+  mint-blog-surfer:
+    image: mint-blog-surfer:latest
+    container_name: mint-blog-surfer
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "3000"
+      NUXT_API_BASE: http://mint-blog-server:7000/api
+      NUXT_PUBLIC_SITE_URL: https://www.yanggongzi.dev
+      NUXT_PUBLIC_ADMIN_SITE_URL: https://blog.yanggongzi.dev
+      NUXT_PUBLIC_ASSET_BASE_URL: https://img.yanggongzi.dev/
+    restart: unless-stopped
+    networks:
+      - mint-network
+
+networks:
+  mint-network:
+    external: true

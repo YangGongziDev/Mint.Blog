@@ -1,5 +1,5 @@
 export function getLocalIcons() {
-  const svgIcons = import.meta.glob('/src/assets/system/svg/*.svg');
+  const svgIcons = import.meta.glob('/src/assets/system/*.svg');
 
   const keys = Object.keys(svgIcons)
     .map(item => item.split('/').at(-1)?.replace('.svg', '') || '')

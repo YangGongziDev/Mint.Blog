@@ -1,7 +1,7 @@
 import { computed, reactive, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { router } from '@/router';
-import { fetchGetUserInfo, fetchLogin, fetchLogout } from '@/service/system/auth';
+import { fetchGetUserInfo, fetchLogin, fetchLogout } from '@/api/system/auth';
 import { useRouterPush } from '@/hooks/routing/use-router-push';
 import useLoading from '@/hooks/state/use-loading';
 import { SetupStoreId } from '@/enum';
@@ -10,6 +10,8 @@ import { useRouteStore } from '@/store/system/route';
 import { useTabStore } from '@/store/system/tab';
 import { resolveServiceErrorMessage } from '@/utils/service-error';
 import { clearAuthStorage, getRefreshToken, getToken, setAuthTokens } from './shared';
+
+export const READONLY_ACTION_MESSAGE = '当前为访客或演示账号，仅支持查看，不能执行新增、编辑、删除、上传或排序等写操作。';
 
 export interface LoginResult {
   success: boolean;
@@ -32,6 +34,13 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   });
 
   const isLogin = computed(() => Boolean(token.value));
+  const isReadonlyVisitor = computed(() => userInfo.roles.includes('ROLE_VISITOR') &&
+    !userInfo.roles.some(role => role === 'ROLE_ADMIN' || role === 'ROLE_SUPER'));
+  const isReadonly = computed(() => {
+    if (userInfo.roles.some(role => role === 'ROLE_ADMIN' || role === 'ROLE_SUPER')) return false;
+    const demoText = [...userInfo.roles, userInfo.userName, userInfo.displayName].join(',').toLowerCase();
+    return isReadonlyVisitor.value || /demo|演示/.test(demoText);
+  });
 
   async function resetStore() {
     const authStore = useAuthStore();
@@ -68,17 +77,13 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   }
 
   function getLoginRedirectPath(redirect = true) {
-    if (!redirect) {
-      return '/blog/admin/home';
+    const target = router.currentRoute.value.query?.redirect;
+    if (redirect && typeof target === 'string' && target.startsWith('/') && !target.startsWith('//') &&
+      !Array.from(target).some(char => char === '\\' || char.charCodeAt(0) <= 32 || char.charCodeAt(0) === 127) &&
+      router.resolve(target).name !== 'login') {
+      return target;
     }
-
-    const redirectPath = router.currentRoute.value.query?.redirect;
-
-    if (typeof redirectPath === 'string' && redirectPath && !redirectPath.startsWith('/blog/surfer')) {
-      return redirectPath;
-    }
-
-    return '/blog/admin/home';
+    return '/home';
   }
 
   function showLoginErrorNotification(description: string) {
@@ -168,6 +173,8 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     token,
     userInfo,
     isLogin,
+    isReadonlyVisitor,
+    isReadonly,
     loginLoading,
     resetStore,
     logout,

@@ -159,6 +159,38 @@
           </AForm>
 
           <div class="login-footnote mt-8 text-center">
+            <div v-if="isDev" class="mb-6 overflow-x-auto rounded-xl bg-black/5 p-4 text-left text-sm dark:bg-white/5">
+              <p class="mb-3 font-medium">开发环境默认账号</p>
+              <table class="w-full text-left">
+                <caption class="sr-only">开发环境默认角色、账号及密码</caption>
+                <thead>
+                  <tr>
+                    <th scope="col" class="pb-2 pr-3 font-medium">角色</th>
+                    <th scope="col" class="pb-2 pr-3 font-medium">账号</th>
+                    <th scope="col" class="pb-2 font-medium">密码</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row" class="whitespace-nowrap py-1 pr-3 font-normal">超级管理员</th>
+                    <td class="py-1 pr-3"><code>SuperAdmin</code></td>
+                    <td class="py-1"><code>SuperAdmin</code></td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="whitespace-nowrap py-1 pr-3 font-normal">普通管理员</th>
+                    <td class="py-1 pr-3"><code>GenerallyAdmin</code></td>
+                    <td class="py-1"><code>GenerallyAdmin</code></td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="whitespace-nowrap py-1 pr-3 font-normal">访客用户</th>
+                    <td class="py-1 pr-3"><code>VisitorAdmin</code></td>
+                    <td class="py-1"><code>VisitorAdmin</code></td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="mt-3 text-xs opacity-70">仅供开发环境使用，请勿在生产环境保留默认密码。</p>
+              <p class="mt-3 text-xs opacity-70">当前提示仅本地开发环境自动显示,部署前无需手动删除。</p>
+            </div>
             <p class="text-sm text-[#60786e] transition-colors duration-300 dark:text-[#cbd5e1] lg:text-base">
               <span>登录即表示您同意</span>
               <span class="login-footnote-link">服务条款</span>
@@ -184,7 +216,7 @@ import { useAppStore } from '@/store/system/app';
 import { useAuthStore } from '@/store/system/auth';
 import { useThemeStore } from '@/store/system/theme';
 import { useAntdForm, useFormRules } from '@/hooks/form/use-antd-form';
-import loadingSvg from '@/assets/system/svg/loading-lemonade.svg';
+import loadingSvg from '@/assets/system/loading-lemonade.svg';
 import { $t } from '@/locales';
 
 defineOptions({
@@ -196,14 +228,15 @@ interface LoginForm {
   password: string;
 }
 
+const isDev = import.meta.env.DEV;
 const authStore = useAuthStore();
 const appStore = useAppStore();
 const themeStore = useThemeStore();
 const { formRef, validate } = useAntdForm();
 
 const form: LoginForm = reactive({
-  userName: 'VisitorAdmin',
-  password: 'VisitorAdmin'
+  userName: isDev ? 'VisitorAdmin' : '',
+  password: isDev ? 'VisitorAdmin' : ''
 });
 
 const rules = computed<Record<keyof LoginForm, App.Global.FormRule[]>>(() => {

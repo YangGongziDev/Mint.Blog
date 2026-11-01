@@ -20,28 +20,19 @@ export const useThemeStore = defineStore(SetupStoreId.Theme, () => {
   const scope = effectScope();
   const osTheme = usePreferredColorScheme();
 
-  type LayoutSection = 'admin' | 'surfer';
-  const currentLayoutSection = ref<LayoutSection | null>(null);
-
-  function getLayoutSectionByRoute(
-    route: RouteLocationNormalizedGeneric | RouteLocationNormalizedLoaded
-  ): LayoutSection | null {
-    if (route.meta.layout === 'backstage') return 'admin';
-    if (route.meta.layout === 'frontdesk') return 'surfer';
-
-    return null;
-  }
-
-  function getDefaultLayoutBySection(section: LayoutSection): UnionKey.ThemeLayoutMode {
-    return section === 'admin' ? 'vertical' : 'horizontal';
-  }
-
-  function getCachedLayoutModes() {
-    return localStg.get('themeLayoutModes') || {};
-  }
-
   /** Theme settings */
   const settings: Ref<App.Theme.ThemeSetting> = ref(initThemeSettings());
+  const layoutModes: UnionKey.ThemeLayoutMode[] = ['vertical', 'vertical-mix', 'horizontal', 'horizontal-mix'];
+  const cachedLayout = localStg.get('themeLayoutMode');
+  const legacyLayouts = localStg.get('themeLayoutModes');
+  const legacyLayout = legacyLayouts?.admin;
+  if (legacyLayouts) localStg.remove('backupThemeSettingBeforeIsMobile');
+  const layoutMode = [cachedLayout, legacyLayout, 'vertical'].find(
+    mode => mode && layoutModes.includes(mode as UnionKey.ThemeLayoutMode)
+  ) as UnionKey.ThemeLayoutMode;
+  settings.value.layout.mode = layoutMode;
+  localStg.set('themeLayoutMode', layoutMode);
+  localStg.remove('themeLayoutModes');
 
   /** Reset store */
   function resetStore() {
@@ -136,37 +127,16 @@ export const useThemeStore = defineStore(SetupStoreId.Theme, () => {
   function setThemeLayout(mode: UnionKey.ThemeLayoutMode) {
     settings.value.layout.mode = mode;
 
-    const section = currentLayoutSection.value;
-    if (!section) return;
-
-    localStg.set('themeLayoutModes', {
-      ...getCachedLayoutModes(),
-      [section]: mode
-    });
+    localStg.set('themeLayoutMode', mode);
   }
 
   function setTemporaryThemeLayout(mode: UnionKey.ThemeLayoutMode) {
     settings.value.layout.mode = mode;
   }
 
-  function applyThemeLayoutByRoute(route: RouteLocationNormalizedLoaded | RouteLocationNormalizedGeneric) {
-    const section = getLayoutSectionByRoute(route);
-    if (!section) return;
-
-    currentLayoutSection.value = section;
-    const cachedModes = getCachedLayoutModes();
-    const cachedMode = cachedModes[section];
-
-    if (section === 'surfer' && cachedMode === 'vertical') {
-      localStg.set('themeLayoutModes', {
-        ...cachedModes,
-        surfer: getDefaultLayoutBySection(section)
-      });
-      settings.value.layout.mode = getDefaultLayoutBySection(section);
-      return;
-    }
-
-    settings.value.layout.mode = cachedMode || getDefaultLayoutBySection(section);
+  function applyThemeLayoutByRoute(_route: RouteLocationNormalizedLoaded | RouteLocationNormalizedGeneric) {
+    const isMobile = window.matchMedia('(max-width: 767px), (max-height: 500px)').matches;
+    settings.value.layout.mode = isMobile ? 'vertical' : localStg.get('themeLayoutMode') || 'vertical';
   }
 
   /**
