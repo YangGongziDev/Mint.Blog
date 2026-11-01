@@ -1,11 +1,11 @@
 <div align="center">
   <img src="./Docs/PageImages/system-logo.svg" width="160" />
   <h1>Mint.Blog</h1>
-  <h2>Author: <a href="https://www.yanggongzi.dev/blog/surfer/author">YangGongziDev</a></h2>
+  <h2>Author: <a href="https://www.yanggongzi.dev/author">YangGongziDev</a></h2>
   <h5>
     Historical branch：
     <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (Latest)</a></span>
-    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2 (Currently)</a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2-ddd">mint-blog-v2-ddd (Currently)</a></span>
     <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a></span>
   </h5>
   <span><a href="./README.md">中文</a> | English</span>
@@ -23,7 +23,7 @@
 - `Mint.Blog.Domain`: Backend - Domain Layer
 - `Mint.Blog.Application`: Backend - Application Layer
 - `Mint.Blog.Infrastructure`: Backend - Infrastructure Layer
-- `Mint.Blog.WebApi`: Backend - API Layer
+- `Mint.Blog.Api`: Backend - API Layer
 - `Mint.Blog.Vue`: Frontend(Front desk + Back office)
 
 ## Tech Stack

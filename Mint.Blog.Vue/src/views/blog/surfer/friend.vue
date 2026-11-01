@@ -762,7 +762,7 @@ const categoryLabels: Record<string, string> = {
   news: '新闻类',
   aggregate: '聚合类',
   life: '生活类',
-  rocblog: 'RocBlog优秀站点'
+  mintblog: 'MintBlog优秀站点'
 };
 
 // 动态分类配置 - 从接口数据中提取
@@ -1117,7 +1117,7 @@ const getCategoryStyle = (category: string) => {
     tech: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
     life: 'bg-green-100 text-green-600 dark:bg-zinc-800/30 dark:text-zinc-300',
     aggregate: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
-    rocblog: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
+    mintblog: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
   };
   return styleMap[category] || 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400';
 };

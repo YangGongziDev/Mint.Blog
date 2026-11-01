@@ -77,5 +77,14 @@ hs_err_pid*
 /Search/
 /Surfer/
 
+# Mint.Blog V3
+*Mint.Blog.Common/
+*Mint.Blog.Model/
+*Mint.Blog.Repository/
+*Mint.Blog.Service/
+*Mint.Blog.WebApi/
+*Mint.Blog.Web.Nuxt/
+*Mint.Blog.Admin.Vue/
+
 
 

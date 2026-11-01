@@ -309,7 +309,7 @@ const categoryMap: Record<string, string> = {
   news: '新闻类',
   aggregate: '聚合类',
   life: '生活类',
-  rocblog: 'RocBlog优秀站点'
+  mintblog: 'MintBlog优秀站点'
 };
 
 const categoryOptions = [
@@ -319,7 +319,7 @@ const categoryOptions = [
   { value: 'news', label: '新闻类' },
   { value: 'aggregate', label: '聚合类' },
   { value: 'life', label: '生活类' },
-  { value: 'rocblog', label: 'RocBlog优秀站点' }
+  { value: 'mintblog', label: 'MintBlog优秀站点' }
 ];
 
 const modalWidth = computed(() => (appStore.isMobile ? '92vw' : 600));

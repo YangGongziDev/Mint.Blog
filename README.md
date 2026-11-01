@@ -1,11 +1,11 @@
 <div align="center">
   <img src="./Docs/PageImages/system-logo.svg" width="160" />
   <h1>Mint.Blog</h1>
-  <h2>作者：<a href="https://www.yanggongzi.dev/blog/surfer/author">程序员杨工子</a></h2>
+  <h2>作者：<a href="https://www.yanggongzi.dev/author">程序员杨工子</a></h2>
   <h5>
     历史分支：
     <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (最新)</a></span>
-    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2 (当前)</a></a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2-ddd">mint-blog-v2-ddd (当前)</a></a></span>
     <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a></span>
   </h5>
   <span>中文 | <a href="./README.en_US.md">English</a></span>
@@ -23,7 +23,7 @@
 - `Mint.Blog.Domain`：后端-领域层
 - `Mint.Blog.Application`：后端-应用层
 - `Mint.Blog.Infrastructure`：后端-基础设施层
-- `Mint.Blog.WebApi`：后端-接口层
+- `Mint.Blog.Api`：后端-接口层
 - `Mint.Blog.Vue`：前端(前台+后台)
 
 ## 技术栈
