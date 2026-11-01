@@ -5,7 +5,7 @@
   <h5>
     历史版本分支：
     <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (最新 V3) (当前)</a></span>
-    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2-ddd</a></a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2-ddd">mint-blog-v2-ddd</a></a></span>
     <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a></span>
   </h5>  
   <span>中文 | <a href="./README.en_US.md">English</a></span>
@@ -154,7 +154,7 @@ cd Mint.Blog
 
 ### 一、启动后端WebApi
 
-#### 数据库与账号初始化
+#### 数据库初始化
 
 1. 创建目标数据库，并向新库导入 [Docs\Database.sql](./Docs/Database.sql)。
 2. 配置后端连接字符串及其他服务参数后再启动。
@@ -163,7 +163,7 @@ cd Mint.Blog
 
 #### 配置数据库和RustFS等
 
-按环境修改 `Mint.Blog.WebApi/appsettings.Development.json`，或通过环境变量覆盖配置。不要将真实凭据提交到仓库。
+按环境修改 `Mint.Blog.WebApi/appsettings.Development.json`，或通过环境变量覆盖配置。
 
 | 配置节 | 用途及主要字段 |
 | --- | --- |
@@ -181,9 +181,9 @@ dotnet run
 ```
 
 后端监听端口：<http://localhost:7000>。
-- [健康检查](http://localhost:7000/api/health)：不限制为开发环境。
-- [Scalar 接口文档](http://localhost:7000/api/docs)：仅 `Development` 环境开放。
-- [OpenAPI JSON](http://localhost:7000/api/openapi/v1.json)：仅 `Development` 环境开放。
+- [健康检查<http://localhost:7000/api/health>](http://localhost:7000/api/health)：开发环境/生产环境。
+- [Scalar 接口文档<http://localhost:7000/api/docs>](http://localhost:7000/api/docs)：仅 `Development` 环境开放。
+- [OpenAPI JSON<http://localhost:7000/api/openapi/v1.json>](http://localhost:7000/api/openapi/v1.json)：仅 `Development` 环境开放。
 
 ### 二、启动前端Admin
 
@@ -239,7 +239,7 @@ pnpm dev
 ## 周边生态
 
 - [Mint.Forge](https://github.com/YangGongziDev/Mint.Forge)：基于`Mint.Blog`重新构建并独立维护的`.Net微服务中后台快速开发框架`。
-- [Mint.Forge.Vue](https://github.com/YangGongziDev/Mint.Forge.Vue)：基于`Mint.Blog.Vue`重新构建并独立维护的`前端Admin通用模板`，用于配套`Mint.Forge`后端。
+- [Mint.Forge.Vue](https://github.com/YangGongziDev/Mint.Forge.Vue)：基于`Mint.Blog.Vue`重新构建并独立维护的`前端Admin通用前端管理界面`，用于配套`Mint.Forge`后端。
 
 
 ## 如何贡献
@@ -269,4 +269,4 @@ pnpm dev
 
 ## 声明
 
-1.本项目基于 [2026 程序员杨工子 © MIT](./LICENSE) 协议开源，仅供学习参考，为了保护原作者的成果权益，二次开源或商业使用只需保留原作者版权信息即可。
+1.本项目基于 [2026 程序员杨工子 © MIT](./LICENSE) 协议开源，同时为了保护原作者的劳动成果，二次开源或商业使用需要保留原作者版权信息。

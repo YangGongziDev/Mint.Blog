@@ -5,7 +5,7 @@
   <h5>
     Version branches:
     <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (Latest V3) (Current)</a></span>
-    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2">mint-blog-v2-ddd</a></a></span>
+    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2-ddd">mint-blog-v2-ddd</a></a></span>
     <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a></span>
   </h5>
   <span><a href="./README.md">中文</a> | English</span>
@@ -154,7 +154,7 @@ Unless otherwise noted, run the following commands from the repository root. Sta
 
 ### 1. Start the Backend WebApi
 
-#### Initialize the Database and Accounts
+#### Initialize the Database
 
 1. Create the target database and import [Docs\Database.sql](./Docs/Database.sql) into the new database.
 2. Configure the backend connection string and other service settings before starting the backend.
@@ -163,7 +163,7 @@ Unless otherwise noted, run the following commands from the repository root. Sta
 
 #### Configure the Database, RustFS and Other Services
 
-Update `Mint.Blog.WebApi/appsettings.Development.json` for your environment, or override the configuration using environment variables. Do not commit real credentials to the repository.
+Update `Mint.Blog.WebApi/appsettings.Development.json` for your environment, or override the configuration using environment variables.
 
 | Configuration Section | Purpose and Main Fields |
 | --- | --- |
@@ -181,9 +181,9 @@ dotnet run
 ```
 
 The backend listens at <http://localhost:7000>.
-- [Health Check](http://localhost:7000/api/health): Not restricted to the development environment.
-- [Scalar API Documentation](http://localhost:7000/api/docs): Available only in the `Development` environment.
-- [OpenAPI JSON](http://localhost:7000/api/openapi/v1.json): Available only in the `Development` environment.
+- [Health Check<http://localhost:7000/api/health>](http://localhost:7000/api/health): Development/Production environment.
+- [Scalar API Documentation<http://localhost:7000/api/docs>](http://localhost:7000/api/docs): Available only in the `Development` environment.
+- [OpenAPI JSON<http://localhost:7000/api/openapi/v1.json>](http://localhost:7000/api/openapi/v1.json): Available only in the `Development` environment.
 
 ### 2. Start the Admin Frontend
 
@@ -239,7 +239,7 @@ For more steps, see the [Docker Deployment Guide](./Docs/Docker部署流程.md).
 ## Ecosystem
 
 - [Mint.Forge](https://github.com/YangGongziDev/Mint.Forge): A `.NET microservices rapid development framework for middle and back-office applications`, rebuilt from `Mint.Blog` and maintained independently.
-- [Mint.Forge.Vue](https://github.com/YangGongziDev/Mint.Forge.Vue): A `general-purpose admin frontend template`, rebuilt from `Mint.Blog.Vue` and maintained independently, designed to work with the `Mint.Forge` backend.
+- [Mint.Forge.Vue](https://github.com/YangGongziDev/Mint.Forge.Vue): A `The front-end Admin is a universal front-end management interface`, rebuilt from `Mint.Blog.Vue` and maintained independently, designed to work with the `Mint.Forge` backend.
 
 
 ## How to Contribute
@@ -269,4 +269,4 @@ Thank you to the following contributors for their contributions. If you would li
 
 ## Notice
 
-1. This project is open source under the [2026 程序员杨工子 © MIT](./LICENSE) license and is intended for learning and reference. To protect the original author's rights, you only need to retain the original author's copyright notice when redistributing it as open source or using it commercially.
+1. This project is open source under the [2026 Programmer Yang Gongzi © MIT](./LICENSE) license agreement. Meanwhile, to protect the original author's labor achievements, the copyright information of the original author must be retained for secondary open source or commercial use.
