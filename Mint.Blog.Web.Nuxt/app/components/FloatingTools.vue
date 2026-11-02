@@ -85,7 +85,6 @@ function pointerMove(event: PointerEvent) {
   if (Math.max(Math.abs(x), Math.abs(y)) > 4) {
     dragging.value = true
     suppressClick = true
-    expanded.value = false
   }
   if (dragging.value) position.value = clamp({ x: pointer.start.x + x, y: pointer.start.y + y })
 }
@@ -171,7 +170,7 @@ onMounted(() => {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null')
     if (parsed && Number.isFinite(parsed.x) && Number.isFinite(parsed.y)) stored = { x: parsed.x, y: parsed.y }
   } catch { /* 损坏或受限的存储不影响默认位置。 */ }
-  position.value = clamp(stored || { x: 24, y: window.innerHeight * 0.4 - size.value / 2 })
+  position.value = clamp(stored || { x: 24, y: window.innerHeight * 0.75 - size.value / 2 })
   ready.value = true
   updateHeadings()
   // 只观察正文区域，异步专栏文章替换后更新目录，不观察悬浮组件自身。

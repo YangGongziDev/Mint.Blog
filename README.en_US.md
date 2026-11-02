@@ -253,3 +253,5 @@ We recommend using the latest version of Chrome for development to get the best 
 | --- | --- | --- | --- | --- |
 | not support | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
 
+## Declaration
+This project is based on the MIT license and is open source.
