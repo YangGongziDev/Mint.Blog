@@ -1,19 +1,22 @@
 <div align="center">
   <img src="./Docs/PageImages/system-logo.svg" width="160" />
   <h1>Mint.Blog</h1>
-  <h2>Author: <a href="https://www.yanggongzi.dev/author">程序员杨工子</a></h2>
-  <h5>
-    Version branches:
-    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (Latest V3) (Current)</a></span>
-    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2-ddd">mint-blog-v2-ddd</a></a></span>
-    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a></span>
-  </h5>
+  <p>
+   <br />
+   <a href="https://github.com/YangGongziDev/Mint.Blog"><strong>Mint.Blog</strong></a> is a personal blogging project with a decoupled frontend and backend. It consists of a .NET Web API, a Vue admin dashboard and a Nuxt blog frontend, covering content publishing, reader interaction, resource navigation and administration.
+  </p>
   <span><a href="./README.md">中文</a> | English</span>
 </div>
 
 ---
 
-[![license](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)[![github stars](https://img.shields.io/github/stars/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)[![github forks](https://img.shields.io/github/forks/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)[![gitee stars](https://gitee.com/YangGongziDev/Mint.Blog/badge/star.svg)](https://gitee.com/YangGongziDev/Mint.Blog)[![gitee forks](https://gitee.com/YangGongziDev/Mint.Blog/badge/fork.svg)](https://gitee.com/YangGongziDev/Mint.Blog)
+<p align="center">
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="license" /></a>
+  <a href="https://github.com/YangGongziDev/Mint.Blog"><img src="https://img.shields.io/github/stars/YangGongziDev/Mint.Blog" alt="github stars" /></a>
+  <a href="https://github.com/YangGongziDev/Mint.Blog"><img src="https://img.shields.io/github/forks/YangGongziDev/Mint.Blog" alt="github forks" /></a>
+  <a href="https://gitee.com/YangGongziDev/Mint.Blog"><img src="https://gitee.com/YangGongziDev/Mint.Blog/badge/star.svg" alt="gitee stars" /></a>
+  <a href="https://gitee.com/YangGongziDev/Mint.Blog"><img src="https://gitee.com/YangGongziDev/Mint.Blog/badge/fork.svg" alt="gitee forks" /></a>
+</p>
 
 > [!NOTE]
 > If you find `Mint.Blog` helpful or enjoy this project, please give it a star on GitHub or Gitee. Your support motivates me to keep improving it and adding new features. Thank you for your support!
@@ -42,15 +45,6 @@
 | Storage and Notifications | RustFS / S3-compatible object storage, SMTP email |
 
 The database schema script was exported from PostgreSQL 17.2; please verify compatibility with other versions yourself. Refer to each project's files and lockfiles for exact dependency versions.
-
-When the backend uses the local `http` launch profile:
-
-
-
-## Introduction
-
-[`Mint.Blog`](https://github.com/YangGongziDev/Mint.Blog)
-is a personal blogging project with a decoupled frontend and backend. It consists of a .NET Web API, a Vue admin dashboard and a Nuxt blog frontend, covering content publishing, reader interaction, resource navigation and administration. Before first use, you need to prepare the database schema, account and permission data, and service configuration; you cannot log in immediately after cloning the repository.
 
 ## Features
 
@@ -259,14 +253,3 @@ We recommend using the latest version of Chrome for development to get the best 
 | --- | --- | --- | --- | --- |
 | not support | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
 
-## Contributors
-
-Thank you to the following contributors for their contributions. If you would like to contribute to this project, please see [How to Contribute](#how-to-contribute).
-
-<a href="https://github.com/YangGongziDev/Mint.Blog/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=YangGongziDev/Mint.Blog" />
-</a>
-
-## Notice
-
-1. This project is open source under the [2026 Programmer Yang Gongzi © MIT](./LICENSE) license agreement.

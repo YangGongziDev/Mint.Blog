@@ -1,19 +1,22 @@
 <div align="center">
   <img src="./Docs/PageImages/system-logo.svg" width="160" />
   <h1>Mint.Blog</h1>
-  <h2>作者：<a href="https://www.yanggongzi.dev/author">程序员杨工子</a></h2>
-  <h5>
-    历史版本分支：
-    <span><a href="https://github.com/YangGongziDev/Mint.Blog/tree/main">main (最新 V3) (当前)</a></span>
-    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v2-ddd">mint-blog-v2-ddd</a></a></span>
-    <span> | <a href="https://github.com/YangGongziDev/Mint.Blog/tree/mint-blog-v1-java">mint-blog-v1-java</a></span>
-  </h5>  
+  <p>
+   <br />
+   <a href="[https://petdex.dev](https://github.com/YangGongziDev/Mint.Blog)"><strong>Mint.Blog</strong></a>是一个面向个人博客场景的前后端分离项目，由 .NET Web API、Vue 管理后台和 Nuxt 博客前台组成，覆盖内容发布、读者互动、资源导航和后台管理。
+  </p>
   <span>中文 | <a href="./README.en_US.md">English</a></span>
 </div>
 
 ---
 
-[![license](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)[![github stars](https://img.shields.io/github/stars/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)[![github forks](https://img.shields.io/github/forks/YangGongziDev/Mint.Blog)](https://github.com/YangGongziDev/Mint.Blog)[![gitee stars](https://gitee.com/YangGongziDev/Mint.Blog/badge/star.svg)](https://gitee.com/YangGongziDev/Mint.Blog)[![gitee forks](https://gitee.com/YangGongziDev/Mint.Blog/badge/fork.svg)](https://gitee.com/YangGongziDev/Mint.Blog)
+<p align="center">
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="license" /></a>
+  <a href="https://github.com/YangGongziDev/Mint.Blog"><img src="https://img.shields.io/github/stars/YangGongziDev/Mint.Blog" alt="github stars" /></a>
+  <a href="https://github.com/YangGongziDev/Mint.Blog"><img src="https://img.shields.io/github/forks/YangGongziDev/Mint.Blog" alt="github forks" /></a>
+  <a href="https://gitee.com/YangGongziDev/Mint.Blog"><img src="https://gitee.com/YangGongziDev/Mint.Blog/badge/star.svg" alt="gitee stars" /></a>
+  <a href="https://gitee.com/YangGongziDev/Mint.Blog"><img src="https://gitee.com/YangGongziDev/Mint.Blog/badge/fork.svg" alt="gitee forks" /></a>
+</p>
 
 > [!NOTE]
 > 如果您觉得 `Mint.Blog` 对你有所帮助，或者您喜欢这个项目，请在 GitHub、Gitee 上给我一个 ⭐️。你的支持是我持续改进和增加新功能的动力！感谢你的支持！
@@ -31,7 +34,6 @@
 | `Mint.Blog.Web.Nuxt` | Nuxt 博客前台 |
 | `Docs` | 系统介绍、数据库、部署说明及截图 |
 
-
 ## 技术栈
 
 | 部分 | 主要技术 |
@@ -42,15 +44,6 @@
 | 存储与通知 | RustFS / S3 兼容对象存储、SMTP 邮件 |
 
 数据库结构脚本导出自 PostgreSQL 17.2；其他版本请自行验证兼容性。具体依赖版本以各项目文件和锁文件为准。
-
-后端使用本地 `http` 启动配置时：
-
-
-
-## 简介
-
-[`Mint.Blog`](https://github.com/YangGongziDev/Mint.Blog)
-是一个面向个人博客场景的前后端分离项目，由 .NET Web API、Vue 管理后台和 Nuxt 博客前台组成，覆盖内容发布、读者互动、资源导航和后台管理。首次使用需要准备数据库结构、账号权限数据及服务配置，并非克隆后即可直接登录。
 
 ## 特性
 
@@ -258,15 +251,3 @@ pnpm dev
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png" alt="IE" width="24px" height="24px"  />](http://godban.github.io/browsers-support-badges/) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt=" Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/) |
 | --- | --- | --- | --- | --- |
 | not support | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
-
-## 贡献者
-
-感谢以下贡献者的贡献。如果您想为本项目做出贡献，请参考 [如何贡献](#如何贡献)。
-
-<a href="https://github.com/YangGongziDev/Mint.Blog/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=YangGongziDev/Mint.Blog" />
-</a>
-
-## 声明
-
-1.本项目基于 [2026 程序员杨工子 © MIT](./LICENSE) 协议开源。
