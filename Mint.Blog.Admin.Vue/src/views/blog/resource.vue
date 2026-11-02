@@ -25,7 +25,7 @@
         </ATabPane>
         <ATabPane key="navigation" tab="导航设置">
           <AAlert v-if="error" :message="error" type="error" class="my-3"><template #action><AButton :disabled="busy" @click="refresh">重试</AButton></template></AAlert>
-          <ATable :columns="navigationColumns" :data-source="tags" row-key="id" :pagination="{ pageSize: 20 }" :scroll="{ x: 1100 }">
+          <ATable :columns="navigationColumns" :data-source="sortedNavigationTags" row-key="id" :pagination="navigationPagination" :scroll="{ x: 1100 }" @change="changeNavigationPage">
             <template #bodyCell="{ column, record }">
               <template v-if="column.key === 'logo'"><AImage v-if="record.logoUrl" :src="record.logoUrl" :width="48" /><span v-else>暂无 Logo</span></template>
               <template v-else-if="column.key === 'navigationStatus'"><ATag :color="record.showInNavigation ? 'success' : 'default'">{{ record.showInNavigation ? '展示' : '隐藏' }}</ATag></template>
@@ -80,6 +80,13 @@ const auth = useAuthStore();
 const canWrite = computed(() => !isReadonly.value && auth.userInfo.roles.some(role => ['ROLE_ADMIN', 'ROLE_SUPER'].includes(role)));
 const activeTab = ref('resources');
 const tags = ref<NavigationTag[]>([]);
+const sortedNavigationTags = computed(() => sortOptionsByLabel(tags.value, tag => tag.name));
+const navigationPagination = reactive({ current: 1, pageSize: 20, showSizeChanger: true, pageSizeOptions: ['10', '20', '50', '100'] });
+function changeNavigationPage(page: { current?: number; pageSize?: number }) {
+  const size = page.pageSize ?? navigationPagination.pageSize;
+  navigationPagination.current = size === navigationPagination.pageSize ? (page.current ?? 1) : 1;
+  navigationPagination.pageSize = size;
+}
 const navigationTagId = ref<string>();
 const navigationTag = computed(() => tags.value.find(tag => tag.id === navigationTagId.value));
 const categories = ref<CategoryListItem[]>([]);

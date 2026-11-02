@@ -31,8 +31,8 @@
               <time :datetime="article.createDate"><SiteIcon name="date" />{{ article.createDate?.slice(0, 10) }}</time>
             </div>
             <div class="article-tags">
-              <NuxtLink class="article-chip" :to="{ path: '/categories', query: { id: article.categoryId, name: article.categoryName } }"><span class="article-chip-label">{{ text('分类', 'Category') }}</span>{{ article.categoryName }}</NuxtLink>
-              <NuxtLink class="article-chip" :to="{ path: '/tags', query: { id: article.tagId, name: article.tagName } }"><span class="article-chip-label">{{ text('技术标签', 'Tag') }}</span>{{ article.tagName }}</NuxtLink>
+              <NuxtLink class="article-chip article-category" :to="{ path: '/categories', query: { id: article.categoryId, name: article.categoryName } }"><span class="article-chip-label">{{ text('分类', 'Category') }}</span>{{ article.categoryName }}</NuxtLink>
+              <NuxtLink class="article-chip" :to="{ path: '/tags', query: { id: article.tagId, name: article.tagName } }"><span class="article-chip-label">{{ text('标签', 'Tag') }}</span>{{ article.tagName }}</NuxtLink>
               <span v-if="article.tagVersionName" class="article-chip"><span class="article-chip-label">{{ text('版本', 'Version') }}</span>{{ article.tagVersionName }}</span>
             </div>
           </div>
@@ -133,8 +133,8 @@ useSeoMeta({
 .home-content .article-meta span :deep(svg) { background: #f59e0b1a; color: #f59e0b; }
 .home-content .article-meta time :deep(svg) { background: #ea3b241a; color: #ea3b24; }
 .home-content .article-tags { gap: 6px; margin-top: 10px; font-size: 12px; }
-.home-content .article-tags .article-chip { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; padding: 4px 12px; border-radius: 99px; font-size: inherit; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.5; color: var(--article-accent); background: color-mix(in srgb, var(--article-accent) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--article-accent) 25%, transparent); }
-.home-content .article-chip-label { flex-shrink: 0; padding-right: 8px; border-right: 1px solid color-mix(in srgb, var(--article-accent) 30%, transparent); font-size: .9em; font-weight: 400; opacity: .8; }
+.home-content .article-tags .article-chip { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 2px 6px; border-radius: 99px; font-size: inherit; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.5; color: var(--article-accent); background: color-mix(in srgb, var(--article-accent) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--article-accent) 25%, transparent); }
+.home-content .article-chip-label { flex-shrink: 0; padding-right: 3px; border-right: 1px solid color-mix(in srgb, var(--article-accent) 30%, transparent); font-size: .9em; font-weight: 400; opacity: .8; }
 .home-content .article-tags a.article-chip:hover { background: color-mix(in srgb, var(--article-accent) 20%, transparent); }
 .home-content .top-badge { position: absolute; top: 12px; right: 12px; z-index: 1; background: linear-gradient(135deg,#fb7185,#ef4444); }
 .home-page { --article-accent: #2faa7d; }
@@ -155,7 +155,8 @@ useSeoMeta({
   .home-content .article-meta > a { display: none; }
   .home-content .article-meta :deep(svg) { width: 18px; height: 18px; padding: 3px; }
   .home-content .article-tags { margin-top: 6px; }
-  .home-content .article-tags .article-chip { padding: 2px 8px; font-size: 11px; }
+  .home-content .article-tags .article-category { display: none; }
+  .home-content .article-tags .article-chip { padding: 2px 5px; font-size: 11px; }
   .home-content .top-badge { top: -10px; }
   .home-content .article-card:hover { transform: none; }
 }

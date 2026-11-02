@@ -127,7 +127,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.site-banner { height: 500px; position: relative; overflow: hidden; display: grid; place-items: center; background-position: center; background-size: cover; color: white; }
+.site-banner { height: 363px; position: relative; overflow: hidden; display: grid; place-items: center; background-position: center; background-size: cover; color: white; }
 .site-banner::after { content: ''; position: absolute; inset: 76% 0 0; background: linear-gradient(transparent,var(--bg)); }
 .banner-content { position: relative; z-index: 10; text-align: center; padding: 16px; }
 .star-field { position: absolute; top: 0; left: 0; width: 100%; height: 180%; overflow: hidden; pointer-events: none; }
@@ -139,13 +139,13 @@ onMounted(() => {
 }
 @media (min-width: 640px) { .star-field { height: 160%; } }
 @media (min-width: 768px) { .star-field { height: 150%; } }
-.banner-waves { position: absolute; bottom: 0; width: 100%; height: 100px; z-index: 11; pointer-events: none; }
+.banner-waves { position: absolute; bottom: 0; width: 100%; height: 71px; z-index: 11; pointer-events: none; }
 .banner-waves use { fill: color-mix(in srgb,var(--bg) 85%,transparent); animation: wave-drift 7s cubic-bezier(.55,.5,.45,.5) infinite; }
 .banner-waves use:nth-child(2) { opacity: .59; animation-duration: 10s; animation-delay: -3s; }
 .banner-waves use:nth-child(3) { opacity: .26; animation-duration: 13s; animation-delay: -4s; }
 .banner-waves use:nth-child(4) { opacity: .06; animation-duration: 20s; animation-delay: -5s; }
 @keyframes wave-drift { from { transform: translateX(-90px); } to { transform: translateX(85px); } }
-@media (max-width: 767px) { .site-banner { height: 420px; } }
-@media (max-width: 639px) { .site-banner { height: 340px; } .banner-waves { height: 40px; } }
+@media (max-width: 767px) { .site-banner { height: 296px; } }
+@media (max-width: 639px) { .site-banner { height: 240px; } .banner-waves { height: 28px; } }
 @media (prefers-reduced-motion: reduce) { .stars, .banner-waves use { animation: none; } }
 </style>

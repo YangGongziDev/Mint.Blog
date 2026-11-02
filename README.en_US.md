@@ -269,4 +269,4 @@ Thank you to the following contributors for their contributions. If you would li
 
 ## Notice
 
-1. This project is open source under the [2026 Programmer Yang Gongzi © MIT](./LICENSE) license agreement. Meanwhile, to protect the original author's labor achievements, the copyright information of the original author must be retained for secondary open source or commercial use.
+1. This project is open source under the [2026 Programmer Yang Gongzi © MIT](./LICENSE) license agreement.

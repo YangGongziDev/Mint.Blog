@@ -21,7 +21,7 @@
     </section>
     <dialog ref="qrDialog" class="qr-dialog" @click="($event.target === qrDialog) && qrDialog?.close()"><h3>{{ qr?.label }}</h3><img v-if="qr" :src="qr.code" :alt="qr.label"><button @click="qrDialog?.close()">{{ text('关闭', 'Close') }}</button></dialog>
     <section v-if="error" class="side-card" role="alert">{{ text('内容概览加载失败', 'Could not load content overview') }} <button @click="refresh()">{{ text('重试', 'Retry') }}</button></section>
-    <section v-for="group in groups" :key="group.path" class="side-card"><h3>{{ group.title }}</h3><div class="content-pills" :class="{ 'column-list': group.path === '/columns', 'is-expanded': expanded[group.path] }"><NuxtLink v-for="entry in group.values" :key="entry.id" :to="entryUrl(group.path, entry)"><img v-if="group.path === '/columns' && assetUrl(entry.cover)" :src="assetUrl(entry.cover)" alt="" width="36" height="36" @error="columnCoverError"><span>{{ entry.name || entry.title }}</span><small>{{ entry.articlesTotal || 0 }}</small><em v-if="group.path === '/columns' && entry.isTop" class="column-pinned">{{ text('置顶', 'Pinned') }}</em></NuxtLink></div><button v-if="group.values.length > group.limit" class="side-more" @click="expanded[group.path] = !expanded[group.path]">{{ expanded[group.path] ? text('收起', 'Collapse') : text('展开全部', 'Show all') }}</button><p v-if="!group.values.length && !error">{{ text('暂无内容', 'No content yet') }}</p></section>
+    <section v-for="group in groups" :key="group.path" class="side-card"><h3>{{ group.title }}</h3><div class="content-scroll"><div :ref="el => setScrollArea(group.path, el)" class="content-pills" :class="{ 'column-list': group.path === '/columns', 'is-expanded': expanded[group.path] }" @scroll.passive="updateScrollIndicator(group.path)"><NuxtLink v-for="entry in group.values" :key="entry.id" :to="entryUrl(group.path, entry)"><img v-if="group.path === '/columns' && assetUrl(entry.cover)" :src="assetUrl(entry.cover)" alt="" width="36" height="36" @error="columnCoverError"><span>{{ entry.name || entry.title }}</span><small>{{ entry.articlesTotal || 0 }}</small><em v-if="group.path === '/columns' && entry.isTop" class="column-pinned">{{ text('置顶', 'Pinned') }}</em></NuxtLink></div><div v-if="scrollIndicators[group.path]?.visible" class="content-scroll-track" aria-hidden="true"><span :style="{ height: `${scrollIndicators[group.path]!.height}px`, transform: `translateY(${scrollIndicators[group.path]!.top}px)` }" /></div></div><button v-if="group.values.length > group.limit" class="side-more" @click="expanded[group.path] = !expanded[group.path]">{{ expanded[group.path] ? text('收起', 'Collapse') : text('展开全部', 'Show all') }}</button><p v-if="!group.values.length && !error">{{ text('暂无内容', 'No content yet') }}</p></section>
   </aside>
 </template>
 
@@ -88,6 +88,45 @@ onMounted(() => {
   })
 })
 const expanded = ref<Record<string, boolean>>({})
+const scrollAreas = new Map<string, HTMLElement>()
+const scrollIndicators = ref<Record<string, { visible: boolean; height: number; top: number }>>({})
+let scrollObserver: ResizeObserver | undefined
+function setScrollArea(path: string, element: unknown) {
+  const previous = scrollAreas.get(path)
+  if (previous === element) return
+  if (previous) scrollObserver?.unobserve(previous)
+  if (element instanceof HTMLElement) {
+    scrollAreas.set(path, element)
+    scrollObserver?.observe(element)
+  } else {
+    scrollAreas.delete(path)
+  }
+}
+function updateScrollIndicator(path: string) {
+  const element = scrollAreas.get(path)
+  if (!element) return
+  const { clientHeight, scrollHeight, scrollTop } = element
+  const height = Math.min(clientHeight, Math.max(24, clientHeight * clientHeight / scrollHeight))
+  scrollIndicators.value[path] = {
+    visible: scrollHeight > clientHeight + 1,
+    height,
+    top: scrollHeight > clientHeight ? Math.max(0, Math.min(1, scrollTop / (scrollHeight - clientHeight))) * (clientHeight - height) : 0
+  }
+}
+function updateScrollIndicators() {
+  scrollAreas.forEach((_, path) => updateScrollIndicator(path))
+}
+onMounted(() => {
+  scrollObserver = new ResizeObserver(updateScrollIndicators)
+  scrollAreas.forEach(element => scrollObserver!.observe(element))
+  updateScrollIndicators()
+  document.fonts.ready.then(() => { if (scrollObserver) updateScrollIndicators() })
+})
+watch([lists, expanded], updateScrollIndicators, { deep: true, flush: 'post' })
+onBeforeUnmount(() => {
+  scrollObserver?.disconnect()
+  scrollObserver = undefined
+})
 const counts = computed(() => statistics.value ? [
   [text('专栏', 'Columns'), statistics.value.columnTotalCount], [text('文章', 'Articles'), statistics.value.articleTotalCount],
   [text('分类', 'Categories'), statistics.value.categoryTotalCount], [text('标签', 'Tags'), statistics.value.tagTotalCount], [text('访问', 'Views'), statistics.value.pvTotalCount]
@@ -122,6 +161,11 @@ const counts = computed(() => statistics.value ? [
 .qr-dialog::backdrop { background: #0007; }
 .qr-dialog > img { display: block; max-width: 100%; max-height: 65vh; margin-bottom: 16px; }
 .content-pills { display: flex; flex-wrap: wrap; align-content: start; gap: 8px; max-height: 160px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--card-accent) transparent; padding: 3px; }
+.content-scroll { position: relative; }
+.content-scroll-track { position: absolute; top: 0; right: 0; bottom: 0; width: 4px; border-radius: 99px; background: var(--card-tint); pointer-events: none; }
+.content-scroll-track span { display: block; width: 100%; border-radius: inherit; background: var(--card-accent); }
+.content-scroll .content-pills { scrollbar-width: none; padding-right: 12px; }
+.content-scroll .content-pills::-webkit-scrollbar { display: none; }
 .content-pills.column-list { max-height: 266px; }
 .content-pills.is-expanded { max-height: 480px; }
 .column-pinned { flex-shrink: 0; color: #ef4444; font-size: 12px; font-style: normal; font-weight: 400; }
