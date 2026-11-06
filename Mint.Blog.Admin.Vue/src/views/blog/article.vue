@@ -1,6 +1,6 @@
 <template>
-  <div class="p-4">
-    <ACard :bordered="false">
+  <div class="h-full min-h-0 overflow-hidden flex flex-col gap-4 p-4">
+    <ACard :bordered="false" class="card-wrapper search-card">
       <ASpace wrap>
         <AInput v-model:value="query.title" placeholder="文章标题" allow-clear style="width: 180px" @press-enter="search" />
         <ASelect v-model:value="query.categoryId" :options="categoryOptions" placeholder="分类" allow-clear style="width: 160px" />
@@ -9,8 +9,10 @@
         <ARangePicker v-model:value="dateRange" @change="changeDates" /><AButton @click="search">查询</AButton><AButton @click="reset">重置</AButton>
         <AButton type="primary" :disabled="!canWrite" @click="router.push({ name: 'blog_article-create' })">写文章</AButton><AButton @click="openDrafts">草稿箱</AButton>
       </ASpace>
+    </ACard>
+    <ACard :bordered="false" class="card-wrapper table-card">
       <AAlert v-if="error" type="error" :message="error" class="my-3"><template #action><AButton @click="refresh">重试</AButton></template></AAlert>
-      <ATable class="mt-4" :columns="columns" :data-source="items" row-key="id" :loading="loading" :pagination="pagination" :scroll="{ x: 1800 }" @change="changePage">
+      <ATable :columns="columns" :data-source="items" row-key="id" :loading="loading" :pagination="pagination" :scroll="{ x: 1800, y: '100%' }" @change="changePage">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'cover'"><AImage :src="record.cover" :width="90" /></template>
           <template v-else-if="column.key === 'version'"><ATag v-if="record.isGeneral">通用</ATag><template v-else>{{ record.tagVersionName }}</template></template>
@@ -18,9 +20,9 @@
           <template v-else-if="column.key === 'visibility'"><ASwitch :checked="record.visibility === 2" checked-children="专栏" un-checked-children="公开" :disabled="!canWrite || busy" @change="value => changeVisibility(record.id, Boolean(value))" /></template>
           <template v-else-if="column.key === 'deleted'">{{ deleted(record as AdminArticleListItem) ? '已删除' : '正常' }}</template>
           <template v-else-if="column.key === 'time'">{{ formatDateTime(record.createTime || record.createdAt || '') }}</template>
-          <template v-else-if="column.key === 'action'"><ASpace>
-            <AButton size="small" :disabled="!canWrite" @click="router.push({ name: 'blog_article-edit', params: { id: record.id } })">编辑</AButton><AButton size="small" @click="previewArticle(record.id)">预览</AButton><AButton size="small" danger :disabled="!canWrite || busy" @click="openDelete(record as AdminArticleListItem)">删除 / 恢复</AButton>
-          </ASpace></template>
+          <template v-else-if="column.key === 'action'"><div class="table-actions table-actions-grid">
+            <AButton type="link" size="small" :disabled="!canWrite" @click="router.push({ name: 'blog_article-edit', params: { id: record.id } })"><EditOutlined />编辑</AButton><AButton type="link" size="small" @click="previewArticle(record.id)"><EyeOutlined />预览</AButton><AButton type="link" size="small" danger :disabled="!canWrite || busy" @click="openDelete(record as AdminArticleListItem)"><DeleteOutlined />删除 / 恢复</AButton>
+          </div></template>
         </template>
       </ATable>
     </ACard>
@@ -30,11 +32,11 @@
       <AAlert class="mt-4" message="恢复时必须满足有效标签、版本和分类约束；失效关联请先修复，不能自动替换为通用版本。" />
     </AModal>
     <AModal v-model:open="draftsVisible" title="草稿箱" :footer="null" width="1100px">
-      <ATable :data-source="drafts" row-key="id" :loading="draftsLoading" :pagination="false" :scroll="{ x: 1000 }">
+      <ATable :data-source="drafts" row-key="id" :loading="draftsLoading" :pagination="false" :scroll="{ x: 1000, y: 'max(120px, calc(100dvh - 320px))' }">
         <ATableColumn title="标题" data-index="title" /><ATableColumn title="类型"><template #default="{ record }">{{ record.isNewArticleDraft ? '新增草稿' : '修改草稿' }}</template></ATableColumn>
         <ATableColumn title="分类" data-index="categoryName" /><ATableColumn title="标签" data-index="tagName" /><ATableColumn title="版本"><template #default="{ record }"><ATag v-if="record.isGeneral">通用</ATag><template v-else>{{ record.tagVersionName || '尚未选择' }}</template></template></ATableColumn>
         <ATableColumn title="更新时间"><template #default="{ record }">{{ formatDateTime(record.updatedAt) }}</template></ATableColumn>
-        <ATableColumn title="操作"><template #default="{ record }"><ASpace><AButton size="small" @click="preview?.openArticle(record.id, true)">预览</AButton><AButton size="small" :disabled="!canWrite" @click="editDraft(record)">编辑</AButton><AButton size="small" :disabled="!canWrite || busy" @click="publishDraft(record)">发布</AButton><APopconfirm title="删除草稿并清理未使用图片？" @confirm="removeDraft(record.id)"><AButton size="small" danger :disabled="!canWrite || busy">删除</AButton></APopconfirm></ASpace></template></ATableColumn>
+        <ATableColumn title="操作" fixed="right" align="center" :width="200"><template #default="{ record }"><div class="table-actions table-actions-grid"><AButton type="link" size="small" @click="preview?.openArticle(record.id, true)"><EyeOutlined />预览</AButton><AButton type="link" size="small" :disabled="!canWrite" @click="editDraft(record)"><EditOutlined />编辑</AButton><AButton type="link" size="small" :disabled="!canWrite || busy" @click="publishDraft(record)"><UploadOutlined />发布</AButton><APopconfirm title="删除草稿并清理未使用图片？" @confirm="removeDraft(record.id)"><AButton type="link" size="small" danger :disabled="!canWrite || busy"><DeleteOutlined />删除</AButton></APopconfirm></div></template></ATableColumn>
       </ATable>
     </AModal>
     <AuthorizedPreview ref="preview" />
@@ -46,6 +48,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router';
 import { message, type TableColumnsType, type TablePaginationConfig } from 'ant-design-vue';
 import type { Dayjs } from 'dayjs';
+import { DeleteOutlined, EditOutlined, EyeOutlined, UploadOutlined } from '@ant-design/icons-vue';
 import { deleteArticle, deleteArticleDraft, getArticleDraftPageList, getArticlePageList, publishArticleDraft, setArticleTop, setArticleVisibility, type AdminArticleListItem, type ArticleDraftListItem, type ArticlePageQuery } from '@/api/blog/article';
 import { getCategoryList, type CategoryListItem } from '@/api/blog/category';
 import { getTagList, type TagListItem } from '@/api/blog/tag';
@@ -89,7 +92,7 @@ const columns: TableColumnsType<AdminArticleListItem> = [
   { title: '标题', dataIndex: 'title', width: 220, ellipsis: true }, { title: '摘要', dataIndex: 'summary', width: 250, ellipsis: true }, { title: '封面', key: 'cover', width: 110 },
   { title: '分类', dataIndex: 'categoryName', width: 130 }, { title: '标签', dataIndex: 'tagName', width: 130 }, { title: '版本', key: 'version', width: 150 },
   { title: '置顶', key: 'top', width: 80 }, { title: '可见性', key: 'visibility', width: 100 }, { title: '状态', key: 'deleted', width: 100 },
-  { title: '发布时间', key: 'time', width: 180, sorter: true }, { title: '操作', key: 'action', width: 280 }
+  { title: '发布时间', key: 'time', width: 180, sorter: true }, { title: '操作', key: 'action', width: 240, align: 'center', fixed: 'right' }
 ];
 let disposed = false;
 let listRequest = 0;
@@ -168,3 +171,48 @@ watch(() => query.tagId, () => { query.tagVersionId = undefined; void loadVersio
 onMounted(refresh);
 onBeforeUnmount(() => { disposed = true; ++listRequest; ++versionRequest; ++optionsRequest; ++draftsRequest; });
 </script>
+
+<style scoped lang="scss">
+.search-card {
+  flex-shrink: 0;
+}
+.table-card {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  flex-direction: column;
+}
+.table-card :deep(.ant-card-body),
+.table-card :deep(.ant-table-wrapper),
+.table-card :deep(.ant-spin-nested-loading),
+.table-card :deep(.ant-spin-container),
+.table-card :deep(.ant-table),
+.table-card :deep(.ant-table-container) {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+.table-card :deep(.ant-card-body) {
+  overflow: hidden;
+}
+.table-card :deep(.ant-card-head),
+.table-card :deep(.ant-alert),
+.table-card :deep(.ant-table-header),
+.table-card :deep(.ant-table-pagination) {
+  flex-shrink: 0;
+}
+.table-card :deep(.ant-table-body) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto !important;
+}
+.table-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  justify-content: center;
+  gap: 4px 8px;
+}
+.table-actions :deep(.ant-btn) { white-space: nowrap; }
+</style>

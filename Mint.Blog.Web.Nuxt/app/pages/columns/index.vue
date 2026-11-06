@@ -24,7 +24,7 @@ const route = useRoute()
 const { data: columns, error, status, refresh } = await useAsyncData('public-columns', async () => {
   const result = await api<{ success: boolean; data: Column[] }>('column')
   if (!result.success || !Array.isArray(result.data)) throw new Error('专栏加载失败')
-  return [...result.data].sort((a, b) => Math.max(0, b.weight || 0) - Math.max(0, a.weight || 0) || (b.sort || 0) - (a.sort || 0) || (BigInt(a.id) < BigInt(b.id) ? -1 : BigInt(a.id) > BigInt(b.id) ? 1 : 0))
+  return [...result.data].sort((a, b) => Number((b.weight || 0) > 0) - Number((a.weight || 0) > 0) || (a.sort || 0) - (b.sort || 0) || (BigInt(a.id) < BigInt(b.id) ? -1 : BigInt(a.id) > BigInt(b.id) ? 1 : 0))
 })
 const size = 9
 const page = computed(() => typeof route.query.page === 'string' && /^[1-9]\d*$/.test(route.query.page) && Number.isSafeInteger(Number(route.query.page)) ? Number(route.query.page) : 1)

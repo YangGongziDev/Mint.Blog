@@ -93,8 +93,8 @@ export function setColumnTop(columnId: string, isTop: boolean) {
   }>;
 }
 
-export function updateColumnSort(columnId: string, sort: number) {
-  return axios.patch(`/admin/column/${columnId}/sort`, { columnId, sort }) as Promise<{
+export function updateColumnSort(columnId: string, sort: number, move?: 'up' | 'down' | 'first' | 'last') {
+  return axios.patch(`/admin/column/${columnId}/sort`, { columnId, sort, move }) as Promise<{
     success: boolean;
   }>;
 }

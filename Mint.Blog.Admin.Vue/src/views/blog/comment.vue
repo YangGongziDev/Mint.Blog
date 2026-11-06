@@ -1,6 +1,6 @@
 <template>
-  <div class="category-page flex h-full min-h-0 w-full flex-col overflow-hidden">
-    <div class="flex-shrink-0 bg-layout pb-4">
+  <div class="category-page flex h-full min-h-0 w-full flex-col gap-4 overflow-hidden">
+    <div class="flex-shrink-0">
       <ACard :bordered="false" class="card-wrapper">
         <AForm layout="inline" class="responsive-search-form">
           <AFormItem label="路由地址"><AInput v-model:value="query.routerUrl" allow-clear placeholder="请输入路由地址" class="w-full sm:w-[220px]" /></AFormItem>
@@ -21,7 +21,7 @@
           <template v-else-if="column.key === 'createdAt'">{{ formatDateTime(record.createdAt) }}</template>
           <template v-else-if="column.key === 'status'"><ATag :color="getStatusMeta(record.status).color">{{ getStatusMeta(record.status).label }}</ATag></template>
           <template v-else-if="column.key === 'isDeleted'"><ATag :color="isCommentDeleted(record as AdminCommentPageItem) ? 'red' : 'green'">{{ isCommentDeleted(record as AdminCommentPageItem) ? '已删除' : '未删除' }}</ATag></template>
-          <template v-else-if="column.key === 'action'"><ASpace><ATooltip title="详情"><AButton size="small" shape="circle" @click="openDetailModal(record as AdminCommentPageItem)"><template #icon><FileTextOutlined /></template></AButton></ATooltip><ATooltip title="审核"><AButton size="small" shape="circle" @click="openExamineModal(record as AdminCommentPageItem)"><template #icon><EditOutlined /></template></AButton></ATooltip><ATooltip title="删除"><AButton danger size="small" shape="circle" @click="openDeleteModal(record as AdminCommentPageItem)"><template #icon><DeleteOutlined /></template></AButton></ATooltip></ASpace></template>
+          <template v-else-if="column.key === 'action'"><ASpace class="table-actions"><ATooltip title="详情"><AButton type="link" size="small" @click="openDetailModal(record as AdminCommentPageItem)"><template #icon><FileTextOutlined /></template></AButton></ATooltip><ATooltip title="审核"><AButton type="link" size="small" @click="openExamineModal(record as AdminCommentPageItem)"><template #icon><EditOutlined /></template></AButton></ATooltip><ATooltip title="删除"><AButton type="link" danger size="small" @click="openDeleteModal(record as AdminCommentPageItem)"><template #icon><DeleteOutlined /></template></AButton></ATooltip></ASpace></template>
         </template>
       </ATable>
     </ACard>
@@ -85,8 +85,8 @@ const columns = computed<TableColumnsType<AdminCommentPageItem>>(() => [
   { title: '发布时间', dataIndex: 'createdAt', key: 'createdAt', width: 180, align: 'center', sorter: (a, b) => compareDateTime(a.createdAt, b.createdAt), sortOrder: getAntdTimeSortOrder(query.sortOrder), sortDirections: ['descend', 'ascend'] },
   { title: '状态', key: 'status', width: 100, align: 'center' }, { title: '删除状态', key: 'isDeleted', width: 100, align: 'center' }, { title: '操作', key: 'action', width: 150, align: 'center', fixed: 'right', className: 'blog-admin-action-column' }
 ]);
-const tableScrollX = 1200;
-const tableScrollY = computed(() => (appStore.isMobile ? 'calc(100vh - 380px)' : 'calc(100vh - 420px)'));
+const tableScrollX = 1380;
+const tableScrollY = '100%';
 function isCommentDeleted(record: AdminCommentPageItem) { return record.isDeleted === true || Number(record.isDeleted) === 1; }
 const currentDeleteCommentDeleted = computed(() => currentComment.value ? isCommentDeleted(currentComment.value) : false);
 function isDeleteTypeDisabled(type: number) { if (type === 1) return currentDeleteCommentDeleted.value; if (type === 3) return !currentDeleteCommentDeleted.value; return false; }
@@ -97,22 +97,26 @@ function handleTableChange(page: TablePaginationConfig, ...changeArgs: [unknown?
 function handleReset() { Object.assign(query, { pageNumber: 1, routerUrl: '', startDate: '', endDate: '', status: undefined }); dateRange.value = undefined; loadData(); }
 function openDetailModal(record: AdminCommentPageItem) { currentComment.value = record; detailModalVisible.value = true; }
 function openExamineModal(record: AdminCommentPageItem) { currentComment.value = record; examineForm.status = 2; examineForm.reason = ''; examineModalVisible.value = true; }
-async function handleExamine() { if (!currentComment.value) return; await formRef.value?.validate(); submitLoading.value = true; try { const res = await examineComment(currentComment.value.id, { status: examineForm.status, reason: examineForm.reason || null }); if (res.success) { message.success('审核完成'); currentComment.value = null; examineForm.status = 2; examineForm.reason = ''; examineModalVisible.value = false; await loadData(); } } finally { submitLoading.value = false; } }
+async function handleExamine() { if (!currentComment.value) return; await formRef.value?.validate(); submitLoading.value = true; try { const res = await examineComment(currentComment.value.id, { status: examineForm.status, reason: examineForm.reason || null }); if (res.success) { message.success('审核完成'); currentComment.value = null; examineModalVisible.value = false; examineForm.status = 2; examineForm.reason = ''; await loadData(); } } finally { submitLoading.value = false; } }
 function openDeleteModal(record: AdminCommentPageItem) { currentComment.value = record; deleteType.value = isCommentDeleted(record) ? 3 : 1; deleteModalVisible.value = true; }
-function handleDeleteCancel() { deleteModalVisible.value = false; currentComment.value = null; deleteLoading.value = false; deleteType.value = null; }
+function handleDeleteCancel() { deleteModalVisible.value = false; currentComment.value = null; deleteType.value = null; deleteLoading.value = false; }
 function getDeleteButtonText() { if (deleteType.value === 1) return '逻辑删除'; if (deleteType.value === 2) return '物理删除'; if (deleteType.value === 3) return '取消删除'; return '确定删除'; }
 async function handleDelete() { if (!currentComment.value || !deleteType.value || isDeleteTypeDisabled(deleteType.value)) return; deleteLoading.value = true; try { const res = await deleteComment(currentComment.value.id, deleteType.value); if (res.success) { message.success(`${getDeleteButtonText()}成功`); await loadData(); handleDeleteCancel(); } } finally { deleteLoading.value = false; } }
 onMounted(() => { loadData(); });
 </script>
 
 <style scoped lang="scss">
+.table-actions { flex-wrap: nowrap; }
+.table-actions :deep(.ant-btn) { padding-inline: 4px; white-space: nowrap; }
+
 .category-page { height: 100%; }
 .responsive-search-form { gap: 12px; :deep(.ant-form-item) { margin-right: 0; margin-bottom: 0; } }
 .comment-detail { overflow-x: auto; }
 .table-card { display: flex; flex-direction: column; }
 .table-card :deep(.ant-card-body) { display: flex; flex: 1; min-height: 0; overflow: hidden; flex-direction: column; }
-.table-card :deep(.ant-spin-nested-loading), .table-card :deep(.ant-spin-container), .table-card :deep(.ant-table), .table-card :deep(.ant-table-container) { display: flex; flex: 1; min-height: 0; flex-direction: column; }
-.table-card :deep(.ant-table-body) { overflow-y: auto !important; }
+.table-card :deep(.ant-table-wrapper), .table-card :deep(.ant-spin-nested-loading), .table-card :deep(.ant-spin-container), .table-card :deep(.ant-table), .table-card :deep(.ant-table-container) { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+.table-card :deep(.ant-table-body) { flex: 1; min-height: 0; overflow-y: auto !important; }
+.table-card :deep(.ant-card-head), .table-card :deep(.ant-alert), .table-card :deep(.ant-table-title), .table-card :deep(.ant-table-header), .table-card :deep(.ant-table-pagination) { flex-shrink: 0; }
 .table-card :deep(.ant-table-thead) { position: sticky; top: 0; z-index: 10; }
 .table-card :deep(.ant-table-thead > tr > th) { background: rgb(var(--container-bg-color)); }
 .comment-route-link, .comment-text-cell { max-width: 100%; overflow-wrap: anywhere; word-break: break-word; }

@@ -10,6 +10,7 @@ public interface ICategoryRepository {
     Task<long> AddAsync(string name, CancellationToken cancellationToken = default);
     Task UpdateAsync(long id, string name, CancellationToken cancellationToken = default);
     Task UpdateSortAsync(long id, int sort, CancellationToken cancellationToken = default);
+    Task<bool> MoveAsync(long id, string move, CancellationToken cancellationToken = default);
     Task MoveSortFirstAsync(long id, CancellationToken cancellationToken = default);
     Task MoveSortLastAsync(long id, CancellationToken cancellationToken = default);
     Task DeleteAsync(long id, int deleteType = 1, CancellationToken cancellationToken = default);

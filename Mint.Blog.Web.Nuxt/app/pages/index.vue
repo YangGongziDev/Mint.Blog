@@ -156,9 +156,10 @@ useSeoMeta({
   .home-content .article-meta :deep(svg) { width: 18px; height: 18px; padding: 3px; }
   .home-content .article-tags { margin-top: 6px; }
   .home-content .article-tags .article-category { display: none; }
-  .home-content .article-tags .article-chip { padding: 2px 5px; font-size: 11px; }
+  .home-content .article-tags .article-chip { padding: 2px 5px; font-size: 11px; gap: 2px; }
   .home-content .top-badge { top: -10px; }
   .home-content .article-card:hover { transform: none; }
+  .home-content .article-chip-label { padding-right: 2px; }
 }
 @media (max-width: 374px) { .home-content .article-cover,.home-content .article-card:nth-child(even) .article-cover { flex-basis: 98px; height: 108px; margin-left: 10px; } }
 

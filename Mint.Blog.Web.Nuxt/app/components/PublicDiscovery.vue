@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import type { PublicArticlePage } from '~/composables/usePublicContent'
 const props = defineProps<{ kind: 'category' | 'tag' | 'archive' }>()
-type Entry = { id: string; name: string; articlesTotal: number }
+type Entry = { id: string; name: string; articlesTotal: number; sort?: string | number | null }
 type Year = { year: number; articlesTotal: number }
 type Month = { month: string; articles: PublicArticlePage['data'] }
 type ArchivePage = Omit<PublicArticlePage, 'data'> & { data: Month[] }
@@ -76,7 +76,7 @@ const metadata = await useAsyncData(`discovery-${props.kind}-metadata`, async ()
   if (!result.success || !Array.isArray(result.data)) throw new Error('Discovery metadata unavailable')
   return result.data
 })
-const entries = computed(() => archive ? [] : [...(metadata.data.value || []) as Entry[]].filter(item => item.articlesTotal > 0).sort((a, b) => b.articlesTotal - a.articlesTotal || a.id.length - b.id.length || a.id.localeCompare(b.id)))
+const entries = computed(() => archive ? [] : [...(metadata.data.value || []) as Entry[]].filter(item => item.articlesTotal > 0).sort((a, b) => (BigInt(a.sort ?? 0) < BigInt(b.sort ?? 0) ? -1 : BigInt(a.sort ?? 0) > BigInt(b.sort ?? 0) ? 1 : 0) || (BigInt(a.id) < BigInt(b.id) ? -1 : BigInt(a.id) > BigInt(b.id) ? 1 : 0)))
 const years = computed(() => archive ? [...(metadata.data.value || []) as Year[]].sort((a, b) => b.year - a.year) : [])
 const selectedId = computed(() => validId(rawId.value) ? rawId.value : rawId.value === undefined ? entries.value[0]?.id || '' : '')
 const selectedName = computed(() => entries.value.find(item => item.id === selectedId.value)?.name || (typeof route.query.name === 'string' ? route.query.name : ''))

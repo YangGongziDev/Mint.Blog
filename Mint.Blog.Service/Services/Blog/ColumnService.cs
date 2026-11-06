@@ -48,16 +48,28 @@ public sealed class ColumnService(IColumnRepository columnRepository, IUnitOfWor
     }
     public async Task SetTopAsync(SetColumnTopCommand command, CancellationToken cancellationToken = default) {
         var column = await RequireAsync(command.ColumnId, cancellationToken);
-        var max = await columnRepository.GetMaxWeightAsync(cancellationToken);
-        column.Weight = command.IsTop ? max + 1 : 0;
+        column.Weight = command.IsTop ? 1 : 0;
         column.UpdatedAt = DateTimeOffset.UtcNow;
         await SaveAsync(column, cancellationToken);
     }
     public async Task UpdateSortAsync(UpdateColumnSortCommand command, CancellationToken cancellationToken = default) {
-        var column = await RequireAsync(command.ColumnId, cancellationToken);
-        column.Sort = command.Sort;
-        column.UpdatedAt = DateTimeOffset.UtcNow;
-        await SaveAsync(column, cancellationToken);
+        var move = command.Move?.Trim().ToLowerInvariant();
+        if (move is not null && move is not ("up" or "down" or "first" or "last"))
+            throw new ArgumentException("Move must be up, down, first or last.", nameof(command.Move));
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
+        try {
+            if (move is null) {
+                await RequireAsync(command.ColumnId, cancellationToken);
+                await columnRepository.UpdateSortAsync(command.ColumnId, command.Sort, cancellationToken);
+            } else {
+                var found = await columnRepository.MoveAsync(command.ColumnId, move, cancellationToken);
+                Guard.Against(!found, ErrorCodes.ColumnNotFound, "Column not found.");
+            }
+            await unitOfWork.CommitAsync(cancellationToken);
+        } catch {
+            await unitOfWork.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
     public async Task DeleteAsync(DeleteColumnCommand command, CancellationToken cancellationToken = default) {
         var column = await RequireAsync(command.ColumnId, cancellationToken);

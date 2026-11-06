@@ -1,6 +1,6 @@
 <template>
-  <div class="category-page flex h-full min-h-0 w-full flex-col overflow-hidden">
-    <div class="flex-shrink-0 bg-layout pb-4"><ACard :bordered="false" class="card-wrapper"><AForm layout="inline" class="responsive-search-form">
+  <div class="category-page flex h-full min-h-0 w-full flex-col gap-4 overflow-hidden">
+    <div class="flex-shrink-0"><ACard :bordered="false" class="card-wrapper"><AForm layout="inline" class="responsive-search-form">
       <AFormItem label="分类名称"><AInput v-model:value="query.name" allow-clear placeholder="请输入（模糊查询）" class="w-full sm:w-[220px]" @press-enter="loadData" /></AFormItem>
       <AFormItem label="创建日期"><ARangePicker v-model:value="dateRange" class="w-full sm:w-[280px]" @change="handleDateChange" /></AFormItem>
       <AFormItem><ASpace wrap><AButton type="primary" @click="loadData"><template #icon><SearchOutlined /></template>查询</AButton><AButton @click="handleReset"><template #icon><ReloadOutlined /></template>重置</AButton><AButton type="primary" @click="openCreateModal"><template #icon><PlusOutlined /></template>新增</AButton></ASpace></AFormItem>
@@ -12,13 +12,13 @@
           <template v-else-if="column.key === 'name'"><ATag color="blue">{{ record.name }}</ATag></template>
           <template v-else-if="column.key === 'createTime'">{{ getCreateTime(record as CategoryListItem) }}</template>
           <template v-else-if="column.key === 'isDeleted'"><ATag :color="isCategoryDeleted(record as CategoryListItem) ? 'red' : 'green'">{{ isCategoryDeleted(record as CategoryListItem) ? '已删除' : '未删除' }}</ATag></template>
-          <template v-else-if="column.key === 'action'"><ASpace>
-            <ATooltip title="置顶"><AButton size="small" shape="circle" :disabled="index === 0" @click="moveCategoryToFirst(record as CategoryListItem, index)"><template #icon><VerticalAlignTopOutlined /></template></AButton></ATooltip>
-            <ATooltip title="置底"><AButton size="small" shape="circle" :disabled="index === tableData.length - 1" @click="moveCategoryToLast(record as CategoryListItem, index)"><template #icon><VerticalAlignBottomOutlined /></template></AButton></ATooltip>
-            <ATooltip title="上移"><AButton size="small" shape="circle" :disabled="index === 0" @click="moveCategoryUp(index)"><template #icon><UpOutlined /></template></AButton></ATooltip>
-            <ATooltip title="下移"><AButton size="small" shape="circle" :disabled="index === tableData.length - 1" @click="moveCategoryDown(index)"><template #icon><DownOutlined /></template></AButton></ATooltip>
-            <ATooltip title="编辑"><AButton type="primary" size="small" shape="circle" @click="openEditModal(record as CategoryListItem)"><template #icon><EditOutlined /></template></AButton></ATooltip>
-            <ATooltip title="删除"><AButton danger size="small" shape="circle" @click="openDeleteModal(record as CategoryListItem)"><template #icon><DeleteOutlined /></template></AButton></ATooltip>
+          <template v-else-if="column.key === 'action'"><ASpace wrap class="table-actions" :size="[8, 4]">
+            <ATooltip title="移至首位"><AButton type="link" size="small" :disabled="sorting || loading" @click="moveCategory(record as CategoryListItem, 'first')"><template #icon><VerticalAlignTopOutlined /></template></AButton></ATooltip>
+            <ATooltip title="移至末位"><AButton type="link" size="small" :disabled="sorting || loading" @click="moveCategory(record as CategoryListItem, 'last')"><template #icon><VerticalAlignBottomOutlined /></template></AButton></ATooltip>
+            <ATooltip title="上移"><AButton type="link" size="small" :disabled="sorting || loading" @click="moveCategory(record as CategoryListItem, 'up')"><template #icon><UpOutlined /></template></AButton></ATooltip>
+            <ATooltip title="下移"><AButton type="link" size="small" :disabled="sorting || loading" @click="moveCategory(record as CategoryListItem, 'down')"><template #icon><DownOutlined /></template></AButton></ATooltip>
+            <ATooltip title="编辑"><AButton type="link" size="small" @click="openEditModal(record as CategoryListItem)"><template #icon><EditOutlined /></template></AButton></ATooltip>
+            <ATooltip title="删除"><AButton type="link" danger size="small" @click="openDeleteModal(record as CategoryListItem)"><template #icon><DeleteOutlined /></template></AButton></ATooltip>
           </ASpace></template>
         </template>
       </ATable>
@@ -52,13 +52,14 @@ import type { FormInstance, FormProps, TableColumnsType } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
 import type { Dayjs } from 'dayjs';
 import { DeleteOutlined, DownOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, UpOutlined, VerticalAlignBottomOutlined, VerticalAlignTopOutlined } from '@ant-design/icons-vue';
-import { type CategoryListItem, createCategory, deleteCategory, getCategoryPageList, moveCategorySortFirst, moveCategorySortLast, updateCategory, updateCategorySort } from '@/api/blog/category';
+import { type CategoryListItem, createCategory, deleteCategory, getCategoryPageList, updateCategory, updateCategorySort } from '@/api/blog/category';
 import { useAppStore } from '@/store/system/app';
 import type { TimeSortOrder } from '@/utils/date-time';
-import { compareDateTime, formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
+import { formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
 defineOptions({ name: 'BlogCategoryList' });
 const appStore = useAppStore();
 const loading = ref(false);
+const sorting = ref(false);
 let listRequest = 0;
 let disposed = false;
 const dateRange = ref<[Dayjs, Dayjs] | undefined>();
@@ -86,12 +87,13 @@ const columns = computed<TableColumnsType<CategoryListItem>>(() => [
   { title: '序号', key: 'index', width: 80, align: 'center' },
   { title: '分类', dataIndex: 'name', key: 'name', width: 180, align: 'center', ellipsis: true },
   { title: '文章数', dataIndex: 'articlesTotal', key: 'articlesTotal', width: 100, align: 'center' },
-  { title: '创建时间', dataIndex: 'createTime', key: 'createTime', width: 180, align: 'center', sorter: (a, b) => compareDateTime(getRawCreateTime(a), getRawCreateTime(b)), sortOrder: query.sortOrder ? getAntdTimeSortOrder(query.sortOrder) : undefined, sortDirections: ['descend', 'ascend'] },
+  { title: '排序号', dataIndex: 'sort', key: 'sort', width: 100, align: 'center' },
+  { title: '创建时间', dataIndex: 'createTime', key: 'createTime', width: 180, align: 'center', sorter: true, sortOrder: query.sortOrder ? getAntdTimeSortOrder(query.sortOrder) : undefined, sortDirections: ['descend', 'ascend'] },
   { title: '删除状态', key: 'isDeleted', width: 100, align: 'center' },
-  { title: '操作', key: 'action', width: 220, align: 'center' }
+  { title: '操作', key: 'action', width: 140, align: 'center', fixed: 'right' }
 ]);
 const tableScrollX = 1200;
-const tableScrollY = computed(() => (appStore.isMobile ? 'calc(100vh - 400px)' : 'calc(100vh - 440px)'));
+const tableScrollY = '100%';
 const pagination = computed(() => ({ current: current.value, pageSize: pageSize.value, total: total.value, showSizeChanger: true, showQuickJumper: true, pageSizeOptions: ['10', '20', '50', '100', '150', '200', '300', '350', '400', '500', '600', '800', '1000', '1500', '2000'], showTotal: (value: number, range: [number, number]) => `第 ${range[0]}-${range[1]} 条，共 ${value} 条`, size: appStore.isMobile ? ('small' as const) : ('default' as const) }));
 const rules: FormProps['rules'] = { name: [{ required: true, message: '分类名称不能为空', trigger: 'blur' }, { min: 1, max: 20, message: '分类名称字数要求大于 1 个字符，小于 20 个字符', trigger: 'blur' }] };
 const editRules: FormProps['rules'] = { name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }, { max: 20, message: '分类名称不能超过20个字符', trigger: 'blur' }] };
@@ -154,38 +156,39 @@ async function handleDelete() {
   try { const res = await deleteCategory(currentDeleteCategory.value.id, deleteType.value); if (res.success) { message.success(`${getDeleteButtonText()}成功`); await loadData(); handleDeleteCancel(); } }
   finally { deleteLoading.value = false; }
 }
-async function updateCategorySortValue(id: string, sort: string) { const res = await updateCategorySort(id, sort); if (!res.success) throw new Error('排序更新失败'); }
-async function moveCategoryUp(index: number) {
-  query.sortOrder = undefined; if (index === 0) return;
-  const currentItem = tableData.value[index]; const prevItem = tableData.value[index - 1];
-  await updateCategorySortValue(currentItem.id, prevItem.sort ?? '0'); await updateCategorySortValue(prevItem.id, currentItem.sort ?? '0');
-  await loadData();
-}
-async function moveCategoryDown(index: number) {
-  query.sortOrder = undefined; if (index === tableData.value.length - 1) return;
-  const currentItem = tableData.value[index]; const nextItem = tableData.value[index + 1];
-  await updateCategorySortValue(currentItem.id, nextItem.sort ?? '0'); await updateCategorySortValue(nextItem.id, currentItem.sort ?? '0');
-  await loadData();
-}
-async function moveCategoryToFirst(record: CategoryListItem, index: number) {
-  query.sortOrder = undefined; if (index === 0) { message.warning('已经是第一个了'); return; }
-  const res = await moveCategorySortFirst(record.id); if (res.success) { message.success('置顶成功'); await loadData(); }
-}
-async function moveCategoryToLast(record: CategoryListItem, index: number) {
-  query.sortOrder = undefined; if (index === tableData.value.length - 1) { message.warning('已经是最后一个了'); return; }
-  const res = await moveCategorySortLast(record.id); if (res.success) { message.success('置底成功'); await loadData(); }
+async function moveCategory(record: CategoryListItem, move: 'up' | 'down' | 'first' | 'last') {
+  if (sorting.value || loading.value) return;
+  sorting.value = true;
+  try {
+    const res = await updateCategorySort(record.id, '0', move);
+    if (res.success) {
+      query.sortOrder = undefined;
+      message.success('排序更新成功');
+      await loadData();
+    }
+  } finally { sorting.value = false; }
 }
 onMounted(() => { loadData(); });
 onBeforeUnmount(() => { disposed = true; ++listRequest; });
 </script>
 
 <style scoped lang="scss">
+.table-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 24px);
+  grid-template-rows: repeat(2, auto);
+  justify-content: center;
+  gap: 4px 8px !important;
+}
+.table-actions :deep(.ant-btn) { width: 24px; padding-inline: 0; white-space: nowrap; }
+
 .category-page { height: 100%; }
 .responsive-search-form { gap: 12px; :deep(.ant-form-item) { margin-right: 0; margin-bottom: 0; } }
 .table-card { display: flex; flex-direction: column; }
 .table-card :deep(.ant-card-body) { display: flex; flex: 1; min-height: 0; overflow: hidden; flex-direction: column; }
-.table-card :deep(.ant-spin-nested-loading), .table-card :deep(.ant-spin-container), .table-card :deep(.ant-table), .table-card :deep(.ant-table-container) { display: flex; flex: 1; min-height: 0; flex-direction: column; }
-.table-card :deep(.ant-table-body) { overflow-y: auto !important; }
+.table-card :deep(.ant-table-wrapper), .table-card :deep(.ant-spin-nested-loading), .table-card :deep(.ant-spin-container), .table-card :deep(.ant-table), .table-card :deep(.ant-table-container) { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+.table-card :deep(.ant-table-body) { flex: 1; min-height: 0; overflow-y: auto !important; }
+.table-card :deep(.ant-card-head), .table-card :deep(.ant-alert), .table-card :deep(.ant-table-title), .table-card :deep(.ant-table-header), .table-card :deep(.ant-table-pagination) { flex-shrink: 0; }
 .table-card :deep(.ant-table-thead) { position: sticky; top: 0; z-index: 10; }
 .table-card :deep(.ant-table-thead > tr > th) { background: rgb(var(--container-bg-color)); }
 :global(html:not(.dark)) .delete-info { border: 1px solid #ffccc7; background-color: #fff2f0; }

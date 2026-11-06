@@ -58,7 +58,8 @@
 ## 项目文档
 
 - 文档：[https://www.yanggongzi.dev/columns/1](https://www.yanggongzi.dev/columns/1)
-- 演示：[https://www.yanggongzi.dev](https://www.yanggongzi.dev)(账号密码会自动输入)
+- 前台演示：[https://www.yanggongzi.dev](https://www.yanggongzi.dev)
+- 后台演示：[https://blog.yanggongzi.dev](https://blog.yanggongzi.dev)(账号密码会自动输入)
 
 ## 页面截图
 

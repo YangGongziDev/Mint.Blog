@@ -1,7 +1,11 @@
 <template>
   <div class="gallery-admin-page">
-    <ACard :bordered="false" class="page-card">
-      <div v-if="activeTab === 'images'" class="gallery-toolbar-row">
+    <div class="gallery-tabs-wrapper">
+      <ATabs v-model:active-key="activeTab" style="padding: 0 0 12px 0;">
+        <ATabPane key="images" tab="图片管理">
+          <div class="flex flex-col gap-4">
+      <ACard :bordered="false" class="card-wrapper">
+      <div class="gallery-toolbar-row">
         <AInput
           v-model:value="imageKeyword"
           allow-clear
@@ -32,18 +36,21 @@
           上传图片
         </AButton>
       </div>
-      <div class="gallery-tabs-wrapper">
-        <ATabs v-model:active-key="activeTab">
-        <ATabPane key="images" tab="图片管理">
+    </ACard>
+    <ACard :bordered="false" class="page-card card-wrapper">
           <ATable
             row-key="id"
             :loading="loading"
             :columns="imageColumns"
             :data-source="imageData"
-            :pagination="false"
+            :pagination="imagePagination"
             :size="tableSize"
-            :scroll="{ x: tableScrollX }"
-            :row-selection="{ selectedRowKeys: selectedImageRowKeys, onChange: (keys: (string | number)[]) => (selectedImageRowKeys = keys.map(String)) }"
+            :scroll="{ x: tableScrollX, y: tableScrollY }"
+            :row-selection="{
+              selectedRowKeys: selectedImageRowKeys,
+              columnTitle: renderSelectAll(imageData, selectedImageRowKeys, keys => (selectedImageRowKeys = keys)),
+              onChange: (keys: (string | number)[]) => (selectedImageRowKeys = keys.map(String))
+            }"
           >
             <template #title>
               <ASpace v-if="selectedImageRowKeys.length">
@@ -54,7 +61,7 @@
               </ASpace>
             </template>
             <template #bodyCell="{ column, record, index }">
-              <template v-if="column.key === 'index'">{{ index + 1 }}</template>
+              <template v-if="column.key === 'index'">{{ (imagePagination.current - 1) * imagePagination.pageSize + index + 1 }}</template>
               <template v-else-if="column.key === 'url'">
                 <AImage :src="record.url" :width="72" :height="46" />
               </template>
@@ -94,26 +101,50 @@
               </template>
             </template>
           </ATable>
+    </ACard>
+          </div>
         </ATabPane>
 
         <ATabPane key="categories" tab="分类管理">
-          <div class="table-toolbar category-toolbar">
-            <AButton type="primary" ghost :disabled="isDemoAdmin" @click="openCategoryModal">
-              <PlusOutlined />
-              新增分类
-            </AButton>
-          </div>
+          <div class="flex flex-col gap-4">
+          <ACard :bordered="false" class="card-wrapper">
+            <div class="gallery-toolbar-row">
+              <AInput
+                v-model:value="categoryKeyword"
+                allow-clear
+                placeholder="搜索分类名称、描述"
+                class="search-input"
+              >
+                <template #prefix><SearchOutlined /></template>
+              </AInput>
+              <ASelect
+                v-model:value="categoryEnabled"
+                allow-clear
+                placeholder="启用状态（全部）"
+                class="category-status-select"
+              >
+                <ASelectOption value="enabled">启用</ASelectOption>
+                <ASelectOption value="disabled">停用</ASelectOption>
+              </ASelect>
+              <AButton @click="resetCategoryFilters">重置</AButton>
+              <AButton type="primary" ghost :disabled="isDemoAdmin" @click="openCategoryModal">
+                <PlusOutlined />
+                新增分类
+              </AButton>
+            </div>
+          </ACard>
+          <ACard :bordered="false" class="page-card card-wrapper">
           <ATable
             row-key="id"
             :loading="loading"
             :columns="categoryColumns"
-            :data-source="categoryData"
-            :pagination="false"
+            :data-source="filteredCategoryData"
+            :pagination="categoryPagination"
             :size="tableSize"
-            :scroll="{ x: tableScrollX }"
+            :scroll="{ x: tableScrollX, y: tableScrollY }"
           >
             <template #bodyCell="{ column, record, index }">
-              <template v-if="column.key === 'index'">{{ index + 1 }}</template>
+              <template v-if="column.key === 'index'">{{ (categoryPagination.current - 1) * categoryPagination.pageSize + index + 1 }}</template>
               <template v-else-if="column.key === 'enabled'">
                 <ATag :color="record.enabled ? 'green' : 'default'">{{ record.enabled ? '启用' : '停用' }}</ATag>
               </template>
@@ -142,10 +173,13 @@
               </template>
             </template>
           </ATable>
+          </ACard>
+          </div>
         </ATabPane>
 
         <ATabPane key="duplicates" tab="查重管理">
-          <div class="duplicate-toolbar">
+          <div class="flex flex-col gap-4">
+          <ACard :bordered="false" class="card-wrapper">
             <ASpace wrap>
               <span>查重条件：</span>
               <ACheckboxGroup v-model:value="duplicateConditions" @change="handleDuplicateConditionChange">
@@ -154,11 +188,25 @@
                 <ACheckbox value="size">大小</ACheckbox>
               </ACheckboxGroup>
             </ASpace>
-            <ASpace wrap>
-              <span>重复组 {{ duplicateGroups.length }} 组，重复图片 {{ duplicateImageCount }} 张</span>
-              <AButton size="small" :disabled="!duplicateRows.length" @click="selectDuplicateExtras">每组保留一张</AButton>
-            </ASpace>
-          </div>
+            <div class="duplicate-toolbar">
+              <ASpace wrap>
+                <span>重复组 {{ duplicateGroups.length }} 组，重复图片 {{ duplicateImageCount }} 张</span>
+                <AButton size="small" :disabled="!duplicateRows.length" @click="selectDuplicateExtras">每组保留一张</AButton>
+              </ASpace>
+              <ASpace wrap>
+                <span>已选择 {{ duplicateSelectedRowKeys.length }} 张</span>
+                <AButton
+                  danger
+                  size="small"
+                  :disabled="isDemoAdmin || !duplicateSelectedRowKeys.length"
+                  @click="confirmDeleteSelectedDuplicates"
+                >
+                  批量删除
+                </AButton>
+              </ASpace>
+            </div>
+          </ACard>
+          <ACard :bordered="false" class="page-card card-wrapper">
           <AAlert
             v-if="!duplicateConditions.length"
             message="请至少选择一个查重条件"
@@ -171,37 +219,26 @@
             :loading="loading"
             :columns="duplicateColumns"
             :data-source="duplicateRows"
-            :pagination="false"
+            :pagination="duplicatePagination"
             :size="tableSize"
-            :scroll="{ x: tableScrollX }"
+            :scroll="{ x: tableScrollX, y: tableScrollY }"
             :row-selection="{
               selectedRowKeys: duplicateSelectedRowKeys,
+              columnTitle: renderSelectAll(duplicateRows, duplicateSelectedRowKeys, keys => (duplicateSelectedRowKeys = keys)),
               onChange: (keys: (string | number)[]) => (duplicateSelectedRowKeys = keys.map(String))
             }"
           >
-            <template #title>
-              <ASpace>
-                <span>已选择 {{ duplicateSelectedRowKeys.length }} 张</span>
-                <AButton
-                  danger
-                  size="small"
-                  :disabled="isDemoAdmin || !duplicateSelectedRowKeys.length"
-                  @click="confirmDeleteSelectedDuplicates"
-                >
-                  批量删除
-                </AButton>
-              </ASpace>
-            </template>
             <template #bodyCell="{ column, record }">
               <template v-if="column.key === 'url'">
                 <AImage :src="record.url" :width="72" :height="46" />
               </template>
             </template>
           </ATable>
+          </ACard>
+          </div>
         </ATabPane>
-        </ATabs>
-      </div>
-    </ACard>
+      </ATabs>
+    </div>
 
     <AModal v-model:open="categoryModalOpen" title="画廊分类" :width="modalWidth" destroy-on-close>
       <AForm :model="categoryForm" layout="vertical">
@@ -302,9 +339,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { computed, h, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import type { TableColumnsType, UploadChangeParam, UploadProps } from 'ant-design-vue';
-import { Modal, message } from 'ant-design-vue';
+import { Checkbox, Modal, message } from 'ant-design-vue';
 import {
   CopyOutlined,
   DeleteOutlined,
@@ -337,6 +374,7 @@ const appStore = useAppStore();
 const activeTab = ref('images');
 const loading = ref(false);
 const categoryKeyword = ref('');
+const categoryEnabled = ref<'enabled' | 'disabled'>();
 const imageKeyword = ref('');
 const categoryModalOpen = ref(false);
 const imageModalOpen = ref(false);
@@ -368,6 +406,14 @@ const imageForm = reactive({
 
 const authStore = useAuthStore();
 const categoryData = ref<GalleryCategoryItem[]>([]);
+const filteredCategoryData = computed(() => {
+  const keyword = categoryKeyword.value.trim().toLowerCase();
+  return categoryData.value.filter(item => {
+    const matchesKeyword = !keyword || [item.name, item.description].some(value => value?.toLowerCase().includes(keyword));
+    const matchesStatus = !categoryEnabled.value || item.enabled === (categoryEnabled.value === 'enabled');
+    return matchesKeyword && matchesStatus;
+  });
+});
 const categoryOptions = ref<GalleryCategoryItem[]>([]);
 const sortedCategoryOptions = computed(() => sortOptionsByLabel(categoryOptions.value, item => item.name));
 const imageData = ref<GalleryImageItem[]>([]);
@@ -381,6 +427,7 @@ const readonlyActionMessage = '游客演示账号仅允许查看画廊数据，�
 
 const tableSize = computed(() => (appStore.isMobile ? 'small' : 'middle'));
 const tableScrollX = computed(() => (appStore.isMobile ? 1180 : 1400));
+const tableScrollY = '100%';
 const modalWidth = computed(() => (appStore.isMobile ? '92vw' : 560));
 const isBatchLocalUpload = computed(
   () => !editingImage.value && imageForm.sourceType === 'local' && selectedLocalFiles.value.length > 1
@@ -463,15 +510,68 @@ const duplicateRows = computed<DuplicateImageRow[]>(() =>
 
 const duplicateImageCount = computed(() => duplicateRows.value.length);
 
+function createPagination(getTotal: () => number) {
+  const pagination = reactive({
+    current: 1,
+    pageSize: 10,
+    get total() { return getTotal(); },
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '20', '50', '100'],
+    showQuickJumper: true,
+    showTotal: (total: number, range: [number, number]) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+    get size() { return appStore.isMobile ? ('small' as const) : ('default' as const); },
+    onChange: (current: number, pageSize: number) => {
+      pagination.current = pageSize === pagination.pageSize ? current : 1;
+      pagination.pageSize = pageSize;
+    }
+  });
+  watch([getTotal, () => pagination.pageSize], ([total, pageSize]) => {
+    pagination.current = Math.min(pagination.current, Math.max(1, Math.ceil(total / pageSize)));
+  });
+  return pagination;
+}
+
+const imagePagination = createPagination(() => imageData.value.length);
+const categoryPagination = createPagination(() => filteredCategoryData.value.length);
+const duplicatePagination = createPagination(() => duplicateRows.value.length);
+
+watch(imageKeyword, () => {
+  imagePagination.current = 1;
+  duplicatePagination.current = 1;
+});
+watch([categoryKeyword, categoryEnabled], () => { categoryPagination.current = 1; });
+
+function resetCategoryFilters() {
+  categoryKeyword.value = '';
+  categoryEnabled.value = undefined;
+}
+
+function renderSelectAll(rows: GalleryImageItem[], selectedKeys: string[], onChange: (keys: string[]) => void) {
+  const selectedCount = rows.filter(item => selectedKeys.includes(item.id)).length;
+  return h(Checkbox, {
+    checked: rows.length > 0 && selectedCount === rows.length,
+    indeterminate: selectedCount > 0 && selectedCount < rows.length,
+    disabled: !rows.length,
+    'aria-label': '全部选择',
+    onChange: () => onChange(selectedCount === rows.length ? [] : rows.map(item => item.id))
+  });
+}
+
 async function loadCategories() {
   loading.value = true;
   try {
-    const res = await getGalleryCategoryPageList({
-      pageNumber: 1,
-      pageSize: 200,
-      keyword: categoryKeyword.value || undefined
-    });
-    if (res.success) categoryData.value = res.data.items ?? res.data.records ?? [];
+    const pageSize = 200;
+    const firstRes = await getGalleryCategoryPageList({ pageNumber: 1, pageSize });
+    if (!firstRes.success) return;
+    const firstItems = firstRes.data.items ?? firstRes.data.records ?? [];
+    const totalCount = firstRes.data.totalCount ?? firstRes.data.total ?? firstItems.length;
+    const pageCount = Math.ceil(totalCount / pageSize);
+    const pages = await Promise.all(
+      Array.from({ length: pageCount - 1 }, (_, index) =>
+        getGalleryCategoryPageList({ pageNumber: index + 2, pageSize })
+      )
+    );
+    categoryData.value = firstItems.concat(...pages.filter(res => res.success).map(res => res.data.items ?? res.data.records ?? []));
   } finally {
     loading.value = false;
   }
@@ -998,6 +1098,7 @@ function confirmDeleteImages(records: GalleryImageItem[]) {
 }
 
 function handleDuplicateConditionChange() {
+  duplicatePagination.current = 1;
   duplicateSelectedRowKeys.value = [];
   if (!duplicateConditions.value.length) message.warning('请至少选择一个查重条件');
 }
@@ -1043,27 +1144,101 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
+
+:deep(.ant-tabs-tab) {
+  padding: 0 0 12px 0 !important;
+}
+
 .gallery-admin-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
   padding: 16px;
 }
 
 .page-card {
-  min-height: calc(100vh - 140px);
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.page-card :deep(.ant-card-body),
+.page-card :deep(.ant-table-wrapper),
+.page-card :deep(.ant-spin-nested-loading),
+.page-card :deep(.ant-spin-container),
+.page-card :deep(.ant-table),
+.page-card :deep(.ant-table-container) {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.page-card :deep(.ant-card-body) {
+  overflow: hidden;
+}
+
+.page-card :deep(.ant-table-body) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto !important;
+}
+
+.page-card :deep(.ant-table-title),
+.page-card :deep(.ant-table-header),
+.page-card :deep(.ant-table-pagination),
+.duplicate-alert {
+  flex-shrink: 0;
 }
 
 .gallery-toolbar-row {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 12px;
 }
 
 .gallery-tabs-wrapper {
   position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .gallery-tabs-wrapper > :deep(.ant-tabs) {
   width: 100%;
+  min-height: 0;
+}
+
+.gallery-tabs-wrapper :deep(.ant-tabs-nav) {
+  flex-shrink: 0;
+}
+
+.gallery-tabs-wrapper :deep(.ant-tabs-content-holder),
+.gallery-tabs-wrapper :deep(.ant-tabs-content),
+.gallery-tabs-wrapper :deep(.ant-tabs-tabpane-active) {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.gallery-tabs-wrapper :deep(.ant-tabs-tabpane-active > div) {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.gallery-tabs-wrapper :deep(.ant-tabs-tabpane-active > div > .card-wrapper:first-child) {
+  flex-shrink: 0;
 }
 
 .default-bucket-bar {
@@ -1080,7 +1255,7 @@ onBeforeUnmount(() => {
 
 :deep(.ant-tabs-nav) {
   align-items: center;
-  margin-bottom: 0;
+  margin-bottom: 16px;
 }
 
 .default-bucket-select {
@@ -1097,6 +1272,10 @@ onBeforeUnmount(() => {
 .category-toolbar {
   justify-content: flex-end;
   padding-top: 16px;
+}
+
+.category-status-select {
+  width: 180px;
 }
 
 .duplicate-toolbar {
@@ -1156,6 +1335,10 @@ onBeforeUnmount(() => {
   .duplicate-toolbar {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .category-status-select {
+    width: 100%;
   }
 
   .search-input {

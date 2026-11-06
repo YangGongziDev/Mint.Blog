@@ -18,6 +18,7 @@ public interface ITagRepository {
     Task<long> AddAsync(string name, long categoryId, string logoUrl, CancellationToken ct = default);
     Task UpdateAsync(long id, string name, long categoryId, string? logoUrl, CancellationToken ct = default);
     Task UpdateSortAsync(long id, int sort, CancellationToken ct = default);
+    Task<bool> MoveAsync(long id, string move, CancellationToken ct = default);
     Task MoveSortFirstAsync(long id, CancellationToken ct = default);
     Task MoveSortLastAsync(long id, CancellationToken ct = default);
     Task DeleteAsync(long id, int deleteType = 1, CancellationToken ct = default);

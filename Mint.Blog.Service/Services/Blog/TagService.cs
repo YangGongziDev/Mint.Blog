@@ -52,17 +52,28 @@ public sealed class TagService(ITagRepository repository, IResourceRepository re
         }
     }
     public async Task UpdateSortAsync(UpdateTagSortCommand command, CancellationToken cancellationToken = default) {
-        await RequireTagAsync(command.TagId, cancellationToken);
-        await repository.UpdateSortAsync(command.TagId, command.Sort, cancellationToken);
+        var move = command.Move?.Trim().ToLowerInvariant();
+        if (move is not null && move is not ("up" or "down" or "first" or "last"))
+            throw new ArgumentException("Move must be up, down, first or last.", nameof(command.Move));
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
+        try {
+            if (move is null) {
+                await RequireTagAsync(command.TagId, cancellationToken);
+                await repository.UpdateSortAsync(command.TagId, command.Sort, cancellationToken);
+            } else {
+                var found = await repository.MoveAsync(command.TagId, move, cancellationToken);
+                Guard.Against(!found, ErrorCodes.TagNotFound, "Tag does not exist.");
+            }
+            await unitOfWork.CommitAsync(cancellationToken);
+        } catch {
+            await unitOfWork.RollbackAsync(CancellationToken.None);
+            throw;
+        }
     }
-    public async Task MoveSortFirstAsync(MoveTagSortFirstCommand command, CancellationToken cancellationToken = default) {
-        await RequireTagAsync(command.TagId, cancellationToken);
-        await repository.MoveSortFirstAsync(command.TagId, cancellationToken);
-    }
-    public async Task MoveSortLastAsync(MoveTagSortLastCommand command, CancellationToken cancellationToken = default) {
-        await RequireTagAsync(command.TagId, cancellationToken);
-        await repository.MoveSortLastAsync(command.TagId, cancellationToken);
-    }
+    public Task MoveSortFirstAsync(MoveTagSortFirstCommand command, CancellationToken cancellationToken = default) =>
+        UpdateSortAsync(new UpdateTagSortCommand(command.TagId, 0, "first"), cancellationToken);
+    public Task MoveSortLastAsync(MoveTagSortLastCommand command, CancellationToken cancellationToken = default) =>
+        UpdateSortAsync(new UpdateTagSortCommand(command.TagId, 0, "last"), cancellationToken);
     public async Task DeleteAsync(DeleteTagCommand command, CancellationToken cancellationToken = default) {
         Guard.Against(command.DeleteType is not 1 and not 2 and not 3, ErrorCodes.DeleteTypeInvalid, "Delete type is invalid.");
         await unitOfWork.BeginTransactionAsync(cancellationToken);
@@ -82,7 +93,7 @@ public sealed class TagService(ITagRepository repository, IResourceRepository re
         }
     }
     private async Task RequireTagAsync(long id, CancellationToken ct) =>
-        Guard.Against(!await repository.ExistsAsync(id, ct), ErrorCodes.TagNotFound, "Tag does not exist.");
+        Guard.Against(!await repository.ExistsAsync(id, true, ct), ErrorCodes.TagNotFound, "Tag does not exist.");
     private async Task CheckNameAsync(string name, long excludingId, CancellationToken ct) =>
         Guard.Against(await repository.NameExistsAsync(name, excludingId, ct), "tag_name_conflict", "标签名已存在（包括已删除标签）。");
     private static string? NormalizeLogo(string? value) {

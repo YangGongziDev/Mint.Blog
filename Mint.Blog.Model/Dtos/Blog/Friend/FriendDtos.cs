@@ -6,7 +6,7 @@ public sealed record UpdateFriendCommand(long FriendId, string Name, string Avat
 public sealed record DeleteFriendCommand(long FriendId, long DeleteType);
 public sealed record SetFriendTopCommand(long FriendId, bool IsTop);
 public sealed record SetFriendStatusCommand(long FriendId, string Status);
-public sealed record UpdateFriendSortCommand(long FriendId, int Sort);
+public sealed record UpdateFriendSortCommand(long FriendId, int Sort = 0, string? Move = null);
 public sealed record MoveFriendSortFirstCommand(long FriendId);
 public sealed record MoveFriendSortLastCommand(long FriendId);
 public sealed record GetAdminFriendPageListQuery(int PageNumber = 1, int PageSize = 10, string? Name = null, DateOnly? StartDate = null, DateOnly? EndDate = null, string? SortOrder = null);

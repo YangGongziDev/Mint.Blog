@@ -13,6 +13,35 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext) : IColumnRepo
         dbContext.Client.Insertable(column).ExecuteReturnSnowflakeIdAsync();
     public Task UpdateAsync(ColumnDataModel column, CancellationToken cancellationToken = default) =>
         dbContext.Client.Updateable(column).ExecuteCommandAsync();
+    public Task UpdateSortAsync(long id, int sort, CancellationToken cancellationToken = default) =>
+        dbContext.Client.Updateable<ColumnDataModel>()
+            .SetColumns(x => new ColumnDataModel { Sort = sort, UpdatedAt = DateTimeOffset.UtcNow })
+            .Where(x => x.Id == id).ExecuteCommandAsync();
+    public async Task<bool> MoveAsync(long id, string move, CancellationToken cancellationToken = default) {
+        await dbContext.Client.Ado.ExecuteCommandAsync("LOCK TABLE blog_column IN SHARE ROW EXCLUSIVE MODE");
+        var column = await GetByIdAsync(id, cancellationToken);
+        if (column is null) return false;
+        var isTop = column.Weight > 0;
+        var columns = await dbContext.Client.Queryable<ColumnDataModel>()
+            .Where(x => (x.Weight > 0) == isTop).OrderBy(x => x.Sort).OrderBy(x => x.Id).ToListAsync();
+        var index = columns.FindIndex(x => x.Id == id);
+        var target = move switch {
+            "up" => Math.Max(0, index - 1),
+            "down" => Math.Min(columns.Count - 1, index + 1),
+            "first" => 0,
+            "last" => columns.Count - 1,
+            _ => throw new ArgumentOutOfRangeException(nameof(move), "Unsupported move direction.")
+        };
+        columns.RemoveAt(index);
+        columns.Insert(target, column);
+        var now = DateTimeOffset.UtcNow;
+        for (var i = 0; i < columns.Count; i++) {
+            columns[i].Sort = i + 1;
+            columns[i].UpdatedAt = now;
+        }
+        await dbContext.Client.Updateable(columns).UpdateColumns(x => new { x.Sort, x.UpdatedAt }).ExecuteCommandAsync();
+        return true;
+    }
     public Task DeleteAsync(long id, CancellationToken cancellationToken = default) =>
         dbContext.Client.Deleteable<ColumnDataModel>().Where(x => x.Id == id).ExecuteCommandAsync();
     public Task<bool> ExistsByTitleAsync(string title, long? excludeId = null, CancellationToken cancellationToken = default) {
@@ -39,17 +68,18 @@ public sealed class ColumnRepository(ISqlSugarDbContext dbContext) : IColumnRepo
             rows = rows.Where(x => x.CreatedAt < end);
         }
         var count = await rows.CountAsync();
+        rows = rows.OrderByDescending(x => x.Weight > 0 ? 1 : 0);
         rows = query.SortOrder?.ToLowerInvariant() switch {
-            "timeasc" => rows.OrderBy(x => x.CreatedAt).OrderByDescending(x => x.Weight),
-            "timedesc" => rows.OrderByDescending(x => x.CreatedAt).OrderByDescending(x => x.Weight),
-            _ => rows.OrderByDescending(x => x.Weight).OrderByDescending(x => x.Sort).OrderByDescending(x => x.CreatedAt)
+            "timeasc" => rows.OrderBy(x => x.CreatedAt).OrderBy(x => x.Id),
+            "timedesc" => rows.OrderByDescending(x => x.CreatedAt).OrderBy(x => x.Id),
+            _ => rows.OrderBy(x => x.Sort).OrderBy(x => x.Id)
         };
         var items = await rows.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
         return new PagedResult<ColumnDataModel>(items, pageNumber, pageSize, count);
     }
     public async Task<IReadOnlyCollection<ColumnDataModel>> GetPublishedAsync(CancellationToken cancellationToken = default) =>
         await dbContext.Client.Queryable<ColumnDataModel>().Where(x => x.IsPublish != 0 && x.IsDeleted == 0)
-            .OrderByDescending(x => x.Weight).OrderByDescending(x => x.CreatedAt).ToListAsync();
+            .OrderByDescending(x => x.Weight > 0 ? 1 : 0).OrderBy(x => x.Sort).OrderBy(x => x.Id).ToListAsync();
     public async Task<IReadOnlyCollection<ColumnCatalogDataModel>> GetCatalogsAsync(IReadOnlyCollection<long> columnIds, CancellationToken cancellationToken = default) =>
         await dbContext.Client.Queryable<ColumnCatalogDataModel>().Where(x => columnIds.Contains(x.ColumnId) && x.IsDeleted == 0)
             .OrderBy(x => x.Sort).OrderBy(x => x.Id).ToListAsync();

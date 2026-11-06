@@ -2,7 +2,7 @@
   <div class="author-page">
     <section class="author-hero panel"><img class="portrait" :src="portrait" alt="程序员杨工子"><div class="hero-content"><p class="eyebrow">About Author</p><h1>你好，我是 <span>程序员杨工子</span></h1><p class="hero-desc">练习编程三年半，喜欢 CV、Tab、Agent。主要关注 C#.Net、Vue3 与 B/S 全栈开发，也把技术、生活和思考记录在 Mint Blog。</p><div class="tags"><span v-for="tag in tags" :key="tag"># {{ tag }}</span></div><div class="contacts">
       <details><summary><img :src="gitIcon" alt="">Git</summary><div class="popover"><a href="https://github.com/YangGongziDev" target="_blank" rel="noopener noreferrer">Github</a><a href="https://gitee.com/YangGongziDev" target="_blank" rel="noopener noreferrer">Gitee</a></div></details>
-      <details><summary><img :src="mailIcon" alt="">Mail</summary><div class="popover"><strong>网易邮箱</strong><a href="https://mail.163.com" target="_blank" rel="noopener noreferrer">yanggongzi@163.com</a></div></details>
+      <details><summary><img :src="mailIcon" alt="">Mail</summary><div class="popover"><strong>网易邮箱</strong><a href="https://mail.163.com" target="_blank" rel="noopener noreferrer">YangGongziDev@163.com</a></div></details>
       <button type="button" @click="openContact('QQ', qq)"><img :src="qqIcon" alt="">QQ</button><button type="button" @click="openContact('微信', wechat)"><img :src="wechatIcon" alt="">微信</button><button class="primary" type="button" @click="openContact('赞助', sponsor)">赞助</button>
     </div></div></section>
     <section class="stats"><div v-for="item in stats" :key="item[0]" class="panel"><span>{{ item[0] }}</span><strong>{{ item[1] }}</strong></div></section>

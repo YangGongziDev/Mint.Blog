@@ -44,7 +44,7 @@ const { text } = useSitePreferences()
 const api = usePublicApi()
 const assetUrl = useAssetUrl()
 const { data: statistics } = await usePublicStatistics()
-type Entry = { id: string; name?: string; title?: string; articlesTotal?: number; cover?: string; isTop?: boolean; weight?: number; sort?: number; firstArticleId?: string }
+type Entry = { id: string; name?: string; title?: string; articlesTotal?: number; cover?: string; isTop?: boolean; weight?: number; sort?: string | number | null; firstArticleId?: string }
 const props = defineProps<{ settings?: SiteSettings | null }>()
 const socials = computed(() => [
   { label: 'GitHub', url: props.settings?.githubHomepage, image: githubIcon },
@@ -63,8 +63,8 @@ const openQr = (item: (typeof qrCodes)[number]) => { qr.value = item; qrDialog.v
 const { data: lists, error, refresh } = await useAsyncData('site-overview-cards', async () => {
   const results = await Promise.all(['category', 'tag', 'column'].map(path => api<{ success: boolean; data: Entry[] }>(path)))
   if (results.some(result => !result.success || !Array.isArray(result.data))) throw new Error('Content cards unavailable')
-  return results.map((result, index) => [...result.data].sort((a, b) =>
-    (index === 2 ? (b.weight || 0) - (a.weight || 0) || (b.sort || 0) - (a.sort || 0) : (b.articlesTotal || 0) - (a.articlesTotal || 0)) || a.id.length - b.id.length || a.id.localeCompare(b.id)
+  return results.map((result, index) => [...result.data].filter(entry => index !== 1 || (entry.articlesTotal || 0) > 0).sort((a, b) =>
+    (index !== 2 ? (BigInt(a.sort ?? 0) < BigInt(b.sort ?? 0) ? -1 : BigInt(a.sort ?? 0) > BigInt(b.sort ?? 0) ? 1 : 0) : Number((b.weight || 0) > 0) - Number((a.weight || 0) > 0) || Number(a.sort || 0) - Number(b.sort || 0)) || (index !== 2 ? (BigInt(a.id) < BigInt(b.id) ? -1 : BigInt(a.id) > BigInt(b.id) ? 1 : 0) : a.id.length - b.id.length || a.id.localeCompare(b.id))
   ))
 })
 const groups = computed(() => [

@@ -9,6 +9,8 @@ public interface IColumnRepository {
     Task<ColumnDataModel?> GetByIdAsync(long id, CancellationToken cancellationToken = default);
     Task<long> AddAsync(ColumnDataModel column, CancellationToken cancellationToken = default);
     Task UpdateAsync(ColumnDataModel column, CancellationToken cancellationToken = default);
+    Task UpdateSortAsync(long id, int sort, CancellationToken cancellationToken = default);
+    Task<bool> MoveAsync(long id, string move, CancellationToken cancellationToken = default);
     Task DeleteAsync(long id, CancellationToken cancellationToken = default);
     Task<bool> ExistsByTitleAsync(string title, long? excludeId = null, CancellationToken cancellationToken = default);
     Task<int> GetMaxWeightAsync(CancellationToken cancellationToken = default);

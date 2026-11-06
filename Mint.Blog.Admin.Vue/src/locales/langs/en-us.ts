@@ -160,7 +160,7 @@ const local: App.I18n.Schema = {
     'iframe-page': 'Iframe',
     home: 'Home',
     blog_category: 'Category Manage',
-    blog_tag: 'Tag Manage',
+    blog_tag: 'Technical label',
     'blog_tag-version': 'Tag Version',
     blog_resource: 'Resource Navigation',
     blog_settings: 'Blog Settings',

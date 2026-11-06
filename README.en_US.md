@@ -59,7 +59,8 @@ The database schema script was exported from PostgreSQL 17.2; please verify comp
 ## Project Documentation
 
 - Documentation: [https://www.yanggongzi.dev/columns/1](https://www.yanggongzi.dev/columns/1)
-- Demo: [https://www.yanggongzi.dev](https://www.yanggongzi.dev) (the username and password are filled in automatically)
+- Frontend Demo: [https://www.yanggongzi.dev](https://www.yanggongzi.dev)
+- Admin Demo: [https://blog.yanggongzi.dev](https://blog.yanggongzi.dev) (the username and password are filled in automatically)
 
 ## Screenshots
 

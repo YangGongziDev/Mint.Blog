@@ -1,6 +1,6 @@
 <template>
-  <div class="category-page flex h-full min-h-0 w-full flex-col overflow-hidden">
-    <div class="flex-shrink-0 bg-layout pb-4">
+  <div class="category-page flex h-full min-h-0 w-full flex-col gap-4 overflow-hidden">
+    <div class="flex-shrink-0">
       <ACard :bordered="false" class="card-wrapper">
         <AForm layout="inline" class="responsive-search-form">
           <AFormItem label="友链名称">
@@ -83,38 +83,14 @@
             </ATag>
           </template>
           <template v-else-if="column.key === 'action'">
-            <ASpace>
-              <ATooltip title="置顶">
-                <AButton size="small" shape="circle" :disabled="index === 0" @click="moveFriendToFirst(record as AdminFriendPageItem, index)">
-                  <template #icon><VerticalAlignTopOutlined /></template>
-                </AButton>
-              </ATooltip>
-              <ATooltip title="置底">
-                <AButton size="small" shape="circle" :disabled="index === tableData.length - 1" @click="moveFriendToLast(record as AdminFriendPageItem, index)">
-                  <template #icon><VerticalAlignBottomOutlined /></template>
-                </AButton>
-              </ATooltip>
-              <ATooltip title="上移">
-                <AButton size="small" shape="circle" :disabled="index === 0" @click="moveFriendUp(index)">
-                  <template #icon><UpOutlined /></template>
-                </AButton>
-              </ATooltip>
-              <ATooltip title="下移">
-                <AButton size="small" shape="circle" :disabled="index === tableData.length - 1" @click="moveFriendDown(index)">
-                  <template #icon><DownOutlined /></template>
-                </AButton>
-              </ATooltip>
-              <ATooltip title="编辑">
-                <AButton size="small" shape="circle" @click="openEditModal(record as AdminFriendPageItem)">
-                  <template #icon><EditOutlined /></template>
-                </AButton>
-              </ATooltip>
-              <ATooltip title="删除">
-                <AButton danger size="small" shape="circle" @click="openDeleteModal(record as AdminFriendPageItem)">
-                  <template #icon><DeleteOutlined /></template>
-                </AButton>
-              </ATooltip>
-            </ASpace>
+            <div class="table-actions">
+              <ATooltip title="移至首位"><AButton type="link" size="small" :disabled="sorting || isVisitor" @click="moveFriend(record as AdminFriendPageItem, 'first')"><template #icon><VerticalAlignTopOutlined /></template></AButton></ATooltip>
+              <ATooltip title="移至末位"><AButton type="link" size="small" :disabled="sorting || isVisitor" @click="moveFriend(record as AdminFriendPageItem, 'last')"><template #icon><VerticalAlignBottomOutlined /></template></AButton></ATooltip>
+              <ATooltip title="上移"><AButton type="link" size="small" :disabled="sorting || isVisitor" @click="moveFriend(record as AdminFriendPageItem, 'up')"><template #icon><UpOutlined /></template></AButton></ATooltip>
+              <ATooltip title="下移"><AButton type="link" size="small" :disabled="sorting || isVisitor" @click="moveFriend(record as AdminFriendPageItem, 'down')"><template #icon><DownOutlined /></template></AButton></ATooltip>
+              <ATooltip title="编辑"><AButton type="link" size="small" @click="openEditModal(record as AdminFriendPageItem)"><template #icon><EditOutlined /></template></AButton></ATooltip>
+              <ATooltip title="删除"><AButton type="link" danger size="small" @click="openDeleteModal(record as AdminFriendPageItem)"><template #icon><DeleteOutlined /></template></AButton></ATooltip>
+            </div>
           </template>
         </template>
       </ATable>
@@ -258,15 +234,13 @@ import {
 } from '@ant-design/icons-vue';
 import {
   type AdminFriendPageItem,
+  type FriendFormModel,
   createFriend,
   deleteFriend,
   getFriendPageList,
-  moveFriendSortFirst,
-  moveFriendSortLast,
   parseFriendFeed,
   setFriendStatus,
   setFriendTop,
-  type FriendFormModel,
   updateFriend,
   updateFriendSort
 } from '@/api/blog/friend';
@@ -274,13 +248,14 @@ import { useAppStore } from '@/store/system/app';
 import { useAuthStore } from '@/store/system/auth';
 import { sortOptionsByLabel } from '@/utils/common';
 import type { TimeSortOrder } from '@/utils/date-time';
-import { compareDateTime, formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
+import { formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
 
 const appStore = useAppStore();
 const authStore = useAuthStore();
 
 const isVisitor = computed(() => authStore.isReadonly);
 const loading = ref(false);
+const sorting = ref(false);
 const tableData = ref<AdminFriendPageItem[]>([]);
 const total = ref(0);
 const dateRange = ref<[Dayjs, Dayjs] | undefined>();
@@ -431,6 +406,7 @@ const columns = computed<TableColumnsType<AdminFriendPageItem>>(() => [
   { title: '分类', dataIndex: 'category', key: 'category', width: 100, align: 'center' },
   { title: '网站图标', key: 'avatar', width: 100, align: 'center' },
   { title: '是否置顶', key: 'isTop', width: 100, align: 'center' },
+  { title: '排序号', dataIndex: 'sort', key: 'sort', width: 100, align: 'center' },
   {
     title: '创建时间',
     dataIndex: 'createTime',
@@ -438,16 +414,16 @@ const columns = computed<TableColumnsType<AdminFriendPageItem>>(() => [
     width: 170,
     align: 'center',
     ellipsis: true,
-    sorter: (a, b) => compareDateTime(getRawCreateTime(a), getRawCreateTime(b)),
+    sorter: true,
     sortOrder: query.sortOrder ? getAntdTimeSortOrder(query.sortOrder) : undefined,
     sortDirections: ['descend', 'ascend']
   },
   { title: '审核状态', key: 'status', width: 120, align: 'center' },
   { title: '删除状态', key: 'isDeleted', width: 100, align: 'center' },
-  { title: '操作', key: 'action', width: appStore.isMobile ? 220 : 300, align: 'center', className: 'blog-action-column' }
+  { title: '操作', key: 'action', width: 140, align: 'center', fixed: 'right', className: 'blog-action-column' }
 ]);
-const tableScrollX = computed(() => (appStore.isMobile ? 1240 : 1490));
-const tableScrollY = computed(() => (appStore.isMobile ? 'calc(100vh - 360px)' : 'calc(100vh - 400px)'));
+const tableScrollX = computed(() => (appStore.isMobile ? 1410 : 1590));
+const tableScrollY = '100%';
 
 const rules: FormProps['rules'] = {
   name: [
@@ -499,7 +475,7 @@ function getCreateTime(record: AdminFriendPageItem) {
 }
 
 function normalizeItems(items: AdminFriendPageItem[]) {
-  return items.map(item => ({ ...item, status: item.status || 'pending' }));
+  return items.map(item => ({ ...item, sort: item.sort ?? 0, status: item.status || 'pending' }));
 }
 
 async function loadData() {
@@ -626,81 +602,19 @@ async function handleStatusChange(record: AdminFriendPageItem) {
   await loadData();
 }
 
-async function updateFriendSortFunction(id: string, sort: number) {
-  const res = await updateFriendSort(id, sort);
-  if (!res.success) {
-    message.error('更新排序失败');
-    await loadData();
-    return false;
+async function moveFriend(record: AdminFriendPageItem, move: 'up' | 'down' | 'first' | 'last') {
+  if (sorting.value || isVisitor.value) return;
+  sorting.value = true;
+  try {
+    const res = await updateFriendSort(record.id, 0, move);
+    if (res.success) {
+      query.sortOrder = undefined;
+      message.success('排序更新成功');
+      await loadData();
+    }
+  } finally {
+    sorting.value = false;
   }
-  message.success('排序更新成功');
-  return true;
-}
-
-async function moveFriendUp(index: number) {
-  query.sortOrder = undefined;
-  if (index === 0) {
-    message.warning('已经是第一个了');
-    return;
-  }
-
-  const currentItem = tableData.value[index];
-  const prevItem = tableData.value[index - 1];
-  const currentSort = Number(currentItem.sort || 0);
-  const prevSort = Number(prevItem.sort || 0);
-
-  currentItem.sort = prevSort;
-  prevItem.sort = currentSort;
-  tableData.value[index] = prevItem;
-  tableData.value[index - 1] = currentItem;
-
-  await Promise.all([updateFriendSortFunction(currentItem.id, currentItem.sort), updateFriendSortFunction(prevItem.id, prevItem.sort)]);
-  await loadData();
-}
-
-async function moveFriendDown(index: number) {
-  query.sortOrder = undefined;
-  if (index === tableData.value.length - 1) {
-    message.warning('已经是最后一个了');
-    return;
-  }
-
-  const currentItem = tableData.value[index];
-  const nextItem = tableData.value[index + 1];
-  const currentSort = Number(currentItem.sort || 0);
-  const nextSort = Number(nextItem.sort || 0);
-
-  currentItem.sort = nextSort;
-  nextItem.sort = currentSort;
-  tableData.value[index] = nextItem;
-  tableData.value[index + 1] = currentItem;
-
-  await Promise.all([updateFriendSortFunction(currentItem.id, currentItem.sort), updateFriendSortFunction(nextItem.id, nextItem.sort)]);
-  await loadData();
-}
-
-async function moveFriendToFirst(record: AdminFriendPageItem, index: number) {
-  query.sortOrder = undefined;
-  if (index === 0) {
-    message.warning('已经是第一个了');
-    return;
-  }
-
-  const res = await moveFriendSortFirst(record.id);
-  if (res.success) message.success('已移动到最前面');
-  await loadData();
-}
-
-async function moveFriendToLast(record: AdminFriendPageItem, index: number) {
-  query.sortOrder = undefined;
-  if (index === tableData.value.length - 1) {
-    message.warning('已经是最后一个了');
-    return;
-  }
-
-  const res = await moveFriendSortLast(record.id);
-  if (res.success) message.success('已移动到最后面');
-  await loadData();
 }
 
 function openDeleteModal(record: AdminFriendPageItem) {
@@ -738,6 +652,15 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+.table-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 24px);
+  grid-template-rows: repeat(2, auto);
+  justify-content: center;
+  gap: 4px 8px;
+}
+.table-actions :deep(.ant-btn) { width: 24px; padding-inline: 0; white-space: nowrap; }
+
 .category-page {
   height: 100%;
 }
@@ -764,6 +687,7 @@ onMounted(() => {
   flex-direction: column;
 }
 
+.table-card :deep(.ant-table-wrapper),
 .table-card :deep(.ant-spin-nested-loading),
 .table-card :deep(.ant-spin-container),
 .table-card :deep(.ant-table),
@@ -775,7 +699,17 @@ onMounted(() => {
 }
 
 .table-card :deep(.ant-table-body) {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto !important;
+}
+
+.table-card :deep(.ant-card-head),
+.table-card :deep(.ant-alert),
+.table-card :deep(.ant-table-title),
+.table-card :deep(.ant-table-header),
+.table-card :deep(.ant-table-pagination) {
+  flex-shrink: 0;
 }
 
 .table-card :deep(.ant-table-thead) {
@@ -866,9 +800,10 @@ onMounted(() => {
     padding-left: 4px !important;
   }
 
-  :deep(.blog-action-column .ant-space) {
-    flex-wrap: nowrap;
-    gap: 4px !important;
+  .table-card :deep(.blog-action-column) {
+    height: auto;
+    max-height: none;
+    overflow: visible;
   }
 
   :deep(.blog-action-column .ant-btn) {

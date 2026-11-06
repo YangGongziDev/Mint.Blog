@@ -70,7 +70,7 @@
 <script setup lang="ts">
 import fallbackAvatar from '~/assets/images/avatar.svg'
 
-type Friend = { id: string | number; name: string; description?: string; url: string; avatar?: string; status?: string; createdAt?: string; createTime?: string; category?: string; isTop?: boolean; sort?: number; isDeleted?: boolean }
+type Friend = { id: string | number; name: string; description?: string; url: string; avatar?: string; status?: string; createdAt?: string; createTime?: string; category?: string; isTop?: boolean; sort?: number | string | null; isDeleted?: boolean }
 type Response<T> = { success: boolean; data: T; message?: string }
 type Field = 'name' | 'avatar' | 'category' | 'url' | 'description' | 'email'
 const api = usePublicApi()
@@ -113,17 +113,20 @@ const categories = computed(() => [
 ])
 watch(categories, values => { if (!values.some(item => item.key === activeCategory.value)) activeCategory.value = 'all' })
 const count = (key: string) => friends.value.filter(item => key === 'all' || (key === 'top' ? item.isTop && item.status === 'active' : item.category === key)).length
-const idOrder = (a: Friend, b: Friend) => String(a.id).length - String(b.id).length || String(a.id).localeCompare(String(b.id))
-const time = (item: Friend) => Date.parse(item.createTime || item.createdAt || '') || 0
-const byTime = (a: Friend, b: Friend) => time(b) - time(a) || idOrder(a, b)
-const bySort = (a: Friend, b: Friend) => (b.sort || 0) - (a.sort || 0) || idOrder(a, b)
+const integer = (value: string | number | null | undefined) => BigInt(value ?? 0)
+const compareInteger = (a: string | number | null | undefined, b: string | number | null | undefined) => {
+  const left = integer(a)
+  const right = integer(b)
+  return left < right ? -1 : left > right ? 1 : 0
+}
+const bySort = (a: Friend, b: Friend) => compareInteger(a.sort, b.sort) || compareInteger(a.id, b.id)
 const groups = computed(() => {
   const scoped = friends.value.filter(item => ['all', 'top'].includes(activeCategory.value) || item.category === activeCategory.value)
-  const top = { key: 'top', title: text('置顶', 'Pinned'), items: scoped.filter(item => item.isTop && item.status === 'active').sort(byTime) }
+  const top = { key: 'top', title: text('置顶', 'Pinned'), items: scoped.filter(item => item.isTop && item.status === 'active').sort(bySort) }
   if (activeCategory.value === 'top') return top.items.length ? [top] : []
   return [top,
     { key: 'active', title: text('已确认', 'Confirmed'), items: scoped.filter(item => item.status === 'active' && !item.isTop).sort(bySort) },
-    { key: 'pending', title: text('待审核', 'Pending review'), items: scoped.filter(item => item.status === 'pending').sort(byTime) },
+    { key: 'pending', title: text('待审核', 'Pending review'), items: scoped.filter(item => item.status === 'pending').sort(bySort) },
     { key: 'inactive', title: text('已停用', 'Inactive'), items: scoped.filter(item => item.status === 'inactive').sort(bySort) }
   ].filter(group => group.items.length)
 })
@@ -223,7 +226,7 @@ useSeoMeta({ title: () => text('友情链接', 'Friends'), description: () => te
 <style scoped>
 .friends-page { color: var(--text); }
 :global(main:has(> .friends-page)) { padding: 0; }
-.friends-hero { height: 400px; background-color: #203e47; }
+.friends-hero { background-color: #203e47; }
 .friends-hero h1 { font-size: 44px; margin: 0 0 10px; color: white; }
 .hero-description { color: #ffffffe0; font-size: 16px; }
 .hero-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
@@ -256,6 +259,6 @@ a.friend-card:hover { transform: translateY(-2px); border-color: var(--primary);
 .application-dialog { width: min(600px,calc(100% - 24px)); }.requirements { padding: 16px 16px 16px 32px; background: var(--bg); border-radius: 8px; color: var(--muted); }.form-field { margin: 16px 0; }.form-field label { display: block; margin-bottom: 6px; font-weight: 500; }.form-field small,.form-field>p { font-size: 12px; color: var(--muted); }.form-field input,.form-field textarea,.form-field select { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; }.form-field textarea { resize: vertical; }.form-field [aria-invalid="true"] { border-color: #dc5252; }.form-field>p.field-error,.field-error { color: #d54c4c; }.form-field>img { margin-top: 6px; object-fit: cover; border-radius: 6px; }fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }.application-dialog footer { display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border); padding-top: 18px; }button:disabled { cursor: wait; opacity: .6; }
 @media(max-width:1199px) { .friend-grid { grid-template-columns: repeat(3,minmax(0,1fr)); } }
 @media(max-width:900px) { .friend-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; } }
-@media(max-width:767px) { .friends-hero { height: 240px; }.friends-hero h1 { font-size: 30px; }.hero-description { font-size: 13px; }.hero-actions { margin-top: 12px; }.friends-content { padding: 0 16px 60px; }.category-toggle { display: block; width: 100%; margin-bottom: 8px; color: var(--primary); border-color: color-mix(in srgb,var(--primary) 30%,transparent); }.category-list:not(.expanded) { display: none; } }
-@media(max-width:639px) { .friends-hero { height: 153px; }.friends-hero h1,.hero-description { display: none; }.hero-stats { font-size: 12px; }.friend-grid { grid-template-columns: minmax(0,1fr); }.friend-dialog { padding: 18px; }.hero-actions button { padding: 8px 18px; } }
+@media(max-width:767px) { .friends-hero h1 { font-size: 30px; }.hero-description { font-size: 13px; }.hero-actions { margin-top: 12px; }.friends-content { padding: 0 16px 60px; }.category-toggle { display: block; width: 100%; margin-bottom: 8px; color: var(--primary); border-color: color-mix(in srgb,var(--primary) 30%,transparent); }.category-list:not(.expanded) { display: none; } }
+@media(max-width:639px) { .friends-hero h1,.hero-description { display: none; }.hero-stats { font-size: 12px; }.friend-grid { grid-template-columns: minmax(0,1fr); }.friend-dialog { padding: 18px; }.hero-actions button { padding: 8px 18px; } }
 </style>

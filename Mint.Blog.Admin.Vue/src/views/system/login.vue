@@ -235,8 +235,8 @@ const themeStore = useThemeStore();
 const { formRef, validate } = useAntdForm();
 
 const form: LoginForm = reactive({
-  userName: isDev ? 'VisitorAdmin' : '',
-  password: isDev ? 'VisitorAdmin' : ''
+  userName: 'VisitorAdmin',
+  password: 'VisitorAdmin'
 });
 
 const rules = computed<Record<keyof LoginForm, App.Global.FormRule[]>>(() => {

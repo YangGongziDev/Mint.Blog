@@ -7,12 +7,13 @@ using Mint.Blog.Model.Entitys.Blog.Friend;
 using Mint.Blog.Model.Vos;
 using Mint.Blog.Model.Vos.Blog.Friend;
 using Mint.Blog.Repository.IRepository.Blog;
+using Mint.Blog.Repository.Persistence;
 using Mint.Blog.Service.IService.Blog;
 
 namespace Mint.Blog.Service.Services.Blog;
 
 public sealed class FriendService(IFriendRepository repository, IFeedMetadataReader feedMetadataReader,
-	IFriendApplicationEvents events) : IFriendService {
+	IFriendApplicationEvents events, IUnitOfWork unitOfWork) : IFriendService {
 	public Task<FeedMetadata> ReadAsync(string url, CancellationToken cancellationToken = default) => feedMetadataReader.ReadAsync(url, cancellationToken);
 
 	public async Task<long> ApplyAsync(ApplyFriendCommand command, CancellationToken cancellationToken = default){
@@ -119,26 +120,31 @@ public sealed class FriendService(IFriendRepository repository, IFeedMetadataRea
 	}
 
 	public async Task UpdateSortAsync(UpdateFriendSortCommand command, CancellationToken cancellationToken = default){
-		var friend = await RequireAsync(command.FriendId, false, cancellationToken);
-		friend.Sort = command.Sort;
-		friend.UpdatedAt = DateTimeOffset.UtcNow;
-		await repository.UpdateAsync(friend, cancellationToken);
+		var move = command.Move?.Trim().ToLowerInvariant();
+		if (move is not null && move is not ("up" or "down" or "first" or "last"))
+			throw new ArgumentException("Move must be up, down, first or last.", nameof(command.Move));
+		await unitOfWork.BeginTransactionAsync(cancellationToken);
+		try {
+			if (move is null) {
+				Guard.Against(await repository.GetByIdAsync(command.FriendId, true, cancellationToken) is null,
+					ErrorCodes.FriendNotFound, "Friend does not exist.");
+				await repository.UpdateSortAsync(command.FriendId, command.Sort, cancellationToken);
+			} else {
+				var found = await repository.MoveAsync(command.FriendId, move, cancellationToken);
+				Guard.Against(!found, ErrorCodes.FriendNotFound, "Friend does not exist.");
+			}
+			await unitOfWork.CommitAsync(cancellationToken);
+		} catch {
+			await unitOfWork.RollbackAsync(CancellationToken.None);
+			throw;
+		}
 	}
 
-	public async Task MoveSortFirstAsync(MoveFriendSortFirstCommand command, CancellationToken cancellationToken = default){
-		var friend = await RequireAsync(command.FriendId, false, cancellationToken);
-		friend.Sort = Math.Max(0, await repository.GetMaxSortAsync(cancellationToken)) + 1;
-		friend.UpdatedAt = DateTimeOffset.UtcNow;
-		await repository.UpdateAsync(friend, cancellationToken);
-	}
+	public Task MoveSortFirstAsync(MoveFriendSortFirstCommand command, CancellationToken cancellationToken = default) =>
+		UpdateSortAsync(new UpdateFriendSortCommand(command.FriendId, 0, "first"), cancellationToken);
 
-	public async Task MoveSortLastAsync(MoveFriendSortLastCommand command, CancellationToken cancellationToken = default){
-		var friend = await RequireAsync(command.FriendId, false, cancellationToken);
-		var min = await repository.GetMinSortAsync(cancellationToken);
-		friend.Sort = min is null ? 0 : Math.Max(0, min.Value - 1);
-		friend.UpdatedAt = DateTimeOffset.UtcNow;
-		await repository.UpdateAsync(friend, cancellationToken);
-	}
+	public Task MoveSortLastAsync(MoveFriendSortLastCommand command, CancellationToken cancellationToken = default) =>
+		UpdateSortAsync(new UpdateFriendSortCommand(command.FriendId, 0, "last"), cancellationToken);
 
 	public async Task<FriendDetailVo?> GetAsync(GetFriendDetailQuery query, CancellationToken cancellationToken = default){
 		var x = await repository.GetByIdAsync(query.FriendId, false, cancellationToken);

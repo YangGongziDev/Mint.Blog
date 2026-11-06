@@ -13,19 +13,28 @@
     </ADescriptions>
     <AEmpty v-else-if="!detailLoading" description="未能加载用户详情" />
   </ACard>
-  <div v-else class="min-h-[500px] flex flex-col gap-4">
-    <ACard title="搜索" :bordered="false" class="card-wrapper">
+  <div v-else class="h-full min-h-0 overflow-hidden flex flex-col gap-4">
+    <ACard title="搜索" :bordered="false" class="card-wrapper search-card">
       <AForm layout="inline" :model="searchParams" class="flex flex-wrap gap-3">
         <AFormItem label="用户名"><AInput v-model:value="searchParams.username" allow-clear /></AFormItem>
         <AFormItem label="姓名"><AInput v-model:value="searchParams.realName" allow-clear /></AFormItem>
         <AFormItem label="邮箱"><AInput v-model:value="searchParams.email" allow-clear /></AFormItem>
         <AFormItem label="电话"><AInput v-model:value="searchParams.phone" allow-clear /></AFormItem>
-        <AFormItem label="状态"><ASelect v-model:value="searchParams.status" :options="statusOptions" allow-clear class="w-[100px]" /></AFormItem>
+        <AFormItem label="状态">
+          <ASelect
+            v-model:value="searchParams.status"
+            :options="statusOptions"
+            :virtual="false"
+            allow-clear
+            style="width: 120px"
+            :dropdown-style="{ minWidth: '120px' }"
+          />
+        </AFormItem>
         <AButton @click="resetSearchParams">重置</AButton>
         <AButton type="primary" @click="getDataByPage()">搜索</AButton>
       </AForm>
     </ACard>
-    <ACard title="用户管理" :bordered="false" class="card-wrapper">
+    <ACard title="用户管理" :bordered="false" class="card-wrapper table-card">
       <template #extra>
         <ASpace>
           <AButton v-if="can('add')" type="primary" @click="openForm()">新增</AButton>
@@ -36,7 +45,7 @@
         </ASpace>
       </template>
       <ATable :columns="columns" :data-source="data" :loading="loading || deleting" row-key="id"
-        :row-selection="rowSelection" :pagination="mobilePagination" :scroll="{ x: 1300 }" size="small" />
+        :row-selection="rowSelection" :pagination="mobilePagination" :scroll="{ x: 1300, y: '100%' }" size="small" />
     </ACard>
     <ADrawer v-model:open="drawerVisible" :title="editingId ? '编辑用户' : '新增用户'" :width="420">
       <AForm ref="formRef" layout="vertical" :model="model" :rules="rules">
@@ -61,6 +70,7 @@
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Button, Popconfirm } from 'ant-design-vue';
+import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons-vue';
 import type { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import { fetchCreateUser, fetchDeleteUser, fetchGetAssignableRoles, fetchGetUser, fetchGetUserList, fetchUpdateUser } from '@/api/system/user';
 import type { RbacUser, UserUpdateInput } from '@/api/system/user';
@@ -94,11 +104,11 @@ const { columns, data, loading, getData, getDataByPage, mobilePagination, search
     { key: 'roles', title: '角色', customRender: ({ record }) => record.roles.map(role => role.name).join('、') },
     { key: 'createdAt', dataIndex: 'createdAt', title: '创建时间' },
     { key: 'updatedAt', dataIndex: 'updatedAt', title: '更新时间' },
-    { key: 'operate', title: '操作', width: 210, customRender: ({ record }) => <div class="flex gap-2">
-      <Button size="small" onClick={() => router.push({ name: 'system_user-detail', params: { id: record.id } })}>详情</Button>
-      {can('edit') && <Button size="small" onClick={() => openForm(record)}>编辑</Button>}
+    { key: 'operate', title: '操作', width: 180, align: 'center', fixed: 'right', customRender: ({ record }) => <div class="grid grid-cols-2 gap-x-2 gap-y-1 justify-items-center whitespace-nowrap">
+      <Button type="link" size="small" onClick={() => router.push({ name: 'system_user-detail', params: { id: record.id } })}><EyeOutlined />详情</Button>
+      {can('edit') && <Button type="link" size="small" onClick={() => openForm(record)}><EditOutlined />编辑</Button>}
       {can('delete') && <Popconfirm title="确认删除？" disabled={record.id === auth.userInfo.userId || deleting.value} onConfirm={() => deleteUsers([record.id])}>
-        <Button size="small" danger disabled={record.id === auth.userInfo.userId || deleting.value}>删除</Button>
+        <Button type="link" size="small" danger disabled={record.id === auth.userInfo.userId || deleting.value}><DeleteOutlined />删除</Button>
       </Popconfirm>}
     </div> }
   ]
@@ -134,7 +144,7 @@ const rolesReady = ref(false);
 const rolesChanged = ref(false);
 const roleOptions = ref<{ label: string; value: string }[]>([]);
 const sortedRoleOptions = computed(() => sortOptionsByLabel(roleOptions.value, option => option.label));
-const model = reactive({ username: '', realName: '', password: '', email: '', phone: '', status: 'active' as RbacUser['status'], roleIds: [] as string[] });
+const model = reactive({ username: 'VisitorAdmin', realName: '', password: 'VisitorAdmin', email: '', phone: '', status: 'active' as RbacUser['status'], roleIds: [] as string[] });
 const { formRef, validate } = useAntdForm();
 const rules = {
   username: [{ required: true, whitespace: true, message: '请输入用户名' }],
@@ -191,3 +201,41 @@ watch(() => [route.name, route.params.id], async () => {
   } finally { detailLoading.value = false; }
 }, { immediate: true });
 </script>
+
+<style scoped lang="scss">
+.search-card {
+  flex-shrink: 0;
+}
+.table-card {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  flex-direction: column;
+}
+.table-card :deep(.ant-card-body),
+.table-card :deep(.ant-table-wrapper),
+.table-card :deep(.ant-spin-nested-loading),
+.table-card :deep(.ant-spin-container),
+.table-card :deep(.ant-table),
+.table-card :deep(.ant-table-container) {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+.table-card :deep(.ant-card-body) {
+  overflow: hidden;
+}
+.table-card :deep(.ant-card-head),
+.table-card :deep(.ant-alert),
+.table-card :deep(.ant-table-header),
+.table-card :deep(.ant-table-pagination) {
+  flex-shrink: 0;
+}
+.table-card :deep(.ant-table-body) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto !important;
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
-  <div class="image-page flex h-full min-h-0 w-full flex-col overflow-hidden">
-    <ACard :bordered="false" class="card-wrapper mb-4 flex-shrink-0">
+  <div class="image-page flex h-full min-h-0 w-full flex-col gap-4 overflow-hidden">
+    <ACard :bordered="false" class="card-wrapper flex-shrink-0">
       <AForm layout="inline" class="responsive-search-form">
         <AFormItem label="桶名称">
           <ASelect v-model:value="query.bucketName" allow-clear show-search placeholder="请选择桶" :style="{ width: appStore.isMobile ? '100%' : '220px' }" @change="handleBucketChange">
@@ -24,7 +24,7 @@
       <div v-if="bucketLoadFailed" class="flex flex-1 items-center justify-center px-6 py-10 text-center">
         <div><div class="mb-2 text-base font-semibold text-orange-500">{{ permissionDenied ? '权限不足' : '图片存储服务暂时不可用' }}</div><div class="text-sm text-gray-500">{{ permissionDenied ? '您当前没有权限访问图片管理功能，请确认账号已登录或联系管理员分配访问权限。' : '请检查 RustFS 是否正常启动、桶权限和后端配置是否正确。页面已停止加载图片列表，避免显示旧数据。' }}</div><AButton class="mt-4" @click="onRetryLoadBuckets">重新加载</AButton></div>
       </div>
-      <ATable v-else :columns="columns" :data-source="tableData" :loading="loading" :pagination="pagination" :row-key="record => `${record.bucketName}/${record.objectName}`" :row-selection="{ selectedRowKeys, preserveSelectedRowKeys: true, onChange: handleSelectionChange }" :scroll="{ x: 1670, y: tableScrollY }" bordered size="middle" @change="handleTableChange">
+      <ATable v-else :columns="columns" :data-source="tableData" :loading="loading" :pagination="pagination" :row-key="record => `${record.bucketName}/${record.objectName}`" :row-selection="{ selectedRowKeys, preserveSelectedRowKeys: true, onChange: handleSelectionChange }" :scroll="{ x: 1760, y: tableScrollY }" bordered size="middle" @change="handleTableChange">
         <template #bodyCell="{ column, record, index }">
           <template v-if="column.key === 'index'">{{ index + 1 }}</template>
           <template v-else-if="column.key === 'image'"><AImage :width="88" :height="64" :src="record.url" class="image-preview" /></template>
@@ -40,10 +40,10 @@
           </template>
           <template v-else-if="column.key === 'size'">{{ formatSize(record.size) }}</template>
           <template v-else-if="column.key === 'lastModified'">{{ formatDateTime(record.lastModified) }}</template>
-          <template v-else-if="column.key === 'action'"><ASpace>
-            <ATooltip title="改名"><AButton size="small" shape="circle" @click="openRenameModal(record as ManagedImageListItem)"><template #icon><EditOutlined /></template></AButton></ATooltip>
-            <AButton size="small" @click="openMoveModal(record as ManagedImageListItem)">移动</AButton>
-            <APopconfirm title="确定删除这张图片吗？如果文章仍在引用，图片会无法显示。" @confirm="confirmDelete(record as ManagedImageListItem)"><AButton danger size="small" shape="circle"><template #icon><DeleteOutlined /></template></AButton></APopconfirm>
+          <template v-else-if="column.key === 'action'"><ASpace class="table-actions">
+            <ATooltip title="改名"><AButton type="link" size="small" @click="openRenameModal(record as ManagedImageListItem)"><template #icon><EditOutlined /></template></AButton></ATooltip>
+            <AButton type="link" size="small" @click="openMoveModal(record as ManagedImageListItem)"><SwapOutlined />移动</AButton>
+            <APopconfirm title="确定删除这张图片吗？如果文章仍在引用，图片会无法显示。" @confirm="confirmDelete(record as ManagedImageListItem)"><AButton type="link" danger size="small" aria-label="删除"><template #icon><DeleteOutlined /></template></AButton></APopconfirm>
           </ASpace></template>
         </template>
       </ATable>
@@ -63,7 +63,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import type { TableColumnsType, TablePaginationConfig } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
-import { DeleteOutlined, EditOutlined, LinkOutlined, ReloadOutlined } from '@ant-design/icons-vue';
+import { DeleteOutlined, EditOutlined, LinkOutlined, ReloadOutlined, SwapOutlined } from '@ant-design/icons-vue';
 import {
   type ManagedImageListItem,
   type ObjectMoveConflict,
@@ -137,9 +137,9 @@ const columns = computed<TableColumnsType<ManagedImageListItem>>(() => [
   { title: '文章链接', key: 'articleLinks', width: 260, align: 'center' },
   { title: '文件大小', dataIndex: 'size', key: 'size', width: 120, align: 'center' },
   { title: '更新时间', dataIndex: 'lastModified', key: 'lastModified', width: 180, align: 'center', sorter: (a, b) => compareDateTime(a.lastModified, b.lastModified), sortOrder: query.sortOrder === 'lastModifiedAsc' ? 'ascend' : 'descend', sortDirections: ['descend', 'ascend'] },
-  { title: '操作', key: 'action', width: 150, align: 'center', fixed: appStore.isMobile ? undefined : 'right' }
+  { title: '操作', key: 'action', width: 170, align: 'center', fixed: 'right' }
 ]);
-const tableScrollY = computed(() => (appStore.isMobile ? 'calc(100vh - 430px)' : 'calc(100vh - 440px)'));
+const tableScrollY = '100%';
 const modalWidth = computed(() => (appStore.isMobile ? '92vw' : 620));
 const currentBucket = computed(() => bucketOptions.value.find(item => item.name === query.bucketName));
 const selectedCount = computed(() => selectedRowKeys.value.length);
@@ -331,10 +331,14 @@ onBeforeUnmount(clearSearchDebounce);
 </script>
 
 <style scoped lang="scss">
+.table-actions { flex-wrap: nowrap; }
+.table-actions :deep(.ant-btn) { padding-inline: 4px; white-space: nowrap; }
+
 .responsive-search-form { gap: 12px; :deep(.ant-form-item) { margin-right: 0; margin-bottom: 0; } }
-.table-card, .table-card :deep(.ant-card-body), .table-card :deep(.ant-spin-nested-loading), .table-card :deep(.ant-spin-container), .table-card :deep(.ant-table), .table-card :deep(.ant-table-container) { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+.table-card, .table-card :deep(.ant-card-body), .table-card :deep(.ant-table-wrapper), .table-card :deep(.ant-spin-nested-loading), .table-card :deep(.ant-spin-container), .table-card :deep(.ant-table), .table-card :deep(.ant-table-container) { display: flex; flex: 1; min-height: 0; flex-direction: column; }
 .table-card :deep(.ant-card-body) { overflow: hidden; }
-.table-card :deep(.ant-table-body) { overflow-y: auto !important; }
+.table-card :deep(.ant-table-body) { flex: 1; min-height: 0; overflow-y: auto !important; }
+.table-card :deep(.ant-card-head), .table-card :deep(.ant-alert), .table-card :deep(.ant-table-title), .table-card :deep(.ant-table-header), .table-card :deep(.ant-table-pagination) { flex-shrink: 0; }
 .table-card :deep(.ant-table-thead) { position: sticky; top: 0; z-index: 10; }
 .table-card :deep(.ant-table-thead > tr > th) { background: rgb(var(--container-bg-color)); }
 .image-preview { object-fit: cover; border-radius: 6px; }

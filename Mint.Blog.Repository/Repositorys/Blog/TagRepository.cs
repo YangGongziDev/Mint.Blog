@@ -11,7 +11,7 @@ namespace Mint.Blog.Repository.Repositorys.Blog;
 public sealed class TagRepository(ISqlSugarDbContext dbContext) : ITagRepository {
     private const string ValidCategory = "category_id IN (SELECT id FROM blog_category WHERE is_deleted=0)";
     public async Task<IReadOnlyCollection<TagListItemDto>> GetAsync(CancellationToken ct = default) {
-        var tags = await dbContext.Client.Queryable<TagDataModel>().Where(x => x.IsDeleted == 0).Where(ValidCategory).OrderBy(x => x.Sort).OrderBy(x => x.Name).ToListAsync();
+        var tags = await dbContext.Client.Queryable<TagDataModel>().Where(x => x.IsDeleted == 0).Where(ValidCategory).OrderBy(x => x.Sort ?? 0L).OrderBy(x => x.Id).ToListAsync();
         return await MapAsync(tags, ct);
     }
     public async Task<PagedResult<TagListItemDto>> GetAsync(TagPageListQuery query, CancellationToken ct = default) {
@@ -30,9 +30,9 @@ public sealed class TagRepository(ISqlSugarDbContext dbContext) : ITagRepository
         }
         var total = await rows.CountAsync();
         rows = query.SortOrder?.ToLowerInvariant() switch {
-            "timeasc" => rows.OrderBy(x => x.CreatedAt).OrderBy(x => x.Sort).OrderBy(x => x.Name),
-            "timedesc" => rows.OrderByDescending(x => x.CreatedAt).OrderBy(x => x.Sort).OrderBy(x => x.Name),
-            _ => rows.OrderBy(x => x.Sort).OrderBy(x => x.Name).OrderByDescending(x => x.CreatedAt)
+            "timeasc" => rows.OrderBy(x => x.CreatedAt).OrderBy(x => x.Sort ?? 0L).OrderBy(x => x.Id),
+            "timedesc" => rows.OrderByDescending(x => x.CreatedAt).OrderBy(x => x.Sort ?? 0L).OrderBy(x => x.Id),
+            _ => rows.OrderBy(x => x.Sort ?? 0L).OrderBy(x => x.Id)
         };
         var tags = await rows.Skip((page - 1) * size).Take(size).ToListAsync();
         return new PagedResult<TagListItemDto>(await MapAsync(tags, ct), page, size, total);
@@ -71,15 +71,37 @@ public sealed class TagRepository(ISqlSugarDbContext dbContext) : ITagRepository
         await update.Where(x => x.Id == id).ExecuteCommandAsync();
     }
     public Task UpdateSortAsync(long id, int sort, CancellationToken ct = default) => dbContext.Client.Updateable<TagDataModel>()
-        .SetColumns(x => new TagDataModel { Sort = sort, UpdatedAt = DateTimeOffset.UtcNow }).Where(x => x.Id == id && x.IsDeleted == 0).ExecuteCommandAsync();
-    public async Task MoveSortFirstAsync(long id, CancellationToken ct = default) {
-        var first = await dbContext.Client.Queryable<TagDataModel>().Where(x => x.IsDeleted == 0).OrderBy(x => x.Sort).FirstAsync();
-        await UpdateSortAsync(id, first is null ? 0 : checked((int)((first.Sort ?? 0) - 1)), ct);
+        .SetColumns(x => new TagDataModel { Sort = sort, UpdatedAt = DateTimeOffset.UtcNow }).Where(x => x.Id == id).ExecuteCommandAsync();
+    public async Task<bool> MoveAsync(long id, string move, CancellationToken ct = default) {
+        ct.ThrowIfCancellationRequested();
+        await dbContext.Client.Ado.ExecuteCommandAsync("LOCK TABLE blog_category IN SHARE MODE");
+        await dbContext.Client.Ado.ExecuteCommandAsync("LOCK TABLE blog_tag IN SHARE ROW EXCLUSIVE MODE");
+        var tags = await dbContext.Client.Queryable<TagDataModel>()
+            .OrderBy(x => x.Sort ?? 0L).OrderBy(x => x.Id).ToListAsync();
+        var index = tags.FindIndex(x => x.Id == id);
+        if (index < 0) return false;
+        var target = move switch {
+            "up" => Math.Max(0, index - 1),
+            "down" => Math.Min(tags.Count - 1, index + 1),
+            "first" => 0,
+            "last" => tags.Count - 1,
+            _ => throw new ArgumentOutOfRangeException(nameof(move), "Unsupported move direction.")
+        };
+        var tag = tags[index];
+        tags.RemoveAt(index);
+        tags.Insert(target, tag);
+        var now = DateTimeOffset.UtcNow;
+        for (var i = 0; i < tags.Count; i++) {
+            tags[i].Sort = (long)i + 1;
+            tags[i].UpdatedAt = now;
+        }
+        await dbContext.Client.Updateable(tags).UpdateColumns(x => new { x.Sort, x.UpdatedAt }).ExecuteCommandAsync();
+        return true;
     }
-    public async Task MoveSortLastAsync(long id, CancellationToken ct = default) {
-        var last = await dbContext.Client.Queryable<TagDataModel>().Where(x => x.IsDeleted == 0).OrderByDescending(x => x.Sort).FirstAsync();
-        await UpdateSortAsync(id, checked((int)((last?.Sort ?? 0) + 1)), ct);
-    }
+    public async Task MoveSortFirstAsync(long id, CancellationToken ct = default) =>
+        await MoveAsync(id, "first", ct);
+    public async Task MoveSortLastAsync(long id, CancellationToken ct = default) =>
+        await MoveAsync(id, "last", ct);
     public async Task DeleteAsync(long id, int deleteType = 1, CancellationToken ct = default) {
         var deleted = deleteType == 1 ? (short)1 : (short)0;
         await dbContext.Client.Updateable<TagDataModel>().SetColumns(x => new TagDataModel { IsDeleted = deleted, UpdatedAt = DateTimeOffset.UtcNow }).Where(x => x.Id == id).ExecuteCommandAsync();

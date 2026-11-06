@@ -17,11 +17,11 @@
       <div v-if="showMenu" :id="GLOBAL_HEADER_MENU_ID" class="h-full min-w-0 flex flex-1 items-center overflow-hidden pb-[1px]"></div>
     </div>
     <div class="h-full flex items-center justify-end gap-[4px] sm:gap-2 shrink-0">
-      <ButtonIcon size-class="text-[24px]" icon="mdi:web" tooltip-content="访问博客" :trigger-parent="true" @click="visitBlog" />
+      <ButtonIcon size-class="text-[24px]" icon="mdi:web" tooltip-content="访问博客" @click="visitBlog" />
       <FullScreen v-if="!appStore.isMobile" :full="isFullscreen" @click="toggle" />
       <LangSwitch :lang="appStore.locale" :lang-options="appStore.localeOptions" @change-lang="appStore.changeLocale" />
       <ThemeSchemaSwitch :theme-schema="themeStore.themeScheme" :is-dark="themeStore.darkMode" @switch="themeStore.toggleThemeScheme" />
-      <ButtonIcon size-class="text-icon" icon="majesticons:color-swatch-line" :tooltip-content="$t('icon.themeConfig')" :trigger-parent="true" @click="appStore.openThemeDrawer" />
+      <ButtonIcon size-class="text-icon" icon="majesticons:color-swatch-line" :tooltip-content="$t('icon.themeConfig')" @click="appStore.openThemeDrawer" />
       <AButton v-if="!authStore.isLogin" @click="loginOrRegister">{{ $t('page.login.common.loginOrRegister') }}</AButton>
       <ADropdown v-else placement="bottomRight" trigger="click">
         <ButtonIcon>

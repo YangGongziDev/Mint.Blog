@@ -121,10 +121,19 @@ onBeforeUnmount(() => { clearInterval(titleTimer); window.removeEventListener('s
 </script>
 
 <style scoped>
+.article-detail-hero h1 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .article-detail-tags { align-items: center; }
 .article-detail-tags .article-detail-badge { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 99px; background: #ffffff24; box-shadow: inset 0 0 0 1px #ffffff40; color: #fff; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .article-detail-badge-label { flex-shrink: 0; padding-right: 8px; border-right: 1px solid #ffffff50; font-size: 12px; font-weight: 400; opacity: .8; }
 .article-detail-meta > span:nth-of-type(1) i { background: #f59e0b; }
 .article-detail-meta > span:nth-of-type(2) i { background: #a543e6; }
 .article-detail-meta > span:nth-of-type(3) i { background: #5a9cf8; }
+@media (max-width: 767px) {
+  .article-detail-hero :deep(.banner-content) { transform: translateY(-10px); }
+}
+@media (max-width: 639px) {
+  .article-detail-tags { margin-top: 10px; }
+  .article-detail-tags .article-detail-badge { padding: 2px 5px; gap: 4px; }
+  .article-detail-badge-label { padding-right: 3px; }
+}
 </style>

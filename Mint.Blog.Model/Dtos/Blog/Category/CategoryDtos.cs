@@ -2,7 +2,7 @@ namespace Mint.Blog.Model.Dtos.Blog.Category;
 
 public sealed record CreateCategoryCommand(string Name);
 public sealed record UpdateCategoryCommand(long CategoryId, string Name);
-public sealed record UpdateCategorySortCommand(long CategoryId, int Sort);
+public sealed record UpdateCategorySortCommand(long CategoryId, int Sort, string? Move = null);
 public sealed record MoveCategorySortFirstCommand(long CategoryId);
 public sealed record MoveCategorySortLastCommand(long CategoryId);
 public sealed record DeleteCategoryCommand(long CategoryId, int DeleteType = 1);

@@ -1,20 +1,20 @@
 <template>
-  <div class="min-h-[500px] flex flex-col gap-4">
-    <ACard title="搜索" :bordered="false" class="card-wrapper">
+  <div class="h-full min-h-0 overflow-hidden flex flex-col gap-4">
+    <ACard title="搜索" :bordered="false" class="card-wrapper search-card">
       <AForm layout="inline" :model="searchParams" class="flex flex-wrap gap-3">
         <AFormItem label="角色名称"><AInput v-model:value="searchParams.name" allow-clear /></AFormItem>
         <AFormItem label="角色编码"><AInput v-model:value="searchParams.code" allow-clear /></AFormItem>
         <AButton @click="resetSearchParams">重置</AButton><AButton type="primary" @click="getDataByPage()">搜索</AButton>
       </AForm>
     </ACard>
-    <ACard title="角色定义" :bordered="false" class="card-wrapper">
+    <ACard title="角色定义" :bordered="false" class="card-wrapper table-card">
       <template #extra><ASpace>
         <AButton v-if="can('add')" type="primary" @click="openForm()">新增角色</AButton>
         <APopconfirm v-if="can('delete')" title="确认删除所选角色？" @confirm="deleteRoles(checkedIds)"><AButton danger :disabled="!checkedIds.length || deleting">批量删除</AButton></APopconfirm>
         <AButton :loading="loading" @click="getData">刷新</AButton>
       </ASpace></template>
       <AAlert message="内置角色及自己持有的角色不可编辑或删除；已分配的角色须先解除用户关联。" type="info" class="mb-4" />
-      <ATable :columns="columns" :data-source="data" :row-selection="rowSelection" :loading="loading || deleting" row-key="id" :pagination="mobilePagination" :scroll="{ x: 1100 }" size="small" />
+      <ATable :columns="columns" :data-source="data" :row-selection="rowSelection" :loading="loading || deleting" row-key="id" :pagination="mobilePagination" :scroll="{ x: 1100, y: '100%' }" size="small" />
     </ACard>
     <ADrawer v-model:open="drawerVisible" :title="editingId ? '编辑角色' : '新增角色'" :width="480">
       <AForm ref="formRef" layout="vertical" :model="model" :rules="rules">
@@ -38,6 +38,7 @@
 <script setup lang="tsx">
 import { computed, nextTick, reactive, ref } from 'vue';
 import { Button, Popconfirm } from 'ant-design-vue';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue';
 import type { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import { fetchCreateRole, fetchDeleteRole, fetchGetAssignablePermissions, fetchGetRoleList, fetchUpdateRole } from '@/api/system/role';
 import type { RbacPermission, RbacRole, RoleInput } from '@/api/system/role';
@@ -59,13 +60,13 @@ const { columns, data, loading, getData, getDataByPage, mobilePagination, search
     { key: 'name', dataIndex: 'name', title: '名称' },
     { key: 'code', dataIndex: 'code', title: '编码' },
     { key: 'description', dataIndex: 'description', title: '描述' },
-    { key: 'permissions', title: '权限', customRender: ({ record }) => record.permissions.map(permission => permission.code).join('、') || '-' },
+    { key: 'permissions', title: '权限', width: 260, ellipsis: true, customRender: ({ record }) => record.permissions.map(permission => permission.code).join('、') || '-' },
     { key: 'createdAt', dataIndex: 'createdAt', title: '创建时间' },
     { key: 'updatedAt', dataIndex: 'updatedAt', title: '更新时间' },
-    { key: 'operate', title: '操作', width: 150, customRender: ({ record }) => <div class="flex gap-2">
-      {can('edit') && <Button size="small" disabled={protectedRole(record)} onClick={() => openForm(record)}>编辑</Button>}
+    { key: 'operate', title: '操作', width: 180, align: 'center', fixed: 'right', customRender: ({ record }) => <div class="flex justify-center gap-2 whitespace-nowrap">
+      {can('edit') && <Button type="link" size="small" disabled={protectedRole(record)} onClick={() => openForm(record)}><EditOutlined />编辑</Button>}
       {can('delete') && <Popconfirm title="确认删除？" disabled={protectedRole(record) || deleting.value} onConfirm={() => deleteRoles([record.id])}>
-        <Button size="small" danger disabled={protectedRole(record) || deleting.value}>删除</Button>
+        <Button type="link" size="small" danger disabled={protectedRole(record) || deleting.value}><DeleteOutlined />删除</Button>
       </Popconfirm>}
     </div> }
   ]
@@ -157,3 +158,41 @@ async function submit() {
   } finally { saving.value = false; }
 }
 </script>
+
+<style scoped lang="scss">
+.search-card {
+  flex-shrink: 0;
+}
+.table-card {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  flex-direction: column;
+}
+.table-card :deep(.ant-card-body),
+.table-card :deep(.ant-table-wrapper),
+.table-card :deep(.ant-spin-nested-loading),
+.table-card :deep(.ant-spin-container),
+.table-card :deep(.ant-table),
+.table-card :deep(.ant-table-container) {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+.table-card :deep(.ant-card-body) {
+  overflow: hidden;
+}
+.table-card :deep(.ant-card-head),
+.table-card :deep(.ant-alert),
+.table-card :deep(.ant-table-header),
+.table-card :deep(.ant-table-pagination) {
+  flex-shrink: 0;
+}
+.table-card :deep(.ant-table-body) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto !important;
+}
+</style>

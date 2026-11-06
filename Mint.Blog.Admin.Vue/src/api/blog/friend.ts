@@ -32,7 +32,7 @@ export interface AdminFriendPageItem {
   category: string;
   isTop: boolean;
   email?: string | null;
-  sort: number;
+  sort: number | string | null;
   isDeleted: boolean;
   updatedAt: string;
 }
@@ -90,8 +90,8 @@ export function setFriendStatus(friendId: string, status: string) {
   return axios.patch(`/admin/friend/${friendId}/status`, { friendId, status }) as Promise<{ success: boolean }>;
 }
 
-export function updateFriendSort(friendId: string, sort: number) {
-  return axios.patch(`/admin/friend/${friendId}/sort`, { friendId, sort }) as Promise<{
+export function updateFriendSort(friendId: string, sort: number, move?: 'up' | 'down' | 'first' | 'last') {
+  return axios.patch(`/admin/friend/${friendId}/sort`, { friendId, sort, move }) as Promise<{
     success: boolean;
     data: { id: string; sort: number };
   }>;

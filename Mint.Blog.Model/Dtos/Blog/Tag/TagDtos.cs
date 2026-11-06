@@ -6,7 +6,7 @@ namespace Mint.Blog.Model.Dtos.Blog.Tag;
 public sealed record CreateTagCommand(string Name, long CategoryId, string? LogoUrl = null);
 [JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]
 public sealed record UpdateTagCommand(long TagId, string Name, long CategoryId, string? LogoUrl = null);
-public sealed record UpdateTagSortCommand(long TagId, int Sort);
+public sealed record UpdateTagSortCommand(long TagId, int Sort, string? Move = null);
 public sealed record MoveTagSortFirstCommand(long TagId);
 public sealed record MoveTagSortLastCommand(long TagId);
 public sealed record DeleteTagCommand(long TagId, int DeleteType = 1);

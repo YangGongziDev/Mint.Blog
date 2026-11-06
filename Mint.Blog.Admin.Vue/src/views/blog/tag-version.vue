@@ -1,12 +1,14 @@
 <template>
-  <div class="p-4">
-    <ACard :bordered="false">
+  <div class="tag-version-page h-full min-h-0 overflow-hidden flex flex-col gap-4 p-4">
+    <ACard :bordered="false" class="card-wrapper search-card">
       <ASpace wrap><ASelect v-model:value="selectedId" :options="tagOptions" show-search option-filter-prop="label" placeholder="请选择标签" style="width: 280px" :disabled="saving" /><AButton :loading="loading" @click="loadVersions">刷新</AButton><AButton type="primary" :disabled="!canWrite || saving || loading || failed || !selectedId" @click="openVersion()">新增版本</AButton></ASpace>
+    </ACard>
+    <ACard :bordered="false" class="card-wrapper table-card">
       <AAlert v-if="failed" type="error" message="加载失败，请刷新重试" class="my-4" />
-      <ATable class="mt-4" :columns="columns" :data-source="versions" row-key="id" :loading="loading" :pagination="false" :scroll="{ x: 800 }">
+      <ATable :columns="columns" :data-source="versions" row-key="id" :loading="loading" :pagination="pagination" :scroll="{ x: 800, y: '100%' }" @change="changePage">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'general'"><ATag>{{ record.isGeneral ? '通用版本' : '普通版本' }}</ATag></template>
-          <template v-else-if="column.key === 'action'"><ASpace><AButton :disabled="!canWrite || saving || loading || failed" @click="openVersion(record as TagVersion)">编辑</AButton><AButton danger :disabled="!canWrite || saving || loading || failed || record.isGeneral" @click="confirmDelete(record as TagVersion)">删除</AButton></ASpace></template>
+          <template v-else-if="column.key === 'action'"><ASpace class="table-actions" wrap :size="[8, 4]"><AButton type="link" size="small" :disabled="!canWrite || saving || loading || failed" @click="openVersion(record as TagVersion)"><EditOutlined />编辑</AButton><AButton type="link" size="small" danger :disabled="!canWrite || saving || loading || failed || record.isGeneral" @click="confirmDelete(record as TagVersion)"><DeleteOutlined />删除</AButton></ASpace></template>
         </template>
       </ATable>
     </ACard>
@@ -25,6 +27,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { message, Modal, type FormInstance, type FormProps, type TableColumnsType } from 'ant-design-vue';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue';
 import { createTagVersion, deleteTagVersion, getNavigationTags, getTagVersions, updateTagVersion, type NavigationTag, type TagVersion } from '@/api/blog/resource';
 import { useAuth } from '@/hooks/auth/use-auth';
 import { useAuthStore } from '@/store/system/auth';
@@ -38,6 +41,13 @@ const tags = ref<NavigationTag[]>([]);
 const selectedId = ref<string>();
 const tagOptions = computed(() => sortOptionsByLabel(tags.value.map(tag => ({ value: tag.id, label: tag.name })), option => option.label));
 const versions = ref<TagVersion[]>([]);
+const current = ref(1);
+const pageSize = ref(20);
+const pagination = computed(() => ({ current: current.value, pageSize: pageSize.value, total: versions.value.length, showSizeChanger: true }));
+function changePage(page: { current?: number; pageSize?: number }) {
+  current.value = page.current ?? 1;
+  pageSize.value = page.pageSize ?? 20;
+}
 const loading = ref(false);
 const failed = ref(false);
 const saving = ref(false);
@@ -50,7 +60,7 @@ let disposed = false;
 const columns: TableColumnsType<TagVersion> = [
   { title: '名称', dataIndex: 'name' }, { title: '类型', key: 'general' },
   { title: '排序', dataIndex: 'sort' }, { title: '文章数', dataIndex: 'articleCount' },
-  { title: '资源数', dataIndex: 'resourceCount' }, { title: '操作', key: 'action' }
+  { title: '资源数', dataIndex: 'resourceCount' }, { title: '操作', key: 'action', width: 180, align: 'center', fixed: 'right' }
 ];
 const sortRules: NonNullable<FormProps['rules']>[string] = [{ required: true, validator: async (_rule, value: string) => {
   if (!/^-?\d+$/.test(value) || BigInt(value) < -9223372036854775808n || BigInt(value) > 9223372036854775807n) throw new Error('请输入有符号64位整数');
@@ -74,6 +84,7 @@ async function loadVersions() {
     if (disposed || generation !== request || selectedId.value !== tagId) return;
     if (!response.success) throw new Error();
     versions.value = response.data;
+    current.value = Math.min(current.value, Math.max(1, Math.ceil(versions.value.length / pageSize.value)));
   } catch { if (!disposed && generation === request) failed.value = true; }
   finally { if (!disposed && generation === request) loading.value = false; }
 }
@@ -114,7 +125,49 @@ function confirmDelete(version: TagVersion) {
     } finally { saving.value = false; }
   } });
 }
-watch(selectedId, () => { visible.value = false; void loadVersions(); });
+watch(selectedId, () => { current.value = 1; visible.value = false; void loadVersions(); });
 onMounted(loadVersions);
 onBeforeUnmount(() => { disposed = true; ++request; });
 </script>
+
+<style scoped lang="scss">
+.tag-version-page {
+  min-width: 0;
+}
+.search-card {
+  flex-shrink: 0;
+}
+.table-card {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  flex-direction: column;
+}
+.table-card :deep(.ant-card-body),
+.table-card :deep(.ant-table-wrapper),
+.table-card :deep(.ant-spin-nested-loading),
+.table-card :deep(.ant-spin-container),
+.table-card :deep(.ant-table),
+.table-card :deep(.ant-table-container) {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+.table-card :deep(.ant-card-body) {
+  overflow: hidden;
+}
+.table-card :deep(.ant-card-head),
+.table-card :deep(.ant-alert),
+.table-card :deep(.ant-table-header),
+.table-card :deep(.ant-table-pagination) {
+  flex-shrink: 0;
+}
+.table-card :deep(.ant-table-body) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto !important;
+}
+.table-actions :deep(.ant-btn) { white-space: nowrap; }
+</style>

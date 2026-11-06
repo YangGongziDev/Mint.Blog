@@ -42,8 +42,8 @@ export function createCategory(data: CategoryFormModel) {
 export function updateCategory(categoryId: string, data: CategoryFormModel) {
   return axios.put(`/admin/category/${categoryId}`, data) as Promise<{ success: boolean; data: { id: string } }>;
 }
-export function updateCategorySort(categoryId: string, sort: string) {
-  return axios.patch(`/admin/category/${categoryId}/sort`, { categoryId, sort }) as Promise<{ success: boolean; data: { id: string; sort: string } }>;
+export function updateCategorySort(categoryId: string, sort: string, move?: 'up' | 'down' | 'first' | 'last') {
+  return axios.patch(`/admin/category/${categoryId}/sort`, { categoryId, sort, move }) as Promise<{ success: boolean; data: { id: string; sort: string } }>;
 }
 export function moveCategorySortFirst(categoryId: string) {
   return axios.patch(`/admin/category/${categoryId}/sort/first`) as Promise<{ success: boolean }>;

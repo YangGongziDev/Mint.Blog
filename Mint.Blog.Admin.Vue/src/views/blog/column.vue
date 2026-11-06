@@ -1,6 +1,6 @@
 <template>
-  <div class="category-page flex h-full min-h-0 w-full flex-col overflow-hidden">
-    <div class="flex-shrink-0 bg-layout pb-4">
+  <div class="category-page flex h-full min-h-0 w-full flex-col gap-4 overflow-hidden">
+    <div class="flex-shrink-0">
       <ACard :bordered="false" class="card-wrapper">
         <AForm layout="inline" class="responsive-search-form">
           <AFormItem label="专栏标题">
@@ -78,65 +78,16 @@
             </ATag>
           </template>
           <template v-else-if="column.key === 'action'">
-            <ASpace>
-              <ATooltip title="置顶">
-                <AButton size="small" shape="circle" :disabled="index === 0" @click="moveColumnToFirst(record as AdminColumnPageItem, index)">
-                  <template #icon><VerticalAlignTopOutlined /></template>
-                </AButton>
-              </ATooltip>
-
-              <ATooltip title="置底">
-                <AButton
-                  size="small"
-                  shape="circle"
-                  :disabled="index === tableData.length - 1"
-                  @click="moveColumnToLast(record as AdminColumnPageItem, index)"
-                >
-                  <template #icon><VerticalAlignBottomOutlined /></template>
-                </AButton>
-              </ATooltip>
-
-              <ATooltip title="上移">
-                <AButton size="small" shape="circle" :disabled="index === 0" @click="moveColumnUp(record as AdminColumnPageItem, index)">
-                  <template #icon><UpOutlined /></template>
-                </AButton>
-              </ATooltip>
-
-              <ATooltip title="下移">
-                <AButton
-                  size="small"
-                  shape="circle"
-                  :disabled="index === tableData.length - 1"
-                  @click="moveColumnDown(record as AdminColumnPageItem, index)"
-                >
-                  <template #icon><DownOutlined /></template>
-                </AButton>
-              </ATooltip>
-
-              <ATooltip title="编辑">
-                <AButton size="small" shape="circle" @click="openEditModal(record as AdminColumnPageItem)">
-                  <template #icon><EditOutlined /></template>
-                </AButton>
-              </ATooltip>
-
-              <ATooltip title="编辑目录">
-                <AButton size="small" shape="circle" @click="openCatalogModal(record as AdminColumnPageItem)">
-                  <template #icon><UnorderedListOutlined /></template>
-                </AButton>
-              </ATooltip>
-
-              <ATooltip title="预览">
-                <AButton size="small" shape="circle" @click="previewColumn(record as AdminColumnPageItem)">
-                  <template #icon><EyeOutlined /></template>
-                </AButton>
-              </ATooltip>
-
-              <ATooltip title="删除">
-                <AButton danger size="small" shape="circle" @click="openDeleteModal(record as AdminColumnPageItem)">
-                  <template #icon><DeleteOutlined /></template>
-                </AButton>
-              </ATooltip>
-            </ASpace>
+            <div class="table-actions">
+              <ATooltip title="移至组首"><AButton type="link" size="small" :disabled="sorting || loading" @click="moveColumn(record as AdminColumnPageItem, 'first')"><template #icon><VerticalAlignTopOutlined /></template></AButton></ATooltip>
+              <ATooltip title="移至组尾"><AButton type="link" size="small" :disabled="sorting || loading" @click="moveColumn(record as AdminColumnPageItem, 'last')"><template #icon><VerticalAlignBottomOutlined /></template></AButton></ATooltip>
+              <ATooltip title="上移"><AButton type="link" size="small" :disabled="sorting || loading" @click="moveColumn(record as AdminColumnPageItem, 'up')"><template #icon><UpOutlined /></template></AButton></ATooltip>
+              <ATooltip title="下移"><AButton type="link" size="small" :disabled="sorting || loading" @click="moveColumn(record as AdminColumnPageItem, 'down')"><template #icon><DownOutlined /></template></AButton></ATooltip>
+              <ATooltip title="编辑"><AButton type="link" size="small" @click="openEditModal(record as AdminColumnPageItem)"><template #icon><EditOutlined /></template></AButton></ATooltip>
+              <ATooltip title="编辑目录"><AButton type="link" size="small" @click="openCatalogModal(record as AdminColumnPageItem)"><template #icon><UnorderedListOutlined /></template></AButton></ATooltip>
+              <ATooltip title="预览"><AButton type="link" size="small" @click="previewColumn(record as AdminColumnPageItem)"><template #icon><EyeOutlined /></template></AButton></ATooltip>
+              <ATooltip title="删除"><AButton type="link" danger size="small" @click="openDeleteModal(record as AdminColumnPageItem)"><template #icon><DeleteOutlined /></template></AButton></ATooltip>
+            </div>
           </template>
         </template>
       </ATable>
@@ -371,12 +322,13 @@ import { useAppStore } from '@/store/system/app';
 import { sortOptionsByLabel } from '@/utils/common';
 import AuthorizedPreview from '@/components/blog/authorized-preview.vue';
 import type { TimeSortOrder } from '@/utils/date-time';
-import { compareDateTime, formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
+import { formatDateTime, getAntdTimeSortOrder, getTableSortOrder, resolveTimeSortOrder } from '@/utils/date-time';
 import RustfsImageSelector from '@/components/blog/rustfs-image-selector.vue';
 const preview = ref<InstanceType<typeof AuthorizedPreview>>();
 
 const appStore = useAppStore();
 const loading = ref(false);
+const sorting = ref(false);
 const tableData = ref<AdminColumnPageItem[]>([]);
 const total = ref(0);
 const dateRange = ref<[Dayjs, Dayjs] | undefined>();
@@ -426,6 +378,7 @@ const pagination = computed<TablePaginationConfig>(() => ({
 
 const columns = computed<TableColumnsType<AdminColumnPageItem>>(() => [
   { title: '序号', key: 'index', width: 80, align: 'center' },
+  { title: '排序号', dataIndex: 'sort', key: 'sort', width: 80, align: 'center' },
   { title: '标题', dataIndex: 'title', key: 'title', width: 220, ellipsis: true },
   { title: '摘要', dataIndex: 'summary', key: 'summary', width: 280, ellipsis: true },
   { title: '封面', key: 'cover', width: 140, align: 'center' },
@@ -437,16 +390,16 @@ const columns = computed<TableColumnsType<AdminColumnPageItem>>(() => [
     key: 'createdAt',
     width: 180,
     align: 'center',
-    sorter: (a, b) => compareDateTime(a.createdAt, b.createdAt),
+    sorter: true,
     sortOrder: query.sortOrder ? getAntdTimeSortOrder(query.sortOrder) : undefined,
     sortDirections: ['descend', 'ascend']
   },
   { title: '是否发布', key: 'isPublish', width: 100, align: 'center' },
   { title: '删除状态', dataIndex: 'isDeleted', key: 'isDeleted', width: 120, align: 'center' },
-  { title: '操作', key: 'action', width: 250, align: 'center', className: 'blog-action-column' }
+  { title: '操作', key: 'action', width: 180, align: 'center', fixed: 'right', className: 'blog-action-column' }
 ]);
-const tableScrollX = 1300;
-const tableScrollY = computed(() => (appStore.isMobile ? 'calc(100vh - 360px)' : 'calc(100vh - 400px)'));
+const tableScrollX = 1540;
+const tableScrollY = '100%';
 const rules: FormProps['rules'] = {
   title: [
     { required: true, message: '请输入标题', trigger: 'blur' },
@@ -520,8 +473,8 @@ function closeCreateModal() {
 function openEditModal(record: AdminColumnPageItem) {
   editingId.value = record.id;
   Object.assign(editFormModel, { title: record.title, summary: record.summary, cover: record.cover });
-  originalCoverUrl.value = record.cover;
   pendingEditCoverImage.value = null;
+  originalCoverUrl.value = record.cover;
   editFormModalVisible.value = true;
 }
 function closeEditModal() {
@@ -624,7 +577,7 @@ async function handleEditSubmit() {
 async function handleTopChange(record: AdminColumnPageItem) {
   query.sortOrder = undefined;
   const res = await setColumnTop(record.id, record.isTop);
-  if (res.success) message.success(record.isTop ? '置顶成功' : '已取消置顶');
+  if (res.success) message.success('排序更新成功');
   await loadData();
 }
 async function handlePublishChange(record: AdminColumnPageItem) {
@@ -632,71 +585,17 @@ async function handlePublishChange(record: AdminColumnPageItem) {
   if (res.success) message.success(record.isPublish ? '发布成功' : '已取消发布');
   await loadData();
 }
-async function updateColumnSortValue(id: string, sort: number) {
-  const res = await updateColumnSort(id, sort || 0);
-  if (!res.success) {
+async function moveColumn(record: AdminColumnPageItem, move: 'up' | 'down' | 'first' | 'last') {
+  if (sorting.value || loading.value) return;
+  sorting.value = true;
+  query.sortOrder = undefined;
+  try {
+    const res = await updateColumnSort(record.id, 0, move);
+    if (res.success) message.success('排序更新成功');
     await loadData();
-    return;
+  } finally {
+    sorting.value = false;
   }
-  message.success('排序更新成功');
-}
-async function moveColumnUp(_record: AdminColumnPageItem, index: number) {
-  query.sortOrder = undefined;
-  if (index === 0) {
-    message.warning('已经是第一个了');
-    return;
-  }
-
-  const current = tableData.value[index];
-  const previous = tableData.value[index - 1];
-  const currentSort = current.sort || 0;
-  current.sort = previous.sort || 0;
-  previous.sort = currentSort;
-  tableData.value[index] = previous;
-  tableData.value[index - 1] = current;
-  await updateColumnSortValue(current.id, current.sort);
-  await updateColumnSortValue(previous.id, previous.sort);
-}
-async function moveColumnDown(_record: AdminColumnPageItem, index: number) {
-  query.sortOrder = undefined;
-  if (index === tableData.value.length - 1) {
-    message.warning('已经是最后一个了');
-    return;
-  }
-
-  const current = tableData.value[index];
-  const next = tableData.value[index + 1];
-  const currentSort = current.sort || 0;
-  current.sort = next.sort || 0;
-  next.sort = currentSort;
-  tableData.value[index] = next;
-  tableData.value[index + 1] = current;
-  await updateColumnSortValue(current.id, current.sort);
-  await updateColumnSortValue(next.id, next.sort);
-}
-async function moveColumnToFirst(record: AdminColumnPageItem, index: number) {
-  query.sortOrder = undefined;
-  if (index === 0) {
-    message.warning('已经是第一个了');
-    return;
-  }
-
-  const maxSort = Math.max(...tableData.value.map(item => item.sort || 0), 0);
-  record.sort = maxSort + 1;
-  await updateColumnSortValue(record.id, record.sort);
-  await loadData();
-}
-async function moveColumnToLast(record: AdminColumnPageItem, index: number) {
-  query.sortOrder = undefined;
-  if (index === tableData.value.length - 1) {
-    message.warning('已经是最后一个了');
-    return;
-  }
-
-  const minSort = Math.min(...tableData.value.map(item => item.sort || 0), 0);
-  record.sort = minSort - 1;
-  await updateColumnSortValue(record.id, record.sort);
-  await loadData();
 }
 function createCatalogItem(level: 1 | 2, sort: number): AdminColumnCatalogItem {
   return {
@@ -837,6 +736,15 @@ onMounted(() => loadData());
 </script>
 
 <style scoped lang="scss">
+.table-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 24px);
+  grid-template-rows: repeat(2, auto);
+  justify-content: center;
+  gap: 4px;
+}
+.table-actions :deep(.ant-btn) { width: 24px; padding-inline: 0; white-space: nowrap; }
+
 .category-page {
   height: 100%;
 }
@@ -862,6 +770,7 @@ onMounted(() => loadData());
   flex-direction: column;
 }
 
+.table-card :deep(.ant-table-wrapper),
 .table-card :deep(.ant-spin-nested-loading),
 .table-card :deep(.ant-spin-container),
 .table-card :deep(.ant-table),
@@ -873,7 +782,17 @@ onMounted(() => loadData());
 }
 
 .table-card :deep(.ant-table-body) {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto !important;
+}
+
+.table-card :deep(.ant-card-head),
+.table-card :deep(.ant-alert),
+.table-card :deep(.ant-table-title),
+.table-card :deep(.ant-table-header),
+.table-card :deep(.ant-table-pagination) {
+  flex-shrink: 0;
 }
 
 .table-card :deep(.ant-table-thead) {

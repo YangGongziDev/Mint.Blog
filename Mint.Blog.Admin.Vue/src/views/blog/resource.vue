@@ -1,8 +1,9 @@
 <template>
-  <div class="p-4">
-    <ACard :bordered="false">
+  <div class="resource-page p-4">
       <ATabs v-model:active-key="activeTab">
         <ATabPane key="resources" tab="资源管理">
+          <div class="flex flex-col gap-4">
+            <ACard :bordered="false" class="card-wrapper">
       <ASpace wrap>
         <ASelect v-model:value="selectedId" :options="tagOptions" allow-clear show-search option-filter-prop="label" placeholder="全部标签（含停用标签资源）" style="width: 260px" :disabled="busy" />
         <ASelect v-model:value="filters.tagVersionId" :options="versionOptions" allow-clear placeholder="全部版本" style="width: 180px" :disabled="!selectedId || versionsLoading || versionsError" />
@@ -11,30 +12,50 @@
         <AButton :loading="loading" @click="search">查询</AButton><AButton @click="reset">重置</AButton>
         <AButton type="primary" :disabled="!canWrite || busy || !selectedTag" @click="openResource()">新增资源</AButton>
       </ASpace>
+            </ACard>
+            <ACard :bordered="false" class="card-wrapper table-card">
       <AAlert v-if="filters.deleted === 1" message="软删除资源仍占用同标签、同版本的 URL。可编辑原记录后恢复；停用标签或分类须先恢复，或将资源改至有效标签和版本。" type="info" class="my-3" />
       <AAlert v-if="error" :message="error" type="error" class="my-3"><template #action><AButton @click="refresh">重试</AButton></template></AAlert>
       <AAlert v-if="versionsError" message="筛选版本加载失败" type="error" class="my-3"><template #action><AButton @click="loadVersions">重试</AButton></template></AAlert>
-      <ATable class="mt-4" :columns="columns" :data-source="resources" row-key="id" :loading="loading" :pagination="pagination" :scroll="{ x: 1200 }" @change="changePage">
+      <ATable :columns="columns" :data-source="resources" row-key="id" :loading="loading" :pagination="pagination" :scroll="{ x: 1200, y: '100%' }" @change="changePage">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'version'"><ATag v-if="record.isGeneral">{{ record.tagVersionName }}</ATag><template v-else>{{ record.tagVersionName }}</template></template>
           <template v-else-if="column.key === 'kind'">{{ kindOptions.find(item => item.value === record.kind)?.label }}</template>
           <template v-else-if="column.key === 'status'"><ATag :color="record.isDeleted ? 'default' : 'success'">{{ record.isDeleted ? '已删除（回收站）' : '正常' }}</ATag></template>
-          <template v-else-if="column.key === 'action'"><ASpace><AButton :disabled="!canWrite || busy" @click="openResource(record.id)">查看 / 编辑</AButton><AButton v-if="record.isDeleted" :disabled="!canWrite || busy" @click="restore(record as ResourceItem)">恢复</AButton><AButton v-else danger :disabled="!canWrite || busy" @click="remove(record as ResourceItem)">删除</AButton></ASpace></template>
+          <template v-else-if="column.key === 'action'"><ASpace class="table-actions"><AButton type="link" size="small" :disabled="!canWrite || busy" @click="openResource(record.id)"><EditOutlined />编辑</AButton><AButton v-if="record.isDeleted" type="link" size="small" :disabled="!canWrite || busy" @click="restore(record as ResourceItem)"><UndoOutlined />恢复</AButton><AButton v-else type="link" size="small" danger :disabled="!canWrite || busy" @click="remove(record as ResourceItem)"><DeleteOutlined />删除</AButton></ASpace></template>
         </template>
       </ATable>
+            </ACard>
+          </div>
         </ATabPane>
         <ATabPane key="navigation" tab="导航设置">
+          <div class="flex flex-col gap-4">
+          <ACard :bordered="false" class="card-wrapper">
+            <div class="navigation-toolbar">
+              <AInput v-model:value="navigationFilters.keyword" allow-clear placeholder="搜索名称、分类、导航简介" class="navigation-search">
+                <template #prefix><SearchOutlined /></template>
+              </AInput>
+              <ASelect v-model:value="navigationFilters.categoryId" :options="navigationCategoryOptions" allow-clear show-search option-filter-prop="label" placeholder="全部分类" class="navigation-filter" />
+              <ASelect v-model:value="navigationFilters.status" allow-clear placeholder="展示状态（全部）" class="navigation-filter">
+                <ASelectOption value="visible">展示</ASelectOption>
+                <ASelectOption value="hidden">隐藏</ASelectOption>
+              </ASelect>
+              <AButton @click="resetNavigationFilters">重置</AButton>
+            </div>
+          </ACard>
+          <ACard :bordered="false" class="card-wrapper table-card">
           <AAlert v-if="error" :message="error" type="error" class="my-3"><template #action><AButton :disabled="busy" @click="refresh">重试</AButton></template></AAlert>
-          <ATable :columns="navigationColumns" :data-source="sortedNavigationTags" row-key="id" :pagination="navigationPagination" :scroll="{ x: 1100 }" @change="changeNavigationPage">
+          <ATable :columns="navigationColumns" :data-source="sortedNavigationTags" row-key="id" :pagination="navigationPagination" :scroll="{ x: 1100, y: '100%' }" @change="changeNavigationPage">
             <template #bodyCell="{ column, record }">
               <template v-if="column.key === 'logo'"><AImage v-if="record.logoUrl" :src="record.logoUrl" :width="48" /><span v-else>暂无 Logo</span></template>
               <template v-else-if="column.key === 'navigationStatus'"><ATag :color="record.showInNavigation ? 'success' : 'default'">{{ record.showInNavigation ? '展示' : '隐藏' }}</ATag></template>
-              <template v-else-if="column.key === 'action'"><AButton :disabled="!canWrite || busy" @click="openNavigation(record as NavigationTag)">编辑</AButton></template>
+              <template v-else-if="column.key === 'action'"><AButton class="table-action-button" type="link" size="small" :disabled="!canWrite || busy" @click="openNavigation(record as NavigationTag)"><EditOutlined />编辑</AButton></template>
             </template>
           </ATable>
+          </ACard>
+          </div>
         </ATabPane>
       </ATabs>
-    </ACard>
     <AModal :open="resourceVisible" :title="editingId ? (editingDeleted ? '编辑回收站资源' : '编辑资源') : '新增资源'" :confirm-loading="saving" :mask-closable="false" :ok-button-props="{ disabled: !canWrite || busy || !selectionValid }" @cancel="!saving && (resourceVisible = false)" @ok="saveResource">
       <AAlert v-if="editingDeleted" type="info" message="保存只修改原记录，资源仍留在回收站；保存后可点击恢复。" class="mb-3" />
       <AForm ref="formRef" :model="form" layout="vertical" :disabled="saving">
@@ -68,6 +89,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { message, Modal, type FormInstance, type FormProps, type TableColumnsType } from 'ant-design-vue';
+import { DeleteOutlined, EditOutlined, SearchOutlined, UndoOutlined } from '@ant-design/icons-vue';
 import { configureNavigationTag, createResource, deleteResource, getNavigationTags, getResourceDetail, getResourcePage, getTagVersions, restoreResource, updateResource, type NavigationTag, type NavigationTagForm, type ResourceForm, type ResourceItem, type TagVersion } from '@/api/blog/resource';
 import { getCategoryList, type CategoryListItem } from '@/api/blog/category';
 import { useAuth } from '@/hooks/auth/use-auth';
@@ -80,8 +102,31 @@ const auth = useAuthStore();
 const canWrite = computed(() => !isReadonly.value && auth.userInfo.roles.some(role => ['ROLE_ADMIN', 'ROLE_SUPER'].includes(role)));
 const activeTab = ref('resources');
 const tags = ref<NavigationTag[]>([]);
-const sortedNavigationTags = computed(() => sortOptionsByLabel(tags.value, tag => tag.name));
+const navigationFilters = reactive({ keyword: '', categoryId: undefined as string | undefined, status: undefined as 'visible' | 'hidden' | undefined });
+const sortedNavigationTags = computed(() => {
+  const keyword = navigationFilters.keyword.trim().toLowerCase();
+  const filtered = tags.value.filter(tag => {
+    const matchesKeyword = !keyword || [tag.name, tag.categoryName, tag.navigationDescription].some(value => value?.toLowerCase().includes(keyword));
+    const matchesCategory = !navigationFilters.categoryId || tag.categoryId === navigationFilters.categoryId;
+    const matchesStatus = !navigationFilters.status || tag.showInNavigation === (navigationFilters.status === 'visible');
+    return matchesKeyword && matchesCategory && matchesStatus;
+  });
+  return sortOptionsByLabel(filtered, tag => tag.name);
+});
+const navigationCategoryOptions = computed(() => sortOptionsByLabel(
+  Array.from(new Map(tags.value.map(tag => [tag.categoryId, { value: tag.categoryId, label: tag.categoryName }])).values()),
+  item => item.label
+));
 const navigationPagination = reactive({ current: 1, pageSize: 20, showSizeChanger: true, pageSizeOptions: ['10', '20', '50', '100'] });
+watch(navigationFilters, () => { navigationPagination.current = 1; });
+watch(() => sortedNavigationTags.value.length, total => {
+  navigationPagination.current = Math.min(navigationPagination.current, Math.max(1, Math.ceil(total / navigationPagination.pageSize)));
+});
+function resetNavigationFilters() {
+  navigationFilters.keyword = '';
+  navigationFilters.categoryId = undefined;
+  navigationFilters.status = undefined;
+}
 function changeNavigationPage(page: { current?: number; pageSize?: number }) {
   const size = page.pageSize ?? navigationPagination.pageSize;
   navigationPagination.current = size === navigationPagination.pageSize ? (page.current ?? 1) : 1;
@@ -138,12 +183,12 @@ const navigationColumns: TableColumnsType<NavigationTag> = [
   { title: '标签 Logo', key: 'logo', width: 100 }, { title: '名称', dataIndex: 'name' }, { title: '所属分类', dataIndex: 'categoryName' },
   { title: '导航展示状态', key: 'navigationStatus', width: 130 }, { title: '导航简介', dataIndex: 'navigationDescription', ellipsis: true },
   { title: '版本数量', dataIndex: 'versionCount', width: 100 }, { title: '资源数量', dataIndex: 'resourceCount', width: 100 },
-  { title: '操作', key: 'action', width: 100 }
+  { title: '操作', key: 'action', width: 100, align: 'center', fixed: 'right' }
 ];
 const columns: TableColumnsType<ResourceItem> = [
   { title: '标题', dataIndex: 'title' }, { title: '分类', dataIndex: 'categoryName' }, { title: '标签', dataIndex: 'tagName' },
   { title: '版本', key: 'version' }, { title: '类型', key: 'kind' }, { title: '地址', dataIndex: 'url', ellipsis: true },
-  { title: '排序', dataIndex: 'sort' }, { title: '状态', key: 'status', width: 150 }, { title: '操作', key: 'action', width: 220 }
+  { title: '排序', dataIndex: 'sort' }, { title: '状态', key: 'status', width: 150 }, { title: '操作', key: 'action', width: 240, align: 'center', fixed: 'right' }
 ];
 const sortRules: NonNullable<FormProps['rules']>[string] = [{ required: true, validator: async (_rule, value: string) => {
   if (!/^-?\d+$/.test(value) || BigInt(value) < -9223372036854775808n || BigInt(value) > 9223372036854775807n) throw new Error('请输入有符号64位整数');
@@ -301,3 +346,80 @@ watch(selectedId, () => { ++detailRequest; detailLoading.value = false; resource
 onMounted(refresh);
 onBeforeUnmount(() => { disposed = true; ++tagsRequest; ++versionsRequest; ++listRequest; ++detailRequest; ++formVersionsRequest; });
 </script>
+
+<style scoped lang="scss">
+
+:deep(.ant-tabs-tab) {
+  padding: 0 0 12px 0 !important;
+}
+
+.resource-page {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  flex-direction: column;
+}
+.resource-page > :deep(.ant-tabs),
+.resource-page :deep(.ant-tabs-content-holder),
+.resource-page :deep(.ant-tabs-content),
+.resource-page :deep(.ant-tabs-tabpane-active),
+.resource-page :deep(.ant-tabs-tabpane-active > div) {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  flex-direction: column;
+}
+.resource-page :deep(.ant-tabs-nav),
+.resource-page :deep(.ant-tabs-tabpane-active > div > .card-wrapper:first-child) {
+  flex-shrink: 0;
+}
+.table-card {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  flex-direction: column;
+}
+.table-card :deep(.ant-card-body),
+.table-card :deep(.ant-table-wrapper),
+.table-card :deep(.ant-spin-nested-loading),
+.table-card :deep(.ant-spin-container),
+.table-card :deep(.ant-table),
+.table-card :deep(.ant-table-container) {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+.table-card :deep(.ant-card-body) {
+  overflow: hidden;
+}
+.table-card :deep(.ant-table-body) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto !important;
+}
+.table-card :deep(.ant-alert),
+.table-card :deep(.ant-table-header),
+.table-card :deep(.ant-table-pagination) {
+  flex-shrink: 0;
+}
+.navigation-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.navigation-search { width: 340px; }
+.navigation-filter { width: 180px; }
+@media (max-width: 768px) {
+  .navigation-toolbar { align-items: stretch; flex-direction: column; }
+  .navigation-search, .navigation-filter { width: 100%; }
+}
+.table-actions { flex-wrap: nowrap; }
+.table-actions :deep(.ant-btn), .table-action-button { white-space: nowrap; }
+</style>

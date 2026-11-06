@@ -28,15 +28,35 @@ public sealed class CategoryRepository(ISqlSugarDbContext dbContext) : ICategory
     public Task UpdateSortAsync(long id, int sort, CancellationToken cancellationToken = default) =>
         dbContext.Client.Updateable<CategoryDataModel>()
             .SetColumns(x => new CategoryDataModel { Sort = sort, UpdatedAt = DateTimeOffset.UtcNow })
-            .Where(x => x.Id == id && x.IsDeleted == 0).ExecuteCommandAsync();
-    public async Task MoveSortFirstAsync(long id, CancellationToken cancellationToken = default) {
-        var first = await dbContext.Client.Queryable<CategoryDataModel>().Where(x => x.IsDeleted == 0).OrderBy(x => x.Sort).FirstAsync();
-        await UpdateSortAsync(id, first is null ? 0 : checked((int)((first.Sort ?? 0) - 1)), cancellationToken);
+            .Where(x => x.Id == id).ExecuteCommandAsync();
+    public async Task<bool> MoveAsync(long id, string move, CancellationToken cancellationToken = default) {
+        await dbContext.Client.Ado.ExecuteCommandAsync("LOCK TABLE blog_category IN SHARE ROW EXCLUSIVE MODE");
+        var categories = await dbContext.Client.Queryable<CategoryDataModel>()
+            .OrderBy(x => x.Sort).OrderBy(x => x.Id).ToListAsync();
+        var index = categories.FindIndex(x => x.Id == id);
+        if (index < 0) return false;
+        var target = move switch {
+            "up" => Math.Max(0, index - 1),
+            "down" => Math.Min(categories.Count - 1, index + 1),
+            "first" => 0,
+            "last" => categories.Count - 1,
+            _ => throw new ArgumentOutOfRangeException(nameof(move), "Unsupported move direction.")
+        };
+        var category = categories[index];
+        categories.RemoveAt(index);
+        categories.Insert(target, category);
+        var now = DateTimeOffset.UtcNow;
+        for (var i = 0; i < categories.Count; i++) {
+            categories[i].Sort = i + 1;
+            categories[i].UpdatedAt = now;
+        }
+        await dbContext.Client.Updateable(categories).UpdateColumns(x => new { x.Sort, x.UpdatedAt }).ExecuteCommandAsync();
+        return true;
     }
-    public async Task MoveSortLastAsync(long id, CancellationToken cancellationToken = default) {
-        var last = await dbContext.Client.Queryable<CategoryDataModel>().Where(x => x.IsDeleted == 0).OrderByDescending(x => x.Sort).FirstAsync();
-        await UpdateSortAsync(id, checked((int)((last?.Sort ?? 0) + 1)), cancellationToken);
-    }
+    public async Task MoveSortFirstAsync(long id, CancellationToken cancellationToken = default) =>
+        await MoveAsync(id, "first", cancellationToken);
+    public async Task MoveSortLastAsync(long id, CancellationToken cancellationToken = default) =>
+        await MoveAsync(id, "last", cancellationToken);
     public async Task DeleteAsync(long id, int deleteType = 1, CancellationToken cancellationToken = default) {
         switch (deleteType) {
             case 1:
@@ -53,7 +73,7 @@ public sealed class CategoryRepository(ISqlSugarDbContext dbContext) : ICategory
         }
     }
     public async Task<IReadOnlyCollection<CategoryListItemDto>> GetAsync(CancellationToken cancellationToken = default) {
-        var categories = await dbContext.Client.Queryable<CategoryDataModel>().Where(x => x.IsDeleted == 0).OrderBy(x => x.Sort).OrderBy(x => x.Name).ToListAsync();
+        var categories = await dbContext.Client.Queryable<CategoryDataModel>().Where(x => x.IsDeleted == 0).OrderBy(x => x.Sort).OrderBy(x => x.Id).ToListAsync();
         return await MapToListItemsAsync(categories, cancellationToken);
     }
     public async Task<PagedResult<CategoryListItemDto>> GetAsync(CategoryPageListQuery query, CancellationToken cancellationToken = default) {
@@ -72,9 +92,9 @@ public sealed class CategoryRepository(ISqlSugarDbContext dbContext) : ICategory
         }
         var total = await rows.CountAsync();
         rows = query.SortOrder?.ToLowerInvariant() switch {
-            "timeasc" => rows.OrderBy(x => x.CreatedAt).OrderBy(x => x.Sort).OrderBy(x => x.Name),
-            "timedesc" => rows.OrderByDescending(x => x.CreatedAt).OrderBy(x => x.Sort).OrderBy(x => x.Name),
-            _ => rows.OrderBy(x => x.Sort).OrderBy(x => x.Name).OrderByDescending(x => x.CreatedAt)
+            "timeasc" => rows.OrderBy(x => x.CreatedAt).OrderBy(x => x.Sort).OrderBy(x => x.Id),
+            "timedesc" => rows.OrderByDescending(x => x.CreatedAt).OrderBy(x => x.Sort).OrderBy(x => x.Id),
+            _ => rows.OrderBy(x => x.Sort).OrderBy(x => x.Id)
         };
         var categories = await rows.Skip((page - 1) * size).Take(size).ToListAsync();
         return new PagedResult<CategoryListItemDto>(await MapToListItemsAsync(categories, cancellationToken), page, size, total);

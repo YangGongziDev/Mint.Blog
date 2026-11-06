@@ -5,7 +5,7 @@ public sealed record UpdateColumnCommand(long ColumnId, string Title, string Sum
 public sealed record DeleteColumnCommand(long ColumnId, int DeleteType = 1);
 public sealed record SetColumnPublishCommand(long ColumnId, bool IsPublish);
 public sealed record SetColumnTopCommand(long ColumnId, bool IsTop);
-public sealed record UpdateColumnSortCommand(long ColumnId, int Sort);
+public sealed record UpdateColumnSortCommand(long ColumnId, int Sort, string? Move = null);
 public sealed record UpdateColumnCatalogCommand(long ColumnId, IReadOnlyCollection<UpdateColumnCatalogItemCommand> Catalogs);
 public sealed record UpdateColumnCatalogItemCommand(long Id, long ArticleId, string Title, int Sort, int Level,
     bool IsDeleted, IReadOnlyCollection<UpdateColumnCatalogItemCommand> Children);

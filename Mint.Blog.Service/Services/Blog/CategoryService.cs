@@ -23,17 +23,28 @@ public sealed class CategoryService(ICategoryRepository categoryRepository, IRes
         await categoryRepository.UpdateAsync(command.CategoryId, command.Name.Trim(), cancellationToken);
     }
     public async Task UpdateSortAsync(UpdateCategorySortCommand command, CancellationToken cancellationToken = default) {
-        await RequireCategoryAsync(command.CategoryId, cancellationToken);
-        await categoryRepository.UpdateSortAsync(command.CategoryId, command.Sort, cancellationToken);
+        var move = command.Move?.Trim().ToLowerInvariant();
+        if (move is not null && move is not ("up" or "down" or "first" or "last"))
+            throw new ArgumentException("Move must be up, down, first or last.", nameof(command.Move));
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
+        try {
+            if (move is null) {
+                Guard.Against(!await categoryRepository.ExistsAsync(command.CategoryId, true, cancellationToken), ErrorCodes.CategoryNotFound, "Category does not exist.");
+                await categoryRepository.UpdateSortAsync(command.CategoryId, command.Sort, cancellationToken);
+            } else {
+                var found = await categoryRepository.MoveAsync(command.CategoryId, move, cancellationToken);
+                Guard.Against(!found, ErrorCodes.CategoryNotFound, "Category does not exist.");
+            }
+            await unitOfWork.CommitAsync(cancellationToken);
+        } catch {
+            await unitOfWork.RollbackAsync(CancellationToken.None);
+            throw;
+        }
     }
-    public async Task MoveSortFirstAsync(MoveCategorySortFirstCommand command, CancellationToken cancellationToken = default) {
-        await RequireCategoryAsync(command.CategoryId, cancellationToken);
-        await categoryRepository.MoveSortFirstAsync(command.CategoryId, cancellationToken);
-    }
-    public async Task MoveSortLastAsync(MoveCategorySortLastCommand command, CancellationToken cancellationToken = default) {
-        await RequireCategoryAsync(command.CategoryId, cancellationToken);
-        await categoryRepository.MoveSortLastAsync(command.CategoryId, cancellationToken);
-    }
+    public Task MoveSortFirstAsync(MoveCategorySortFirstCommand command, CancellationToken cancellationToken = default) =>
+        UpdateSortAsync(new UpdateCategorySortCommand(command.CategoryId, 0, "first"), cancellationToken);
+    public Task MoveSortLastAsync(MoveCategorySortLastCommand command, CancellationToken cancellationToken = default) =>
+        UpdateSortAsync(new UpdateCategorySortCommand(command.CategoryId, 0, "last"), cancellationToken);
     private async Task RequireCategoryAsync(long id, CancellationToken ct) =>
         Guard.Against(!await categoryRepository.ExistsAsync(id, ct), ErrorCodes.CategoryNotFound, "Category does not exist.");
     public async Task DeleteAsync(DeleteCategoryCommand command, CancellationToken cancellationToken = default) {

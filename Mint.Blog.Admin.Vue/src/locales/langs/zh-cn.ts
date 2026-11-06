@@ -160,7 +160,7 @@ const local: App.I18n.Schema = {
     'iframe-page': '外链页面',
     home: '首页',
     blog_category: '分类管理',
-    blog_tag: '标签管理',
+    blog_tag: '技术标签',
     'blog_tag-version': '标签版本',
     blog_resource: '资源导航',
     blog_settings: '博客设置',
